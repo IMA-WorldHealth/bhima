@@ -1,11 +1,11 @@
 angular.module('bhima.controllers')
-  .controller('ShipmentOverviewModalController', ShipmentOverviewModalController);
+  .controller('ShipmentDocumentModalController', ShipmentDocumentModalController);
 
-ShipmentOverviewModalController.$inject = [
+ShipmentDocumentModalController.$inject = [
   '$window', 'params', 'ShipmentService', 'NotifyService', '$uibModalInstance',
 ];
 
-function ShipmentOverviewModalController($window, params, Shipments, Notify, Instance) {
+function ShipmentDocumentModalController($window, params, Shipments, Notify, Instance) {
   const vm = this;
   const identifier = params.uuid;
 

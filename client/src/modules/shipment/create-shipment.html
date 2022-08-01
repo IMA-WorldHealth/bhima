@@ -247,6 +247,7 @@
                         <tr>
                           <th translate>FORM.LABELS.LABEL</th>
                           <th translate>FORM.LABELS.TYPE</th>
+                          <th translate>FORM.LABELS.WEIGHT</th>
                           <th></th>
                           <th></th>
                           <th></th>
@@ -256,6 +257,7 @@
                         <tr ng-repeat="cont in CreateShipCtrl.containers">
                           <td>{{cont.label}}</td>
                           <td>{{cont.container_type}}</td>
+                          <td>{{cont.weight}}</td>
                           <td>
                             <a href ng-click="CreateShipCtrl.editContainer(cont)">
                               <span class="fa fa-edit"></span> <span translate>FORM.LABELS.EDIT</span>
@@ -291,10 +293,8 @@
         ui-grid-auto-resize
         ui-grid-resize-columns>
         <bh-grid-loading-indicator
-          loading-state="CreateShipCtrl.stockForm.isLoading()"
-          empty-state="CreateShipCtrl.emptyStock"
-          error-state="CreateShipCtrl.hasError"
-          empty-state-message="STOCK.EMPTY">
+          loading-state="CreateShipCtrl.stockForm.isLoading() || CreateShipCtrl.loading"
+          error-state="CreateShipCtrl.hasError">
         </bh-grid-loading-indicator>
       </div>
 

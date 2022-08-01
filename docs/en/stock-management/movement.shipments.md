@@ -92,7 +92,7 @@ Here is a brief recap of the actions available at this point:
 To complete this step in the example, select the "Ready to Ship" option and confirm the action in the modal dialog.
 
 <div class="bs-callout bs-callout-info">
-**NOTE**: An important thing to note about the action menu for shipments is that it will only display actions that can be done based on the current status of the shipment.   This makes it straightforward to process shipments since the action menu essentially guides the user through the normal process of dealing with shipments.
+<strong>NOTE:</strong> An important thing about the action menu for shipments is that it will only display actions that can be done based on the current status of the shipment.   This makes it straightforward to process shipments since the action menu essentially guides the user through the normal process of dealing with shipments.
 </div>
 
 ### Stock Exit at the Sending Depot
@@ -138,11 +138,11 @@ shipments to support this.  For example:
   Lots" option for the desired container in the container operations menu.
 
 When the **\[Containers\]** menu is opened, it appears like this:
-<img src="./images/shipment-containers-ops.png" alt="Shipment container operation" align="right" width="400">
+<img src="./images/shipment-containers-ops.png" alt="Shipment container operation" align="right" width="340"><br>
 The options for each container are:
 - **Edit** - Edit the container
 - **Assign lots** - If this command is executed, all shipment items (lots)
-  whos "Multiple lot select* checkbox are checked will be reassigned to this
+  whose "Multiple lot select* checkbox are checked will be reassigned to this
   container.
 - **Delete** - Deletes the container.  All items in that container will be not
   be assigned a new container.
