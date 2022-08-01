@@ -52,7 +52,8 @@ function ReceiptService($http, util, Language, AppCache, Session) {
   service.payrollReport = payrollReport;
   service.displayData = displayData;
 
-  service.shipmentOverview = shipmentOverview;
+  service.shipmentDocument = shipmentDocument;
+  service.shipmentManifest = shipmentManifest;
   service.shipmentBarcode = shipmentBarcode;
 
   /**
@@ -171,10 +172,17 @@ function ReceiptService($http, util, Language, AppCache, Session) {
     return fetch(route, options);
   }
 
-  // shipment overview
-  function shipmentOverview(uuid, options) {
+  // shipment document
+  function shipmentDocument(uuid, options) {
     options.posReceipt = service.posReceipt;
-    const route = `/reports/shipments/${uuid}/overview`;
+    const route = `/reports/shipments/${uuid}/document`;
+    return fetch(route, options);
+  }
+
+  // shipment manifest
+  function shipmentManifest(uuid, options) {
+    options.posReceipt = service.posReceipt;
+    const route = `/reports/shipments/${uuid}/document?manifest=1`;
     return fetch(route, options);
   }
 

@@ -1,6 +1,6 @@
 const shipment = require('./shipment');
 const shipmentReports = require('./reports/shipments');
-const shipmentOverviewReceipt = require('./reports/shipment-overview');
+const shipmentDocumentReceipt = require('./reports/shipment-document');
 const shipmentBarcodeReceipt = require('./reports/shipment-barcode');
 
 module.exports = {
@@ -17,7 +17,7 @@ module.exports = {
   setShipmentCompleted : shipment.setShipmentCompleted,
   listInTransitInventories : shipment.listInTransitInventories,
   getReport : shipmentReports.getReport,
-  getOverview : shipmentOverviewReceipt.getShipmentOverview,
+  getDocument : shipmentDocumentReceipt.getShipmentDocument,
   getBarcode : shipmentBarcodeReceipt.getBarcode,
   writeStockExitShipment : shipment.writeStockExitShipment,
   writeStockEntryShipment : shipment.writeStockEntryShipment,
