@@ -2,15 +2,15 @@ angular.module('bhima.controllers')
   .controller('ShipmentRegistryController', ShipmentRegistryController);
 
 ShipmentRegistryController.$inject = [
-  '$state', 'ShipmentService', 'ShipmentFilter', 'ShipmentModalService',
-  'ModalService', 'NotifyService', 'uiGridConstants',
-  'GridStateService', 'GridColumnService', 'bhConstants',
+  '$state', 'ShipmentService', 'ShipmentFilter', 'ShipmentModalService', 'ModalService',
+  'uiGridConstants', 'GridStateService', 'GridColumnService',
+  'NotifyService', 'bhConstants',
 ];
 
 function ShipmentRegistryController(
-  $state, Shipments, ShipmentFilter, ShipmentModal,
-  Modal, Notify, GridConstants,
-  GridState, Columns, Constants,
+  $state, Shipments, ShipmentFilter, ShipmentModal, Modal,
+  GridConstants, GridState, Columns,
+  Notify, Constants,
 ) {
   const vm = this;
   const cacheKey = 'shipment-grid';
@@ -30,7 +30,8 @@ function ShipmentRegistryController(
   vm.toggleFilter = toggleFilter;
   vm.onRemoveFilter = onRemoveFilter;
   vm.search = search;
-  vm.shipmentOverview = shipmentOverview;
+  vm.shipmentDocument = shipmentDocument;
+  vm.shipmentManifest = shipmentManifest;
   vm.getShipmentBarcode = getShipmentBarcode;
   vm.gotoStockEntry = gotoStockEntry;
   vm.gotoStockExit = gotoStockExit;
@@ -182,12 +183,16 @@ function ShipmentRegistryController(
     $state.reload();
   }
 
-  function shipmentOverview(uuid) {
-    return ShipmentModal.openShipmentOverview(uuid);
+  function shipmentDocument(uuid) {
+    return ShipmentModal.openShipmentDocument(uuid);
+  }
+
+  function shipmentManifest(uuid) {
+    return ShipmentModal.openShipmentManifest(uuid);
   }
 
   function getOverview(uuid) {
-    return ShipmentModal.shipmentOverviewModal(uuid);
+    return ShipmentModal.shipmentDocumentModal(uuid);
   }
 
   function setReady(uuid) {

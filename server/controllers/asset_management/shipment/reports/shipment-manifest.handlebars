@@ -1,0 +1,223 @@
+{{> head }}
+
+<style>
+  .text-right {
+    text-align: right;
+  }
+
+  .grey {
+    background-color: #DDD;
+  }
+</style>
+
+<body>
+
+<header class="row" style="margin-bottom: 1em;">
+  {{> enterpriseDetails }}
+
+  <div class="col-xs-7 col-auto">
+
+    <h3 class="text-right">
+      <strong>{{translate 'SHIPMENT.SHIPMENT_MANIFEST'}}: {{shipment.name}} - {{shipment.reference}}</strong>
+    </h3>
+
+    <h4 class="text-right">
+      {{translate 'SHIPMENT.SHIPMENT_STATUS'}}: {{translate shipment.status}}
+    </h4>
+
+    {{#if metadata.enterprise.settings.enable_barcodes}}
+    <h4 class="text-right">
+        <span>{{> barcode value=barcode}}</span>
+    </h4>
+    <script>JsBarcode('.barcode').init();</script>
+    {{/if}}
+
+
+    <h5 class="text-right" style="margin-top: 0.25em;">
+      <span class="text-capitalize">{{translate 'FORM.LABELS.DATE'}}</span>: {{date shipment.date}}
+    </h5>
+
+  </div>
+
+</header>
+
+<!-- body  -->
+
+<div class="row">
+  <div class="col-xs-5" style="border: 1px solid #999;">
+    <h3><strong>{{translate 'STOCK.ORIGIN'}}</strong></h3>
+    <h4>{{shipment.origin_depot.text}}</h4>
+    {{#if shipment.origin_depot.description}}
+    <h5>
+      {{#each shipment.origin_depot.description}}
+      <br>{{this}}
+      {{/each}}
+    </h5>
+    {{/if}}
+    {{#if shipment.origin_depot.location_uuid}}
+      {{#with shipment.origin_depot}}
+      {{village_name}} / {{sector_name}} / {{province_name}} <br>
+      {{country_name}}
+      {{/with}}
+    {{/if}}
+  </div>
+  <div class="col-xs-1"></div>
+  <div class="col-xs-6" style="border: 1px solid #999;">
+    <h3><strong>{{translate 'STOCK.DESTINATION'}}</strong></h3>
+    <h4>{{shipment.destination_depot.text}}</h4>
+    <h5>
+      {{translate 'SHIPMENT.ANTICIPATED_DELIVERY_DATE'}}: {{date shipment.anticipated_delivery_date}}
+    </h5>
+    {{#if shipment.destination_depot.description}}
+    <h5>
+      {{#each shipment.destination_depot.description}}
+      <br>{{this}}
+      {{/each}}
+    </h5>
+    {{/if}}
+    {{#if shipment.destination_depot.location_uuid}}
+      {{#with shipment.destination_depot}}
+      {{village_name}} / {{sector_name}} / {{province_name}} <br>
+      {{country_name}}
+      {{/with}}
+    {{/if}}
+  </div>
+</div>
+
+{{#if shipment.description}}
+<div class="row" style="margin-top: 8px; margin-bottom: 8px;">
+  <div class="col-xs-12" style="border: 1px solid #999;">
+    {{shipment.description}}
+  </div>
+</div>
+{{/if}}
+
+<div class="row" style="margin-top: 1em;">
+  <div class="col-xs-6">
+    <strong>{{translate 'SHIPMENT.TRANSPORT_MODE'}}:</strong> {{shipment.transport_mode}}
+  </div>
+  <div class="col-xs-6">
+    <h3><strong>{{translate 'SHIPMENT.RECEIVER'}}:</strong> {{shipment.receiver}}</h3>
+  </div>
+</div>
+<br>
+
+<div class="row">
+  <div class="col-xs-12">
+
+    <!-- shipment packing list -->
+    <h4>{{translate 'SHIPMENT.PACKING_LIST'}}
+      {{#if shipment.hasContainers}}({{shipment.numContainers}} {{translate shipment.multipleContainerLabel}})
+      {{/if}}
+    </h4>
+    <table class="table table-condensed table-bordered table-report">
+      <thead>
+        <tr>
+          {{#if shipment.hasContainers}}
+            <th colspan="3">{{translate 'SHIPMENT.CONTAINER'}}</th>
+            <th>{{translate 'SHIPMENT.CONTAINER_TYPE'}}</th>
+            <th class="text-right">{{translate 'SHIPMENT.CONTAINER_WEIGHT_EMPTY'}}</th>
+            <th class="text-right">{{translate 'SHIPMENT.CONTAINER_WEIGHT_PACKED'}}</th>
+            <th class="text-right">{{translate 'SHIPMENT.CONTAINER_VALUE'}}</th>
+          {{else}}
+            <th>{{translate 'STOCK.INVENTORY'}}</th>
+            <th>{{translate 'STOCK.LOT'}}</th>
+            <th>{{translate 'TABLE.COLUMNS.UNIT'}}</th>
+            <th class="text-right">{{translate 'STOCK.QUANTITY'}}</th>
+            <th class="text-right">{{translate 'TABLE.COLUMNS.UNIT_WEIGHT'}}</th>
+            <th class="text-right">{{translate 'STOCK.UNIT_COST'}}</th>
+            <th class="text-right">{{translate 'STOCK.COST'}}</th>
+          {{/if}}
+        </tr>
+      </thead>
+      <tbody>
+        {{#each contents}}
+          {{#if ../shipment.hasContainers}}
+          <tr>
+            <td colspan="3">{{containerName}}</td>
+            <td>{{translate containerType }}</td>
+            <td class="text-right">{{containerEmptyWeight}}</td>
+            <td class="text-right">{{containerWeight}}</td>
+            <td class="text-right">{{currency containerValue metadata.enterprise.currency_id}}</td>
+          </tr>
+          {{else}}
+            {{#each items}}
+            <tr>
+              <td {{#if ../../shipment.hasContainers}}style="padding-left: 2em;"{{/if}}>
+                {{inventory_label}} ({{inventory_code}})</td>
+              <td>{{lot_label}}</td>
+              <td>{{unit_type}}</td>
+              <td class="text-right">{{quantity_sent}}</td>
+              <td class="text-right">{{unit_weight}}</td>
+              <td class="text-right">{{currency unit_price ../../metadata.enterprise.currency_id}}</td>
+              <td class="text-right">{{currency cost ../../metadata.enterprise.currency_id}}</td>
+            </tr>
+            {{else}}
+            {{> emptyTable columns=7}}
+            {{/each}}
+          {{/if}}
+        {{/each}}
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="7"></td>
+        </tr>
+        <tr>
+          <td colspan="3"></td>
+          {{#if shipment.hasContainers}}
+            <td colspan="2"></td>
+            <td class="text-right"><strong>{{translate 'SHIPMENT.TOTAL_WEIGHT'}}</strong></td>
+            <td class="text-right"><strong>{{translate 'SHIPMENT.TOTAL_VALUE'}}</strong></td>
+          {{else}}
+            <td class="text-right"><strong>{{translate 'SHIPMENT.TOTAL_QUANTITY'}}</strong></td>
+            <td class="text-right"><strong>{{translate 'SHIPMENT.TOTAL_WEIGHT'}}</strong></td>
+            <td></td>
+            <td class="text-right"><strong>{{translate 'SHIPMENT.TOTAL_COST'}}</strong></td>
+          {{/if}}
+        </tr>
+        <tr style="font-weight: bold;">
+          <td colspan="3">
+            {{#if shipment.hasContainers}}
+            {{shipment.numContainers}} {{translate shipment.multipleContainerLabel}}
+            {{else}}
+            {{shipment.totalNumItems}} {{translate 'SHIPMENT.ITEMS'}}
+            {{/if}}
+          </td>
+          {{#if shipment.hasContainers}}
+            <td colspan="2"></td>
+            <td class="text-right">{{shipment.totalWeight}}</td>
+            <td class="text-right">{{currency shipment.totalCost metadata.enterprise.currency_id}}</td>
+          {{else}}
+            <td class="text-right">{{shipment.totalQuantity}}</td>
+            <td class="text-right">{{shipment.totalWeight}}</td>
+            <td></td>
+            <td class="text-right">{{currency shipment.totalCost metadata.enterprise.currency_id}}</td>
+          {{/if}}
+        </tr>
+      </tfoot>
+    </table>
+
+  </div>
+</div>
+
+<div class="row" style="margin-top: 2em;">
+  <div class="col-xs-6">
+    <h4><strong>{{translate 'SHIPMENT.AUTHORIZED'}}:</h4>
+  </div>
+  <div class="col-xs-6">
+    <h4><strong>{{translate 'SHIPMENT.TRANSPORTER'}}:</h4>
+  </div>
+</div>
+
+<div class="row" style="margin-top: 6em;">
+  <div class="col-xs-6">
+    <h4><strong>{{translate 'SHIPMENT.EXECUTED_BY'}}:</h4>
+  </div>
+  <div class="col-xs-6">
+    <h4><strong>{{translate 'SHIPMENT.DUELY_RECEIVED_BY'}}:</h4>
+    <h5><strong>{{translate 'SHIPMENT.NAME_FUNCTION_SIGNATURE'}}</h5>
+  </div>
+</div>
+
+
+</body>

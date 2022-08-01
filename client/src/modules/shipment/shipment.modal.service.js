@@ -21,24 +21,25 @@ function ShipmentModalService(Modal, Receipts) {
     animation   : false,
   };
 
-  service.shipmentOverviewModal = shipmentOverviewModal;
+  service.shipmentDocumentModal = shipmentDocumentModal;
   service.setReadyForShipmentModal = setReadyForShipmentModal;
   service.updateTrackingLogModal = updateTrackingLogModal;
   service.setShipmentDeliveredModal = setShipmentDeliveredModal;
   service.setShipmentCompletedModal = setShipmentCompletedModal;
 
   service.openSearchShipment = openSearchShipment;
-  service.openShipmentOverview = openShipmentOverview;
+  service.openShipmentDocument = openShipmentDocument;
+  service.openShipmentManifest = openShipmentManifest;
   service.openShipmentBarcode = openShipmentBarcode;
 
   service.openEditContainerModal = openEditContainerModal;
 
   // modal on the client callable from anywhere
-  function shipmentOverviewModal(uuid) {
+  function shipmentDocumentModal(uuid) {
     Modal.open({
       size : 'lg',
-      templateUrl : 'modules/shipment/modals/overview.modal.html',
-      controller : 'ShipmentOverviewModalController as $ctrl',
+      templateUrl : 'modules/shipment/modals/shipment-document.modal.html',
+      controller : 'ShipmentDocumentModalController as $ctrl',
       resolve : { params : () => ({ uuid }) },
     }).result.catch(angular.noop);
   }
@@ -89,9 +90,15 @@ function ShipmentModalService(Modal, Receipts) {
     return instance.result;
   }
 
-  function openShipmentOverview(documentUuid, notifyCreated) {
-    const opts = { title : 'SHIPMENT.OVERVIEW', notifyCreated, renderer : Receipts.renderer };
-    const promise = Receipts.shipmentOverview(documentUuid, { renderer : opts.renderer });
+  function openShipmentDocument(documentUuid, notifyCreated) {
+    const opts = { title : 'SHIPMENT.SHIPMENT_DOCUMENT', notifyCreated, renderer : Receipts.renderer };
+    const promise = Receipts.shipmentDocument(documentUuid, { renderer : opts.renderer });
+    return ReceiptFactory(promise, opts);
+  }
+
+  function openShipmentManifest(documentUuid, notifyCreated) {
+    const opts = { title : 'SHIPMENT.SHIPMENT_MANIFEST', notifyCreated, renderer : Receipts.renderer };
+    const promise = Receipts.shipmentManifest(documentUuid, { renderer : opts.renderer });
     return ReceiptFactory(promise, opts);
   }
 
