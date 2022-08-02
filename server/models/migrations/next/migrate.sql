@@ -23,11 +23,10 @@ CREATE TABLE `shipment_container` (
   `date_sent`          DATETIME,
   `date_received`      DATETIME,
   PRIMARY KEY (`uuid`),
+  UNIQUE KEY `shipment_container__unique_label` (`label`),
   CONSTRAINT `shipment_container__type` FOREIGN KEY (`container_type_id`) REFERENCES `shipment_container_types` (`id`),
   CONSTRAINT `shipment_container__shipment` FOREIGN KEY (`shipment_uuid`) REFERENCES `shipment` (`uuid`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
-
-CALL add_column_if_missing('shipment_item', 'container_uuid', 'BINARY(16) NULL');
 
 INSERT IGNORE INTO `shipment_container_types`
     (`id`, `text`, `predefined`)
@@ -49,3 +48,6 @@ INSERT IGNORE INTO `shipment_container_types`
     (15, 'REAM', 1),
     (16, 'SACK', 1),
     (17, 'SET', 1);
+
+CALL add_column_if_missing('shipment_item', 'container_uuid', 'BINARY(16) NULL');
+CALL add_constraint_if_missing('shipment_item', 'shipment_item__shipment', 'FOREIGN KEY (`shipment_uuid`) REFERENCES `shipment` (`uuid`) ON DELETE CASCADE');
