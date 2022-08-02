@@ -14,13 +14,15 @@ function ContainerEditModalController(Data, Containers, Notify, Instance) {
 
   vm.isCreate = Data.action === 'create';
   vm.existingContainer = Data.action === 'edit' && !(NOT_CREATED in Data.container);
-
+  vm.knownContainers = new Set(Data.known || []);
   vm.loading = false;
 
   vm.container = {};
 
   vm.cancel = () => Instance.close(null);
   vm.submit = submit;
+
+  vm.checkLabel = checkLabel;
 
   function startup() {
     vm.loading = true;
@@ -32,16 +34,42 @@ function ContainerEditModalController(Data, Containers, Notify, Instance) {
       })
       .then(() => {
         if (Data.container) {
+          // This means we are editing
           vm.container = Data.container;
-          vm.loading = false;
-        } else {
-          vm.loading = false;
+
+          // Don't complain if we re-use the same label while editing
+          vm.knownContainers.delete(vm.container.label);
         }
+      })
+      .finally(() => {
+        vm.loading = false;
       });
   }
 
+  /* tslint: disable:no-unused-variable */
+  function checkLabel(key, value) {
+    if (vm.form) {
+      // If we have entered a duplicate label before, reset the field and form when it is okay
+      const valid = !vm.knownContainers.has(value);
+      vm.form.textValueForm.inputTextElement.$invalid = !valid;
+      vm.form.textValueForm.inputTextElement.$valid = valid;
+      vm.form.$valid = valid;
+      vm.form.$invalid = !valid;
+    }
+  }
+
   function submit(form) {
-    if (form.$invalid) { return 0; }
+    if (form.$invalid) { return false; }
+
+    // Make sure the proposed container label is unique
+    // @TODO: Add a validator to bhInputText component to avoid these hacks
+    if (vm.knownContainers.has(vm.container.label)) {
+      form.textValueForm.inputTextElement.$invalid = true;
+      form.textValueForm.inputTextElement.$valid = false;
+      form.textValueForm.inputTextElement.$setValidity('unique', false);
+      vm.form = form; // save a reference for resetting the form when the label is corrected
+      return false;
+    }
 
     // NOTE: If the container did not already exist, do not create a new one.
     //       Let the parent controller (create_shipment) do that when

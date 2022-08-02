@@ -2757,6 +2757,7 @@ CREATE TABLE `shipment_container` (
   `date_sent`          DATETIME,
   `date_received`      DATETIME,
   PRIMARY KEY (`uuid`),
+  UNIQUE KEY `shipment_container__unique_label` (`label`),
   CONSTRAINT `shipment_container__type` FOREIGN KEY (`container_type_id`) REFERENCES `shipment_container_types` (`id`),
   CONSTRAINT `shipment_container__shipment` FOREIGN KEY (`shipment_uuid`) REFERENCES `shipment` (`uuid`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
