@@ -239,7 +239,10 @@ function CreateShipmentController(
   };
 
   vm.newContainer = function newContainer() {
-    ShipmentModal.openEditContainerModal({ action : 'create' })
+    ShipmentModal.openEditContainerModal({
+      action : 'create',
+      known : vm.containers.map(c => c.label),
+    })
       .then((result) => {
         if (!result) { return; }
 
@@ -274,7 +277,11 @@ function CreateShipmentController(
   };
 
   vm.editContainer = function editContainer(container) {
-    ShipmentModal.openEditContainerModal({ action : 'edit', container })
+    ShipmentModal.openEditContainerModal({
+      action : 'edit',
+      container,
+      known : vm.containers.map(c => c.label),
+    })
       .then((result) => {
         if (!result) { return; }
 
@@ -465,6 +472,7 @@ function CreateShipmentController(
     row[ROW_ERROR_FLAG] = true;
     $timeout(() => { row[ROW_ERROR_FLAG] = false; }, 3000);
   }
+
 
   function submit(form) {
 
