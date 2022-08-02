@@ -109,7 +109,9 @@ function StockExitFormService(
     };
 
     // show the informational message that we need to select an exit type.
-    this._toggleInfoMessage(true, 'info', INFO_NO_EXIT_TYPE, this.details);
+    if (!this.exitTypePredefined) {
+      this._toggleInfoMessage(true, 'info', INFO_NO_EXIT_TYPE, this.details);
+    }
   };
 
   /**

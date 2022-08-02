@@ -767,6 +767,7 @@ async function getPackingList(identifier) {
       l.label AS lot_label, sv.wac AS unit_price,
       i.code AS inventory_code, i.text AS inventory_label, i.is_asset,
       iu.text AS unit_type,
+      sc.label AS container_label,
       dm.text AS reference
     FROM shipment sh
     JOIN shipment_status ss ON ss.id = sh.status_id
@@ -776,8 +777,10 @@ async function getPackingList(identifier) {
     JOIN inventory_unit iu ON iu.id = i.unit_id
     JOIN stock_value sv ON sv.inventory_uuid = i.uuid
     JOIN user u ON u.id = sh.created_by
+    LEFT JOIN shipment_container sc ON sc.uuid = shi.container_uuid
     JOIN document_map dm ON dm.uuid = sh.uuid
     WHERE sh.uuid = ?
+    ORDER BY container_label, inventory_label, lot_label
   `;
 
   return db.exec(sql, [db.bid(identifier)]);
