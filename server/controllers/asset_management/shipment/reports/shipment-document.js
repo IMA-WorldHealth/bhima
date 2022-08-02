@@ -89,13 +89,19 @@ async function getShipmentDocument(req, res, next) {
         sortItems(containerItems);
         contents.push({
           containerName : cntr.label,
-          containerEmptyWeight : cntr.weight,
+          containerEmptyWeight : _.round(cntr.weight, 2),
           containerType : `SHIPMENT.CONTAINER_TYPES.${cntr.container_type}`,
-          containerWeight : cntr.weight + containerItems.reduce((agg, row) => agg + row.weight, 0),
+          containerWeight : _.round(cntr.weight + containerItems.reduce((agg, row) => agg + row.weight, 0), 2),
           containerValue : containerItems.reduce((agg, row) => agg + row.cost, 0),
           items : containerItems,
         });
         shipment.totalWeight += cntr.weight;
+      });
+      // Round weights for display
+      shipment.totalWeight = _.round(shipment.totalWeight, 2);
+      shipmentItems.forEach(row => {
+        row.weight = _.round(row.quantity_sent * row.unit_weight, 2);
+        row.unit_weight = _.round(row.unit_weight, 2);
       });
     } else {
       sortItems(shipmentItems);
