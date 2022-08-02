@@ -1,4 +1,4 @@
-<form name="ActionForm" bh-submit="$ctrl.submit(ActionForm)" novalidate>
+<form name="ContainerForm" bh-submit="$ctrl.submit(ContainerForm)" novalidate>
   <div class="modal-header">
     <ol class="headercrumb text-bold">
       <li class="static" translate>SHIPMENT.SHIPMENTS</li>
@@ -16,6 +16,7 @@
         text-value="$ctrl.container.label"
         label="FORM.LABELS.LABEL"
         autocomplete="off"
+        on-change="$ctrl.checkLabel(key, value)"
         required="true">
       </bh-input-text>
     </div>
@@ -33,14 +34,18 @@
       </ui-select>
     </div>
 
-    <div class="form-group">
-      <label class="control-label" for="containerType" translate>SHIPMENT.CONTAINER_WEIGHT</label>
+    <div class="form-group" ng-class="{ 'has-error' : ContainerForm.weight.$invalid }">
+      <label class="control-label" for="weight" translate>SHIPMENT.CONTAINER_WEIGHT</label>
       <input
         name="weight"
         type="number"
         min="0"
         class="form-control"
         ng-model="$ctrl.container.weight">
+      <div class="help-block"
+        ng-messages="ContainerForm.weight.$error" ng-show="ContainerForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
     </div>
 
   </div>  <!-- end of modal-body -->
