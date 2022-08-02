@@ -22,19 +22,26 @@
 
     <div class="form-group">
       <label class="control-label" for="containerType" translate>SHIPMENT.CONTAINER_TYPE</label>
-      <ui-select
-        name="container_type_id"
-        ng-model="$ctrl.container.container_type_id"
-        ng-required="$ctrl.required">
+      <ui-select name="container_type_id" ng-model="$ctrl.container.container_type_id" ng-required="$ctrl.required">
         <ui-select-match placeholder="{{ 'SHIPMENT.SELECT_CONTAINER_TYPE' | translate }}">
           <span translate>{{$select.selected.text}}</span>
         </ui-select-match>
-        <ui-select-choices ui-select-focus-patch repeat="type.id as type in $ctrl.containerTypes | filter: { 'text': $select.search }">
+        <ui-select-choices ui-select-focus-patch
+          repeat="type.id as type in $ctrl.containerTypes | filter: { 'text': $select.search }">
           <span ng-bind-html="type.text | highlight:$select.search"></span>
         </ui-select-choices>
       </ui-select>
-    <div>
+    </div>
 
+    <div class="form-group">
+      <label class="control-label" for="containerType" translate>SHIPMENT.CONTAINER_WEIGHT</label>
+      <input
+        name="weight"
+        type="number"
+        min="0"
+        class="form-control"
+        ng-model="$ctrl.container.weight">
+    </div>
 
   </div>  <!-- end of modal-body -->
 
