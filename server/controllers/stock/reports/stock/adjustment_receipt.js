@@ -10,7 +10,7 @@ const {
  * This method builds the stock adjustment receipt file to be sent to the client.
  */
 async function stockAdjustmentReceipt(documentUuid, session, options) {
-  const optionReport = _.extend(options, { filename : 'STOCK.REPORTS.ADJUSTMENT' });
+  const optionReport = _.extend(options, { filename : 'STOCK.RECEIPT.ADJUSTMENT' });
   const autoStockAccountingEnabled = session.stock_settings.enable_auto_stock_accounting;
 
   const FLUX_TYPE = [
