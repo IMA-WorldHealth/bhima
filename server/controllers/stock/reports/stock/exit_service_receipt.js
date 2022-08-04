@@ -13,7 +13,7 @@ const {
  */
 async function stockExitServiceReceipt(documentUuid, session, options) {
   const data = {};
-  const optionReport = _.extend(options, { filename : 'STOCK.REPORTS.EXIT_SERVICE' });
+  const optionReport = _.extend(options, { filename : 'STOCK.RECEIPT.EXIT_SERVICE' });
   const autoStockAccountingEnabled = session.stock_settings.enable_auto_stock_accounting;
 
   let template = STOCK_EXIT_SERVICE_TEMPLATE;
