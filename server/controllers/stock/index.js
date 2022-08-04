@@ -413,56 +413,75 @@ async function createInventoryAdjustment(req, res, next) {
   }
 }
 
-async function movementsFromMobile(mobileLots) {
+async function movementsFromMobile(params) {
+  const mobileLots = params.lots;
   const [mobile] = mobileLots;
-  // find the initial stock exit movement
   const STOCK_EXIT_TO_DEPOT = 8;
-  const findMovements = `
-    SELECT 
-      BUID(m.document_uuid) document_uuid,
-      BUID(m.depot_uuid) depot_uuid,
-      BUID(l.inventory_uuid) inventory_uuid,
-      BUID(m.lot_uuid) lot_uuid,
-      m.quantity
-    FROM stock_movement m
-    JOIN lot l ON l.uuid = m.lot_uuid
-    WHERE m.entity_uuid = ? AND m.reference = ? AND m.is_exit = 1 AND m.flux_id = ?;
-  `;
-  const movements = await db.exec(findMovements, [
-    db.bid(mobile.depotUuid), mobile.reference, STOCK_EXIT_TO_DEPOT,
-  ]);
 
-  const pickLot = lotUuid => movements.filter(item => item.lot_uuid === lotUuid)[0];
+  if (!mobile.isExit) {
+    // find the initial stock exit movement
+    const findMovements = `
+      SELECT 
+        BUID(m.document_uuid) document_uuid,
+        BUID(m.depot_uuid) depot_uuid,
+        BUID(l.inventory_uuid) inventory_uuid,
+        BUID(m.lot_uuid) lot_uuid,
+        m.quantity
+      FROM stock_movement m
+      JOIN lot l ON l.uuid = m.lot_uuid
+      WHERE m.entity_uuid = ? AND m.reference = ? AND m.is_exit = 1 AND m.flux_id = ?;
+    `;
+    const movements = await db.exec(findMovements, [
+      db.bid(mobile.depotUuid), mobile.reference, STOCK_EXIT_TO_DEPOT,
+    ]);
 
-  // filter known lots of the movement initial movement
-  // check that the quantity sent is less or equal to
-  // the inital quantity
-  console.log('Mobile lots: ', mobileLots);
-  console.log('Bhima lots: ', movements);
-  const validLots = mobileLots.filter(lot => {
-    const bhimaLot = pickLot(lot.lotUuid);
-    return bhimaLot && bhimaLot.quantity >= lot.quantity;
-  }).map(item => {
-    const bhimaLot = pickLot(item.lotUuid);
-    return {
-      uuid : item.lotUuid,
-      inventory_uuid : bhimaLot.inventory_uuid,
-      description : item.description,
-      quantity : item.quantity,
-      unit_cost : item.unitCost,
-    };
-  });
+    const pickLot = lotUuid => movements.filter(item => item.lot_uuid === lotUuid)[0];
 
-  const [bhima] = movements;
-  return validLots.length ? {
-    document_uuid : bhima.document_uuid,
+    // filter known lots of the movement initial movement
+    // check that the quantity sent is less or equal to
+    // the inital quantity
+    const validLots = mobileLots.filter(lot => {
+      const bhimaLot = pickLot(lot.lotUuid);
+      return bhimaLot && bhimaLot.quantity >= lot.quantity;
+    }).map(item => {
+      const bhimaLot = pickLot(item.lotUuid);
+      return {
+        uuid : item.lotUuid,
+        inventory_uuid : bhimaLot.inventory_uuid,
+        description : item.description,
+        quantity : item.quantity,
+        unit_cost : item.unitCost,
+      };
+    });
+
+    const [bhima] = movements;
+    return validLots.length ? {
+      document_uuid : bhima.document_uuid,
+      flux_id : mobile.fluxId,
+      is_exit : mobile.isExit,
+      depot_uuid : mobile.depotUuid,
+      date : mobile.date,
+      from_depot : bhima.depot_uuid,
+      to_depot : mobile.depotUuid,
+      lots : validLots,
+    } : {};
+  }
+
+  // default stock exit movement
+  return mobileLots.length ? {
     flux_id : mobile.fluxId,
     is_exit : mobile.isExit,
     depot_uuid : mobile.depotUuid,
     date : mobile.date,
-    from_depot : bhima.depot_uuid,
-    to_depot : mobile.depotUuid,
-    lots : validLots,
+    lots : mobileLots.map(item => {
+      return {
+        uuid : item.lotUuid,
+        inventory_uuid : item.inventoryUuid,
+        description : item.description,
+        quantity : item.quantity,
+        unit_cost : item.unitCost,
+      };
+    }),
   } : {};
 }
 
@@ -479,8 +498,7 @@ async function createMovement(req, res, next) {
   const isMobileSync = params.sync_mobile;
 
   if (isMobileSync === 1) {
-    params = await movementsFromMobile(params.lots);
-    console.log('Params: ', params);
+    params = await movementsFromMobile(params);
   }
 
   if (!params.lots || !params.lots.length) {
