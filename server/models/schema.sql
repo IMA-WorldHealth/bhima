@@ -807,7 +807,7 @@ CREATE TABLE `inventory` (
   KEY `type_id` (`type_id`),
   CONSTRAINT `inventory__enterprise` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`),
   CONSTRAINT `inventory__inventory_group` FOREIGN KEY (`group_uuid`) REFERENCES `inventory_group` (`uuid`),
-  CONSTRAINT `inventory__enventory_unit` FOREIGN KEY (`unit_id`) REFERENCES `inventory_unit` (`id`),
+  CONSTRAINT `inventory__inventory_unit` FOREIGN KEY (`unit_id`) REFERENCES `inventory_unit` (`id`),
   CONSTRAINT `inventory__inventory_type` FOREIGN KEY (`type_id`) REFERENCES `inventory_type` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
@@ -846,11 +846,13 @@ CREATE TABLE `inventory_type` (
 DROP TABLE IF EXISTS `inventory_unit`;
 CREATE TABLE `inventory_unit` (
   `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `abbr` VARCHAR(50) NOT NULL,
-  `text` VARCHAR(50) NOT NULL,
+  `abbr` VARCHAR(50) NULL DEFAULT NULL COMMENT 'null for predefined units',
+  `text` VARCHAR(50) NULL DEFAULT NULL COMMENT 'null for predefined units',
+  `token` VARCHAR(20) NULL DEFAULT NULL COMMENT 'translation token for predefined units',
   PRIMARY KEY (`id`),
   UNIQUE KEY `inventory_unit_1` (`text`),
-  UNIQUE KEY `inventory_unit_2` (`abbr`)
+  UNIQUE KEY `inventory_unit_2` (`abbr`),
+  UNIQUE KEY `inventory_unit_3` (`token`)
 ) ENGINE=InnoDB  DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `language`;

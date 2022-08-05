@@ -262,26 +262,57 @@ INSERT IGNORE INTO `currency` (`id`, `name`, `format_key`, `symbol`, `note`, `mi
   (2,'United States Dollars','usd','$',NULL,0.01),
   (3,'Euro','EUR','€',NULL,0.01);
 
-INSERT IGNORE INTO `inventory_type` VALUES (1,'Article',NULL,0),(2,'Assembly',NULL,0),(3,'Service',NULL,0);
-INSERT IGNORE INTO `inventory_unit` VALUES
-  (1,'Act', 'Act'),
-  (2,'Pal', 'Pallet'),
-  (3,'Pill', 'Pillule'),
-  (4,'Box', 'Box'),
-  (5,'Lot', 'Lot'),
-  (6,'amp', 'ampoule'),
-  (7,'bags', 'bags'),
-  (8,'btl', 'bouteille'),
-  (9,'cap', 'capsule'),
-  (10,'flc', 'flacon'),
-  (11,'jar', 'jar'),
-  (12,'ltr', 'littre'),
-  (13,'pce', 'piece'),
-  (14,'sch', 'sachet'),
-  (15,'tab', 'tablette'),
-  (16,'tub', 'tube'),
-  (17,'vial', 'vial'),
-  (18, 'unité', 'unité');
+INSERT IGNORE INTO `inventory_type` VALUES
+  (1,'Article',NULL,0),
+  (2,'Assembly',NULL,0),
+  (3,'Service',NULL,0);
+
+INSERT IGNORE INTO `inventory_unit` (`id`, `token`) VALUES
+  ( 1, 'ACTION'),
+  ( 2, 'AMPOULE'),
+  ( 3, 'ARTICLE'),
+  ( 4, 'BAG'),
+  ( 5, 'BALE'),
+  ( 6, 'BARREL'),
+  ( 7, 'BOTTLE'),
+  ( 8, 'BOX'),
+  ( 9, 'BUCKET'),
+
+  (10, 'BUNDLE'),
+  (11, 'CAN'),
+  (12, 'CAPSULE'),
+  (13, 'CARTON'),
+  (14, 'COPY'),
+  (15, 'DAY'),
+  (16, 'EGG'),
+  (17, 'FLASK'),
+  (18, 'GLOVES'),
+  (19, 'INFUSION'),
+
+  (20, 'INJECTION'),
+  (21, 'JAR'),
+  (22, 'KIT'),
+  (23, 'LOT'),
+  (24, 'PACKAGE'),
+  (25, 'PACKET'),
+  (26, 'PAIR'),
+  (27, 'PALLET'),
+  (28, 'PIECE'),
+  (29, 'PILL'),
+
+  (30, 'POUCH'),
+  (31, 'REAM'),
+  (32, 'ROLL'),
+  (33, 'SACK'),
+  (34, 'SET'),
+  (35, 'SUPPOSITORY'),
+  (36, 'SYRUP'),
+  (37, 'TABLET'),
+  (38, 'TREATMENT'),
+  (39, 'TUBE'),
+
+  (40, 'UNIT'),
+  (41, 'VIAL');
 
 -- fonctions
 INSERT IGNORE INTO `fonction` VALUES
@@ -289,8 +320,8 @@ INSERT IGNORE INTO `fonction` VALUES
   (2,'Medecin Directeur');
 
 INSERT IGNORE INTO `staffing_function_indice` (`uuid`, `value`, `fonction_id`) VALUES
-(HUID('9ee06e4a-7b59-48e6-812c-c0f8a00cf7d3'), 60.0000, 1),
-(HUID(uuid()), 125.0000, 2);
+  (HUID('9ee06e4a-7b59-48e6-812c-c0f8a00cf7d3'), 60.0000, 1),
+  (HUID(uuid()), 125.0000, 2);
 
 -- transaction type
 INSERT IGNORE INTO `transaction_type` (`id`, `text`, `type`, `fixed`) VALUES

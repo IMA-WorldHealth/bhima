@@ -230,7 +230,6 @@ function StockExitFormService(
     this._pool.unavailable.data
       .filter(lot => !usedLotUuids.has(lot.lot_uuid) && lot._quantity_available > 0)
       .forEach(lot => { this._pool.release(lot.lot_uuid); });
-
   };
 
   /**
