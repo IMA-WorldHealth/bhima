@@ -82,10 +82,11 @@ function StockEntryController(
       },
 
       {
-        field : 'unit',
+        field : 'unit_type',
         width : 150,
         displayName : 'TABLE.COLUMNS.UNIT',
         headerCellFilter : 'translate',
+        cellFilter : 'translate',
       },
 
       {
@@ -488,7 +489,7 @@ function StockEntryController(
       item.quantity = items[index].balance || items[index].quantity;
       item.cost = item.quantity * item.unit_cost;
       item.expiration_date = vm.movement.date || new Date();
-      item.unit = inventory.unit;
+      item.unit_type = inventory.unit_type;
 
       // Store the non-expired candidate lots for this inventory code
       Lots.candidates({ inventory_uuid : item.inventory_uuid, date : vm.movement.date })
@@ -785,7 +786,7 @@ function StockEntryController(
         line.quantity = inventory.is_asset ? 1 : 0;
         line.cost = line.quantity * line.unit_cost;
         line.expiration_date = entryDate;
-        line.unit = inventory.unit;
+        line.unit_type = inventory.unit_type;
         line.tracking_expiration = inventory.tracking_expiration;
         line.candidateLots.forEach(lot => {
           lot.tracking_expiration = line.tracking_expiration;

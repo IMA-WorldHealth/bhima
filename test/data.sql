@@ -93,7 +93,7 @@ INSERT INTO `account` (`id`, `type_id`, `enterprise_id`, `number`, `label`, `par
   (55, 6, 1, 68, 'DOTATIONS AUX AMORTISSEMENTS', 6, 0, '2016-10-22 16:45:52', NULL),
   (56, 6, 1, 69, 'DOTATIONS AUX PROVISIONS', 6, 0, '2016-10-22 16:46:07', NULL),
   (57, 6, 1, 70, 'VENTES', 7, 0, '2016-10-22 16:47:00', NULL),
-  (58, 6, 1, 71, '71 SUBVENTIONS D\'EXPLOITATION', 7, 0, '2016-10-22 16:47:15', NULL),
+  (58, 6, 1, 71, 'SUBVENTIONS D\'EXPLOITATION', 7, 0, '2016-10-22 16:47:15', NULL),
   (59, 6, 1, 72, 'PRODUCTION IMMOBILISÉE', 7, 0, '2016-10-22 16:47:29', NULL),
   (60, 6, 1, 73, 'VARIATIONS DES STOCKS DE BIENS ET DE SERVICES PRODUITS', 7, 0, '2016-10-22 16:47:48', NULL),
   (61, 6, 1, 75, 'AUTRES PRODUITS', 7, 0, '2016-10-22 16:48:15', NULL),
@@ -316,8 +316,11 @@ INSERT INTO `account` (`id`, `type_id`, `enterprise_id`, `number`, `label`, `par
   (354, 5, 1, 66411011, 'Cotisations INPP', 352, 0, '2018-03-14 14:45:36', NULL),
   (355, 5, 1, 66411012, 'Cotisation ONEM', 352, 0, '2018-03-14 14:45:55', NULL),
   (357, 6, 1, 6141, 'Transport du Personnel', 48, 0, '2018-03-14 14:58:55', NULL),
-  (358, 5, 1, 61411010, 'Transport personnel', 357, 0, '2018-03-14 14:59:59', NULL);
-
+  (358, 5, 1, 61411010, 'Transport personnel', 357, 0, '2018-03-14 14:59:59', NULL),
+  (359, 6, 1, 24110010, 'Véhicules de transport', 22, 0, '2022-08-08 07:59:00', NULL),
+  (360, 6, 1, 24210010, 'Matériel informatique', 22, 0, '2022-08-08 07:59:01', NULL),
+  (361, 5, 1, 60112010, "Achat d'actifs", 200, 0, '2022-08-07 16:05:34', NULL),
+  (362, 4, 1, 70112010, "Vente d'actifs", 241, 0, '2022-08-07 16:05:35', NULL);
 
 -- set one hidden account 52121010 - BCDC USD
 UPDATE account set hidden = 1 WHERE id = 184;
@@ -1178,7 +1181,7 @@ INSERT INTO `inventory` (`enterprise_id`, `uuid`, `code`, `text`, `price`, `defa
  `note`, `locked`, `delay`, `purchase_interval`, `last_purchase`, `num_purchase`,`num_delivery`,
  `importance`,`manufacturer_brand`,`manufacturer_model`, `created_at`, `updated_at`) VALUES
 (1, @inv_moto, 'MOT.HCRF250RX', 'Honda CRF250RX', 8500.00, 1,
- 0x552843E2F9234CFABEA321C65E350921, 5, 250.0, 0, 1, 0, 1, 0,
+ 0x552843E2F9234CFABEA321C65E350921, 23, 250.0, 0, 1, 0, 1, 0,
  NULL, 0, 1.0, 0.0, NULL, 0, 0,
  NULL, 'Honda', 'CRF250RX', '2022-02-25 09:12:32', NULL);
 

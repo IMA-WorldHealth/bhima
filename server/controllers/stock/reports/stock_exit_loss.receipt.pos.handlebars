@@ -14,7 +14,7 @@
   <span class="text-capitalize">{{translate 'STOCK.DEPOT'}}</span> : <strong>{{details.depot_name}}</strong> <br>
   <span class="text-capitalize">{{translate 'FORM.LABELS.REFERENCE'}}</span> : <strong>{{details.document_reference}}</strong> <br>
   {{#if details.autoStockAccountingEnabled}}
-    <span class="text-capitalize">{{translate 'FORM.LABELS.VOUCHER'}}</span>: 
+    <span class="text-capitalize">{{translate 'FORM.LABELS.VOUCHER'}}</span>:
     {{#if details.voucher_reference}}
       <strong>{{details.voucher_reference}}</strong>
     {{else}}
@@ -48,7 +48,7 @@
     {{#each rows}}
       <tr>
         <td>({{code}}) {{text}}, {{label}}</td>
-        <td class="text-right">{{quantity}} ({{unit}})</td>
+        <td class="text-right">{{quantity}} ({{ translate _type }})</td>
       </tr>
     {{else}}
       {{> emptyTable columns=2}}

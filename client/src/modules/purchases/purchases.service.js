@@ -115,7 +115,7 @@ function PurchaseOrderService(
     return items.map((item) => {
       delete item.code;
       delete item.description;
-      delete item.unit;
+      delete item.unit_type;
       delete item._hasValidAccounts;
       delete item._initialised;
       delete item._invalid;
