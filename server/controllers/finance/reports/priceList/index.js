@@ -76,7 +76,7 @@ function lookupPriceList(uuid) {
 
   const inventorySql = `
     SELECT BUID(inventory.uuid) as uuid, inventory.code, inventory.text AS label, inventory.price,
-      iu.abbr AS unit,
+      IF(ISNULL(iu.token), iu.text, CONCAT("INVENTORY.UNITS.",iu.token,".TEXT")) AS unit_type,
       it.text AS type, ig.name AS groupName, BUID(ig.uuid) AS group_uuid, ig.tracking_expiration,
       ig.unique_item, inventory.consumable,inventory.locked, inventory.stock_min,
       inventory.stock_max, inventory.created_at AS timestamp, inventory.type_id, inventory.unit_id,

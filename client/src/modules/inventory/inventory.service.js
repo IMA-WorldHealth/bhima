@@ -3,12 +3,12 @@ angular.module('bhima.services')
 
 InventoryService.$inject = [
   'PrototypeApiService', 'InventoryGroupService', 'InventoryUnitService', 'InventoryTypeService', '$uibModal',
-  'FilterService', 'appcache', 'LanguageService', '$httpParamSerializer', 'HttpCacheService',
+  'FilterService', 'appcache', 'LanguageService', '$httpParamSerializer', 'HttpCacheService', '$translate',
 ];
 
 function InventoryService(
   Api, Groups, Units, Types, $uibModal, Filters,
-  AppCache, Languages, $httpParamSerializer, HttpCache,
+  AppCache, Languages, $httpParamSerializer, HttpCache, $translate,
 ) {
   const service = new Api('/inventory/metadata/');
 
@@ -63,7 +63,7 @@ function InventoryService(
    * the $http promise is resolved with a single JSON object, otherwise an array
    * of objects should be expected.
    *
-   * @param {String} uuid - the uuid of the account to fetch (optional).
+   * @param {String} uuid - the uuid of the inventory to fetch (optional).
    * @param {Object} options - options to be passed as query strings (optional).
    * @param {Boolean} cacheBust - ignore the cache and send the HTTP request directly
    *   to the server.

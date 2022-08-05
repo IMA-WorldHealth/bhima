@@ -82,7 +82,7 @@ function PurchaseOrderItemService(uuid) {
     this.description = inventoryItem.label;
     this.unit_price = inventoryItem.price;
     this.inventory_uuid = inventoryItem.uuid;
-    this.unit = inventoryItem.unit;
+    this.unit_type = inventoryItem.unit_type;
 
     // make sure the appropriate accounts are defined for inventory items
     this._hasValidAccounts = inventoryItem.stock_account && inventoryItem.cogs_account;

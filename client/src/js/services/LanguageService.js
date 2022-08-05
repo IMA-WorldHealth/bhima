@@ -2,13 +2,13 @@ angular.module('bhima.services')
 .service('LanguageService', LanguageService);
 
 LanguageService.$inject = [
-  '$http', '$q', 'util', 'AppCache', '$translate', 'tmhDynamicLocale', 'amMoment'
+  '$http', '$q', 'util', 'AppCache', '$translate', 'tmhDynamicLocale', 'amMoment',
 ];
 
 /**
  * Language Service
  *
- * A cross-controller service to manage lanuages throughout the application.
+ * A cross-controller service to manage languages throughout the application.
  * Supports getter and setter methods.
  * @constructor
  */

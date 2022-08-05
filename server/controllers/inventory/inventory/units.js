@@ -4,6 +4,7 @@
  */
 
 const db = require('../../../lib/db');
+const Forbidden = require('../../../lib/errors/Forbidden');
 
 // expose module's methods
 exports.list = list;
@@ -22,7 +23,6 @@ function details(identifier) {
   return getUnits(identifier);
 }
 
-
 /** create new inventory unit */
 function create(record) {
   const sql = 'INSERT INTO inventory_unit (abbr, text) VALUES (?, ?);';
@@ -36,19 +36,37 @@ function create(record) {
 
 /** update an existing inventory unit */
 function update(record, id) {
-  const sql = 'UPDATE inventory_unit SET ? WHERE id = ?;';
-  /*
-   * return a promise which can contains result or error which is caught
-   * in the main controller (inventory.js)
-   */
-  return db.exec(sql, [record, id])
-    .then(() => getUnits(id));
+  // Make sure we cannot update a pre-defined inventory unit
+  return getUnits(id)
+    .then((result) => {
+      const [dbRecord] = result;
+
+      if (dbRecord.token) {
+        throw new Forbidden('Cannot modify a predefined inventory_unit definition');
+      }
+
+      // Do the update
+      const sql = 'UPDATE inventory_unit SET ? WHERE id = ?;';
+      return db.exec(sql, [record, id]);
+    })
+    .then(() => {
+      return getUnits(id);
+    });
 }
 
 /** remove inventory unit */
 function remove(id) {
-  const sql = 'DELETE FROM inventory_unit WHERE id = ?;';
-  return db.exec(sql, [id]);
+  // Make sure we cannot delete a pre-defined inventory unit
+  return getUnits(id)
+    .then(result => {
+      const [dbRecord] = result;
+      if (dbRecord.token) {
+        throw new Forbidden('Cannot delete a predefined inventory_unit definition');
+      }
+
+      const sql = 'DELETE FROM inventory_unit WHERE id = ?;';
+      return db.exec(sql, [id]);
+    });
 }
 
 /**
@@ -56,6 +74,6 @@ function remove(id) {
  * @param {number} id - the unit id is optional
  */
 function getUnits(id) {
-  const sql = `SELECT id, abbr, text FROM inventory_unit ${id ? ' WHERE id = ?;' : ';'}`;
+  const sql = `SELECT id, abbr, text, token FROM inventory_unit ${id ? ' WHERE id = ?;' : ';'}`;
   return db.exec(sql, [id]);
 }
