@@ -53,7 +53,9 @@ async function inventoryChanges(req, res, next) {
 
     const inventorySql = `
       SELECT BUID(iv.uuid) AS uuid, iv.code, iv.text AS label, iv.created_at,
-      iv.updated_at, ivt.text AS type, ivu.text AS unit, ivg.name AS group_name
+      iv.updated_at, ivt.text AS type,
+      IF(ISNULL(ivu.token), ivu.text, CONCAT("INVENTORY.UNITS.",ivu.token,".TEXT")) AS unit_type,
+      ivg.name AS group_name
       FROM inventory iv
         JOIN inventory_type ivt ON iv.type_id = ivt.id
         JOIN inventory_group ivg ON iv.group_uuid = ivg.uuid
