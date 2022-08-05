@@ -29,7 +29,9 @@ async function stockExitLossReceipt(documentUuid, session, options) {
   const report = new ReportManager(template, session, optionReport);
 
   const sql = `
-    SELECT i.code, i.text, iu.text AS unit, BUID(m.document_uuid) AS document_uuid,
+    SELECT i.code, i.text,
+      IF(ISNULL(iu.token), iu.text, CONCAT("INVENTORY.UNITS.",iu.token,".TEXT")) AS unit_type,
+      BUID(m.document_uuid) AS document_uuid,
       m.quantity, m.unit_cost, (m.quantity * m.unit_cost) AS total , m.date, m.description,
       u.display_name AS user_display_name,
       dm.text AS document_reference,
@@ -55,6 +57,7 @@ async function stockExitLossReceipt(documentUuid, session, options) {
   if (!rows.length) {
     throw new NotFound('document not found');
   }
+
   const line = rows[0];
   const { key } = identifiers.STOCK_EXIT;
   data.enterprise = session.enterprise;

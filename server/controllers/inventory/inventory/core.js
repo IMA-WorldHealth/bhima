@@ -247,7 +247,9 @@ async function getItemsMetadata(params) {
   , inventory.price) AS price`;
 
   const sql = `
-   SELECT BUID(inventory.uuid) as uuid, inventory.code, inventory.text AS label, iu.abbr AS unit,
+   SELECT BUID(inventory.uuid) as uuid, inventory.code, inventory.text AS label,
+      IF(ISNULL(iu.token), iu.abbr, CONCAT("INVENTORY.UNITS.",iu.token,".ABBR")) AS unit_abbr,
+      IF(ISNULL(iu.token), iu.text, CONCAT("INVENTORY.UNITS.",iu.token,".TEXT")) AS unit_type,
       it.text AS type, ig.name AS groupName, BUID(ig.uuid) AS group_uuid, ig.unique_item,
       inventory.consumable,inventory.locked, inventory.stock_min,
       inventory.stock_max, inventory.created_at AS timestamp, inventory.type_id, inventory.unit_id,
@@ -344,7 +346,8 @@ function remove(_uuid) {
 async function getItemsMetadataById(uid, query = {}) {
   const sql = `
     SELECT BUID(i.uuid) as uuid, i.code, i.text AS label, i.price, i.is_asset,
-      iu.abbr AS unit, it.text AS type, ig.name AS groupName, BUID(ig.uuid) AS group_uuid,
+      IF(ISNULL(iu.token), iu.text, CONCAT("INVENTORY.UNITS.",iu.token,".TEXT")) AS unit_type,
+      it.text AS type, ig.name AS groupName, BUID(ig.uuid) AS group_uuid,
       ig.unique_item, i.consumable, i.locked, i.stock_min, i.sellable,
       i.stock_max, i.created_at AS timestamp, i.type_id, i.unit_id, i.unit_weight, i.unit_volume,
       ig.sales_account, i.default_quantity, i.delay, i.purchase_interval, i.importance,
