@@ -518,8 +518,8 @@ function createInventoryUnits(req, res, next) {
  */
 function updateInventoryUnits(req, res, next) {
   units.update(req.body, req.params.id)
-    .then((rows) => {
-      res.status(201).json(rows);
+    .then((result) => {
+      res.status(201).json(result);
     })
     .catch((error) => {
       core.errorHandler(error, req, res, next);

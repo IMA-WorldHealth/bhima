@@ -63,7 +63,7 @@ function InventoryService(
    * the $http promise is resolved with a single JSON object, otherwise an array
    * of objects should be expected.
    *
-   * @param {String} uuid - the uuid of the account to fetch (optional).
+   * @param {String} uuid - the uuid of the inventory to fetch (optional).
    * @param {Object} options - options to be passed as query strings (optional).
    * @param {Boolean} cacheBust - ignore the cache and send the HTTP request directly
    *   to the server.

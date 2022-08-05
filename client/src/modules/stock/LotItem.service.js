@@ -31,7 +31,7 @@ function LotItemService(uuid, $translate) {
     this.code = null;
     this.text = null;
     this.group_uuid = null;
-    this.unit = null;
+    this.unit_type = null;
 
     // lot properties
     this.lot_uuid = null;
@@ -133,7 +133,7 @@ function LotItemService(uuid, $translate) {
   Lot.prototype.hasInventoryInformation = function hasInventoryInformation() {
     const hasInfo = isUuid(this.inventory_uuid)
       && typeof this.code === 'string'
-      && typeof this.unit === 'string'
+      && typeof this.unit_type === 'string'
       && typeof this.text === 'string';
 
     toggleErrorMessage(!hasInfo, this._errors, ER_MISSING_INVENTORY);
@@ -364,7 +364,7 @@ function LotItemService(uuid, $translate) {
       this.text,
       this.label,
       this.quantity,
-      this.unit,
+      this.unit_type,
       this._quantity_available,
       this.expiration_date.toLocaleString(),
     ]
