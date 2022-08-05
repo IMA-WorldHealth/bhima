@@ -154,7 +154,6 @@ function PriceListController(
     return $httpParamSerializer(options);
   }
 
-
   // Add pricelist Item in a  modal
   function addItem(pricelist) {
     return $uibModal.open({

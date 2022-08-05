@@ -20,6 +20,7 @@
     "build:docker": "cross-env ./sh/docker-init.sh",
     "migrate": "cross-env ./sh/setup-migration-script.sh",
     "watch": "cross-env ./node_modules/.bin/gulp watch",
+    "check:lang": "cross-env node ./utilities/translation/tfcomp.js client/src/i18n/en client/src/i18n/fr",
     "release": "release-it --disable-metrics"
   },
   "repository": {

@@ -61,7 +61,7 @@ async function getShipmentDocument(req, res, next) {
     }
     shipment.destination_depot = destinationDepot;
 
-    // Compute totals
+    // Compute totals and fix units
     shipmentItems.forEach(row => {
       row.cost = row.quantity_sent * row.unit_price;
       row.weight = row.quantity_sent * row.unit_weight;
