@@ -1,5 +1,6 @@
 const {
-  _, ReportManager, Stock, identifiers, NotFound, db, barcode, STOCK_ENTRY_PURCHASE_TEMPLATE,
+  _, ReportManager, Stock, identifiers, NotFound, db, barcode,
+  STOCK_ENTRY_PURCHASE_TEMPLATE,
   getVoucherReferenceForStockMovement,
 } = require('../common');
 
@@ -37,8 +38,8 @@ async function stockEntryPurchaseReceipt(documentUuid, session, options) {
       JOIN inventory_group ig ON ig.uuid = i.group_uuid
       JOIN depot d ON d.uuid = m.depot_uuid
       JOIN user u ON u.id = m.user_id
-      JOIN purchase p ON p.uuid = m.entity_uuid
-      JOIN supplier s ON s.uuid = p.supplier_uuid
+      LEFT JOIN purchase p ON p.uuid = m.entity_uuid
+      LEFT JOIN supplier s ON s.uuid = p.supplier_uuid
       LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
       LEFT JOIN document_map dm2 ON dm2.uuid = m.entity_uuid
     WHERE m.is_exit = 0 AND m.flux_id = ${Stock.flux.FROM_PURCHASE} AND m.document_uuid = ?
@@ -52,7 +53,11 @@ async function stockEntryPurchaseReceipt(documentUuid, session, options) {
 
   const rows = results[0];
   if (!rows.length) {
-    throw new NotFound('document not found');
+    throw new NotFound(`document not found`);
+  }
+
+  if (rows[0].po_uuid === null) {
+    throw new NotFound(`Could not reconstruct document for old stock movement ${rows[0].document_reference}`);
   }
 
   const poUuid = rows[0].po_uuid;

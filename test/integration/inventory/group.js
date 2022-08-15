@@ -4,7 +4,7 @@ const helpers = require('../helpers');
 const shared = require('./shared');
 
 describe('(/inventory/groups) The inventory groups HTTP API', () => {
-  const NUM_GROUPS = 33;
+  const NUM_GROUPS = 34;
 
   it(`GET /inventory/groups finds ${NUM_GROUPS} inventory groups`, () => {
     return agent.get('/inventory/groups')

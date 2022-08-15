@@ -262,26 +262,75 @@ INSERT IGNORE INTO `currency` (`id`, `name`, `format_key`, `symbol`, `note`, `mi
   (2,'United States Dollars','usd','$',NULL,0.01),
   (3,'Euro','EUR','€',NULL,0.01);
 
-INSERT IGNORE INTO `inventory_type` VALUES (1,'Article',NULL,0),(2,'Assembly',NULL,0),(3,'Service',NULL,0);
-INSERT IGNORE INTO `inventory_unit` VALUES
-  (1,'Act', 'Act'),
-  (2,'Pal', 'Pallet'),
-  (3,'Pill', 'Pillule'),
-  (4,'Box', 'Box'),
-  (5,'Lot', 'Lot'),
-  (6,'amp', 'ampoule'),
-  (7,'bags', 'bags'),
-  (8,'btl', 'bouteille'),
-  (9,'cap', 'capsule'),
-  (10,'flc', 'flacon'),
-  (11,'jar', 'jar'),
-  (12,'ltr', 'littre'),
-  (13,'pce', 'piece'),
-  (14,'sch', 'sachet'),
-  (15,'tab', 'tablette'),
-  (16,'tub', 'tube'),
-  (17,'vial', 'vial'),
-  (18, 'unité', 'unité');
+INSERT IGNORE INTO `inventory_type` VALUES
+  (1,'Article',NULL,0),
+  (2,'Assembly',NULL,0),
+  (3,'Service',NULL,0);
+
+INSERT IGNORE INTO `inventory_unit` (`id`, `token`) VALUES
+  (1,  'ACTION'),
+  (2,  'AMPOULE'),
+  (3,  'ARTICLE'),
+  (4,  'B10'),
+  (5,  'B100'),
+  (6,  'B1000'),
+  (7,  'B12'),
+  (8,  'B120'),
+  (9,  'B2'),
+
+  (10, 'B20'),
+  (11, 'B200'),
+  (12, 'B25'),
+  (13, 'B250'),
+  (14, 'B30'),
+  (15, 'B4'),
+  (16, 'B5'),
+  (17, 'B50'),
+  (18, 'B500'),
+  (19, 'B6'),
+
+  (20, 'B60'),
+  (21, 'BAG'),
+  (22, 'BALE'),
+  (23, 'BARREL'),
+  (24, 'BOTTLE'),
+  (25, 'BOX'),
+  (26, 'BUCKET'),
+  (27, 'BUNDLE'),
+  (28, 'CAN'),
+  (29, 'CAPSULE'),
+
+  (30, 'CARTON'),
+  (31, 'COPY'),
+  (32, 'DAY'),
+  (33, 'EGG'),
+  (34, 'FLASK'),
+  (35, 'GLOVES'),
+  (36, 'INFUSION'),
+  (37, 'INJECTION'),
+  (38, 'JAR'),
+  (39, 'KIT'),
+
+  (40, 'LOT'),
+  (41, 'PACKAGE'),
+  (42, 'PACKET'),
+  (43, 'PAIR'),
+  (44, 'PALLET'),
+  (45, 'PIECE'),
+  (46, 'PILL'),
+  (47, 'POUCH'),
+  (48, 'REAM'),
+  (49, 'ROLL'),
+
+  (50, 'SACK'),
+  (51, 'SET'),
+  (52, 'SUPPOSITORY'),
+  (53, 'SYRUP'),
+  (54, 'TABLET'),
+  (55, 'TREATMENT'),
+  (56, 'TUBE'),
+  (57, 'UNIT'),
+  (58, 'VIAL');
 
 -- fonctions
 INSERT IGNORE INTO `fonction` VALUES
@@ -289,8 +338,8 @@ INSERT IGNORE INTO `fonction` VALUES
   (2,'Medecin Directeur');
 
 INSERT IGNORE INTO `staffing_function_indice` (`uuid`, `value`, `fonction_id`) VALUES
-(HUID('9ee06e4a-7b59-48e6-812c-c0f8a00cf7d3'), 60.0000, 1),
-(HUID(uuid()), 125.0000, 2);
+  (HUID('9ee06e4a-7b59-48e6-812c-c0f8a00cf7d3'), 60.0000, 1),
+  (HUID(uuid()), 125.0000, 2);
 
 -- transaction type
 INSERT IGNORE INTO `transaction_type` (`id`, `text`, `type`, `fixed`) VALUES
