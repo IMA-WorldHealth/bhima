@@ -13,46 +13,47 @@ function InventoryLogModalController(data, Instance, Inventory, LanguageService)
     vm.inventory = inventory;
   });
 
-  Inventory.inventoryLog(data.uuid).then(logs => {
-    vm.logs = [];
-    logs.forEach(log => {
-      const { action, last, current } = JSON.parse(log.text);
-      formatKeys(last);
-      formatKeys(current);
+  Inventory.inventoryLog(data.uuid)
+    .then(logs => {
+      vm.logs = [];
+      logs.forEach(log => {
+        const { action, last, current } = JSON.parse(log.text);
+        formatKeys(last);
+        formatKeys(current);
 
-      if (action === 'CREATION') {
-        vm.logs.push({
-          value : 'FORM.INFO.CREATED',
-          date : log.log_timestamp,
-          userName : log.userName,
-        });
-      } else {
-        const updatedKeys = Object.keys(current);
-        updatedKeys.forEach(col => {
-          if (col === 'tags') {
-            const oldTags = last[col];
-            const newTags = current[col];
-            if (oldTags.length === newTags.length) {
-              if (newTags.length === 0) {
-                return;
-              }
-              if (JSON.stringify(oldTags) === JSON.stringify(newTags)) {
-                return;
+        if (action === 'CREATION') {
+          vm.logs.push({
+            value : 'FORM.INFO.CREATED',
+            date : log.log_timestamp,
+            userName :  log.userName,
+          });
+        } else {
+          const updatedKeys = Object.keys(current);
+          updatedKeys.forEach(col => {
+            if (col === 'tags') {
+              const oldTags = last[col];
+              const newTags = current[col];
+              if (oldTags.length === newTags.length) {
+                if (newTags.length === 0) {
+                  return;
+                }
+                if (JSON.stringify(oldTags) === JSON.stringify(newTags)) {
+                  return;
+                }
               }
             }
-          }
-          vm.logs.push({
-            col : Inventory.columnsMap(col),
-            value : getValue(last, current, col),
-            date : log.log_timestamp,
-            userName : log.userName,
-            update : true,
+            vm.logs.push({
+              col : Inventory.columnsMap(col),
+              value : getValue(last, current, col),
+              date : log.log_timestamp,
+              userName : log.userName,
+              update : true,
+            });
           });
-        });
-      }
-    });
+        }
+      });
 
-  });
+    });
 
   function formatKeys(record) {
     const removables = ['group_uuid', 'type_id', 'unit_id'];
@@ -87,8 +88,8 @@ function InventoryLogModalController(data, Instance, Inventory, LanguageService)
     }
 
     if (key === 'inventoryUnit') {
-      result.from = last.unit;
-      result.to = current.inventoryUnit.text;
+      result.from = last.unit_type;
+      result.to = current.inventoryUnit.unit_type;
       return result;
     }
 

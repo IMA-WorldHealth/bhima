@@ -33,7 +33,8 @@ function InventoryUnitsController(InventoryUnit, Notify, Modal) {
           Notify.success('FORM.INFO.CREATE_SUCCESS');
         }
       })
-      .then(startup).catch(Notify.handleError);
+      .then(startup)
+      .catch(Notify.handleError);
   }
 
   /** edit inventory unit */
@@ -41,8 +42,12 @@ function InventoryUnitsController(InventoryUnit, Notify, Modal) {
     const request = { action : 'edit', identifier : id };
 
     Modal.openInventoryUnitActions(request)
-      .then(() => {
-        Notify.success('FORM.INFO.UPDATE_SUCCESS');
+      .then((res) => {
+        if (res) {
+          Notify.success('FORM.INFO.UPDATE_SUCCESS');
+        } else {
+          Notify.danger('INVENTORY.CANNOT_UPDATE_PREDEFINED_UNIT', 6000);
+        }
       })
       .then(startup)
       .catch(Notify.handleError);
@@ -62,7 +67,15 @@ function InventoryUnitsController(InventoryUnit, Notify, Modal) {
           .then(() => {
             Notify.success('FORM.INFO.DELETE_SUCCESS');
             startup();
-
+          })
+          .catch((error) => {
+            const { data } = error;
+            if (data.code === 'ERRORS.FORBIDDEN') {
+              Notify.danger('INVENTORY.CANNOT_DELETE_PREDEFINED_UNIT', 6000);
+            } else {
+              return error;
+            }
+            return null;
           })
           .catch(Notify.handleError);
       });
@@ -72,7 +85,7 @@ function InventoryUnitsController(InventoryUnit, Notify, Modal) {
   /** initializes the view */
   function startup() {
     // get inventory units
-    InventoryUnit.read()
+    InventoryUnit.getUnits()
       .then((list) => {
         vm.unitList = list;
       })

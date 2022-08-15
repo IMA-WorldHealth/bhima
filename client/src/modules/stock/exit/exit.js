@@ -82,10 +82,11 @@ function StockExitController(
       cellTemplate : 'modules/stock/exit/templates/quantity.tmpl.html',
       aggregationType : uiGridConstants.aggregationTypes.sum,
     }, {
-      field : 'unit',
+      field : 'unit_type',
       width : 75,
       displayName : 'TABLE.COLUMNS.UNIT',
       headerCellFilter : 'translate',
+      cellFilter : 'translate',
     }, {
       field : 'available_lot',
       width : 150,

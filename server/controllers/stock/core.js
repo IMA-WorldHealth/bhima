@@ -207,7 +207,8 @@ function getLots(sqlQuery, parameters, finalClause = '', orderBy = '') {
         BUID(l.uuid) AS uuid, l.label, l.unit_cost, l.expiration_date,
         BUID(l.inventory_uuid) AS inventory_uuid, i.delay,
         (SELECT MIN(sm.date) FROM stock_movement sm WHERE sm.lot_uuid = l.uuid) AS entry_date,
-        i.code, i.text, BUID(m.depot_uuid) AS depot_uuid, d.text AS depot_text, iu.text AS unit_type,
+        i.code, i.text, BUID(m.depot_uuid) AS depot_uuid, d.text AS depot_text,
+        IF(ISNULL(iu.token), iu.text, CONCAT("INVENTORY.UNITS.",iu.token,".TEXT")) AS unit_type,
         BUID(ig.uuid) AS group_uuid, ig.name AS group_name,
         dm.text AS documentReference, ser.name AS service_name, sv.wac
       FROM lot l
@@ -272,7 +273,7 @@ async function getAssets(params) {
       BUID(m.depot_uuid) AS depot_uuid,
       i.is_asset, i.manufacturer_brand, i.manufacturer_model,
       m.date AS entry_date,
-      iu.text AS unit_type,
+      IF(ISNULL(iu.token), iu.text, CONCAT("INVENTORY.UNITS.",iu.token,".TEXT")) AS unit_type,
       ig.name AS group_name, ig.tracking_expiration, ig.tracking_consumption,
       dm.text AS documentReference,
       CONCAT('LT', LEFT(HEX(l.uuid), 8)) AS barcode,
@@ -389,7 +390,7 @@ async function getLotsDepot(depotUuid, params, finalClause) {
       i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
       i.is_asset, i.manufacturer_brand, i.manufacturer_model,
       m.date AS entry_date, i.purchase_interval, i.delay,
-      iu.text AS unit_type,
+      IF(ISNULL(iu.token), iu.text, CONCAT("INVENTORY.UNITS.",iu.token,".TEXT")) AS unit_type,
       ig.name AS group_name, ig.tracking_expiration, ig.tracking_consumption,
       dm.text AS documentReference, t.name AS tag_name, t.color, sv.wac,
       CONCAT('LT', LEFT(HEX(l.uuid), 8)) AS barcode
@@ -564,7 +565,8 @@ async function getLotsMovements(depotUuid, params) {
       BUID(m.depot_uuid) AS depot_uuid, m.is_exit, m.date, BUID(m.document_uuid) AS document_uuid,
       m.flux_id, BUID(m.entity_uuid) AS entity_uuid, m.unit_cost,
       f.label AS flux_label, i.delay, BUID(m.invoice_uuid) AS invoice_uuid, idm.text AS invoice_reference,
-      iu.text AS unit_type, dm.text AS documentReference, sv.wac
+      IF(ISNULL(iu.token), iu.text, CONCAT("INVENTORY.UNITS.",iu.token,".TEXT")) AS unit_type,
+      dm.text AS documentReference, sv.wac
     FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
@@ -917,7 +919,8 @@ async function getInventoryQuantityAndConsumption(params) {
       (SELECT MIN(sm.date) FROM stock_movement sm WHERE sm.lot_uuid = l.uuid) AS entry_date,
       BUID(i.uuid) AS inventory_uuid, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
       i.purchase_interval, i.delay, MAX(m.created_at) AS last_movement_date,
-      iu.text AS unit_type, ig.tracking_consumption, ig.tracking_expiration,
+      IF(ISNULL(iu.token), iu.text, CONCAT("INVENTORY.UNITS.",iu.token,".TEXT")) AS unit_type,
+      ig.tracking_consumption, ig.tracking_expiration,
       BUID(ig.uuid) AS group_uuid, ig.name AS group_name,
       dm.text AS documentReference, d.enterprise_id,
       t.name AS tag_name, t.color AS tag_color, sv.wac
@@ -1167,7 +1170,8 @@ async function getInventoryMovements(params) {
       BUID(l.inventory_uuid) AS inventory_uuid,
       (SELECT MIN(sm.date) FROM stock_movement sm WHERE sm.lot_uuid = l.uuid) AS entry_date,
       i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
-      i.purchase_interval, i.delay, iu.text AS unit_type,
+      i.purchase_interval, i.delay,
+      IF(ISNULL(iu.token), iu.text, CONCAT("INVENTORY.UNITS.",iu.token,".TEXT")) AS unit_type,
       dm.text AS documentReference, flux.label as flux, sv.wac,
       COALESCE(em.text, dm2.text, '') as entityReference
     FROM stock_movement m

@@ -6,7 +6,7 @@ InventoryListController.$inject = [
   'InventoryService', 'NotifyService', 'uiGridConstants',
   'ModalService', '$state', 'FilterService', 'appcache',
   'GridColumnService', 'GridStateService', 'GridExportService',
-  'LanguageService', 'SessionService', '$rootScope',
+  'LanguageService', 'SessionService', '$rootScope', '$translate',
 ];
 
 /**
@@ -15,7 +15,7 @@ InventoryListController.$inject = [
  */
 function InventoryListController(
   Inventory, Notify, uiGridConstants, Modal, $state, Filters, AppCache, Columns, GridState,
-  GridExport, Languages, Session, $rootScope,
+  GridExport, Languages, Session, $rootScope, $translate,
 ) {
 
   const vm = this;
@@ -100,9 +100,10 @@ function InventoryListController(
     displayName : 'FORM.LABELS.TYPE',
     headerCellFilter : 'translate',
   }, {
-    field : 'unit',
+    field : 'unit_type',
     displayName : 'FORM.LABELS.UNIT',
     headerCellFilter : 'translate',
+    cellTemplate : 'modules/stock/inventories/templates/unit.tmpl.html',
   }, {
     field : 'unit_weight',
     displayName : 'FORM.LABELS.WEIGHT',
