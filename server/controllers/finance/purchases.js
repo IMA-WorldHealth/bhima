@@ -141,7 +141,7 @@ function lookupPurchaseOrder(uid) {
       sql = `
         SELECT BUID(pi.uuid) AS uuid, pi.quantity, pi.unit_price, pi.total,
           BUID(pi.inventory_uuid) AS inventory_uuid, i.text, i.code,
-          iu.text as unit
+          IF(ISNULL(iu.token), iu.text, CONCAT("INVENTORY.UNITS.",iu.token,".TEXT")) AS unit_type
         FROM purchase_item AS pi
           JOIN inventory AS i ON i.uuid = pi.inventory_uuid
           JOIN inventory_unit AS iu ON iu.id = i.unit_id

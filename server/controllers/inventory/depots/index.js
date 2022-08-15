@@ -131,7 +131,8 @@ function getLotsInStockForDate(depotUuid, date) {
         lot.label,
         inventory_group.tracking_expiration,
         inventory_group.tracking_consumption,
-        inventory_unit.text AS unit
+        IF(ISNULL(inventory_unit.token), inventory_unit.text, CONCAT("INVENTORY.UNITS.",inventory_unit.token,".TEXT"))
+          AS unit_type
       FROM (
         SELECT
           sm.lot_uuid,

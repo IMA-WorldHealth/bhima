@@ -62,10 +62,11 @@ function PurchaseOrderController(
     displayName : 'TABLE.COLUMNS.DESCRIPTION',
     headerCellFilter : 'translate',
   }, {
-    field : 'unit',
+    field : 'unit_type',
     width : 100,
     displayName : 'TABLE.COLUMNS.UNIT',
     headerCellFilter : 'translate',
+    cellFilter : 'translate',
   }, {
     field : 'quantity',
     width : 100,

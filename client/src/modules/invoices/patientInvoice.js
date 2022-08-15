@@ -68,7 +68,7 @@ function PatientInvoiceController(
       field : 'transaction_price',
       displayName : 'FORM.LABELS.UNIT_PRICE',
       headerCellFilter : 'translate',
-      cellTemplate : 'modules/invoices/templates/grid/unit.tmpl.html',
+      cellTemplate : 'modules/invoices/templates/grid/unit_price.tmpl.html',
       type : 'number',
     }, {
       field : 'amount',
