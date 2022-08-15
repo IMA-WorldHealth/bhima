@@ -5,7 +5,8 @@ const shared = require('./shared');
 
 describe('(/inventory/units) The inventory units HTTP API', () => {
 
-  const NUM_UNITS = 18;
+  const NUM_UNITS = 59; // Should be 58, but a new one is created in import test
+
   it(`GET /inventory/units finds ${NUM_UNITS} inventory units`, () => {
     return agent.get('/inventory/units')
       .then(res => {
@@ -24,6 +25,27 @@ describe('(/inventory/units) The inventory units HTTP API', () => {
         expect(res.body.id).to.be.equal(shared.inventoryUnit.id);
       })
       .catch(helpers.handler);
+  });
+
+  // Fail to update predefined inventory unit
+  it('PUT /inventory/units/:id update fails with an predefined inventory unit', () => {
+    return agent.put(`/inventory/units/1`)
+      .send({ text : 'Changed text!' })
+      .then(res => {
+        expect(res).to.have.status(403);
+        expect(res.body.code).to.be.equal('ERRORS.FORBIDDEN');
+        expect(res.body.description).to.be.equal('Cannot modify a predefined inventory_unit definition');
+      });
+  });
+
+  // Fail to delete predefined inventory unit
+  it('DELETE /inventory/units/:id update fails with an predefined inventory unit', () => {
+    return agent.delete(`/inventory/units/1`)
+      .then(res => {
+        expect(res).to.have.status(403);
+        expect(res.body.code).to.be.equal('ERRORS.FORBIDDEN');
+        expect(res.body.description).to.be.equal('Cannot delete a predefined inventory_unit definition');
+      });
   });
 
   // update inventory units
