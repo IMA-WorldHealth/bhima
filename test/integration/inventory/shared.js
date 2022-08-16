@@ -32,7 +32,7 @@ const inventoryType = {
   text : '[Test] Article Laboratoire',
 };
 
-const updateType = {
+const updateInventoryType = {
   text : '[Test] Article Chirurgie',
   description : 'Description de l\'article chirurgie',
   is_predefined : 0,
@@ -41,18 +41,20 @@ const updateType = {
 const inventoryUnit = {
   text : '[Test] Comprimés',
   abbr : 'TC',
+  token : null,
 };
 
 const updateUnit = {
   text : '[Test] Gellule',
   abbr : 'TG',
+  token : null,
 };
 
 module.exports = {
   inventoryGroup,
   updateGroup,
   inventoryType,
-  updateType,
+  updateInventoryType,
   inventoryUnit,
   updateUnit,
 };
