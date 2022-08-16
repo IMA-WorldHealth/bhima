@@ -216,10 +216,6 @@ function CreateShipmentController(
       lot.container_label = last.label;
     }
 
-    lot.unit_type = lot.unit;
-    // NOTE: We seem to handle the name of 'unit' differently in different parts of BHIMA!
-    //       In some queries, we return it as 'unit'.  In others, 'unit_type'
-
     vm.stockForm.configureItem(row, lot);
     vm.validateItems();
   };

@@ -466,7 +466,7 @@ exports.listInTransitInventories = async (req, res, next) => {
       BUID(l.inventory_uuid) AS inventory_uuid,
       BUID(sh.origin_depot_uuid) AS depot_uuid,
       i.purchase_interval, i.delay, i.is_asset,
-      iu.text AS unit_type,
+      IF(ISNULL(iu.token), iu.text, CONCAT("INVENTORY.UNITS.",iu.token,".TEXT")) AS unit_type,
       ig.name AS group_name, ig.tracking_expiration, ig.tracking_consumption,
       CONCAT('LT', LEFT(HEX(l.uuid), 8)) AS barcode
     FROM shipment sh
@@ -651,7 +651,7 @@ async function lookup(identifier) {
       sh.anticipated_delivery_date, sh.date_ready_for_shipment,
       sh.receiver, u.display_name AS created_by,
       BUID(shi.lot_uuid) AS lot_uuid, shi.quantity_sent AS quantity,
-      iu.text AS unit_type,
+      IF(ISNULL(iu.token), iu.text, CONCAT("INVENTORY.UNITS.",iu.token,".TEXT")) AS unit_type,
       IF(shi.unit_weight > 0, shi.unit_weight, inv.unit_weight) as unit_weight,
       BUID(sc.uuid) AS container_uuid, sc.label AS container_label
     FROM shipment sh
@@ -766,7 +766,7 @@ async function getPackingList(identifier) {
       IF(shi.unit_weight > 0, shi.unit_weight, i.unit_weight) as unit_weight,
       l.label AS lot_label, sv.wac AS unit_price,
       i.code AS inventory_code, i.text AS inventory_label, i.is_asset,
-      iu.text AS unit_type,
+      IF(ISNULL(iu.token), iu.text, CONCAT("INVENTORY.UNITS.",iu.token,".TEXT")) AS unit_type,
       sc.label AS container_label,
       dm.text AS reference
     FROM shipment sh

@@ -13,7 +13,7 @@ describe('LotItemService', () => {
     expiration_date : '2023-04-29T23:00:00.000Z',
     is_expired : 0,
     label : 'ME33',
-    unit : 'Ces',
+    unit_type : 'Ces',
     tracking_expiration : 1,
     tracking_consumption : 1,
   }, {
@@ -26,7 +26,7 @@ describe('LotItemService', () => {
     expiration_date : '2022-06-06T23:00:00.000Z',
     is_expired : 0,
     label : '9G15',
-    unit : 'Ces',
+    unit_type : 'Ces',
     tracking_expiration : 1,
     tracking_consumption : 1,
   }, {
@@ -39,7 +39,7 @@ describe('LotItemService', () => {
     expiration_date : '2023-03-06T23:00:00.000Z',
     is_expired : 0,
     label : '200911',
-    unit : 'ml',
+    unit_type : 'ml',
     tracking_expiration : 1,
     tracking_consumption : 1,
   }, {
@@ -52,7 +52,7 @@ describe('LotItemService', () => {
     expiration_date : '2025-10-29T23:00:00.000Z',
     is_expired : 1,
     label : '2010004',
-    unit : 'piece',
+    unit_type : 'piece',
     tracking_expiration : 0,
     tracking_consumption : 1,
   }];

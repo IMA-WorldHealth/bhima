@@ -2,12 +2,12 @@ angular.module('bhima.controllers')
   .controller('InventoryListActionsModalController', InventoryListActionsModalController);
 
 InventoryListActionsModalController.$inject = [
-  'InventoryService', 'NotifyService', '$uibModalInstance',
+  'InventoryService', 'NotifyService', '$uibModalInstance', '$translate',
   '$state', 'util', 'appcache', 'SessionService', '$rootScope', 'params',
 ];
 
 function InventoryListActionsModalController(
-  Inventory, Notify, Instance, $state,
+  Inventory, Notify, Instance, $state, $translate,
   util, AppCache, SessionService, $rootScope, params,
 ) {
   const vm = this;
@@ -132,7 +132,7 @@ function InventoryListActionsModalController(
       .catch(Notify.handleError);
 
     // Inventory Unit
-    Inventory.Units.read()
+    Inventory.Units.getUnits()
       .then((units) => {
         vm.units = units;
       })
