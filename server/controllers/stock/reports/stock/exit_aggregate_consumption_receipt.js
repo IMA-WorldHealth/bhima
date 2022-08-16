@@ -28,7 +28,8 @@ async function stockExitAggregateConsumptionReceipt(documentUuid, session, optio
       m.quantity, m.unit_cost, (m.quantity * m.unit_cost) AS total , m.date, m.description,
       u.display_name AS user_display_name,
       l.label, l.expiration_date, d.text AS depot_name,
-      dm.text as document_reference, ig.tracking_expiration, iu.text AS unit,
+      dm.text as document_reference, ig.tracking_expiration,
+      IF(ISNULL(iu.token), iu.text, CONCAT("INVENTORY.UNITS.",iu.token,".TEXT")) AS unit_type,
       IF(ig.tracking_expiration = 1, TRUE, FALSE) as expires
     FROM stock_movement m
       JOIN lot l ON l.uuid = m.lot_uuid
@@ -53,6 +54,7 @@ async function stockExitAggregateConsumptionReceipt(documentUuid, session, optio
   if (!rows.length) {
     throw new NotFound('document not found');
   }
+
   const line = rows[0];
   const { key } = identifiers.STOCK_EXIT;
 

@@ -29,12 +29,12 @@ describe('(/inventory/types) The inventory types http API', () => {
   // update inventory type
   it('PUT /inventory/types/:id updates an existing inventory type', () => {
     return agent.put(`/inventory/types/${shared.inventoryType.id}`)
-      .send(shared.updateType)
+      .send(shared.updateInventoryType)
       .then(res => {
         const type = res.body[0];
-        shared.updateType.id = shared.inventoryType.id;
-        expect(type).to.contain.all.keys(Object.keys(shared.updateType));
-        expect(type).to.be.deep.equals(shared.updateType);
+        shared.updateInventoryType.id = shared.inventoryType.id;
+        expect(type).to.contain.all.keys(Object.keys(shared.updateInventoryType));
+        expect(type).to.be.deep.equals(shared.updateInventoryType);
       })
       .catch(helpers.handler);
   });
@@ -45,7 +45,7 @@ describe('(/inventory/types) The inventory types http API', () => {
       .then(res => {
         const type = res.body[0];
         expect(type).to.contain.all.keys(Object.keys(shared.inventoryType));
-        expect(type).to.be.deep.equals(shared.updateType);
+        expect(type).to.be.deep.equals(shared.updateInventoryType);
         helpers.api.listed(res, 1);
       })
       .catch(helpers.handler);
