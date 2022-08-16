@@ -446,6 +446,7 @@ async function movementsFromMobile(params) {
     }).map(item => {
       const bhimaLot = pickLot(item.lotUuid);
       return {
+        unique_line : item.uuid,
         uuid : item.lotUuid,
         inventory_uuid : bhimaLot.inventory_uuid,
         description : item.description,
@@ -475,6 +476,7 @@ async function movementsFromMobile(params) {
     date : mobile.date,
     lots : mobileLots.map(item => {
       return {
+        unique_line : item.uuid,
         uuid : item.lotUuid,
         inventory_uuid : item.inventoryUuid,
         description : item.description,
@@ -669,9 +671,11 @@ async function normalMovement(document, params, metadata) {
   parameters.invoice_uuid = parameters.invoice_uuid ? db.bid(parameters.invoice_uuid) : null;
 
   parameters.lots.forEach((lot) => {
-    createMovementQuery = 'INSERT INTO stock_movement SET ?';
+    // Ignore duplicated value which can come from mobile during sync
+    // MySQL will ignore duplicated values from mobile in case they are
+    createMovementQuery = 'INSERT IGNORE INTO stock_movement SET ?';
     createMovementObject = {
-      uuid : db.bid(uuid()),
+      uuid : db.bid(lot.unique_line || uuid()),
       lot_uuid : db.bid(lot.uuid),
       depot_uuid : db.bid(parameters.depot_uuid),
       document_uuid : db.bid(document.uuid),
@@ -740,7 +744,7 @@ async function depotMovement(document, params, metadata) {
       entity_uuid : entityUuid,
       is_exit : isExit,
       flux_id : fluxId,
-      uuid : db.bid(uuid()),
+      uuid : db.bid(lot.unique_line || uuid()),
       lot_uuid : db.bid(lot.uuid),
       document_uuid : db.bid(document.uuid),
       quantity : lot.quantity,
@@ -751,8 +755,9 @@ async function depotMovement(document, params, metadata) {
       period_id : parameters.period_id,
       stock_requisition_uuid : parameters.stock_requisition_uuid,
     };
-
-    transaction.addQuery('INSERT INTO stock_movement SET ?', [record]);
+    // Ignore duplicated value which can come from mobile during sync
+    // MySQL will ignore duplicated values from mobile in case they are
+    transaction.addQuery('INSERT IGNORE INTO stock_movement SET ?', [record]);
   });
 
   if (isExit) {
