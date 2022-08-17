@@ -264,7 +264,7 @@ BEGIN
 
   /*
     =======================================================================
-    check if the inventory exist
+    check if the inventory exists
     =======================================================================
 
     if the inventory exists we will use it, if not we will create a new one
@@ -288,7 +288,7 @@ BEGIN
 
     /* call the procedure ImportInventory for creating a new inventory and its dependencies */
     CALL ImportInventory(enterpriseId, inventoryGroupName, inventoryCode, inventoryText, inventoryType, inventoryUnit, inventoryUnitCost,
-                         inventoryConsumable, inventoryIsAsset, inventoryBrand, inventoryModel);
+                         inventoryConsumable, inventoryIsAsset, inventoryBrand, inventoryModel, '');
 
     /* set the inventory uuid */
     SET inventoryUuid = (SELECT `uuid` FROM inventory WHERE `text` = inventoryText OR `code` = inventoryCode LIMIT 1);

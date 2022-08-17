@@ -67,7 +67,7 @@ describe('(/inventory/import) The inventory import http API', () => {
     return agent.post('/inventory/import')
       .attach('file', fs.createReadStream(invalidFile))
       .then(res => {
-        helpers.api.errored(res, 400, 'ERRORS.BAD_DATA_FORMAT');
+        helpers.api.errored(res, 400, 'INVENTORY.INVENTORY_IMPORT_BAD_HEADERS');
       })
       .catch(helpers.handler);
   });
