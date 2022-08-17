@@ -156,6 +156,9 @@ function InventoryService(
   }, {
     key : 'manufacturer_model',
     label : 'FORM.LABELS.MANUFACTURER_MODEL',
+  }, {
+    key : 'tags',
+    label : 'TAG.TAGS',
   },
   ]);
 
