@@ -36,13 +36,18 @@ function ImportInventoriesModalController(Instance, Inventory, Upload, Notify) {
 
     // upload the file to the server
     Upload.upload(params)
-      .then(handleSuccess, Notify.handleError, handleProgress);
+      .then(handleSuccess, handleError, handleProgress);
+
+    function handleError(err) {
+      // Let the caller handle the error
+      Instance.close(false);
+      Notify.handleError(err);
+    }
 
     // success upload handler
     function handleSuccess() {
       vm.uploadState = 'uploaded';
-      Notify.success('INVENTORY.UPLOAD_SUCCESS');
-      Instance.close();
+      Instance.close(true);
     }
 
     // progress handler
