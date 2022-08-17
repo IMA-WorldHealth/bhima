@@ -29,6 +29,7 @@ function ShipmentModalService(Modal, Receipts) {
 
   service.openSearchShipment = openSearchShipment;
   service.openShipmentDocument = openShipmentDocument;
+  service.openShipmentGoodsReceivedNote = openShipmentGoodsReceivedNote;
   service.openShipmentManifest = openShipmentManifest;
   service.openShipmentBarcode = openShipmentBarcode;
 
@@ -93,6 +94,12 @@ function ShipmentModalService(Modal, Receipts) {
   function openShipmentDocument(documentUuid, notifyCreated) {
     const opts = { title : 'SHIPMENT.SHIPMENT_DOCUMENT', notifyCreated, renderer : Receipts.renderer };
     const promise = Receipts.shipmentDocument(documentUuid, { renderer : opts.renderer });
+    return ReceiptFactory(promise, opts);
+  }
+
+  function openShipmentGoodsReceivedNote(documentUuid, notifyCreated) {
+    const opts = { title : 'SHIPMENT.GOODS_RECEIVED_NOTE', notifyCreated, renderer : Receipts.renderer };
+    const promise = Receipts.shipmentGoodsReceivedNote(documentUuid, { renderer : opts.renderer });
     return ReceiptFactory(promise, opts);
   }
 

@@ -31,6 +31,7 @@ function ShipmentRegistryController(
   vm.onRemoveFilter = onRemoveFilter;
   vm.search = search;
   vm.shipmentDocument = shipmentDocument;
+  vm.shipmentGoodsReceivedNote = shipmentGoodsReceivedNote;
   vm.shipmentManifest = shipmentManifest;
   vm.getShipmentBarcode = getShipmentBarcode;
   vm.gotoStockEntry = gotoStockEntry;
@@ -185,6 +186,10 @@ function ShipmentRegistryController(
 
   function shipmentDocument(uuid) {
     return ShipmentModal.openShipmentDocument(uuid);
+  }
+
+  function shipmentGoodsReceivedNote(uuid) {
+    return ShipmentModal.openShipmentGoodsReceivedNote(uuid);
   }
 
   function shipmentManifest(uuid) {

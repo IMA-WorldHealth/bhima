@@ -20,6 +20,7 @@
     },
     "AMOUNT"          : "Montant",
     "APPROVISIONING"  : "Quantité à commander",
+    "ARTICLE_DESCRIPTION": "Description de l'article",
     "AT_LEAST_ONE_CHECKED" : "Au moins une option doit être coché",
     "BY_INVENTORY"    : "Par produits",
     "BY_SERVICE"      : "Par services",

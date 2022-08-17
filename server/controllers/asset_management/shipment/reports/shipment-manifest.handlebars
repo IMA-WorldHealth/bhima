@@ -114,7 +114,8 @@
       <thead>
         <tr>
           {{#if shipment.hasContainers}}
-            <th colspan="3">{{translate 'SHIPMENT.CONTAINER'}}</th>
+            <th>{{translate 'SHIPMENT.CONTAINER'}}</th>
+            <th colspan="2">{{translate 'FORM.LABELS.DESCRIPTION'}}</th>
             <th>{{translate 'SHIPMENT.CONTAINER_TYPE'}}</th>
             <th class="text-right">{{translate 'SHIPMENT.CONTAINER_WEIGHT_EMPTY'}}</th>
             <th class="text-right">{{translate 'SHIPMENT.CONTAINER_WEIGHT_PACKED'}}</th>
@@ -134,7 +135,8 @@
         {{#each contents}}
           {{#if ../shipment.hasContainers}}
           <tr>
-            <td colspan="3">{{containerName}}</td>
+            <td>{{containerName}}</td>
+            <td colspan="2">{{containerDescription}}</td>
             <td>{{translate containerType }}</td>
             <td class="text-right">{{containerEmptyWeight}}</td>
             <td class="text-right">{{containerWeight}}</td>

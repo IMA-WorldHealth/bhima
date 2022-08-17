@@ -2753,6 +2753,7 @@ DROP TABLE IF EXISTS `shipment_container`;
 CREATE TABLE `shipment_container` (
   `uuid`               BINARY(16) NOT NULL,
   `label`              VARCHAR(100) NOT NULL,
+  `description`        TEXT NULL,
   `shipment_uuid`      BINARY(16) NOT NULL,
   `container_type_id`  TINYINT(3) UNSIGNED NOT NULL,
   `weight`             FLOAT NOT NULL DEFAULT 0,
