@@ -6,7 +6,7 @@ InventoryListController.$inject = [
   'InventoryService', 'NotifyService', 'uiGridConstants',
   'ModalService', '$state', 'FilterService', 'appcache',
   'GridColumnService', 'GridStateService', 'GridExportService',
-  'LanguageService', 'SessionService', '$rootScope',
+  'LanguageService', 'SessionService', '$rootScope', '$translate',
 ];
 
 /**
@@ -15,7 +15,7 @@ InventoryListController.$inject = [
  */
 function InventoryListController(
   Inventory, Notify, uiGridConstants, Modal, $state, Filters, AppCache, Columns, GridState,
-  GridExport, Languages, Session, $rootScope,
+  GridExport, Languages, Session, $rootScope, $translate,
 ) {
 
   const vm = this;
@@ -193,7 +193,7 @@ function InventoryListController(
     vm.loading = true;
     vm.hasError = false;
 
-    Inventory.read(null, params)
+    return Inventory.read(null, params)
       .then(handleInventoryResult)
       .catch(handleException)
       .finally(toggleLoading);
@@ -291,7 +291,24 @@ function InventoryListController(
    * start the import of inventories from a csv file
   */
   function openImportInventoriesModal() {
+    let error = false;
+    const oldCount = vm.gridOptions.data.length;
     Inventory.openImportInventoriesModal()
+      .then(result => {
+        error = !result;
+      })
+      .finally(() => {
+        load(Inventory.filters.formatHTTP())
+          .then(() => {
+            const newCount = vm.gridOptions.data.length - oldCount;
+            if (newCount > 0) {
+              const msg = $translate.instant('INVENTORY.INVENTORY_IMPORT_SUCCESS_NUM', { num : newCount });
+              Notify.success(msg);
+            } else if (!error) {
+              Notify.success('INVENTORY.INVENTORY_IMPORT_NONE');
+            }
+          });
+      })
       .catch(Notify.handleError);
   }
 

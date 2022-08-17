@@ -1,4 +1,37 @@
 DELIMITER $$
+
+/*
+  ---------------------------------------------------
+  Add an inventory tag
+  ---------------------------------------------------
+
+  Add a tag to this inventory (create it if necessary)
+*/
+DROP PROCEDURE IF EXISTS AddInventoryTag$$
+CREATE PROCEDURE AddInventoryTag (
+  IN inventoryUuid BINARY(16),
+  IN tagName VARCHAR(100),
+  IN tagColor VARCHAR(50)
+)
+BEGIN
+  DECLARE tagExists TINYINT(1);
+  DECLARE tagUuid BINARY(16);
+
+  SET tagExists = (SELECT IF((SELECT COUNT(t.name) FROM tags AS t WHERE t.name = tagName) > 0, 1, 0));
+
+  /* If the tag does not exist yet, create it */
+  IF (tagExists = 0) THEN
+    SET tagUuid = HUID(UUID());
+    INSERT INTO `tags` (`uuid`, `name`, `color`) VALUES (tagUuid, tagName, tagColor);
+  ELSE
+    SET tagUuid = (SELECT `uuid` FROM `tags` WHERE `name` = tagName);
+  END IF;
+
+  /* Create a new tag for this inventory */
+  INSERT IGNORE INTO `inventory_tag` (`inventory_uuid`, `tag_uuid`) VALUES (inventoryUuid, tagUuid);
+END$$
+
+
 /*
   ---------------------------------------------------
   Import Inventory Procedure
@@ -20,9 +53,11 @@ CREATE PROCEDURE ImportInventory (
   IN inventoryConsumable TINYINT(1),
   IN inventoryIsAsset TINYINT(1),
   IN inventoryBrand TEXT,
-  IN inventoryModel TEXT
+  IN inventoryModel TEXT,
+  IN tag VARCHAR(50)
 )
 BEGIN
+  DECLARE inventoryUuid BINARY(16);
   DECLARE existInventoryGroup TINYINT(1);
   DECLARE existInventoryType TINYINT(1);
   DECLARE existInventoryUnit TINYINT(1);
@@ -72,11 +107,16 @@ BEGIN
     Inventory imported are considered by default as stockable (consumbale)
   */
   IF (existInventory = 0) THEN
+    SET inventoryUuid = HUID(UUID());
     INSERT INTO `inventory` (`enterprise_id`, `uuid`, `code`, `text`, `price`, `group_uuid`, `type_id`, `unit_id`,
                              `consumable`, `is_asset`, `manufacturer_brand`, `manufacturer_model`)
     VALUES
-    (enterpriseId, HUID(UUID()), inventoryCode, inventoryText, inventoryUnitPrice, inventoryGroupUuid, inventoryTypeId, inventoryUnitId,
-     inventoryConsumable, inventoryIsAsset, inventoryBrand, inventoryModel);
+    (enterpriseId, inventoryUuid, inventoryCode, inventoryText, inventoryUnitPrice, inventoryGroupUuid, inventoryTypeId,
+     inventoryUnitId, inventoryConsumable, inventoryIsAsset, inventoryBrand, inventoryModel);
+
+    IF (tag != '') THEN
+      CALL AddInventoryTag(inventoryUuid, tag, "#8000FF");
+    END IF;
   END IF;
 END $$
 

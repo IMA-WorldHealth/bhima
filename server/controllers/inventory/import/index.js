@@ -35,19 +35,26 @@ function downloadTemplate(req, res, next) {
 async function importInventories(req, res, next) {
   try {
     if (!req.files || req.files.length === 0) {
-      const errorDescription = 'Expected at least one file upload but did not receive any files.';
-      throw new BadRequest(errorDescription, 'ERRORS.MISSING_UPLOAD_FILES');
+      throw new BadRequest('Expected at least one file upload but did not receive any files.',
+        'ERRORS.MISSING_UPLOAD_FILES');
     }
 
     const filePath = req.files[0].path;
 
     const data = await util.formatCsvToJson(filePath);
-    if (!hasValidDataFormat(data)) {
-      throw new BadRequest('The given file has a bad data format for inventories', 'ERRORS.BAD_DATA_FORMAT');
+
+    if (!hasValidHeaders(data)) {
+      throw new BadRequest('The given file has a bad column headers inventories',
+        'INVENTORY.INVENTORY_IMPORT_BAD_HEADERS');
+    }
+
+    if (!hasValidData(data)) {
+      throw new BadRequest('The given file has missing data for some inventories',
+        'INVENTORY.INVENTORY_IMPORT_ERROR');
     }
 
     const transaction = db.transaction();
-    const query = 'CALL ImportInventory(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);';
+    const query = 'CALL ImportInventory(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);';
 
     data.forEach(item => {
       const queryParams = [
@@ -62,6 +69,7 @@ async function importInventories(req, res, next) {
         item.inventory_is_asset || 0,
         item.inventory_brand || null,
         item.inventory_model || null,
+        item.tag || '',
       ];
 
       transaction.addQuery(query, queryParams);
@@ -75,7 +83,7 @@ async function importInventories(req, res, next) {
 }
 
 /**
- * @function hasValidDataFormat
+ * @function hasValidHeaders
  *
  * @description check if data has a valid format for inventories
  *
@@ -83,12 +91,27 @@ async function importInventories(req, res, next) {
  *
  * @returns {boolean} - true if data is valid
  */
-function hasValidDataFormat(data = []) {
+function hasValidHeaders(data = []) {
+  const [headers] = data;
+  return 'inventory_group_name' in headers && 'inventory_code' in headers
+    && 'inventory_text' in headers && 'inventory_type' in headers
+    && 'inventory_unit' in headers && 'inventory_unit_price' in headers;
+}
+
+/**
+ * @function hasValidData
+ *
+ * @description check if data has a valid format for inventories
+ *
+ * @param {Array} data - array of objects to check for valid properties
+ *
+ * @returns {boolean} - true if data is valid
+ */
+function hasValidData(data = []) {
   return data.every(item => {
     const bool = item.inventory_code && item.inventory_group_name
       && item.inventory_text && item.inventory_type && item.inventory_unit
       && item.inventory_unit_price;
-
     if (!bool) {
       debug('#import(): invalid data format:', item);
     }
