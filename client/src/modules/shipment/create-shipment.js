@@ -84,15 +84,17 @@ function CreateShipmentController(
       headerCellFilter : 'translate',
       cellTemplate : 'modules/stock/exit/templates/lot.tmpl.html',
       enableSorting : false,
+      footerCellTemplate : `<div class="ui-grid-cell-contents text-right" >
+        ${$translate.instant('FORM.LABELS.TOTAL')}:
+      </div>`,
     }, {
       field : 'quantity',
       width : 100,
       displayName : 'TABLE.COLUMNS.QUANTITY',
       headerCellFilter : 'translate',
       cellTemplate : 'modules/shipment/templates/quantity.tmpl.html',
-      footerCellClass : 'text-right',
-      footerCellTemplate : `<div class="ui-grid-cell-contents" >
-         ${$translate.instant('SHIPMENT.TOTAL_QUANTITY')}: {{ grid.appScope.totalQuantity }}
+      footerCellTemplate : `<div class="ui-grid-cell-contents text-right wrappingColHeader" >
+         {{ grid.appScope.totalQuantity }}
          </div>`,
       enableSorting : false,
     }, {
@@ -103,7 +105,7 @@ function CreateShipmentController(
       cellTemplate : 'modules/shipment/templates/unit_weight.tmpl.html',
       footerCellClass : 'text-right',
       footerCellTemplate : `<div class="ui-grid-cell-contents" >
-         ${$translate.instant('SHIPMENT.TOTAL_WEIGHT')}: {{ grid.appScope.totalWeight }}
+         {{ grid.appScope.totalWeight }}
          </div>'`,
       enableSorting : false,
     }, {
@@ -287,6 +289,7 @@ function CreateShipmentController(
         const oldCont = vm.containers.find(cont => cont.uuid === container.uuid);
         oldCont.label = result.label;
         oldCont.weight = result.weight;
+        oldCont.description = result.description;
         oldCont.container_type_id = result.container_type_id;
         oldCont.container_type = result.container_type;
       })
@@ -315,6 +318,7 @@ function CreateShipmentController(
       Containers.delete(container.uuid);
     }
 
+    updateTotals();
     checkVisibility();
   };
 
@@ -330,6 +334,8 @@ function CreateShipmentController(
 
   vm.setContainerFromDropdown = function setContainerFromDropdown(row, container) {
     row.container_label = container.label;
+    row.container_uuid = container.uuid;
+    updateTotals();
   };
 
   vm.setLotFromDropdown = function setLotFromDropdown(row, lot) {

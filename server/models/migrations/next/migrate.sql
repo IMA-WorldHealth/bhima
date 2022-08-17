@@ -125,3 +125,10 @@ INSERT INTO `inventory_unit` (`id`, `token`) VALUES (55, 'TREATMENT')    ON DUPL
 INSERT INTO `inventory_unit` (`id`, `token`) VALUES (56, 'TUBE')         ON DUPLICATE KEY UPDATE `abbr`=NULL, `text`=NULL, token='TUBE';
 INSERT INTO `inventory_unit` (`id`, `token`) VALUES (57, 'UNIT')         ON DUPLICATE KEY UPDATE `abbr`=NULL, `text`=NULL, token='UNIT';
 INSERT INTO `inventory_unit` (`id`, `token`) VALUES (58, 'VIAL')         ON DUPLICATE KEY UPDATE `abbr`=NULL, `text`=NULL, token='VIAL';
+
+/**
+ * @author: jmcameron
+ * @description: For shipment containers
+ * @date: 2021-08-17
+ */
+CALL add_column_if_missing('shipment_container', 'description', 'TEXT NULL');

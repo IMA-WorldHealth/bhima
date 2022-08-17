@@ -263,6 +263,7 @@
             "TRANSACTION_PRICE": "Coût de la Transaction",
             "TYPE": "Type",
             "UNIT": "Unité",
+            "UNIT_DEFINITION": "Définition et taille de l'unité",
             "UNIT_PRICE": "Prix unitaire",
             "UNIT_WEIGHT": "Poids unitaire",
             "UNPAID_INVOICE_1": "Cette facture n'a pas été compensée en ",

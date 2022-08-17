@@ -263,6 +263,7 @@
             "TRANSACTION_PRICE": "Transaction Price",
             "TYPE": "Type",
             "UNIT": "Unit",
+            "UNIT_DEFINITION": "Unit Definition",
             "UNIT_PRICE": "Unit Price",
             "UNIT_WEIGHT": "Unit Weight",
             "UNPAID_INVOICE_1": "This invoice has not been balanced in ",

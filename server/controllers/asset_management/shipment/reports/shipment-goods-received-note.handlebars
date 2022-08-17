@@ -1,0 +1,230 @@
+{{> head }}
+
+<style>
+  .text-right {
+    text-align: right;
+  }
+  .text-center {
+    text-align: center;
+  }
+  .text-capitalize {
+    text-transform : uppercase;
+  }
+  .text-small {
+    font-size: 75%;
+  }
+  .grey {
+    background-color: #DDD;
+  }
+  .avoid-page-break {
+    page-break-inside: avoid;
+  }
+</style>
+
+<body>
+
+<header class="row" style="margin-bottom: 1em;">
+  {{#> enterpriseDetails }}
+  <h4 style="margin-top: 2ex;">
+    <span class="text-capitalize">{{translate 'FORM.LABELS.DATE'}}</span>: <span>__________________</span>
+  </h4>
+
+  {{/enterpriseDetails}}
+
+  <div class="col-xs-7 col-auto">
+
+    <h2 class="text-right" style="margin-top: 0">
+      <strong>{{translate 'SHIPMENT.GOODS_RECEIVED_NOTE'}} <br>
+      {{shipment.name}} <br>
+      {{shipment.reference}}</strong>
+    </h2>
+
+    {{#if shipment.hasContainers}}
+    <h4 class="text-right"><strong>{{shipment.numContainers}} {{translate shipment.multipleContainerLabel}}</strong></h4>
+    {{/if}}
+
+    {{#if metadata.enterprise.settings.enable_barcodes}}
+    <h4 class="text-right">
+        <span>{{> barcode value=barcode}}</span>
+    </h4>
+    <script>JsBarcode('.barcode').init();</script>
+    {{/if}}
+
+    <h4 class="text-right" style="margin-top: 1ex;">
+      {{translate 'SHIPMENT.FREIGHT_DOCUMENT'}}: <span>__________________</span>
+    </h4>
+
+    <h4 class="text-right" style="margin-top: 1ex;">
+      {{translate 'SHIPMENT.VEHICLE_REGISTRATION'}}: <span>__________________</span>
+    </h4>
+
+  </div>
+
+</header>
+
+<!-- body  -->
+
+<div class="row">
+  <div class="col-xs-5" style="border: 1px solid #999;">
+    <h3><strong>{{translate 'STOCK.ORIGIN'}}</strong></h3>
+    <h4>{{shipment.origin_depot.text}}</h4>
+    {{#if shipment.origin_depot.description}}
+    <h5>
+      {{#each shipment.origin_depot.description}}
+      <br>{{this}}
+      {{/each}}
+    </h5>
+    {{/if}}
+    {{#if shipment.origin_depot.location_uuid}}
+      {{#with shipment.origin_depot}}
+      {{village_name}} / {{sector_name}} / {{province_name}} <br>
+      {{country_name}}
+      {{/with}}
+    {{/if}}
+  </div>
+  <div class="col-xs-1"></div>
+  <div class="col-xs-6" style="border: 1px solid #999;">
+    <h3><strong>{{translate 'STOCK.DESTINATION'}}</strong></h3>
+    <h4>{{shipment.destination_depot.text}}</h4>
+    <h5>
+      {{translate 'SHIPMENT.ANTICIPATED_DELIVERY_DATE'}}: {{date shipment.anticipated_delivery_date}}
+    </h5>
+    {{#if shipment.destination_depot.description}}
+    <h5>
+      {{#each shipment.destination_depot.description}}
+      <br>{{this}}
+      {{/each}}
+    </h5>
+    {{/if}}
+    {{#if shipment.destination_depot.location_uuid}}
+      {{#with shipment.destination_depot}}
+      {{village_name}} / {{sector_name}} / {{province_name}} <br>
+      {{country_name}}
+      {{/with}}
+    {{/if}}
+  </div>
+</div>
+
+{{#if shipment.description}}
+<div class="row" style="margin-top: 8px; margin-bottom: 8px;">
+  <div class="col-xs-12" style="border: 1px solid #999;">
+    {{shipment.description}}
+  </div>
+</div>
+{{/if}}
+
+<div class="row" style="margin-top: 1ex;">
+  <div class="col-xs-6">
+    <strong>{{translate 'SHIPMENT.TRANSPORT_MODE'}}:</strong> {{shipment.transport_mode}}
+  </div>
+  <div class="col-xs-6">
+    <strong>{{translate 'SHIPMENT.RECEIVER'}}:</strong> {{shipment.receiver}}
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-12">
+
+    <!-- shipment packing list -->
+    <table class="table table-condensed table-bordered table-report" style="font-size: 90%;">
+      <thead>
+        <tr>
+          <th class="text-center">{{translate 'FORM.LABELS.NR'}}</th>
+          <th>{{translate 'SHIPMENT.LOT_OR_SERIAL_NUMBER'}}</th>
+          <th style="width: 10em;">{{translate 'STOCK.ARTICLE_DESCRIPTION'}}</th>
+          <th>{{translate 'TABLE.COLUMNS.UNIT_DEFINITION'}}</th>
+          <th class="text-center">{{translate 'FORM.LABELS.QUANTITY_ORDERED'}}</th>
+          <th class="text-center">{{translate 'STOCK.QUANTITY_SENT'}}</th>
+          <th class="text-center" style="width: 6em;">
+            <span><strong class="text-capitalize">{{translate 'SHIPMENT.LOSS'}}</strong></span><br>
+            <span class="text-small" style="font-style: italic">{{translate 'SHIPMENT.UNITS_LOST'}}</span>
+          </th>
+          <th class="text-center" style="width: 6em;">
+            <span><strong class="text-capitalize">{{translate 'SHIPMENT.OVERAGE'}}</strong></span><br>
+            <span class="text-small" style="font-style: italic">{{translate 'SHIPMENT.UNITS_OVERAGE'}}</span>
+          </th>
+          <th class="text-center" style="width: 6em;">{{translate 'SHIPMENT.QUANTITY_RECEIVED'}}</th>
+          <th>{{translate 'SHIPMENT.REFERENCE_DOCUMENT'}}*</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each contents}}
+          {{#if ../shipment.hasContainers}}
+          <tr>
+            <td colspan="10" class="grey">
+              <strong>{{translate 'SHIPMENT.CONTAINER'}}: {{containerName}}
+                [{{containerDescription}}] ({{translate containerType }})</strong>,
+              {{translate 'SHIPMENT.TOTAL_WEIGHT'}}: {{containerWeight}}
+            </td>
+          </tr>
+          {{/if}}
+          {{#each items}}
+          <tr>
+            <td class="text-center">{{num}}</td>
+            <td>{{lot_label}}</td>
+            <td>{{inventory_label}}</td>
+            <td>{{translate unit_type}}</td>
+            <td class="text-right">{{quantity_sent}}</td>
+            <td class="text-right">{{quantity_sent}}</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>{{reference_number}}</td>
+          </tr>
+          {{else}}
+          {{> emptyTable columns=10}}
+          {{/each}}
+        {{/each}}
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="10" style="font-size: 90%;">*{{translate 'SHIPMENT.UNIT_DOCUMENTS'}}</td>
+        </tr>
+      </tfoot>
+    </table>
+
+  </div>
+</div>
+
+<div class="row avoid-page-break" style="margin: 3ex 0 2ex 0; border: 1px solid black;">
+  <div class="col-xs-12" style="padding: 4px;">
+    <h4>{{translate 'SHIPMENT.IMPORTANT_NOTES'}}</h4>
+    <h4 style="width: 100%; border-bottom: 1px solid black; margin-top: 3ex;"></h4>
+    <h4 style="width: 100%; border-bottom: 1px solid black; margin: 3ex 0 1ex 0;"></h4>
+  </div>
+</div>
+
+<div class="row avoid-page-break" style="margin-top: 2ex;">
+  <div class="col-xs-6">
+    <h5><strong>{{translate 'SHIPMENT.DELIVERED_BY'}}</strong></h5>
+    <h5 style="width: 100%; border-bottom: 1px solid black; margin-top: 3ex;"></h5>
+    <h5 class="text-center" style="width: 100%;">({{translate 'FORM.LABELS.NAME'}})</h5>
+
+    <h5 style="margin-top: 3ex;"><strong>{{translate 'SHIPMENT.DELIVERER_IDENTIFICATION'}}</strong></h5>
+    <h5 style="width: 100%; border-bottom: 1px solid black; margin-top: 3ex;"></h5>
+    <h5 class="text-center" style="width: 100%;">({{translate 'SHIPMENT.DELIVERER_IDENTIFICATION_NOTE'}})</h5>
+
+    <h5 style="margin-top: 3ex;"><strong>{{translate 'SHIPMENT.DELIVERER_SIGNATURE'}}</strong></h5>
+    <h5 style="width: 100%; border-bottom: 1px solid black; margin-top: 3ex;"></h5>
+  </div>
+  <div class="col-xs-1"></div>
+  <div class="col-xs-5">
+    <h5><strong>{{translate 'SHIPMENT.RECEIVED_BY'}}:</h5>
+    <h5 style="width: 100%; border-bottom: 1px solid black; margin-top: 3ex;"></h5>
+    <h5 class="text-center" style="width: 100%">({{translate 'FORM.LABELS.NAME'}})</h5>
+    <h5 style="width: 100%; border-bottom: 1px solid black; margin-top: 3ex;"></h5>
+    <h5 class="text-center" style="width: 100%">({{translate 'FORM.LABELS.SIGNATURE'}})</h5>
+
+    <h5 style="margin-top: 2ex;"><strong>{{translate 'SHIPMENT.CHECKED_BY'}}:</h5>
+    <h5 style="width: 100%; border-bottom: 1px solid black; margin-top: 3ex;"></h5>
+    <h5 class="text-center" style="width: 100%">({{translate 'FORM.LABELS.NAME'}})</h5>
+    <h5 style="width: 100%; border-bottom: 1px solid black; margin-top: 3ex;"></h5>
+    <h5 class="text-center" style="width: 100%">({{translate 'FORM.LABELS.SIGNATURE'}})</h5>
+  </div>
+</div>
+
+<h5 class="text-right" style="margin-top: 0.25em;">
+  <span class="text-capitalize">{{translate 'FORM.LABELS.DATE'}}</span>: {{date shipment.date}}
+</h5>
+
+</body>

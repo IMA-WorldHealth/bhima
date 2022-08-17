@@ -1,10 +1,13 @@
+
 const _ = require('lodash');
 
 const {
   ReportManager,
   db, barcode, identifiers,
   Shipment, ShipmentContainer,
-  SHIPMENT_DOCUMENT_TEMPLATE, SHIPMENT_MANIFEST_TEMPLATE,
+  SHIPMENT_DOCUMENT_TEMPLATE,
+  SHIPMENT_GOODS_RECEIVED_NOTE_TEMPLATE,
+  SHIPMENT_MANIFEST_TEMPLATE,
 } = require('./common');
 
 function sortItems(items) {
@@ -17,12 +20,18 @@ function sortItems(items) {
 
 async function getShipmentDocument(req, res, next) {
   const { uuid } = req.params;
-  const manifest = req.query.manifest || false;
-
-  const template = manifest ? SHIPMENT_MANIFEST_TEMPLATE : SHIPMENT_DOCUMENT_TEMPLATE;
-
+  let title = 'SHIPMENT.TITLE';
+  let template = SHIPMENT_DOCUMENT_TEMPLATE;
+  if (req.query.manifest) {
+    title = 'SHIPMENT.SHIPMENT_MANIFEST';
+    template = SHIPMENT_MANIFEST_TEMPLATE;
+  } else if (req.query.goodsReceived) {
+    title = 'SHIPMENT.GOODS_RECEIVED_NOTE';
+    template = SHIPMENT_GOODS_RECEIVED_NOTE_TEMPLATE;
+  }
   const options = _.extend(req.query, {
-    filename : manifest ? 'SHIPMENT.SHIPMENT_MANIFEST' : 'SHIPMENT.TITLE',
+    filename : title,
+    // 'format' defaults to A4
     orientation : 'portrait',
   });
 
@@ -82,13 +91,21 @@ async function getShipmentDocument(req, res, next) {
 
     // Construct the contents list for display
     let contents = [];
+    let itemNum = 1;
     if (shipment.hasContainers) {
       const data = _.groupBy(shipmentItems, 'container_label');
       containers.forEach(cntr => {
         const containerItems = data[cntr.label];
         sortItems(containerItems);
+        containerItems.forEach(item => {
+          item.num = itemNum++;
+          if (item.is_asset) {
+            item.lot_label = `${item.lot_label} / ${item.serial_number}`;
+          }
+        });
         contents.push({
           containerName : cntr.label,
+          containerDescription : cntr.description,
           containerEmptyWeight : _.round(cntr.weight, 2),
           containerType : `SHIPMENT.CONTAINER_TYPES.${cntr.container_type}`,
           containerWeight : _.round(cntr.weight + containerItems.reduce((agg, row) => agg + row.weight, 0), 2),
@@ -105,6 +122,12 @@ async function getShipmentDocument(req, res, next) {
       });
     } else {
       sortItems(shipmentItems);
+      shipmentItems.forEach(item => {
+        item.num = ++itemNum;
+        if (item.is_asset) {
+          item.lot_label = `${item.lot_label} / ${item.serial_number}`;
+        }
+      });
       contents = [{
         containerName : null,
         items : shipmentItems,
