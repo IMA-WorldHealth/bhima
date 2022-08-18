@@ -24,4 +24,10 @@
     {{metadata.enterprise.location}}
   {{/if}}
 
+  <!-- support adding extra content below the title block on the left part of the header. -->
+  <!-- See https://handlebarsjs.com/guide/partials.html#partial-parameters for usage. -->
+  {{#if @partial-block}}
+    {{> @partial-block}}
+  {{/if}}
+
 </div>

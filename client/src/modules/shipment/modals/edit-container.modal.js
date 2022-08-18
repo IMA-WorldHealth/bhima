@@ -87,6 +87,7 @@ function ContainerEditModalController(Data, Containers, Notify, Instance) {
       const updates = { // These are the only fields that we can update
         label : vm.container.label,
         weight : vm.container.weight,
+        description : vm.container.description,
         container_type_id : vm.container.container_type_id,
       };
       Containers.update(vm.container.uuid, updates)

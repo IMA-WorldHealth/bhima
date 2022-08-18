@@ -8,6 +8,7 @@
       <thead>
         <tr>
           <th translate>FORM.LABELS.LABEL</th>
+          <th translate>FORM.LABELS.DESCRIPTION</th>
           <th translate>FORM.LABELS.TYPE</th>
           <th translate>SHIPMENT.NUM_ITEMS</th>
           <th translate>SHIPMENT.CONTAINER_WEIGHT_EMPTY</th>
@@ -17,6 +18,7 @@
       <tbody>
         <tr ng-repeat="cont in grid.appScope.containers">
           <td>{{cont.label}}</td>
+          <td>{{cont.description}}</td>
           <td>{{cont.container_type}}</td>
           <td>{{cont.num_items}}</td>
           <td>{{cont.weight}}</td>
