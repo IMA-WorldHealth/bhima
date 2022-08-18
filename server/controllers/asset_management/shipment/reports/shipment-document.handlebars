@@ -127,9 +127,8 @@
           {{#if ../shipment.hasContainers}}
           <tr>
             <td colspan="7" class="grey">
-              <strong>
-                {{translate 'SHIPMENT.CONTAINER'}}: {{containerName}} ({{translate containerType }})
-              </strong>,
+              <strong>{{translate 'SHIPMENT.CONTAINER'}}: {{containerName}}
+                [{{containerDescription}}] ({{translate containerType }})</strong>,
               {{translate 'SHIPMENT.TOTAL_WEIGHT'}}: {{containerWeight}}
               ({{translate 'SHIPMENT.EMPTY_WEIGHT'}}: {{containerEmptyWeight}})
             </td>

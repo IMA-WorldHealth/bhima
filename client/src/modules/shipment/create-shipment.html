@@ -246,6 +246,7 @@
                       <thead>
                         <tr>
                           <th translate>FORM.LABELS.LABEL</th>
+                          <th translate>FORM.LABELS.DESCRIPTION</th>
                           <th translate>FORM.LABELS.TYPE</th>
                           <th translate>FORM.LABELS.WEIGHT</th>
                           <th></th>
@@ -256,6 +257,7 @@
                       <tbody>
                         <tr ng-repeat="cont in CreateShipCtrl.containers">
                           <td>{{cont.label}}</td>
+                          <td>{{cont.description}}</td>
                           <td>{{cont.container_type}}</td>
                           <td>{{cont.weight}}</td>
                           <td>

@@ -22,6 +22,15 @@
     </div>
 
     <div class="form-group">
+      <bh-input-text
+        key="description"
+        text-value="$ctrl.container.description"
+        label="FORM.LABELS.DESCRIPTION"
+        autocomplete="off">
+      </bh-input-text>
+    </div>
+
+    <div class="form-group">
       <label class="control-label" for="containerType" translate>SHIPMENT.CONTAINER_TYPE</label>
       <ui-select name="container_type_id" ng-model="$ctrl.container.container_type_id" ng-required="$ctrl.required">
         <ui-select-match placeholder="{{ 'SHIPMENT.SELECT_CONTAINER_TYPE' | translate }}">
