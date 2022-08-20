@@ -15,9 +15,14 @@
         <i class="fa fa-file-pdf-o"></i> <span translate>SHIPMENT.DOCUMENT</span>
       </a>
     </li>
-    <li>
+    <li ng-if="!row.entity.isAtDepot">
       <a ng-click="grid.appScope.shipmentManifest(row.entity.uuid)" href>
         <i class="fa fa-file-pdf-o"></i> <span translate>SHIPMENT.MANIFEST</span>
+      </a>
+    </li>
+    <li>
+      <a ng-click="grid.appScope.shipmentGoodsReceivedNote(row.entity.uuid)" href>
+        <i class="fa fa-file-pdf-o"></i> <span translate>SHIPMENT.GOODS_RECEIVED_NOTE</span>
       </a>
     </li>
     <li class="divider" ng-if="row.entity.isAtDepot"></li>

@@ -53,6 +53,7 @@ function ReceiptService($http, util, Language, AppCache, Session) {
   service.displayData = displayData;
 
   service.shipmentDocument = shipmentDocument;
+  service.shipmentGoodsReceivedNote = shipmentGoodsReceivedNote;
   service.shipmentManifest = shipmentManifest;
   service.shipmentBarcode = shipmentBarcode;
 
@@ -176,6 +177,13 @@ function ReceiptService($http, util, Language, AppCache, Session) {
   function shipmentDocument(uuid, options) {
     options.posReceipt = service.posReceipt;
     const route = `/reports/shipments/${uuid}/document`;
+    return fetch(route, options);
+  }
+
+  // shipment manifest
+  function shipmentGoodsReceivedNote(uuid, options) {
+    options.posReceipt = service.posReceipt;
+    const route = `/reports/shipments/${uuid}/document?goodsReceived=1`;
     return fetch(route, options);
   }
 

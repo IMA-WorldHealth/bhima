@@ -6,7 +6,8 @@ const NotFound = require('../../../lib/errors/NotFound');
 const containerSql = `
   SELECT
     BUID(sc.uuid) AS uuid, sc.label, BUID(sc.shipment_uuid) AS shipment_uuid,
-    sc.weight, sc.container_type_id, scType.text AS container_type
+    sc.weight, sc.container_type_id, sc.description,
+    scType.text AS container_type
   FROM shipment_container AS sc
   JOIN shipment_container_types AS scType ON scType.id = sc.container_type_id
 `;
@@ -72,6 +73,7 @@ async function create(req, res, next) {
     const container = {
       uuid : db.bid(newUuid),
       label : params.label,
+      description : params.description,
       container_type_id : params.container_type_id,
     };
     if (params.weight) {
