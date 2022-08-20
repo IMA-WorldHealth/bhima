@@ -105,27 +105,8 @@ INSERT INTO `inventory_unit` (`id`, `token`) VALUES (37, 'TABLET')       ON DUPL
 INSERT INTO `inventory_unit` (`id`, `token`) VALUES (38, 'TREATMENT')    ON DUPLICATE KEY UPDATE `abbr`=NULL, `text`=NULL, token='TREATMENT';
 INSERT INTO `inventory_unit` (`id`, `token`) VALUES (39, 'TUBE')         ON DUPLICATE KEY UPDATE `abbr`=NULL, `text`=NULL, token='TUBE';
 
-
-INSERT INTO `inventory_unit` (`id`, `token`) VALUES (40, 'LOT')       ON DUPLICATE KEY UPDATE `abbr`=NULL, `text`=NULL, token='LOT';
-INSERT INTO `inventory_unit` (`id`, `token`) VALUES (41, 'PACKAGE')   ON DUPLICATE KEY UPDATE `abbr`=NULL, `text`=NULL, token='PACKAGE';
-INSERT INTO `inventory_unit` (`id`, `token`) VALUES (42, 'PACKET')    ON DUPLICATE KEY UPDATE `abbr`=NULL, `text`=NULL, token='PACKET';
-INSERT INTO `inventory_unit` (`id`, `token`) VALUES (43, 'PAIR')      ON DUPLICATE KEY UPDATE `abbr`=NULL, `text`=NULL, token='PAIR';
-INSERT INTO `inventory_unit` (`id`, `token`) VALUES (44, 'PALLET')    ON DUPLICATE KEY UPDATE `abbr`=NULL, `text`=NULL, token='PALLET';
-INSERT INTO `inventory_unit` (`id`, `token`) VALUES (45, 'PIECE')     ON DUPLICATE KEY UPDATE `abbr`=NULL, `text`=NULL, token='PIECE';
-INSERT INTO `inventory_unit` (`id`, `token`) VALUES (46, 'PILL')      ON DUPLICATE KEY UPDATE `abbr`=NULL, `text`=NULL, token='PILL';
-INSERT INTO `inventory_unit` (`id`, `token`) VALUES (47, 'POUCH')     ON DUPLICATE KEY UPDATE `abbr`=NULL, `text`=NULL, token='POUCH';
-INSERT INTO `inventory_unit` (`id`, `token`) VALUES (48, 'REAM')      ON DUPLICATE KEY UPDATE `abbr`=NULL, `text`=NULL, token='REAM';
-INSERT INTO `inventory_unit` (`id`, `token`) VALUES (49, 'ROLL')      ON DUPLICATE KEY UPDATE `abbr`=NULL, `text`=NULL, token='ROLL';
-
-INSERT INTO `inventory_unit` (`id`, `token`) VALUES (50, 'SACK')         ON DUPLICATE KEY UPDATE `abbr`=NULL, `text`=NULL, token='SACK';
-INSERT INTO `inventory_unit` (`id`, `token`) VALUES (51, 'SET')          ON DUPLICATE KEY UPDATE `abbr`=NULL, `text`=NULL, token='SET';
-INSERT INTO `inventory_unit` (`id`, `token`) VALUES (52, 'SUPPOSITORY')  ON DUPLICATE KEY UPDATE `abbr`=NULL, `text`=NULL, token='SUPPOSITORY';
-INSERT INTO `inventory_unit` (`id`, `token`) VALUES (53, 'SYRUP')        ON DUPLICATE KEY UPDATE `abbr`=NULL, `text`=NULL, token='SYRUP';
-INSERT INTO `inventory_unit` (`id`, `token`) VALUES (54, 'TABLET')       ON DUPLICATE KEY UPDATE `abbr`=NULL, `text`=NULL, token='TABLET';
-INSERT INTO `inventory_unit` (`id`, `token`) VALUES (55, 'TREATMENT')    ON DUPLICATE KEY UPDATE `abbr`=NULL, `text`=NULL, token='TREATMENT';
-INSERT INTO `inventory_unit` (`id`, `token`) VALUES (56, 'TUBE')         ON DUPLICATE KEY UPDATE `abbr`=NULL, `text`=NULL, token='TUBE';
-INSERT INTO `inventory_unit` (`id`, `token`) VALUES (57, 'UNIT')         ON DUPLICATE KEY UPDATE `abbr`=NULL, `text`=NULL, token='UNIT';
-INSERT INTO `inventory_unit` (`id`, `token`) VALUES (58, 'VIAL')         ON DUPLICATE KEY UPDATE `abbr`=NULL, `text`=NULL, token='VIAL';
+INSERT INTO `inventory_unit` (`id`, `token`) VALUES (40, 'UNIT')         ON DUPLICATE KEY UPDATE `abbr`=NULL, `text`=NULL, token='UNIT';
+INSERT INTO `inventory_unit` (`id`, `token`) VALUES (41, 'VIAL')         ON DUPLICATE KEY UPDATE `abbr`=NULL, `text`=NULL, token='VIAL';
 
 /**
  * @author: jmcameron
