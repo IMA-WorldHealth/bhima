@@ -20,6 +20,7 @@
     },
     "AMOUNT"          : "Amount",
     "APPROVISIONING"  : "Quantity to order",
+    "ARTICLE_DESCRIPTION": "Article Description",
     "AT_LEAST_ONE_CHECKED" : "At least one option must be checked",
     "BY_INVENTORY"    : "By Products",
     "BY_SERVICE"      : "By Services",
