@@ -146,9 +146,9 @@ To start a MySQL server using docker you can use:
 # in this example, we use "mysql" as the tag name
 
 docker run --name mysql -p 3306:3306 \
-  -d mysql/mysql-server:8.0 \
   -e MYSQL_ROOT_PASSWORD=MyPassword \
   -e MYSQL_ROOT_HOST=% \
+  -d mysql/mysql-server:8.0 \
   --sql-mode='STRICT_ALL_TABLES,NO_UNSIGNED_SUBTRACTION' \
   --default-authentication-plugin=mysql_native_password
 
