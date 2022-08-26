@@ -191,7 +191,7 @@
     "release-it": "^15.3.0",
     "sinon": "^14.0.0",
     "standard-version": "^9.5.0",
-    "typescript": "^4.7.4"
+    "typescript": "^4.8.2"
   },
   "homepage": "https://docs.bhi.ma",
   "engines": {
