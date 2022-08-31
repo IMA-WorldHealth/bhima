@@ -4,10 +4,13 @@ angular.module('bhima.controllers')
 StockFindDepotModalController.$inject = [
   '$uibModalInstance', 'DepotService', 'NotifyService', 'data',
   'SessionService', 'RequisitionHelperService', 'ShipmentService',
+  'ModalService', '$translate',
 ];
 
 function StockFindDepotModalController(
-  Instance, Depot, Notify, Data, Session, RequisitionHelpers, Shipments,
+  Instance, Depot, Notify, Data,
+  Session, RequisitionHelpers, Shipments,
+  Modal, $translate,
 ) {
   const vm = this;
 
@@ -16,34 +19,47 @@ function StockFindDepotModalController(
   // global
   vm.selected = {};
   vm.depot = Data.depot;
+  vm.loading = false;
 
   // bind methods
   vm.submit = submit;
   vm.cancel = cancel;
 
+  // Make sure this user has permissions to exit from this depot
   if (enableStrictDepotDistribution) {
-    Depot.read(Data.depot.uuid)
-      .then(depot => {
-        // forbid to distribute to the same depot
-        vm.depots = extractDepotFromCollection(Data.depot.uuid, depot.distribution_depots);
-      })
-      .catch(Notify.handleError);
-  } else {
-    Depot.read()
-      .then(depots => {
-        // set defined the previous selected depot
-        if (Data.entity_uuid) {
-          const currentDepot = depots.find(item => item.uuid === Data.entity_uuid);
-          vm.selected = currentDepot || {};
+    Depot.read(Data.depot.uuid, { only_user : true })
+      .then(originDepot => {
+        if (!originDepot) {
+          Instance.close();
+          const errMsg = $translate.instant('STOCK.ERRORS.NO_PERMISSION_ORIGIN_DEPOT',
+            { depot : vm.depot.text });
+          Modal.alert(errMsg);
         }
-
-        // forbid to distribute to the same depot
-        vm.depots = extractDepotFromCollection(Data.depot.uuid, depots);
-      })
-      .catch(Notify.handleError);
+      });
   }
 
-  function extractDepotFromCollection(depotUuid, collection) {
+  // Load the depots
+  Depot.read()
+    .then(depots => {
+      // NOTE: We do not care about the 'enableStrictDepotDistribution' flag for the
+      //       the destination depot since the user doing the stock exit (here) does
+      //       not necessarily need permission to access the destination depot.
+
+      // set the previous selected depot (if given)
+      if (Data.entity_uuid) {
+        const currentDepot = depots.find(item => item.uuid === Data.entity_uuid);
+        vm.selected = currentDepot || {};
+      }
+
+      // Prevent distribution to the same depot
+      vm.depots = removeDepotFromCollection(Data.depot.uuid, depots);
+    })
+    .finally(() => {
+      vm.loading = false;
+    })
+    .catch(Notify.handleError);
+
+  function removeDepotFromCollection(depotUuid, collection) {
     return collection.filter(depot => depot.uuid !== depotUuid);
   }
 
