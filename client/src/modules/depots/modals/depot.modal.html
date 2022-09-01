@@ -151,29 +151,36 @@
 
     <div ng-if="DepotModalCtrl.enable_strict_depot_distribution">
       <label class="control-label" translate>DEPOT.ALLOWED_DESTINATION_DEPOTS</label>
-      <div class="row">
-        <div ng-repeat ="d in DepotModalCtrl.depots">
-          <div class="col-md-6">
-            <div ng-if="$index %2 == 0">
-              <div class="checkbox">
-                <label>
-                  <input type="checkbox" ng-model="d.checked" ng-true-value="1" ng-false-value="0">
-                  <span translate> {{ d.text }} </span>
-                </label>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div ng-if="$index %2 != 0">
-              <div class="checkbox">
-                <label>
-                  <input type="checkbox" ng-model="d.checked" ng-true-value="1" ng-false-value="0">
-                  <span translate> {{ d.text }} </span>
-                </label>
-              </div>
-            </div>
+      <div class="checkbox">
+        <label data-root-node>
+          <input type="checkbox" ng-model="DepotModalCtrl.all" ng-change="DepotModalCtrl.setAllNodeValue(DepotModalCtrl.depotsData, DepotModalCtrl.all)" />
+          <strong class="text-capitalize" translate>FORM.LABELS.CHECK_ALL</strong>
+        </label>
+      </div>
+      
+      <div class="panel panel-default" style="margin-bottom : 0px;">
+        <div class="panel-heading">
+          <a href ng-click="DepotModalCtrl.toggleFilter()">
+            <span translate>TABLE.COLUMNS.FILTERING.LABEL</span> <span class="caret" ng-class="{'rotate' : DepotModalCtrl.filterActive}"></span>
+          </a>
+        </div>
+
+        <input ng-model="DepotModalCtrl.filter" ng-show="DepotModalCtrl.filterActive" class="form-control" placeholder="{{'FORM.PLACEHOLDERS.FILTER_NAME' | translate }}" style="border-radius: 0"/>
+      </div>
+
+      <div ng-if="!DepotModalCtrl.loading" ng-repeat="depot in DepotModalCtrl.depotsData | filter : { text : DepotModalCtrl.filter }">
+        <div style="margin-left: calc({{depot.$$treeLevel}} * 15px)" class="list-unstyled">
+          <div class="checkbox">
+            <label data-label="{{child._label}}">
+              <input type="checkbox" id="{{depot.uuid}}" ng-model="depot._checked" ng-change="DepotModalCtrl.setNodeValue(depot.children, depot)" />
+              <span translate>{{depot.text}}</span>
+            </label>
           </div>
         </div>
+      </div>
+      <div ng-if="DepotModalCtrl.loading" class="row text-center">
+        <span class="fa fa-circle-o-notch fa-spin"></span>
+        <span translate>FORM.INFO.LOADING</span>
       </div>
     </div>
 
