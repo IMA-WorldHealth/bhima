@@ -3,9 +3,10 @@ angular.module('bhima.controllers')
 
 DepotModalController.$inject = [
   '$state', 'DepotService', 'NotifyService', 'SessionService', 'params',
+  'FormatTreeDataService',
 ];
 
-function DepotModalController($state, Depots, Notify, Session, params) {
+function DepotModalController($state, Depots, Notify, Session, params, FormatTreeData) {
   const vm = this;
 
   vm.depot = {};
@@ -23,35 +24,55 @@ function DepotModalController($state, Depots, Notify, Session, params) {
     vm.depot.parent_uuid = params.parentUuid;
   }
 
+  function buildDepotsTree(depots = [], checkedDepotUuids = []) {
+    const tree = depots.map(item => {
+      item.id = item.uuid;
+      item.parent = item.parent_uuid;
+      item.key = item.text;
+      item._checked = false;
+
+      if (item.parent === '0') {
+        item.parent = 0;
+      }
+
+      if (checkedDepotUuids.length) {
+        checkedDepotUuids.forEach(depotUuid => {
+          if (item.uuid === depotUuid) {
+            item._checked = true;
+          }
+        });
+      }
+      return item;
+    });
+    vm.depotsData = FormatTreeData.formatStore(tree);
+  }
+
   Depots.read()
     .then(depots => {
       vm.depots = depots;
+
+      if (vm.isCreateState) {
+        buildDepotsTree(depots, []);
+      }
+    })
+    .then(() => {
+      if (vm.isCreateState || !vm.identifier) { return null; }
+
+      return Depots.read(vm.identifier)
+        .then(depot => {
+          buildDepotsTree(vm.depots, depot.allowed_distribution_depots);
+
+          vm.depot = depot;
+
+          // make sure hasLocation is set
+          vm.hasLocation = vm.depot.location_uuid ? 1 : 0;
+
+          if (vm.depot.parent === 0) {
+            delete vm.depot.parent_uuid;
+          }
+        });
     })
     .catch(Notify.handleError);
-
-  if (!vm.isCreateState) {
-    if (!vm.identifier) { return; }
-    Depots.read(vm.identifier)
-      .then(depot => {
-        depot.allowed_distribution_depots.forEach(depotDist => {
-          vm.depots.forEach(d => {
-            if (d.uuid === depotDist) {
-              d.checked = 1;
-            }
-          });
-        });
-
-        vm.depot = depot;
-
-        // make sure hasLocation is set
-        vm.hasLocation = vm.depot.location_uuid ? 1 : 0;
-
-        if (vm.depot.parent === 0) {
-          delete vm.depot.parent_uuid;
-        }
-      })
-      .catch(Notify.handleError);
-  }
 
   // if creating, insert the default min_months_security_stock
   if (vm.isCreateState) {
@@ -82,10 +103,9 @@ function DepotModalController($state, Depots, Notify, Session, params) {
     }
 
     vm.depot.allowed_distribution_depots = [];
-
-    vm.depots.forEach(depot => {
-      if (depot.checked) vm.depot.allowed_distribution_depots.push(depot.uuid);
-    });
+    const filterChecked = vm.depotsData.filter(item => item._checked);
+    const authorizedDestinationDepots = filterChecked.map(depot => depot.uuid);
+    vm.depot.allowed_distribution_depots = authorizedDestinationDepots;
 
     Depots.clean(vm.depot);
 
@@ -109,4 +129,39 @@ function DepotModalController($state, Depots, Notify, Session, params) {
       })
       .catch(Notify.handleError);
   }
+
+  /**
+   * destination depots handlers
+   */
+  function setNodeValue(childrens, depot) {
+    childrens.forEach(child => {
+      vm.depotsData.forEach(d => {
+        if (child.uuid === d.uuid) {
+          d._checked = depot._checked;
+        }
+      });
+      // Set Children
+      if (child.children.length) {
+        setNodeValue(child.children, child);
+      }
+    });
+  }
+  vm.setNodeValue = setNodeValue;
+
+  function setAllNodeValue(depots, allStatus) {
+    depots.forEach(depot => {
+      depot._checked = allStatus;
+    });
+  }
+  vm.setAllNodeValue = setAllNodeValue;
+
+  function toggleFilter() {
+    if (vm.filterActive) {
+      vm.filterActive = false;
+      vm.filter = '';
+    } else {
+      vm.filterActive = true;
+    }
+  }
+  vm.toggleFilter = toggleFilter;
 }

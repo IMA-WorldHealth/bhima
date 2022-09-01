@@ -298,7 +298,7 @@ async function update(req, res, next) {
 
   // get distribution depots and delete the variable from query param
   if (req.body.allowed_distribution_depots) {
-    allowedDistributionDepots = req.body.allowed_distribution_depots;
+    allowedDistributionDepots = req.body.allowed_distribution_depots || [];
     delete req.body.allowed_distribution_depots;
   }
 
@@ -308,8 +308,7 @@ async function update(req, res, next) {
   }
 
   try {
-    const enabledAndDistributionDepotsDefined = req.session.stock_settings.enable_strict_depot_distribution
-      && allowedDistributionDepots.length;
+    const enabledAndDistributionDepotsDefined = req.session.stock_settings.enable_strict_depot_distribution;
 
     if (enabledAndDistributionDepotsDefined) {
       tx.addQuery('DELETE FROM depot_distribution_permission WHERE depot_uuid = ?;', [uid]);
