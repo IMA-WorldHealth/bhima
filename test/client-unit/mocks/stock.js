@@ -34,7 +34,7 @@
         description : '',
         reference_number : undefined,
         serial_number : undefined,
-        acquisition_date: undefined,
+        acquisition_date : undefined,
       },
       {
         uuid : 'd03e7870-0c8e-47d4-a7a8-a17a9924b124',
@@ -46,7 +46,7 @@
         description : '',
         reference_number : undefined,
         serial_number : undefined,
-        acquisition_date: undefined,
+        acquisition_date : undefined,
       },
     ]);
   }
