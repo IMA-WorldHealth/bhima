@@ -252,6 +252,8 @@ CREATE PROCEDURE ImportStock (
   IN stockLotQuantity INT(11),
   IN stockLotExpiration DATE,
   IN stockSerialNumber VARCHAR(40),
+  IN stockAcquisitionDate DATE,
+  IN inventoryDepreciationRate DECIMAL(18, 4),
   IN periodId MEDIUMINT(8)
 )
 BEGIN
@@ -288,7 +290,7 @@ BEGIN
 
     /* call the procedure ImportInventory for creating a new inventory and its dependencies */
     CALL ImportInventory(enterpriseId, inventoryGroupName, inventoryCode, inventoryText, inventoryType, inventoryUnit, inventoryUnitCost,
-                         inventoryConsumable, inventoryIsAsset, inventoryBrand, inventoryModel, '');
+                         inventoryConsumable, inventoryIsAsset, inventoryDepreciationRate, inventoryBrand, inventoryModel, '');
 
     /* set the inventory uuid */
     SET inventoryUuid = (SELECT `uuid` FROM inventory WHERE `text` = inventoryText OR `code` = inventoryCode LIMIT 1);
@@ -316,8 +318,8 @@ BEGIN
 
       /* create the lot */
       SET lotUuid = HUID(UUID());
-      INSERT INTO lot (`uuid`, `label`, `quantity`, `unit_cost`, `expiration_date`, `inventory_uuid`, `serial_number`)
-      VALUES (lotUuid, stockLotLabel, stockLotQuantity, inventoryUnitCost, DATE(stockLotExpiration), inventoryUuid, stockSerialNumber);
+      INSERT INTO lot (`uuid`, `label`, `quantity`, `unit_cost`, `expiration_date`, `inventory_uuid`, `serial_number`, `acquisition_date`)
+      VALUES (lotUuid, stockLotLabel, stockLotQuantity, inventoryUnitCost, DATE(stockLotExpiration), inventoryUuid, stockSerialNumber, DATE(stockAcquisitionDate));
 
     END IF;
 

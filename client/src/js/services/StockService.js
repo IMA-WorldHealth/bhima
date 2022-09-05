@@ -208,6 +208,7 @@ function StockService(Api, StockFilterer, HttpCache, util, Periods) {
           description : lot.description || '',
           reference_number : lot.reference_number,
           serial_number : lot.serial_number,
+          acquisition_date : lot.acquisition_date,
         };
       }).concat(current);
     }, []);

@@ -44,6 +44,7 @@ function StockDefineLotsModalController(
   vm.hasDuplicateLotOrder = false;
 
   vm.globalExpirationDate = new Date();
+  vm.globalDefaultAcquisitionDate = new Date();
   vm.enableGlobalDescriptionAndExpiration = false;
 
   vm.enterprise = Session.enterprise;
@@ -79,6 +80,7 @@ function StockDefineLotsModalController(
 
   vm.onSelectLot = onSelectLot;
   vm.onDateChange = onDateChange;
+  vm.onAcquisitionDateChange = onAcquisitionDateChange;
   vm.enterLotByBarcode = enterLotByBarcode;
   vm.onGlobalDateChange = onGlobalDateChange;
   vm.toggleGlobalDescExpColumn = toggleGlobalDescExpColumn;
@@ -141,6 +143,15 @@ function StockDefineLotsModalController(
     headerCellFilter : 'translate',
     cellTemplate : 'modules/stock/entry/modals/templates/lot.expiration.tmpl.html',
   }, {
+    field : 'acquisition_date',
+    type : 'date',
+    cellFilter : `date:"${bhConstants.dates.format}"`,
+    width : 150,
+    visible : isAsset,
+    displayName : 'TABLE.COLUMNS.ACQUISITION_DATE',
+    headerCellFilter : 'translate',
+    cellTemplate : 'modules/stock/entry/modals/templates/lot.acquisition_date.tmpl.html',
+  }, {    
     field : 'actions',
     displayName : '',
     width : 25,
@@ -290,6 +301,10 @@ function StockDefineLotsModalController(
           emptyLotRow.expiration_date = vm.globalExpirationDate;
         }
 
+        if (isAsset) {
+          emptyLotRow.acquisition_date = vm.globalDefaultAcquisitionDate;
+        }
+
         // don't add new row but focus on the empty lot row
         Focus(emptyLotRow.identifier);
       } else {
@@ -299,6 +314,10 @@ function StockDefineLotsModalController(
         if (vm.enableGlobalDescriptionAndExpiration && vm.globalExpirationDate) {
           newLotRow.expiration_date = vm.globalExpirationDate;
         }
+
+        if (isAsset) {
+          newLotRow.acquisition_date = vm.globalDefaultAcquisitionDate;
+        }        
 
         // set the focus on the new row
         Focus(newLotRow.identifier);
@@ -315,6 +334,11 @@ function StockDefineLotsModalController(
     const defaultValues = vm.enableGlobalDescriptionAndExpiration && vm.globalExpirationDate
       ? { expiration_date : vm.globalExpirationDate }
       : {};
+
+    if (isAsset) {
+      defaultValues.acquisition_date = vm.globalDefaultAcquisitionDate;
+    }
+
     vm.form.addItems(n, defaultValues);
   }
 
@@ -400,6 +424,13 @@ function StockDefineLotsModalController(
     }
   }
 
+  function onAcquisitionDateChange(date, row) {
+    if (date) {
+      row.acquisition_date = date;
+      onChanges();
+    }
+  }
+
   function lotMatch(row, label) {
     if (row.lot === null) {
       return false;
@@ -451,6 +482,11 @@ function StockDefineLotsModalController(
           if (vm.enableGlobalDescriptionAndExpiration && vm.globalExpirationDate) {
             row.expiration_date = vm.globalExpirationDate;
           }
+
+          if (isAsset) {
+            row.acquisition_date = vm.globalDefaultAcquisitionDate;
+          }
+
           onChanges();
           if (vm.enableFastInsert) {
             vm.form.addItem();
@@ -462,14 +498,19 @@ function StockDefineLotsModalController(
   function onGlobalDateChange(date) {
     if (date) {
       vm.globalExpirationDate = date;
+      vm.globalDefaultAcquisitionDate = date;
 
       vm.form.rows.forEach((row) => {
         row.expiration_date = vm.globalExpirationDate;
+        row.acquisition_date = vm.globalDefaultAcquisitionDate;
       });
 
       onChanges();
     }
   }
+
+
+
   /**
    * @method onSelectLot
    *

@@ -35,6 +35,7 @@
         "INVENTORY_CMM_INFO" : "inventory_ccm : (optionnell) taux de consommation mensuel moyen (optionnel car recalculé selon les besoins, valeur par défaut : 0)",
         "INVENTORY_CODE_INFO" : "inventory_code : le code souhaité (identifiant abrégé) pour l'article en stock.  Si ce code ou inventory_text correspond à un inventaire existant, il sera utilisé. Sinon, une nouvelle classe d'inventaire sera créée.",
         "INVENTORY_CONSUMABLE_INFO" : "inventory_consumable : (optionel) l'article est-il consommable ? (1=oui, 0=non, la valeur par défaut est 1)",
+        "INVENTORY_DEPRECIATION_RATE_INFO" : "depreciation_rate : (optionnel) pour le taux de d'ammortissement des actifs",
         "INVENTORY_GROUP_INFO" : "inventory_group : Si cela ne correspond pas à un nom de groupe d'inventaire existant, un nouveau groupe d'inventaire sera créé avec ce nom",
         "INVENTORY_IMPORT_BAD_HEADERS": "ERREUR : L'importation des inventaires a échoué !  Vérifiez les noms d'en-tête de colonne manquants ou mal orthographiés.",
         "INVENTORY_IMPORT_ERROR":  "ERREUR : L'importation des inventaires a échoué !  Vérifiez les lignes qui ne contiennent pas de données pour l'une des colonnes requises.",
