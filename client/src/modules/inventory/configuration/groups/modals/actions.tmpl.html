@@ -73,6 +73,21 @@
       <bh-clear on-clear="$ctrl.session.cogs_account = null;"></bh-clear>
     </bh-account-select>
 
+    <div class="form-group"
+      ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.depreciation_rate.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.DEPRECIATION_RATE</label>
+      <input ng-model="$ctrl.session.depreciation_rate"
+        class="form-control"
+        type="number"
+        name="depreciation_rate"
+        autocomplete="off"
+        translate-attr="{ placeholder: 'FORM.PLACEHOLDERS.DEPRECIATION_RATE' }"
+        required>
+      <div class="help-block" ng-messages="ActionForm.depreciation_rate.$error" ng-show="ActionForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
     <div class="checkbox">
       <label>
        <input type="checkbox" name="unique_item" ng-model= "$ctrl.session.unique_item" ng-true-value="1" ng-false-value="0"/>
