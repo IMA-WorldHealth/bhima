@@ -62,7 +62,7 @@ function getGroups(uid) {
     SELECT 
       BUID(uuid) AS uuid, code, name, sales_account,
       cogs_account, stock_account, unique_item,
-      tracking_consumption, tracking_expiration
+      tracking_consumption, tracking_expiration, depreciation_rate
     FROM inventory_group
     ${uid ? 'WHERE uuid = ?' : ''};
   `;
@@ -78,7 +78,8 @@ function getGroups(uid) {
 function getGroupsMembers() {
   const sql = `
     SELECT BUID(ig.uuid) AS uuid, ig.code, ig.name, ig.sales_account, ig.cogs_account, ig.unique_item,
-      ig.stock_account, COUNT(i.uuid) AS inventory_counted, ig.tracking_consumption, ig.tracking_expiration
+      ig.stock_account, COUNT(i.uuid) AS inventory_counted, ig.tracking_consumption, ig.tracking_expiration,
+      ig.depreciation_rate
     FROM inventory_group AS ig
     LEFT JOIN inventory AS i ON i.group_uuid = ig.uuid
     GROUP BY ig.uuid;

@@ -56,7 +56,7 @@ async function importStock(req, res, next) {
     checkDataFormat(data);
 
     const transaction = db.transaction();
-    const query = 'CALL ImportStock(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);';
+    const query = 'CALL ImportStock(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);';
 
     data.forEach(item => {
 
@@ -82,6 +82,8 @@ async function importStock(req, res, next) {
         item.stock_lot_quantity,
         moment(item.stock_lot_expiration).format('YYYY-MM-DD'),
         item.stock_serial_number || null,
+        moment(item.acquisition_date).format('YYYY-MM-DD') || null,
+        item.depreciation_rate || 0,
         period.id,
       ];
       transaction.addQuery(query, queryParams);
