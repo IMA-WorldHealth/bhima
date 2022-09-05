@@ -87,7 +87,8 @@ function details(req, res, next) {
  */
 async function update(req, res, next) {
   const bid = db.bid(req.params.uuid);
-  const allowedToEdit = ['label', 'expiration_date', 'unit_cost', 'reference_number', 'serial_number', 'acquisition_date'];
+  const allowedToEdit = ['label', 'expiration_date', 'unit_cost', 
+    'reference_number', 'serial_number', 'acquisition_date'];
   const params = _.pick(req.body, allowedToEdit);
   const { tags } = req.body;
 
@@ -314,7 +315,7 @@ function autoMerge(req, res, next) {
       BUID(l.uuid) AS uuid, l.label, l.expiration_date,
       l.reference_number, l.serial_number,
       BUID(i.uuid) AS inventory_uuid, i.text as inventory_name,
-	  l.acquisition_date
+      l.acquisition_date
     FROM lot l
     JOIN inventory i ON i.uuid = l.inventory_uuid
     WHERE l.label=? AND i.uuid=? AND l.expiration_date=DATE(?)
