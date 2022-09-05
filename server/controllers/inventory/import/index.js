@@ -54,7 +54,7 @@ async function importInventories(req, res, next) {
     }
 
     const transaction = db.transaction();
-    const query = 'CALL ImportInventory(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);';
+    const query = 'CALL ImportInventory(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);';
 
     data.forEach(item => {
       const queryParams = [
@@ -67,6 +67,7 @@ async function importInventories(req, res, next) {
         item.inventory_unit_price,
         item.inventory_consumable || 1,
         item.inventory_is_asset || 0,
+        item.depreciation_rate || 0,
         item.inventory_brand || null,
         item.inventory_model || null,
         item.tag || '',
