@@ -764,7 +764,7 @@ async function getPackingList(identifier) {
       u.display_name AS created_by,
       shi.quantity_sent, shi.quantity_delivered, shi.date_packed, shi.unit_weight,
       IF(shi.unit_weight > 0, shi.unit_weight, i.unit_weight) as unit_weight,
-      l.label AS lot_label, l.serial_number, l.reference_number,
+      l.label AS lot_label, l.serial_number, l.reference_number, l.acquisition_date,
       sv.wac AS unit_price,
       i.code AS inventory_code, i.text AS inventory_label, i.is_asset,
       i.manufacturer_brand AS brand, i.manufacturer_model AS model,
