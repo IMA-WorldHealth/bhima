@@ -151,7 +151,7 @@ function StockDefineLotsModalController(
     displayName : 'TABLE.COLUMNS.ACQUISITION_DATE',
     headerCellFilter : 'translate',
     cellTemplate : 'modules/stock/entry/modals/templates/lot.acquisition_date.tmpl.html',
-  }, {    
+  }, {
     field : 'actions',
     displayName : '',
     width : 25,
@@ -317,7 +317,7 @@ function StockDefineLotsModalController(
 
         if (isAsset) {
           newLotRow.acquisition_date = vm.globalDefaultAcquisitionDate;
-        }        
+        }
 
         // set the focus on the new row
         Focus(newLotRow.identifier);
@@ -508,8 +508,6 @@ function StockDefineLotsModalController(
       onChanges();
     }
   }
-
-
 
   /**
    * @method onSelectLot

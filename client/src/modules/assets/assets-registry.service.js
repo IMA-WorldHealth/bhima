@@ -153,11 +153,11 @@ function AssetsRegistryService(uiGridConstants, Session) {
       displayName : 'FORM.LABELS.ACQUISITION_YEAR',
       headerCellFilter : 'translate',
       cellFilter : 'date: "yyyy"',
-    }, {    
+    }, {
       field : 'year_life',
       displayName : 'ASSET.YEAR_LIFE',
       headerCellFilter : 'translate',
-    }, {    
+    }, {
       field : 'depreciation_rate',
       displayName : 'ASSET.DEPRECIATION',
       headerCellFilter : 'translate',
@@ -183,7 +183,7 @@ function AssetsRegistryService(uiGridConstants, Session) {
       headerCellFilter : 'translate',
       type : 'number',
       cellFilter : 'currency: '.concat(Session.enterprise.currency_id),
-    }, {               
+    }, {
       field : 'action',
       displayName : '',
       enableFiltering : false,

@@ -277,7 +277,8 @@ async function getAssets(params) {
       TIMESTAMPDIFF(YEAR, l.acquisition_date, CURRENT_DATE()) AS year_life,
       (TIMESTAMPDIFF(YEAR, l.acquisition_date, CURRENT_DATE()) * ig.depreciation_rate) AS percentage_depreciation,
       (((TIMESTAMPDIFF(YEAR, l.acquisition_date, CURRENT_DATE()) * ig.depreciation_rate) / 100) * l.unit_cost) AS depreciated_value,
-      (l.unit_cost - (((TIMESTAMPDIFF(YEAR, l.acquisition_date, CURRENT_DATE()) * ig.depreciation_rate) / 100) * l.unit_cost)) AS book_value,
+      (l.unit_cost - (((TIMESTAMPDIFF(YEAR, l.acquisition_date, CURRENT_DATE()) * ig.depreciation_rate) / 100) * l.unit_cost))
+      AS book_value,
       dm.text AS documentReference,
       CONCAT('LT', LEFT(HEX(l.uuid), 8)) AS barcode,
 
