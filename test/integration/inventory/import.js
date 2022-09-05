@@ -14,7 +14,7 @@ describe('(/inventory/import) The inventory import http API', () => {
   const numberOfInventoriesToAdd = 2;
 
   let totalInventoriesBeforeImport;
- 
+
   /**
    * test the /inventory/import API for downloading
    * the inventory template file
