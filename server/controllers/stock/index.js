@@ -103,7 +103,7 @@ async function createStock(req, res, next) {
 
         // parse the dates
         const date = new Date(lot.expiration_date);
-        const acquitionDate = new Date(lot.acquisition_date); 
+        const acquitionDate = new Date(lot.acquisition_date);
 
         // the lot object to insert
         const createLotObject = {
