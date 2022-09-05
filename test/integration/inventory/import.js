@@ -5,7 +5,8 @@ const helpers = require('../helpers');
 
 describe('(/inventory/import) The inventory import http API', () => {
   const templateCsvContent = 'inventory_group_name, inventory_code, inventory_text, inventory_type, inventory_unit, '
-    + 'inventory_unit_price, inventory_consumable, inventory_is_asset, inventory_brand, inventory_model';
+    + 'inventory_unit_price, inventory_consumable, inventory_is_asset, depreciation_rate, inventory_brand, '
+    + 'inventory_model';
 
   const file = './test/fixtures/inventory-to-import.csv';
   const invalidFile = './test/fixtures/bad-inventory-to-import.csv';
@@ -13,7 +14,7 @@ describe('(/inventory/import) The inventory import http API', () => {
   const numberOfInventoriesToAdd = 2;
 
   let totalInventoriesBeforeImport;
-
+ 
   /**
    * test the /inventory/import API for downloading
    * the inventory template file
