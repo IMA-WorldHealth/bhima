@@ -76,6 +76,7 @@ function InventoryGroupsActionsModalController(InventoryGroups, Notify, Instance
       unique_item : o.unique_item,
       tracking_consumption : o.tracking_consumption,
       tracking_expiration : o.tracking_expiration,
+      depreciation_rate : o.depreciation_rate,
     };
   }
 
