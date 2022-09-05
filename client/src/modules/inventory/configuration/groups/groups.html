@@ -20,6 +20,7 @@
         <tr>
           <th translate> FORM.LABELS.CODE </th>
           <th translate> FORM.LABELS.NAME </th>
+          <th translate> FORM.LABELS.DEPRECIATION_RATE </th>
           <th translate> INVENTORY.CONTAINS </th>
           <th class="text-center" colspan="3" translate> FORM.LABELS.ACCOUNT </th>
           <th colspan="2">&nbsp;</th>
@@ -48,6 +49,11 @@
         <tr ng-repeat="group in GroupsCtrl.groupList | filter: GroupsCtrl.searchValue | orderBy:'name' track by group.code">
           <td>{{ group.code }}</td>
           <td>{{ group.name }}</td>
+          <td>
+            <div ng-if="group.depreciation_rate">
+              <strong>{{ group.depreciation_rate }} %</strong>
+            </div>
+          </td>
           <td>
             <a ui-sref="inventory.list({ filters : [{ key : 'group_uuid', value : group.uuid, displayValue: group.name }] })" href>
               {{ group.inventory_counted }} <span class="text-lowercase" translate> INVENTORY.ELEMENT</span>(s)
