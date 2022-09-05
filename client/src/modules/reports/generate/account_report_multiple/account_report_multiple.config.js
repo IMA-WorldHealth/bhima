@@ -18,6 +18,7 @@ function AccountReportMultipleConfigController(
   vm.reportDetails = {
     currency_id : Session.enterprise.currency_id,
     accountIds : [],
+    includeUnpostedValues : 0,
   };
 
   function handleStateParameters() {
@@ -34,6 +35,10 @@ function AccountReportMultipleConfigController(
 
   vm.selectAccount = function selectAccount(account) {
     vm.reportDetails.accountIds.push(account.id);
+  };
+
+  vm.onChangeUnpostedValues = (bool) => {
+    vm.reportDetails.includeUnpostedValues = bool;
   };
 
   vm.clearPreview = function clearPreview() {
