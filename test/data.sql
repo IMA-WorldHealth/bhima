@@ -1186,9 +1186,9 @@ INSERT INTO `inventory` (`enterprise_id`, `uuid`, `code`, `text`, `price`, `defa
  NULL, 'Honda', 'CRF250RX', '2022-02-25 09:12:32', NULL);
 
 -- Insert sample assets
-INSERT INTO `lot` (`uuid`, `label`, `quantity`, `unit_cost`, `description`, `expiration_date`, `inventory_uuid`, `is_assigned`, `serial_number`) VALUES
-(@asset_mot1, 'MOT1', 1, 8500.0000, NULL, '2027-03-01', @inv_moto, 1, '12345'),
-(@asset_mot2, 'MOT2', 1, 8500.0000, NULL, '2027-03-01', @inv_moto, 0 , '12346');
+INSERT INTO `lot` (`uuid`, `label`, `quantity`, `unit_cost`, `description`, `expiration_date`, `inventory_uuid`, `is_assigned`, `serial_number`, `acquisition_date`) VALUES
+(@asset_mot1, 'MOT1', 1, 8500.0000, NULL, '2027-03-01', @inv_moto, 1, '12345', DATE_ADD(CURRENT_DATE, INTERVAL -2 YEAR)),
+(@asset_mot2, 'MOT2', 1, 8500.0000, NULL, '2027-03-01', @inv_moto, 0 , '12346', DATE_ADD(CURRENT_DATE, INTERVAL -2 YEAR));
 
 -- Stock movements for the sample assets
 INSERT INTO `stock_movement` (`uuid`, `document_uuid`, `depot_uuid`, `lot_uuid`,

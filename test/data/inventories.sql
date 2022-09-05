@@ -54,9 +54,11 @@ INSERT INTO inventory_group (uuid,name,code,sales_account,cogs_account,stock_acc
 INSERT INTO inventory_group (uuid,name,code,sales_account,cogs_account,stock_account,donation_account,unique_item,tracking_consumption,tracking_expiration) VALUES
 (0xD81D29E8727C11EA8241000C2997DDC0,"Produits et Consommables de Radio","S.XRS",242,201,162,NULL,0,1,1)
 ,(0xF4C4F0D8728411EA8241000C2997DDC0,"Eau, Hygiène et Assainissement","3167969",NULL,NULL,NULL,NULL,0,1,0)
-,(0x552843E2F9234CFABEA321C65E350921,"Véhicule de transport","E.VEH",362,361,359,NULL,0,0,0)
 ,(0x552843E2C9234CFABEA321C65E350922,"Équipement informatique","E.IT",362,361,360,NULL,0,0,0)
 ;
+
+INSERT INTO inventory_group (uuid,name,code,sales_account,cogs_account,stock_account,donation_account,unique_item,tracking_consumption,tracking_expiration, depreciation_rate) VALUES
+(0x552843E2F9234CFABEA321C65E350921,"Véhicule de transport","E.VEH",362,361,359,NULL,0,0,0,15.5);
 
 --
 -- inventory
