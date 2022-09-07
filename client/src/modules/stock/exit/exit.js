@@ -228,6 +228,7 @@ function StockExitController(
           const depotExitType = ExitTypes.exitTypes.find(item => item.label === 'depot');
           onSelectExitType(depotExitType, destDepot);
           vm.destLabel = depotExitType.formatLabel(destDepot);
+          vm.validate();
         })
         .catch(Notify.handleError)
         .finally(() => {
