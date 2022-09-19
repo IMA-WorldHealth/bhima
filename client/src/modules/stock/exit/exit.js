@@ -38,6 +38,8 @@ function StockExitController(
   vm.onSelectExitType = onSelectExitType;
   vm.destLabel = '';
 
+  vm.loading = false;
+
   vm.submit = submit;
 
   const gridFooterTemplate = `
