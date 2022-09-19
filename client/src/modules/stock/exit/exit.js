@@ -105,7 +105,7 @@ function StockExitController(
       width : 25,
       cellTemplate : 'modules/stock/exit/templates/actions.tmpl.html',
     }],
-    data : vm.stockForm.store.data,
+    // ??? data : vm.stockForm.store.data,
 
     // fastWatch to false is required for updating the grid correctly for
     // inventories loaded from an invoice for patient exit
@@ -137,7 +137,6 @@ function StockExitController(
     vm.validate();
   };
 
-  //
   vm.setLotFromDropdown = function setLotFromDropdown(row, lot) {
     vm.stockForm._pool.use(lot.lot_uuid);
     row.configure(lot);
@@ -205,14 +204,11 @@ function StockExitController(
   };
 
   function startup() {
-    // setting params for grid loading state
     vm.hasError = false;
-
     vm.stockForm.setup();
 
     // Handle startups from a shipment
     if (params.shipment) {
-      vm.loading = true;
 
       Shipments.readAll(params.shipment)
         .then(shipment => {
@@ -228,12 +224,13 @@ function StockExitController(
           const depotExitType = ExitTypes.exitTypes.find(item => item.label === 'depot');
           onSelectExitType(depotExitType, destDepot);
           vm.destLabel = depotExitType.formatLabel(destDepot);
+          vm.gridOptions.data = vm.stockForm.store.data;
           vm.validate();
         })
-        .catch(Notify.handleError)
-        .finally(() => {
-          vm.loading = false;
-        });
+        .catch(Notify.handleError);
+    }
+    else {
+      vm.gridOptions.data = vm.stockForm.store.data;
     }
 
     vm.validate();
