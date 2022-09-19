@@ -209,6 +209,7 @@ function StockExitController(
 
     // Handle startups from a shipment
     if (params.shipment) {
+      vm.loading = true;
 
       Shipments.readAll(params.shipment)
         .then(shipment => {
@@ -225,6 +226,7 @@ function StockExitController(
           onSelectExitType(depotExitType, destDepot);
           vm.destLabel = depotExitType.formatLabel(destDepot);
           vm.gridOptions.data = vm.stockForm.store.data;
+          vm.loading = false;
           vm.validate();
         })
         .catch(Notify.handleError);
