@@ -228,8 +228,7 @@ function StockExitController(
           vm.validate();
         })
         .catch(Notify.handleError);
-    }
-    else {
+    } else {
       vm.gridOptions.data = vm.stockForm.store.data;
     }
 
