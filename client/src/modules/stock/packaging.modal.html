@@ -1,0 +1,66 @@
+<form
+  name="FindForm"
+  bh-submit="$ctrl.submit(FindForm)"
+  ng-model-options="{ 'debounce' : { 'default' : 200, 'blur' : 0 }}"
+  novalidate>
+
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate>FORM.INFO.DEFINE_PACKAGING</li>
+      <li class="title">{{ $ctrl.packaging.description }}</li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+    <div>
+      <div class="form-group">
+        <label class="control-label" translate>FORM.LABELS.NUMBER_BOXES</label>
+        <input
+          class="form-control"
+          type="number"
+          ng-change="$ctrl.onChangePackageManagement()"
+          ng-model="$ctrl.packaging.number_boxes"
+          ng-model-options="{ '*' : '$inherit' }"
+          min="0">
+      </div>
+
+      <div class="form-group">
+        <label class="control-label" translate>FORM.LABELS.PACK_SIZE</label>
+        <input
+          class="form-control"
+          type="number"
+          placeholder="{{ 'FORM.PLACEHOLDERS.BOX_PACKAGING' | translate }}"
+          ng-change="$ctrl.onChangePackageManagement()"
+          ng-model="$ctrl.packaging.package_size"
+          ng-model-options="{ '*' : '$inherit' }"
+          required
+          min="1">
+      </div>
+
+      <div ng-if="!$ctrl.basic" class="form-group">
+        <label translate>FORM.LABELS.BOX_UNIT_COST</label>
+        <div class="input-group">
+          <input
+            class="form-control"
+            type="number"
+            required
+            min="0"
+            ng-change="$ctrl.onChangePackageManagement()"
+            ng-model="$ctrl.packaging.box_unit_price"
+            ng-model-options="{ updateOn: 'blur', '*' : '$inherit' }">
+          <span class="input-group-addon">{{ $ctrl.currency.symbol }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()" data-method="cancel" translate>
+      FORM.BUTTONS.CLOSE
+    </button>
+
+    <bh-loading-button loading-state="FindForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

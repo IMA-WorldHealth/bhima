@@ -153,11 +153,19 @@
       </div>
     </div>
 
-
     <div class="checkbox">
       <label>
         <input type="checkbox" name="consumable" ng-true-value="1" ng-false-value="0" ng-model="$ctrl.item.consumable">
         <span translate>FORM.LABELS.CONSUMABLE</span>
+      </label>
+    </div>
+
+    <div ng-if="$ctrl.item.consumable" class="checkbox">
+      <label>
+        <input type="checkbox"
+          name="is_count_per_container" ng-true-value="1" ng-false-value="0"
+          ng-model="$ctrl.item.is_count_per_container">
+        <span translate>INVENTORY.IS_COUNT_PER_CONTAINER</span>
       </label>
     </div>
 
