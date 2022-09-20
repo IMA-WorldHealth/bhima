@@ -162,7 +162,7 @@
         ui-grid-auto-resize
         ui-grid-resize-columns>
         <bh-grid-loading-indicator
-          loading-state="StockCtrl.stockForm.isLoading()"
+          loading-state="StockCtrl.loading || StockCtrl.stockForm.isLoading()"
           empty-state="StockCtrl.emptyStock"
           error-state="StockCtrl.hasError"
           empty-state-message="STOCK.EMPTY">
