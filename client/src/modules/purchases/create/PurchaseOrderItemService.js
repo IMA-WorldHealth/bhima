@@ -83,6 +83,7 @@ function PurchaseOrderItemService(uuid) {
     this.unit_price = inventoryItem.price;
     this.inventory_uuid = inventoryItem.uuid;
     this.unit_type = inventoryItem.unit_type;
+    this.is_count_per_container = inventoryItem.is_count_per_container;
 
     // make sure the appropriate accounts are defined for inventory items
     this._hasValidAccounts = inventoryItem.stock_account && inventoryItem.cogs_account;

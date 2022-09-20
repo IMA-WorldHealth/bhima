@@ -115,6 +115,7 @@ async function createStock(req, res, next) {
           inventory_uuid : db.bid(lot.inventory_uuid),
           reference_number : lot.reference_number,
           serial_number : lot.serial_number,
+          package_size : lot.package_size,
         };
 
         // adding a lot insertion query into the transaction
@@ -231,6 +232,7 @@ async function insertNewStock(session, params) {
         expiration_date : new Date(lot.expiration_date),
         inventory_uuid : db.bid(lot.inventory_uuid),
         serial_number : lot.serial_number,
+        package_size : lot.package_size,
       });
     }
 
