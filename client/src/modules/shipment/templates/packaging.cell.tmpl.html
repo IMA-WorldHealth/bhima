@@ -1,0 +1,12 @@
+<div class="ui-grid-cell-contents text-center">
+  <a ng-if="row.entity.is_count_per_container && grid.appScope.depot.is_count_per_container" data-action="define_packaging"
+    ng-click="grid.appScope.setPackaging(row.entity)">
+    <span
+      ng-if="row.entity.is_count_per_container"
+      uib-tooltip="{{'FORM.INFO.DEFINE_PACKAGING' | translate}}"
+      tooltip-append-to-body="true"
+      tooltip-placement="left">
+      <i class="fa fa-cube text-info"></i>
+    </span>
+  </a>
+</div>
