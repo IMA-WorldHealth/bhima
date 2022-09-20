@@ -254,7 +254,7 @@ async function getItemsMetadata(params) {
       inventory.consumable,inventory.locked, inventory.stock_min,
       inventory.stock_max, inventory.created_at AS timestamp, inventory.type_id, inventory.unit_id,
       inventory.note,  inventory.unit_weight, inventory.unit_volume, inventory.is_asset,
-      inventory.manufacturer_brand, inventory.manufacturer_model,
+      inventory.manufacturer_brand, inventory.manufacturer_model, inventory.is_count_per_container,
       ig.sales_account, ig.stock_account, ig.donation_account, inventory.sellable,
       inventory.note, inventory.unit_weight, inventory.unit_volume, ig.sales_account, ig.stock_account,
       ig.donation_account, ig.cogs_account, inventory.default_quantity, ig.tracking_consumption, ig.tracking_expiration,
@@ -291,6 +291,7 @@ async function getItemsMetadata(params) {
   filters.custom('tags', 't.uuid IN (?)', [params.tags]);
   filters.custom('find_null_importance', 'inventory.importance IS NULL');
   filters.custom('inventory_uuids', 'inventory.uuid IN (?)', params.inventory_uuids);
+  filters.equals('is_count_per_container');
 
   // Handle requests for either consumables or assets
   if ('consumable_or_asset' in params && params.consumable_or_asset === '1') {
@@ -352,7 +353,7 @@ async function getItemsMetadataById(uid, query = {}) {
       i.stock_max, i.created_at AS timestamp, i.type_id, i.unit_id, i.unit_weight, i.unit_volume,
       ig.sales_account, i.default_quantity, i.delay, i.purchase_interval, i.importance,
       i.last_purchase, i.num_purchase, i.manufacturer_brand, i.manufacturer_model,
-      ig.tracking_consumption, ig.tracking_expiration
+      i.is_count_per_container, ig.tracking_consumption, ig.tracking_expiration
     FROM inventory AS i JOIN inventory_type AS it
       JOIN inventory_unit AS iu
       JOIN inventory_group AS ig ON i.type_id = it.id
