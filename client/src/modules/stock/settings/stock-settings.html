@@ -133,7 +133,6 @@
               on-change-callback="StockSettingsCtrl.enableAutoPurchaseOrderConfirmation(value)">
             </bh-yes-no-radios>
 
-
             <bh-yes-no-radios label="SETTINGS.ENABLE_AUTO_STOCK_ACCOUNTING_LABEL"
               value="StockSettingsCtrl.settings.enable_auto_stock_accounting"
               name="enable_auto_stock_accounting"
@@ -148,6 +147,14 @@
               id="enable_supplier_credit"
               help-text="SETTINGS.ENABLE_SUPPLIER_CREDIT_ON_STOCK_ENTRY_HELP_TEXT"
               on-change-callback="StockSettingsCtrl.enableSupplierCredit(value)">
+            </bh-yes-no-radios>
+
+            <bh-yes-no-radios label="SETTINGS.ENABLE_PACKAGING_PHARMACEUTICAL_PRODUCTS"
+              value="StockSettingsCtrl.settings.enable_packaging_pharmaceutical_products"
+              name="enable_packaging_pharmaceutical_products"
+              id="enable_packaging_pharmaceutical_products"
+              help-text="SETTINGS.ENABLE_PACKAGING_PHARMACEUTICAL_PRODUCTS_HELP_TEXT"
+              on-change-callback="StockSettingsCtrl.enablePackagingPharmaceuticalProducts(value)">
             </bh-yes-no-radios>
 
             <bh-yes-no-radios label="SETTINGS.ENABLE_STRICT_DEPOT_PERMISSION"
