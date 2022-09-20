@@ -6,22 +6,27 @@ CreateShipmentController.$inject = [
   '$state', 'ShipmentService', 'DepotService', 'StockExitFormService',
   'ShipmentModalService', 'ShipmentContainerService', 'uiGridConstants',
   'BarcodeService', 'NotifyService', 'bhConstants', 'uuid', '$translate', '$timeout',
+  'SessionService', 'StockModalService',
 ];
 
 function CreateShipmentController(
   $state, Shipment, Depot, StockForm,
   ShipmentModal, Containers, uiGridConstants,
   Barcode, Notify, bhConstants, Uuid, $translate, $timeout,
+  Session, StockModal,
 ) {
   const { NOT_CREATED } = Containers;
 
   const vm = this;
 
   vm.loading = false;
+  vm.enablePackaging = false;
 
   vm.depot = {};
 
   const shipmentUuid = $state.params.uuid;
+  vm.stockSettings = Session.stock_settings;
+
   vm.existingShipmentUuid = shipmentUuid;
 
   vm.isCreateState = $state.params.isCreateState;
@@ -36,6 +41,8 @@ function CreateShipmentController(
   vm.stockForm.setAllowExpired(false);
   vm.stockForm.setExitTypePredefined(true);
   vm.stockForm.setExitType('depot');
+
+  vm.setPackaging = setPackaging;
 
   const gridColumns = [
     {
@@ -87,6 +94,14 @@ function CreateShipmentController(
       footerCellTemplate : `<div class="ui-grid-cell-contents text-right" >
         ${$translate.instant('FORM.LABELS.TOTAL')}:
       </div>`,
+    }, {
+      field : 'packaging',
+      displayName : '',
+      width : 40,
+      headerCellFilter : 'translate',
+      cellFilter : 'translate',
+      visible      : false,
+      cellTemplate : 'modules/shipment/templates/packaging.cell.tmpl.html',
     }, {
       field : 'quantity',
       width : 100,
@@ -147,6 +162,32 @@ function CreateShipmentController(
 
   function onRegisterApi(gridApi) {
     vm.gridApi = gridApi;
+  }
+
+  /**
+   * @method setPackaging
+   * @param {object} item
+   * @description [grid] pop up a modal for defining packaging
+   */
+  function setPackaging(item) {
+    if (!item.inventory_uuid) {
+      // Prevent the packaging modal pop-up if new inventory code has been selected
+      return;
+    }
+
+    StockModal.openSetPackaging({
+      item,
+      currency_id : vm.currencyId,
+      basic : true,
+    })
+      .then((res) => {
+        if (!res) { return; }
+        item.lots = res.lots;
+        item.quantity = res.quantity;
+
+        vm.validateItems();
+      })
+      .catch(Notify.handleError);
   }
 
   function checkVisibility() {
@@ -372,12 +413,19 @@ function CreateShipmentController(
   };
 
   function onChangeDepot(depot) {
-
     // depot assignment
     vm.depot = depot;
+    vm.enablePackaging = false;
 
     vm.shipment.origin_depot_uuid = vm.depot.uuid;
+    const column = vm.gridOptions.columnDefs.find(col => col.field === 'packaging');
 
+    if (vm.depot.is_count_per_container && vm.stockSettings.enable_packaging_pharmaceutical_products) {
+      vm.enablePackaging = true;
+    }
+
+    column.visible = vm.enablePackaging;
+    vm.gridApi.grid.refresh();
     // When the user changes the origin depot, only delete/clear the
     // destination_depot_uuid if
     //   - We are creating a shipment, OR
