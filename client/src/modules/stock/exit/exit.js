@@ -215,6 +215,7 @@ function StockExitController(
 
       Shipments.readAll(params.shipment)
         .then(shipment => {
+          console.log("shipment: ", shipment);
           vm.shipment = shipment;
           return Depot.read(vm.shipment.origin_depot_uuid);
         })
@@ -228,6 +229,7 @@ function StockExitController(
           onSelectExitType(depotExitType, destDepot);
           vm.destLabel = depotExitType.formatLabel(destDepot);
           vm.gridOptions.data = vm.stockForm.store.data;
+          console.log("Grid shipment data: ", vm.gridOptions.data);
           vm.loading = false;
           vm.validate();
         })
