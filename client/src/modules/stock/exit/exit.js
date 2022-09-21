@@ -215,7 +215,7 @@ function StockExitController(
 
       Shipments.readAll(params.shipment)
         .then(shipment => {
-          console.log("shipment: ", shipment);
+          console.log(`shipment loaded (${shipment.lots.length} lots): `);
           vm.shipment = shipment;
           return Depot.read(vm.shipment.origin_depot_uuid);
         })

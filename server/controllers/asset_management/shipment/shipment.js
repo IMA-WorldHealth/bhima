@@ -40,7 +40,6 @@ exports.single = async (req, res, next) => {
 exports.details = async (req, res, next) => {
   try {
     const result = await lookup(req.params.uuid);
-    console.log("Shipment: ", result);
     res.status(200).json(result);
   } catch (error) {
     next(error);
