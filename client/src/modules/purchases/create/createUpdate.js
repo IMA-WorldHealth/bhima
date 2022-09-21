@@ -196,7 +196,7 @@ function PurchaseOrderController(
         item.quantity = res.quantity;
         item.unit_price = res.unit_price;
 
-        item.number_boxes = res.number_boxes;
+        item.number_packages = res.number_packages;
         item.package_size = res.package_size;
         item.box_unit_price = res.box_unit_price;
 

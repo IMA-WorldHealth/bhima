@@ -77,16 +77,16 @@ function StockDefineLotsModalController(
   }
 
   if (vm.enablePackaging && vm.form.rows.length) {
-    let numberBoxes = 0;
+    let numberPackages = 0;
 
     vm.stockLine.package_size = vm.form.rows[0].package_size;
     vm.stockLine.box_unit_cost = vm.stockLine.package_size * vm.stockLine.unit_cost;
 
     vm.form.rows.forEach((row) => {
-      numberBoxes += row.quantity / row.package_size;
+      numberPackages += row.quantity / row.package_size;
     });
 
-    vm.stockLine.number_boxes = numberBoxes;
+    vm.stockLine.number_packages = numberPackages;
   }
 
   vm.currency = null;
@@ -117,7 +117,7 @@ function StockDefineLotsModalController(
   vm.onGlobalDateChange = onGlobalDateChange;
   vm.toggleGlobalDescExpColumn = toggleGlobalDescExpColumn;
   vm.onChangePackageManagement = onChangePackageManagement;
-  vm.onChangesLotNumberBox = onChangesLotNumberBox;
+  vm.onChangesLotNumberPackage = onChangesLotNumberPackage;
 
   vm.isCostEditable = (vm.entryType !== 'transfer_reception');
 
@@ -157,15 +157,15 @@ function StockDefineLotsModalController(
     width : 110,
     cellTemplate : 'modules/stock/entry/modals/templates/lot.barcode.tmpl.html',
   }, {
-    field : 'number_box',
+    field : 'number_package',
     type : 'number',
     width : 120,
-    displayName : 'FORM.LABELS.NUMBER_BOXES',
+    displayName : 'FORM.LABELS.NUMBER_PACKAGES',
     headerCellFilter : 'translate',
     aggregationType : uiGridConstants.aggregationTypes.sum,
     aggregationHideLabel : true,
     footerCellClass : 'text-right',
-    cellTemplate : 'modules/stock/entry/modals/templates/lot.number_box.tmpl.html',
+    cellTemplate : 'modules/stock/entry/modals/templates/lot.number_package.tmpl.html',
     visible : vm.enablePackaging,
   }, {
     field : 'quantity',
@@ -253,10 +253,10 @@ function StockDefineLotsModalController(
   }
 
   function onChangePackageManagement() {
-    vm.stockLine.quantity = vm.stockLine.number_boxes * vm.stockLine.package_size;
+    vm.stockLine.quantity = vm.stockLine.number_packages * vm.stockLine.package_size;
 
     vm.form.rows.forEach((row) => {
-      row.quantity = row.number_box * vm.stockLine.package_size;
+      row.quantity = row.number_package * vm.stockLine.package_size;
       row.package_size = vm.stockLine.package_size;
     });
 
@@ -466,8 +466,8 @@ function StockDefineLotsModalController(
     }
   }
 
-  function onChangesLotNumberBox(row) {
-    row.quantity = row.number_box * vm.stockLine.package_size;
+  function onChangesLotNumberPackage(row) {
+    row.quantity = row.number_package * vm.stockLine.package_size;
     row.package_size = vm.stockLine.package_size;
 
     vm.form.setMaxQuantity(vm.stockLine.quantity);
