@@ -591,7 +591,6 @@ function StockEntryController(
         stockLine.quantity = res.quantity;
         stockLine.unit_cost = res.unit_cost; // integration and donation price are defined in the lot modal
 
-
         if (vm.movement.entry_type === 'purchase' && res.openMultiplePackaging) {
           vm.addItems(1);
           const lastIndex = vm.stockForm.store.data.length - 1;
