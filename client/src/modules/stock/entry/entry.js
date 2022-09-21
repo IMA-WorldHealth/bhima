@@ -575,7 +575,7 @@ function StockEntryController(
       if (inventory.is_count_per_container && vm.depot.is_count_per_container) {
         stockLine.package_size = 0;
         stockLine.box_unit_cost = 0;
-        stockLine.number_boxes = 0;
+        stockLine.number_packages = 0;
       }
     }
 
@@ -591,29 +591,8 @@ function StockEntryController(
         stockLine.quantity = res.quantity;
         stockLine.unit_cost = res.unit_cost; // integration and donation price are defined in the lot modal
 
-        // console.log('WOAU+OUUUUUUuuuuuuuuu: LINE');
-        // console.log(stockLine);
 
         if (vm.movement.entry_type === 'purchase' && res.openMultiplePackaging) {
-          // const dataLine = {
-          //   code : stockLine.code,
-          //   inventory_uuid : stockLine.inventory_uuid,
-          //   label : stockLine.label,
-          //   unit_type : stockLine.unit_type,
-          //   quantity : stockLine.quantity,
-          //   is_asset : stockLine.is_asset,
-          // };
-
-          // stockLine.lots = [];
-          // stockLine.quantity = 0;
-          // stockLine._initialised = true;
-          // stockLine.box_unit_cost = 0;
-          // stockLine.number_boxes = 0;
-          // stockLine.package_size = 0;
-
-          // vm.buildStockLine(dataLine);
-
-          // vm.stockForm.addItems(1);
           vm.addItems(1);
           const lastIndex = vm.stockForm.store.data.length - 1;
 

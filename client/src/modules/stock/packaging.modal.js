@@ -45,7 +45,7 @@ function StockDefinePackagingModalController(
   }
 
   function onChangePackageManagement() {
-    vm.packaging.quantity = vm.packaging.number_boxes * vm.packaging.package_size;
+    vm.packaging.quantity = vm.packaging.number_packages * vm.packaging.package_size;
     vm.packaging.unit_price = vm.packaging.box_unit_price / vm.packaging.package_size;
   }
 
@@ -68,7 +68,7 @@ function StockDefinePackagingModalController(
         Instance.close({
           unit_price : vm.packaging.unit_price,
           quantity : vm.packaging.quantity,
-          number_boxes : vm.packaging.number_boxes,
+          number_packages : vm.packaging.number_packages,
           package_size : vm.packaging.package_size,
           box_unit_price : vm.packaging.box_unit_price,
         });
