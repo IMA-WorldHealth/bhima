@@ -5,6 +5,7 @@ PurchaseOrderController.$inject = [
   'PurchaseOrderService', 'PurchaseOrderForm', 'NotifyService', 'ModalService',
   'SessionService', 'util', 'ReceiptModal', 'bhConstants', 'StockService',
   'CurrencyService', 'ExchangeRateService', '$state', '$translate', '$q',
+  'StockModalService',
 ];
 
 /**
@@ -18,6 +19,7 @@ function PurchaseOrderController(
   Purchases, PurchaseOrder, Notify, Modal,
   Session, util, Receipts, bhConstants, Stock,
   Currencies, Exchange, $state, $translate, $q,
+  StockModal,
 ) {
   const vm = this;
 
@@ -29,6 +31,7 @@ function PurchaseOrderController(
   vm.isUpdateState = ($state.params.uuid && $state.params.uuid.length > 0);
 
   vm.enterprise = Session.enterprise;
+  vm.stockSettings = Session.stock_settings;
   vm.maxLength = util.maxLength;
   vm.maxDate = new Date();
   vm.loadingState = false;
@@ -37,6 +40,7 @@ function PurchaseOrderController(
   vm.selectInventoryArticle = selectInventoryArticle;
   vm.handleChange = handleUIGridChange;
   vm.onChangeUnitCost = onChangeUnitCost;
+  vm.setPackaging = setPackaging;
   vm.$invalid = false;
 
   vm.format = Currencies.format;
@@ -67,6 +71,14 @@ function PurchaseOrderController(
     displayName : 'TABLE.COLUMNS.UNIT',
     headerCellFilter : 'translate',
     cellFilter : 'translate',
+  }, {
+    field : 'packaging',
+    displayName : '',
+    width : 40,
+    headerCellFilter : 'translate',
+    cellFilter : 'translate',
+    visible : vm.stockSettings.enable_packaging_pharmaceutical_products,
+    cellTemplate : 'modules/purchases/create/templates/packaging.cell.tmpl.html',
   }, {
     field : 'quantity',
     width : 100,
@@ -161,6 +173,37 @@ function PurchaseOrderController(
     }
 
     vm.order.digest();
+  }
+
+  /**
+   * @method setPackaging
+   * @param {object} item
+   * @description [grid] pop up a modal for defining packaging
+   */
+  function setPackaging(item) {
+    if (!item.inventory_uuid) {
+      // Prevent the packaging modal pop-up if new inventory code has been selected
+      return;
+    }
+
+    StockModal.openSetPackaging({
+      item,
+      currency_id : vm.currencyId,
+    })
+      .then((res) => {
+        if (!res) { return; }
+        item.lots = res.lots;
+        item.quantity = res.quantity;
+        item.unit_price = res.unit_price;
+
+        item.number_packages = res.number_packages;
+        item.package_size = res.package_size;
+        item.box_unit_price = res.box_unit_price;
+
+        onChangeUnitCost(item);
+
+      })
+      .catch(Notify.handleError);
   }
 
   // this function will be called whenever items change in the grid.
