@@ -298,6 +298,7 @@ function StockExitFormService(
 
     const lotsInShipment = lots.map(lot => lot.lot_uuid);
     const lotsInPool = this._pool.list().map(lot => lot.lot_uuid);
+    console.log("Lots in pool for StockExitForm: ", lotsInPool.length);
     let lotsUnavailable = false;
     lotsInShipment.forEach(uuid => {
       if (!lotsInPool.includes(uuid)) {
@@ -336,6 +337,8 @@ function StockExitFormService(
         }
       });
 
+    console.log("Available lots in StockExitForm: ", lotsInPool.length);
+
     // If the pool does not contain one of the lots that is the shipment,
     // that is because there is no stock remaining for that lot.  So for these
     // lots we need to reconstruct the lot and add it to the unavailable list
@@ -369,16 +372,16 @@ function StockExitFormService(
       // this is how much is available to us to use
       const availableQuantity = lot._quantity_available;
 
-      // if the available quantity is greater than or equal to the required
-      // quantity, allocate the entire available quantity to this lot item
-      // and reduce the requested quantity by that amount.
       if (availableQuantity >= requestedQuantity) {
+        // if the available quantity is greater than or equal to the required
+        // quantity, allocate the entire available quantity to this lot item
+        // and reduce the requested quantity by that amount.
+        console.log("Adding lot ");
         addLot(match, requestedQuantity);
         requestedQuantity = 0;
-
-      // otherwise, we need to reduce by the quantity available in the lot,
-      // and move to the next lot to start consuming it.
       } else {
+        // otherwise, we need to reduce by the quantity available in the lot,
+        // and move to the next lot to start consuming it.
         addLot(match, availableQuantity);
         requestedQuantity -= availableQuantity;
       }
@@ -425,6 +428,7 @@ function StockExitFormService(
 
     this._toggleInfoMessage(available.length > 0, 'success', SUCCESS_FILLED_N_ITEMS, { count : available.length });
 
+    console.log("Lots added to stock exit form data: ", this.store.data.length);
   };
 
   StockExitForm.prototype.setLotsFromInventoryList = function setLotsFromInventoryList(inventories, uuidKey = 'uuid') {
@@ -600,6 +604,7 @@ function StockExitFormService(
     }
 
     if (destDepot.shipment) {
+      console.log(`Loading shipment ${destDepot.shipment.lots.length} lots into stock exit form`);
       this.details.shipment_uuid = destDepot.shipment.uuid;
       this.setLotsFromShipmentList(destDepot.shipment.lots, 'lot_uuid');
     }
