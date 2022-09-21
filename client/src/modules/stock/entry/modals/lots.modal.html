@@ -25,13 +25,13 @@
 
     <div ng-if="$ctrl.enablePackaging" >
       <div class="form-group">
-        <label class="control-label" translate>FORM.LABELS.NUMBER_BOXES</label>
+        <label class="control-label" translate>FORM.LABELS.NUMBER_PACKAGES</label>
 
         <input
           class="form-control"
           type="number"
           ng-change="$ctrl.onChangePackageManagement()"
-          ng-model="$ctrl.stockLine.number_boxes"
+          ng-model="$ctrl.stockLine.number_packages"
           ng-model-options="{ '*' : '$inherit' }"
           min="0">
       </div>
