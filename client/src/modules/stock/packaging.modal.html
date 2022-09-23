@@ -29,7 +29,7 @@
         <input
           class="form-control"
           type="number"
-          placeholder="{{ 'FORM.PLACEHOLDERS.BOX_PACKAGING' | translate }}"
+          placeholder="{{ 'FORM.PLACEHOLDERS.PACKAGING' | translate }}"
           ng-change="$ctrl.onChangePackageManagement()"
           ng-model="$ctrl.packaging.package_size"
           ng-model-options="{ '*' : '$inherit' }"
@@ -38,7 +38,7 @@
       </div>
 
       <div ng-if="!$ctrl.basic" class="form-group">
-        <label translate>FORM.LABELS.BOX_UNIT_COST</label>
+        <label translate>FORM.LABELS.PACKAGE_UNIT_COST</label>
         <div class="input-group">
           <input
             class="form-control"
