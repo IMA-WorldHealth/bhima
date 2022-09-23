@@ -18,6 +18,7 @@
       "TITLE" : "Depot Management"
     },
     "JOIN_LOCATION" : "Join location",
+    "MANAGEMENT_PRODUCTS_PACKAGING": "Management of pharmaceutical products by packaging",
     "NO_DEPOT" : "No Depot",
     "NO_DEPOT_ASSIGNED_TO_USER" : "You are not allowed to access any depot or there's no depot registered yet. Please contact the administrator if needed",
     "NOT_ALLOWED_ACTIONS" : "This depot is protected.  You cannot modify its properties.",

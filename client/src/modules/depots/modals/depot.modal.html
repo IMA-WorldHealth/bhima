@@ -103,6 +103,16 @@
       </div>
     </div>
 
+    <div class="form-group" ng-if="DepotModalCtrl.depot.is_warehouse">
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" name="is_count_per_container" ng-true-value="1" ng-false-value="0"
+            ng-model="DepotModalCtrl.depot.is_count_per_container">
+          <span translate>DEPOT.MANAGEMENT_PRODUCTS_PACKAGING</span>
+        </label>
+      </div>
+    </div>
+
     <div class="form-group">
       <div class="checkbox">
         <label>
