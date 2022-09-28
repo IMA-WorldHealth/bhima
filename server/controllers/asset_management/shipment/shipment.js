@@ -604,6 +604,7 @@ function find(params) {
     LEFT JOIN document_map dm2 ON dm2.uuid = sh.document_uuid
   `;
 
+  filters.setOrder('ORDER BY sh.reference DESC');
   const query = filters.applyQuery(sql);
   const queryParameters = filters.parameters();
   return db.exec(query, queryParameters);

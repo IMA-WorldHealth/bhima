@@ -164,8 +164,13 @@ function StockExitController(
 
   //
   function onSelectExitType(exitType, entity) {
+    vm.stockForm.details.description = null;
     vm.selectedExitType = exitType;
     vm.stockForm.setExitType(exitType.label);
+
+    if (entity.shipment) {
+      vm.stockForm.details.description = entity.shipment.description;
+    }
 
     switch (exitType.label) {
     case 'patient':
