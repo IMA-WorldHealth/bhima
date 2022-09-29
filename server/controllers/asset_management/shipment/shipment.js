@@ -531,6 +531,7 @@ function getShipmentFilters(parameters) {
   filters.equals('label', 'label', 'l');
   filters.equals('reference', 'text', 'dm');
   filters.equals('is_asset', 'is_asset', 'i');
+  filters.equals('project_id', 'project_id', 'sh');
 
   // except current
   filters.custom(
