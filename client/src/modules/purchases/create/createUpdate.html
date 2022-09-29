@@ -1,8 +1,8 @@
 <div class="flex-header">
   <div class="bhima-title">
     <ol class="headercrumb">
-      <li class="static" translate>TREE.INVENTORY</li>
-      <li class="title" translate>PURCHASES.PAGE_TITLE</li>
+      <li class="static" translate>PURCHASES.PAGE_TITLE</li>
+      <li class="title" translate>TREE.PURCHASE</li>
     </ol>
   </div>
 </div>
@@ -22,59 +22,52 @@
           <div class="col-xs-12">
             <div class="panel panel-default">
               <div class="panel-body">
-                <div class="col-md-6">
+                <div class="col-md-4">
                   <bh-supplier-select
                     supplier-uuid="PurchaseCtrl.order.details.supplier_uuid"
                     on-select-callback="PurchaseCtrl.order.setSupplier(supplier)">
                   </bh-supplier-select>
 
+                  <bh-input-text
+                    key="info_contact_name"
+                    text-value="PurchaseCtrl.order.details.info_contact_name"
+                    label="PURCHASES.INFO.CONTACT_NAME">
+                  </bh-input-text>
+
+                  <bh-input-text
+                    key="info_contact_title"
+                    text-value="PurchaseCtrl.order.details.info_contact_title"
+                    label="PURCHASES.INFO.CONTACT_TITLE">
+                  </bh-input-text>
+
+                  <bh-input-text
+                    key="info_contact_phone"
+                    text-value="PurchaseCtrl.order.details.info_contact_phone"
+                    label="PURCHASES.INFO.CONTACT_PHONE">
+                  </bh-input-text>
+
+                  <hr>
+
+                  <bh-input-text
+                    key="info_purchase_number"
+                    text-value="PurchaseCtrl.order.details.info_purchase_number"
+                    label="PURCHASES.INFO.PURCHASE_NUMBER">
+                  </bh-input-text>
+                  <bh-input-text
+                    key="info_prf_number"
+                    text-value="PurchaseCtrl.order.details.info_prf_number"
+                    label="PURCHASES.INFO.PRF_NUMBER">
+                  </bh-input-text>
+                  
+                </div>
+                <div class="col-md-4">
                   <bh-date-editor
                     date-value="PurchaseCtrl.order.details.date"
                     on-change="PurchaseCtrl.order.onDateChange(date)">
                   </bh-date-editor>
 
-                  <div class="form-group">
-                    <label class="control-label">
-                      <span translate>FORM.LABELS.PAYMENT_METHOD</span>
-                      <span
-                        class="text-info fa fa-info-circle"
-                        uib-popover-template="'typePopover.tmpl.html'"
-                        popover-placement="right"
-                        popover-append-to-body="true"
-                        popover-trigger="mouseenter">
-                      </span>
-                    </label>
-
-                    <div class="radio" style="margin-top:0;">
-                      <label>
-                        <input type="radio" name="paymentMethod" id="on-purchase" value="FORM.LABELS.ON_PURCHASE" ng-model="PurchaseCtrl.order.details.payment_method" required>
-                        <span translate>FORM.LABELS.ON_PURCHASE</span>
-                      </label>
-                    </div>
-                    <div class="radio">
-                      <label>
-                        <input type="radio" name="paymentMethod" id="on-delivery" value="FORM.LABELS.ON_DELIVERY" ng-model="PurchaseCtrl.order.details.payment_method" required>
-                        <span translate>FORM.LABELS.ON_DELIVERY</span>
-                      </label>
-                    </div>
-                    <div class="radio">
-                      <label>
-                        <input type="radio" name="paymentMethod" id="other" value="FORM.LABELS.OTHER" ng-model="PurchaseCtrl.order.details.payment_method" required>
-                        <span translate>FORM.LABELS.OTHER</span>
-                      </label>
-                    </div>
-
-                    <div class="help-block" ng-messages="PurchaseOrderForm.paymentMethod.$error" ng-show="PurchaseOrderForm.$submitted">
-                      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-                    </div>
-                  </div>
-
-                </div>
-
-                <div class="col-md-6">
                   <div
                     class="form-group"
-                    style="margin-bottom: 0.5em"
                     ng-show="PurchaseCtrl.hasMultipleCurrencies"
                     ng-class="{ 'has-error' : PurchaseCtrl.$submitted && PurchaseCtrl.currency.$invalid }">
                     <label class="control-label" translate>FORM.LABELS.CURRENCY</label>
@@ -107,24 +100,6 @@
                       <i>{{ PurchaseCtrl.currentExchangeRate | currency:PurchaseCtrl.rate.currency.id }}</i>
                       <i><span translate>FORM.INFO.PER</span> {{PurchaseCtrl.enterprise.currencySymbol}}</i>
                   </div>
-
-                  <div
-                    class="form-group"
-                    ng-class="{'has-error' : PurchaseOrderForm.$submitted && PurchaseOrderForm.notes.$invalid }">
-                    <label class="control-label" translate>FORM.LABELS.NOTES </label>
-                    <textarea
-                      ng-model="PurchaseCtrl.order.details.note"
-                      name="notes"
-                      class="form-control"
-                      rows="5"
-                      ng-maxlength="PurchaseCtrl.maxLength"
-                      required>
-                    </textarea>
-                    <div class="help-block" ng-messages="PurchaseOrderForm.notes.$error" ng-show="PurchaseOrderForm.$submitted">
-                      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-                    </div>
-                  </div>
-
                   <div
                     class="form-group"
                     ng-class="{'has-error' : PurchaseOrderForm.$submitted && PurchaseOrderForm.shipping_handling.$invalid }">
@@ -142,8 +117,115 @@
                     </div>
                   </div>
 
+                  <div class="form-group">
+                    <label class="control-label">
+                      <span translate>FORM.LABELS.PAYMENT_METHOD</span>
+                      <span
+                        class="text-info fa fa-info-circle"
+                        uib-popover-template="'typePopover.tmpl.html'"
+                        popover-placement="right"
+                        popover-append-to-body="true"
+                        popover-trigger="mouseenter">
+                      </span>
+                    </label>
+  
+                    <div class="radio" style="margin-top:0;">
+                      <label>
+                        <input type="radio" name="paymentMethod" id="on-purchase" value="FORM.LABELS.ON_PURCHASE" ng-model="PurchaseCtrl.order.details.payment_method" required>
+                        <span translate>FORM.LABELS.ON_PURCHASE</span>
+                      </label>
+                    </div>
+                    <div class="radio">
+                      <label>
+                        <input type="radio" name="paymentMethod" id="on-delivery" value="FORM.LABELS.ON_DELIVERY" ng-model="PurchaseCtrl.order.details.payment_method" required>
+                        <span translate>FORM.LABELS.ON_DELIVERY</span>
+                      </label>
+                    </div>
+                    <div class="radio">
+                      <label>
+                        <input type="radio" name="paymentMethod" id="other" value="FORM.LABELS.OTHER" ng-model="PurchaseCtrl.order.details.payment_method" required>
+                        <span translate>FORM.LABELS.OTHER</span>
+                      </label>
+                    </div>
+  
+                    <div class="help-block" ng-messages="PurchaseOrderForm.paymentMethod.$error" ng-show="PurchaseOrderForm.$submitted">
+                      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                    </div>
+                  </div>
+
+                  <div
+                    class="form-group">
+                    <label class="control-label" translate>PURCHASES.INFO.PAYMENT_CONDITION</label>
+                    <textarea
+                      ng-model="PurchaseCtrl.order.details.info_payment_condition"
+                      name="info_payment_condition"
+                      class="form-control"
+                      rows="3"
+                      ng-maxlength="PurchaseCtrl.maxLength">
+                    </textarea>
+                  </div>
+                </div>
+                <div class="col-md-4">
+
+                  <bh-input-text
+                    key="info_delivery_date"
+                    text-value="PurchaseCtrl.order.details.info_delivery_date"
+                    label="PURCHASES.INFO.DELIVERY_DATE">
+                  </bh-input-text>
+
+                  <bh-input-text
+                    key="info_delivery_location"
+                    text-value="PurchaseCtrl.order.details.info_delivery_location"
+                    label="PURCHASES.INFO.DELIVERY_LOCATION">
+                  </bh-input-text>
+  
+                  <div
+                    class="form-group">
+                    <label class="control-label" translate>PURCHASES.INFO.DELIVERY_CONDITION</label>
+                    <textarea
+                      ng-model="PurchaseCtrl.order.details.info_delivery_condition"
+                      name="info_delivery_condition"
+                      class="form-control"
+                      rows="3"
+                      ng-maxlength="PurchaseCtrl.maxLength">
+                    </textarea>
+                  </div>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <div
+              class="form-group"
+              ng-class="{'has-error' : PurchaseOrderForm.$submitted && PurchaseOrderForm.notes.$invalid }">
+              <label class="control-label" translate>FORM.LABELS.NOTES </label>
+              <textarea
+                ng-model="PurchaseCtrl.order.details.note"
+                name="notes"
+                class="form-control"
+                rows="2"
+                ng-maxlength="PurchaseCtrl.maxLength"
+                required>
+              </textarea>
+              <div class="help-block" ng-messages="PurchaseOrderForm.notes.$error" ng-show="PurchaseOrderForm.$submitted">
+                <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div
+              class="form-group">
+              <label class="control-label" translate>PURCHASES.INFO.SPECIAL_INSTRUCTION</label>
+              <textarea
+                ng-model="PurchaseCtrl.order.details.info_special_instruction"
+                name="info_special_instruction"
+                class="form-control"
+                rows="2"
+                ng-maxlength="PurchaseCtrl.maxLength">
+              </textarea>
             </div>
           </div>
         </div>

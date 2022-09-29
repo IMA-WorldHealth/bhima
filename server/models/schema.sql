@@ -1259,6 +1259,7 @@ DROP TABLE IF EXISTS `entity`;
 CREATE TABLE `entity` (
   `uuid`               BINARY(16) NOT NULL,
   `display_name`       VARCHAR(190) NOT NULL,
+  `title`              VARCHAR(150) NULL,
   `gender`             CHAR(1) NOT NULL,
   `email`              VARCHAR(150) NULL,
   `phone`              VARCHAR(50) NULL,
@@ -1407,6 +1408,16 @@ CREATE TABLE `purchase` (
   `note`              TEXT,
   `edited`            BOOLEAN NOT NULL DEFAULT FALSE,
   `status_id`         TINYINT(3) UNSIGNED NOT NULL DEFAULT 1,
+  `info_purchase_number`     VARCHAR(50),
+  `info_prf_number`          VARCHAR(50),
+  `info_contact_name`        VARCHAR(50),
+  `info_contact_phone`       VARCHAR(20),
+  `info_contact_title`       VARCHAR(50),
+  `info_delivery_location`   VARCHAR(100),
+  `info_delivery_date`       VARCHAR(50),
+  `info_delivery_condition`  TEXT,
+  `info_special_instruction` TEXT,
+  `info_payment_condition`   TEXT,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `purchase_1` (`project_id`, `reference`),
   KEY `project_id` (`project_id`),
@@ -1694,10 +1705,13 @@ CREATE TABLE `supplier` (
   `phone`           VARCHAR(15) DEFAULT NULL,
   `international`   TINYINT(1) NOT NULL DEFAULT 0,
   `locked`          TINYINT(1) NOT NULL DEFAULT 0,
+  `contact_uuid`    BINARY(16) NULL,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `supplier_1` (`display_name`),
   KEY `creditor_uuid` (`creditor_uuid`),
-  CONSTRAINT `supplier__creditor` FOREIGN KEY (`creditor_uuid`) REFERENCES `creditor` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
+  KEY `contact_uuid` (`contact_uuid`),
+  CONSTRAINT `supplier__creditor` FOREIGN KEY (`creditor_uuid`) REFERENCES `creditor` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `supplier__contact` FOREIGN KEY (`contact_uuid`) REFERENCES `entity` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `taxe_ipr`;
