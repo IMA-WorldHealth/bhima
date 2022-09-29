@@ -2,12 +2,12 @@ angular.module('bhima.controllers')
   .controller('SupplierCreateUpdateController', SupplierCreateUpdateController);
 
 SupplierCreateUpdateController.$inject = [
-  'data', '$state', 'SupplierService',
+  'data', 'SupplierService',
   'NotifyService', '$uibModalInstance',
   'CreditorGroupService',
 ];
 
-function SupplierCreateUpdateController(data, $state, SupplierService, Notify,
+function SupplierCreateUpdateController(data, SupplierService, Notify,
   Instance, CreditorGroups) {
   const vm = this;
   vm.close = Instance.close;
@@ -16,6 +16,10 @@ function SupplierCreateUpdateController(data, $state, SupplierService, Notify,
   vm.supplier = angular.copy(data);
   vm.isCreate = !vm.supplier.uuid;
   vm.action = vm.isCreate ? 'FORM.LABELS.CREATE' : 'FORM.LABELS.UPDATE';
+
+  vm.onSelectContact = entity => {
+    vm.supplier.contact_uuid = entity.uuid;
+  };
 
   init();
 
@@ -43,7 +47,15 @@ function SupplierCreateUpdateController(data, $state, SupplierService, Notify,
     // load Creditors
     CreditorGroups.read().then(groups => {
       vm.groups = groups;
+      return data.uuid ? SupplierService.read(data.uuid) : null;
     })
+      .then(supplier => {
+        delete supplier.contact_name;
+        delete supplier.contact_phone;
+        delete supplier.contact_email;
+        delete supplier.contact_title;
+        vm.supplier = supplier || data;
+      })
       .catch(Notify.handleError);
   }
 
