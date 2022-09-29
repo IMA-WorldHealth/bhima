@@ -25,6 +25,25 @@
       "RECEIVED_DESC" : "La commande a été reçu et se trouve dans le stock",
       "WAITING_CONFIRMATION" : "En Attente de confirmation",
       "WAITING_CONFIRMATION_DESC" : "Le fournisseur n'a pas encore confirmé qu'il saura fournir la commande"
+    },
+    "INFO" : {
+      "PURCHASE_NUMBER" : "Numero commande",
+      "PRF_NUMBER" : "Numero PRF",
+      "CONTACT_NAME" : "Personne de contact",
+      "CONTACT_PHONE" : "Téléphone du contact",
+      "CONTACT_TITLE" : "Titre du contact",
+      "DELIVERY_LOCATION" : "Lieu de livraison",
+      "DELIVERY_DATE" : "Date de livraison",
+      "DELIVERY_CONDITION" : "Condition de livraison",
+      "PAYMENT_CONDITION" : "Condition de paiement",
+      "SPECIAL_INSTRUCTION" : "Instruction speciale",
+      "REQUESTED_BY": "Demandé par (nom en caractères d'imprimerie)",
+      "APPROVED_BY": "Approuvé par (nom en caractères d'imprimerie)",
+      "APPROVED_TWO_BY": "Deuxième approbation (nom en caractères d'imprimerie)",
+      "SIGNATURE": "Signature",
+      "DATE": "Date",
+      "TITLE": "Titre",
+      "SUPPLIER_OBLIGATION": "Le fournisseur est tenu de signer et de renvoyer une copie de ce bon de commande :"
     }
   }
 }

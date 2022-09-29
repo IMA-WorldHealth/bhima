@@ -15,7 +15,7 @@ function EntityService(Api, util) {
   const service = new Api(baseUrl);
   service.types = new Api(baseUrl.concat('types/'));
 
-  const entityKeys = ['uuid', 'display_name', 'gender', 'email', 'phone', 'address', 'entity_type_id'];
+  const entityKeys = ['uuid', 'display_name', 'title', 'gender', 'email', 'phone', 'address', 'entity_type_id'];
   service.clean = entity => util.maskObjectFromKeys(entity, entityKeys);
 
   return service;

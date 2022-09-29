@@ -96,6 +96,17 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
     this.details.note = order.note;
     this.details.supplier_uuid = order.supplier_uuid;
 
+    this.details.info_purchase_number = order.info_purchase_number;
+    this.details.info_prf_number = order.info_prf_number;
+    this.details.info_contact_name = order.info_contact_name;
+    this.details.info_contact_phone = order.info_contact_phone;
+    this.details.info_contact_title = order.info_contact_title;
+    this.details.info_delivery_location = order.info_delivery_location;
+    this.details.info_delivery_date = order.info_delivery_date;
+    this.details.info_delivery_condition = order.info_delivery_condition;
+    this.details.info_special_instruction = order.info_special_instruction;
+    this.details.info_payment_condition = order.info_payment_condition;
+
     // TODO(@jniles) - what do we do about user_id?  Should we
     // modify it?  Keep a table of modifications to purchase orders?
     // NOTE(@jniles) - Vanga would like to see who modified the purchase orders.
@@ -191,9 +202,11 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
    */
   PurchaseOrderForm.prototype.setSupplier = function setSupplier(supplier) {
     const order = this;
-
     // attach the creditor uuid to the request
     order.details.supplier_uuid = supplier.uuid;
+    order.details.info_contact_name = supplier.contact_name;
+    order.details.info_contact_title = supplier.contact_title;
+    order.details.info_contact_phone = supplier.contact_phone;
 
     // add a single item to the order to begin
     if (order.store.data.length === 0) {
