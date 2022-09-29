@@ -24,7 +24,7 @@ function StockDefineLotsModalController(
 
   // Hide columns in the grid when it doesn't apply to this inventory item.
   const isAsset = Data.stockLine.is_asset;
-  const showShowExpirationDate = !(Data.stockLine.tracking_expiration === false || Data.stockLine.is_asset);
+  const showShowExpirationDate = !(Data.stockLine.tracking_expiration === 0 || Data.stockLine.is_asset);
 
   Data.stockLine.prev_unit_cost = Data.stockLine.unit_cost; // Save for later checks
 

@@ -4,13 +4,13 @@ angular.module('bhima.controllers')
 ShipmentRegistryController.$inject = [
   '$state', 'ShipmentService', 'ShipmentFilter', 'ShipmentModalService', 'ModalService',
   'uiGridConstants', 'GridStateService', 'GridColumnService',
-  'NotifyService', 'bhConstants',
+  'NotifyService', 'bhConstants', 'GridSortingService',
 ];
 
 function ShipmentRegistryController(
   $state, Shipments, ShipmentFilter, ShipmentModal, Modal,
   GridConstants, GridState, Columns,
-  Notify, Constants,
+  Notify, Constants, Sorting,
 ) {
   const vm = this;
   const cacheKey = 'shipment-grid';
@@ -55,6 +55,7 @@ function ShipmentRegistryController(
       headerTooltip : 'SHIPMENT.REFERENCE',
       headerCellFilter : 'translate',
       headerCellClass : 'wrappingColHeader',
+      sortingAlgorithm : Sorting.algorithms.sortByReference,
     },
     {
       field : 'stock_reference',
