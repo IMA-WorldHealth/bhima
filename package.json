@@ -124,7 +124,7 @@
     "jaro-winkler": "^0.2.8",
     "jquery": "^3.6.1",
     "jsbarcode": "^3.11.5",
-    "json-2-csv": "^3.17.1",
+    "json-2-csv": "^3.17.2",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.21",
     "moment": "^2.29.4",
