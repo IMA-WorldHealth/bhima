@@ -57,6 +57,11 @@ function SearchShipmentModalController(
     }
   };
 
+  vm.onSelectProject = (project) => {
+    displayValues.project_id = project.name;
+    vm.searchQueries.project_id = project.id;
+  };
+
   // deletes a filter from the custom filter object,
   // this key will no longer be written to changes on exit
   vm.clear = function clear(key) {

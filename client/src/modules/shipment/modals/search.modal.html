@@ -44,6 +44,13 @@
             <bh-clear on-clear="$ctrl.clear('destination_depot_uuid')"></bh-clear>
           </bh-depot-select>
 
+          <bh-project-select
+            project-id="$ctrl.searchQueries.project_id"
+            name="project_id"
+            on-select-callback="$ctrl.onSelectProject(project)">
+            <bh-clear on-clear="$ctrl.clear('project_id')"></bh-clear>
+          </bh-project-select>
+
           <!-- status -->
           <div class="form-group">
               <p class="control-label" style="margin-bottom:5px;">
