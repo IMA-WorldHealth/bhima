@@ -64,6 +64,14 @@ function LotsRegistryService(uiGridConstants, Session) {
       headerCellFilter : 'translate',
       visible : false,
     }, {
+      field : 'packaging',
+      displayName : '',
+      width : 40,
+      headerCellFilter : 'translate',
+      cellFilter : 'translate',
+      visible      : false,
+      cellTemplate : 'modules/stock/lots/templates/packaging.cell.tmpl.html',
+    }, {
       field : 'quantity',
       displayName : 'STOCK.QUANTITY',
       headerTooltip : 'STOCK.QUANTITY',

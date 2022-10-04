@@ -26,6 +26,13 @@
     <div ng-if="$ctrl.enablePackaging" >
       <div class="form-group">
         <label class="control-label" translate>FORM.LABELS.NUMBER_PACKAGES</label>
+        <span
+        uib-popover="{{ 'FORM.INFO.NUMBER_PACKAGE_INFO' | translate }}"
+        popover-placement="right"
+        popover-trigger="'mouseenter'"
+        popover-append-to-body="true">
+          <i class="text-primary fa fa-info-circle"></i>
+        </span>
 
         <input
           class="form-control"
@@ -38,6 +45,13 @@
 
       <div class="form-group">
         <label class="control-label" translate>FORM.LABELS.PACK_SIZE</label>
+        <span
+        uib-popover="{{ 'FORM.INFO.PACK_SIZE_INFO' | translate }}"
+        popover-placement="right"
+        popover-trigger="'mouseenter'"
+        popover-append-to-body="true">
+          <i class="text-primary fa fa-info-circle"></i>
+        </span>
         <input
           class="form-control"
           type="number"
@@ -51,6 +65,13 @@
 
       <div class="form-group">
         <label translate>FORM.LABELS.PACKAGE_UNIT_COST</label>
+        <span
+        uib-popover="{{ 'FORM.INFO.PACKAGE_UNIT_COST_INFO' | translate }}"
+        popover-placement="right"
+        popover-trigger="'mouseenter'"
+        popover-append-to-body="true">
+          <i class="text-primary fa fa-info-circle"></i>
+        </span>        
         <div ng-if="$ctrl.isCostEditable" class="input-group">
           <input
             class="form-control"
