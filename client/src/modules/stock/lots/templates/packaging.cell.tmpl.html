@@ -1,0 +1,10 @@
+<div class="ui-grid-cell-contents text-center">
+  <span
+    ng-if="row.entity.package_size > 1"
+    uib-popover-template="'modules/stock/lots/templates/pack_info.tmpl.html'"
+    popover-placement="right"
+    popover-trigger="'mouseenter'"
+    popover-append-to-body="true">
+    <i class="fa fa-cube text-info"></i>
+  </span>
+</div>

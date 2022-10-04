@@ -383,7 +383,7 @@ async function getLotsDepot(depotUuid, params, finalClause) {
       SUM(m.quantity * IF(m.is_exit = 1, -1, 1)) AS quantity,
       SUM(m.quantity) AS mvt_quantity,
       d.text AS depot_text, l.unit_cost, l.expiration_date,
-      l.serial_number, l.reference_number,
+      l.serial_number, l.reference_number, l.package_size,
       d.min_months_security_stock, d.default_purchase_interval,
       DATEDIFF(l.expiration_date, CURRENT_DATE()) AS lifetime,
       BUID(l.inventory_uuid) AS inventory_uuid,
