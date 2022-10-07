@@ -267,7 +267,7 @@ async function getAssets(params) {
     SELECT BUID(l.uuid) AS uuid, l.label, l.description AS lot_description,
       SUM(m.quantity * IF(m.is_exit = 1, -1, 1)) AS quantity,
       d.text AS depot_text, l.unit_cost, l.expiration_date,
-      l.serial_number, l.reference_number,
+      l.serial_number, l.reference_number, l.package_size,
       BUID(l.inventory_uuid) AS inventory_uuid,
       i.code AS inventory_code, i.text as inventory_label,
       BUID(m.depot_uuid) AS depot_uuid,
@@ -383,13 +383,13 @@ async function getLotsDepot(depotUuid, params, finalClause) {
       SUM(m.quantity * IF(m.is_exit = 1, -1, 1)) AS quantity,
       SUM(m.quantity) AS mvt_quantity,
       d.text AS depot_text, l.unit_cost, l.expiration_date,
-      l.serial_number, l.reference_number,
+      l.serial_number, l.reference_number, l.package_size,
       d.min_months_security_stock, d.default_purchase_interval,
       DATEDIFF(l.expiration_date, CURRENT_DATE()) AS lifetime,
       BUID(l.inventory_uuid) AS inventory_uuid,
       i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
       i.is_asset, i.manufacturer_brand, i.manufacturer_model,
-      m.date AS entry_date, i.purchase_interval, i.delay,
+      m.date AS entry_date, i.purchase_interval, i.delay, i.is_count_per_container,
       IF(ISNULL(iu.token), iu.text, CONCAT("INVENTORY.UNITS.",iu.token,".TEXT")) AS unit_type,
       ig.name AS group_name, ig.tracking_expiration, ig.tracking_consumption,
       dm.text AS documentReference, t.name AS tag_name, t.color, sv.wac,
@@ -557,7 +557,7 @@ async function getLotsMovements(depotUuid, params) {
   const sql = `
     SELECT
       BUID(l.uuid) AS uuid, l.label, l.serial_number, l.unit_cost, l.expiration_date,
-      m.quantity, m.reference, m.description,
+      m.quantity, m.reference, m.description, l.package_size,
       d.text AS depot_text, d.min_months_security_stock,
       IF(is_exit = 1, "OUT", "IN") AS io, BUID(l.inventory_uuid) AS inventory_uuid,
       (SELECT MIN(sm.date) FROM stock_movement sm WHERE sm.lot_uuid = l.uuid) AS entry_date,
@@ -646,7 +646,7 @@ function listLostStock(params) {
       dest.quantity AS quantityRecd, ex.quantity AS quantitySent,
       IFNULL((ex.quantity - dest.quantity), 0) AS quantityDifference,
       i.code AS inventory_code, i.text AS inventory_name,
-      l.label AS lotLabel, l.expiration_date AS expirationDate,
+      l.label AS lotLabel, l.expiration_date AS expirationDate, l.package_size,
       dest.unit_cost, (dest.quantity * dest.unit_cost) AS total_cost
     FROM stock_movement dest
     JOIN depot dd ON dd.uuid = dest.depot_uuid

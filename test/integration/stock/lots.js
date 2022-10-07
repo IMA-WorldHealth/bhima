@@ -13,7 +13,7 @@ describe('(/lots/) The lots HTTP API', () => {
           'uuid', 'label', 'quantity', 'unit_cost',
           'entry_date', 'expiration_date', 'inventory_uuid',
           'inventory_code', 'inventory_name', 'tags',
-          'is_asset', 'reference_number', 'serial_number',
+          'is_asset', 'reference_number', 'serial_number', 'package_size',
         ];
         expect(res.body).to.have.all.keys(expectedKeys);
       })

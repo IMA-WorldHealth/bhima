@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 StockLotsController.$inject = [
   'StockService', 'NotifyService', 'uiGridConstants', 'StockModalService', 'LanguageService',
   'GridGroupingService', 'GridStateService', 'GridColumnService', '$state', '$httpParamSerializer',
-  'BarcodeService', 'LotsRegistryService', 'moment', 'bhConstants', 'ReceiptModal',
+  'BarcodeService', 'LotsRegistryService', 'moment', 'bhConstants', 'ReceiptModal', 'SessionService',
 ];
 
 /**
@@ -14,10 +14,12 @@ StockLotsController.$inject = [
 function StockLotsController(
   Stock, Notify, uiGridConstants, Modal, Languages,
   Grouping, GridState, Columns, $state, $httpParamSerializer,
-  Barcode, LotsRegistry, moment, bhConstants, Receipts,
+  Barcode, LotsRegistry, moment, bhConstants, Receipts, Session,
 ) {
   const vm = this;
   const cacheKey = 'lot-grid';
+  vm.displayPackaging = false;
+
   const stockLotFilters = Stock.filter.lot;
 
   vm.bhConstants = bhConstants;
@@ -30,6 +32,8 @@ function StockLotsController(
 
   // show lot barcode
   vm.openLotBarcodeModal = openLotBarcodeModal;
+
+  vm.stockSettings = Session.stock_settings;
 
   // options for the UI grid
   vm.gridOptions = {
@@ -50,6 +54,13 @@ function StockLotsController(
 
   // expose to the view model
   vm.grouping = new Grouping(vm.gridOptions, false, 'depot_text', true, true);
+
+  const columnPackaging = vm.gridOptions.columnDefs.find(col => col.field === 'packaging');
+  if (vm.stockSettings.enable_packaging_pharmaceutical_products) {
+    vm.displayPackaging = true;
+  }
+
+  columnPackaging.visible = vm.displayPackaging;
 
   vm.getQueryString = Stock.getQueryString;
   vm.clearGridState = clearGridState;
@@ -168,6 +179,9 @@ function StockLotsController(
         lots.forEach((lot) => {
           const delay = moment(new Date(lot.expiration_date)).diff(current);
           lot.delay_expiration = moment.duration(delay).humanize(true);
+          if (lot.package_size > 1) {
+            lot.numberPackage = Math.floor(lot.quantity / lot.package_size);
+          }
 
           if (lot.expired) {
             totals.expired += 1;

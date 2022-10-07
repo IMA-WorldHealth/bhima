@@ -468,6 +468,7 @@ CREATE TABLE `depot` (
   `parent_uuid` BINARY(16) NULL,
   `dhis2_uid` VARCHAR(150) DEFAULT NULL,
   `default_purchase_interval` DECIMAL(19,4) NOT NULL DEFAULT 0,
+  `is_count_per_container` TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `depot_1` (`text`),
   INDEX `parent_uuid` (`parent_uuid`)
@@ -796,6 +797,7 @@ CREATE TABLE `inventory` (
   `is_asset`  TINYINT(1) NOT NULL DEFAULT 0,
   `manufacturer_brand` TEXT NULL,
   `manufacturer_model` TEXT NULL,
+  `is_count_per_container` TINYINT(1) NOT NULL DEFAULT 0,
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`uuid`),
@@ -1896,6 +1898,7 @@ CREATE TABLE `stock_setting` (
   `default_purchase_interval` DECIMAL(19,4) NOT NULL DEFAULT 0, -- default minimum purchase order intervall)
   `enable_expired_stock_out` TINYINT(1) NOT NULL DEFAULT 0,
   `default_cost_center_for_loss` MEDIUMINT(8) NULL,
+  `enable_packaging_pharmaceutical_products` TINYINT(1) NOT NULL DEFAULT 0,
   CONSTRAINT `stock_setting__enterprise` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
@@ -1918,6 +1921,7 @@ CREATE TABLE `lot` (
   `is_assigned`       TINYINT(1) NULL DEFAULT 0,
   `reference_number`  TEXT NULL,
   `serial_number`     VARCHAR(40) NULL,
+  `package_size`      INT(11) NOT NULL DEFAULT 1,
   PRIMARY KEY (`uuid`),
   KEY `inventory_uuid` (`inventory_uuid`),
   CONSTRAINT `lot__inventory` FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`)
