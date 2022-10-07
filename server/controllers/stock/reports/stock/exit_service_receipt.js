@@ -37,7 +37,9 @@ async function stockExitServiceReceipt(documentUuid, session, options) {
       m.quantity, m.unit_cost, (m.quantity * m.unit_cost) AS total , m.date, m.description,
       u.display_name AS user_display_name, s.name AS service_display_name,
       dm.text AS document_reference,
-      l.label, l.expiration_date, d.text AS depot_name,
+      l.label, l.expiration_date, d.text AS depot_name, d.is_count_per_container,
+      l.package_size, FLOOR(m.quantity / l.package_size) number_package,
+      IF(l.package_size <= 1, 0, 1) AS displayDetail,
       BUID(m.stock_requisition_uuid) AS stock_requisition_uuid, sr_m.text AS document_requisition
     FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
@@ -79,7 +81,11 @@ async function stockExitServiceReceipt(documentUuid, session, options) {
     document_requisition : line.document_requisition,
     voucher_reference    : voucherReference,
     autoStockAccountingEnabled,
+    depot_count_per_container : line.is_count_per_container,
   };
+
+  data.displayPackagingDetails = session.stock_settings.enable_packaging_pharmaceutical_products
+    && data.details.depot_count_per_container;
 
   data.rows = rows;
 

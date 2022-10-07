@@ -125,10 +125,12 @@ function getLotsInStockForDate(depotUuid, date) {
         inventory.text,
         inventory.unit_weight,
         inventory.is_asset,
+        inventory.is_count_per_container,
         BUID(inventory.group_uuid) AS group_uuid,
         lot.expiration_date,
         (lot.expiration_date < DATE(?)) AS is_expired,
         lot.label,
+        lot.package_size,
         inventory_group.tracking_expiration,
         inventory_group.tracking_consumption,
         IF(ISNULL(inventory_unit.token), inventory_unit.text, CONCAT("INVENTORY.UNITS.",inventory_unit.token,".TEXT"))
@@ -326,7 +328,7 @@ async function update(req, res, next) {
         allow_entry_purchase, allow_entry_donation, allow_entry_integration, allow_entry_transfer,
         allow_exit_debtor, allow_exit_service, allow_exit_transfer, allow_exit_loss,
         min_months_security_stock, IF(parent_uuid IS NULL, 0, BUID(parent_uuid)) as parent_uuid,
-        dhis2_uid, default_purchase_interval
+        dhis2_uid, default_purchase_interval, is_count_per_container
       FROM depot WHERE uuid = ?`;
     const rows = await db.exec(sql, [uid]);
 
@@ -371,7 +373,7 @@ function list(req, res, next) {
       d.allow_entry_purchase, d.allow_entry_donation, d.allow_entry_integration,
       d.allow_entry_transfer, d.allow_exit_debtor, d.allow_exit_service,
       d.allow_exit_transfer, d.allow_exit_loss, BUID(d.location_uuid) AS location_uuid,
-      d.min_months_security_stock, d.default_purchase_interval,
+      d.min_months_security_stock, d.default_purchase_interval, d.is_count_per_container,
       IFNULL(BUID(d.parent_uuid), 0) as parent_uuid, d.dhis2_uid, v.name as village_name,
       s.name as sector_name, p.name as province_name, c.name as country_name
     FROM depot d
@@ -391,6 +393,7 @@ function list(req, res, next) {
   filters.custom('exception', 'd.uuid NOT IN (?)');
   filters.fullText('text', 'text', 'd');
   filters.equals('is_warehouse', 'is_warehouse', 'd');
+  filters.equals('is_count_per_container', 'is_count_per_container', 'd');
   filters.equals('uuid', 'uuid', 'd');
   hasUuids(options.uuids, filters);
   filters.equals('enterprise_id', 'enterprise_id', 'd');
@@ -450,7 +453,7 @@ function searchByName(req, res, next) {
       d.allow_entry_purchase, d.allow_entry_donation, d.allow_entry_integration,
       d.allow_entry_transfer, d.allow_exit_debtor, d.allow_exit_service,
       d.allow_exit_transfer, d.allow_exit_loss, BUID(d.location_uuid) AS location_uuid,
-      IF(parent_uuid, BUID(parent_uuid), 0) as parent_uuid, d.dhis2_uid,
+      IF(parent_uuid, BUID(parent_uuid), 0) as parent_uuid, d.dhis2_uid, d.is_count_per_container,
       d.default_purchase_interval, v.name as village_name, s.name as sector_name,
       p.name as province_name, c.name as country_name
     FROM depot d
@@ -497,7 +500,7 @@ async function detail(req, res, next) {
       allow_entry_purchase, allow_entry_donation, allow_entry_integration, allow_entry_transfer,
       allow_exit_debtor, allow_exit_service, allow_exit_transfer, allow_exit_loss,
       BUID(parent_uuid) parent_uuid, dhis2_uid,
-      min_months_security_stock, default_purchase_interval
+      min_months_security_stock, default_purchase_interval, is_count_per_container
     FROM depot AS d
     WHERE d.enterprise_id = ? AND d.uuid = ? `;
 
