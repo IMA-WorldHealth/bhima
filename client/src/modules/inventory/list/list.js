@@ -105,6 +105,13 @@ function InventoryListController(
     headerCellFilter : 'translate',
     cellTemplate : 'modules/stock/inventories/templates/unit.tmpl.html',
   }, {
+    field : 'is_count_per_container',
+    displayName : 'FORM.LABELS.PACKAGED',
+    headerCellFilter : 'translate',
+    cellClass : 'text-right',
+    type : 'number',
+    cellTemplate : '/modules/inventory/list/templates/packaged.cell.tmpl.html',
+  }, {
     field : 'unit_weight',
     displayName : 'FORM.LABELS.WEIGHT',
     headerCellFilter : 'translate',

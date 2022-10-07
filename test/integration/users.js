@@ -156,7 +156,6 @@ describe('(/users) Users and Permissions', () => {
       .catch(helpers.handler);
   });
 
-
   it('DELETE /users/:id will not possible to delete the user who have Permissions', () => {
     return agent.delete(`/users/${newUser.id}`)
       .then(res => {
@@ -196,7 +195,6 @@ describe('(/users) Users and Permissions', () => {
       })
       .catch(helpers.handler);
   });
-
 
   // Add cashbox permissions for user
   it('POST /users/:id/cashboxes will create user cashboxes', () => {

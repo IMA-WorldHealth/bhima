@@ -28,6 +28,9 @@ function stockExitDepotReceipt(documentUuid, session, options) {
     .then(data => {
       const { key } = identifiers.STOCK_EXIT;
 
+      data.displayPackagingDetails = session.stock_settings.enable_packaging_pharmaceutical_products
+      && data.exit.details.depot_count_per_container;
+
       // get the total cost of the movement
       data.totals = { cost : data.rows.reduce((agg, row) => agg + row.total, 0) };
 
