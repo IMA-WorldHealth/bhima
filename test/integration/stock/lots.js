@@ -14,6 +14,7 @@ describe('(/lots/) The lots HTTP API', () => {
           'entry_date', 'expiration_date', 'inventory_uuid',
           'inventory_code', 'inventory_name', 'tags',
           'is_asset', 'reference_number', 'serial_number', 'package_size',
+		  'is_count_per_container',
         ];
         expect(res.body).to.have.all.keys(expectedKeys);
       })
