@@ -76,6 +76,9 @@
         <th>{{translate 'STOCK.INVENTORY'}}</th>
         <th>{{translate 'STOCK.LOT'}}</th>
         <th>{{translate 'STOCK.EXPIRATION'}}</th>
+        {{#if displayPackagingDetails}}
+          <th>{{translate 'STOCK.PACKAGING'}}</th>
+        {{/if}}
         <th>{{translate 'STOCK.QUANTITY'}}</th>
         <th>{{translate 'STOCK.UNIT_COST'}}</th>
         {{#if details.p_shipping_handling}}
@@ -95,6 +98,13 @@
           {{else}}
             <td></td>
           {{/if}}
+          {{#if ../displayPackagingDetails}}
+            <td class="text-left" style="font-size: 9.5px;">
+              {{#if displayDetail}}
+                {{translate 'STOCK.NUMBER_PACKAGES'}} : <strong>{{number_package}}</strong> : <strong>(B/{{package_size}})</strong>
+              {{/if}}
+            </td>
+          {{/if}}
           <td class="text-right">{{quantity}}</td>
           <td class="text-right">{{currency unit_cost_base ../details.p_currency_id}}</td>
           {{#if ../details.p_shipping_handling}}
@@ -103,7 +113,11 @@
           <td class="text-right">{{currency cost_deliv ../details.p_currency_id}}</td>
         </tr>
       {{else}}
-        {{> emptyTable columns=9}}
+        {{#if displayPackagingDetails}}
+          {{> emptyTable columns=10}}
+        {{else}}
+          {{> emptyTable columns=9}}
+        {{/if}}
       {{/each}}
     </tbody>
     <tfoot>

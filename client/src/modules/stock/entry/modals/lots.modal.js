@@ -70,8 +70,7 @@ function StockDefineLotsModalController(
     vm.enablePackaging = true;
   }
 
-  if ((vm.enablePackaging && vm.entryType === 'purchase')
-    || (vm.enablePackaging && vm.entryType === 'transfer_reception')) {
+  if (vm.enablePackaging && vm.entryType === 'purchase') {
     vm.lockBoxPurchasePrice = true;
     vm.allowMultiplePackagingPurchase = true;
   }
@@ -91,6 +90,10 @@ function StockDefineLotsModalController(
 
   vm.currency = null;
   vm.isTransfer = (vm.entryType === 'transfer_reception');
+
+  if (vm.isTransfer) {
+    vm.enablePackaging = false;
+  }
 
   // Get the status for this inventory article
   Inventory.getInventoryUnitCosts(Data.stockLine.inventory_uuid)

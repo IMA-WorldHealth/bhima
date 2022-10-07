@@ -53,6 +53,8 @@ function StockEntryController(
   vm.onDateChange = onDateChange;
   vm.$loading = false;
   vm.generateAssetBarcodes = StockModal.openGenerateAssetBarcodes;
+  vm.stockSettings = Session.stock_settings;
+  vm.displayPackaging = false;
 
   vm.gridOptions = {
     appScopeProvider : vm,
@@ -96,8 +98,15 @@ function StockEntryController(
         headerCellFilter : 'translate',
         cellTemplate : 'modules/stock/entry/templates/lot.tmpl.html',
       },
-
       {
+        field : 'packaging',
+        displayName : '',
+        width : 40,
+        headerCellFilter : 'translate',
+        cellFilter : 'translate',
+        visible      : false,
+        cellTemplate : 'modules/stock/entry/templates/packaging.cell.tmpl.html',
+      }, {
         field : 'quantity',
         width : 150,
         displayName : 'TABLE.COLUMNS.QUANTITY',
@@ -105,7 +114,6 @@ function StockEntryController(
         cellTemplate : 'modules/stock/entry/templates/quantity.tmpl.html',
         aggregationType : uiGridConstants.aggregationTypes.sum,
       },
-
       {
         field : 'is_asset',
         width : 100,
@@ -128,6 +136,17 @@ function StockEntryController(
   // on change depot
   vm.onChangeDepot = depot => {
     vm.depot = depot;
+
+    vm.displayPackaging = false;
+
+    const columnPackaging = vm.gridOptions.columnDefs.find(col => col.field === 'packaging');
+    if (vm.stockSettings.enable_packaging_pharmaceutical_products && vm.movement.entry_type === 'transfer_reception'
+      && vm.depot.is_count_per_container) {
+      vm.displayPackaging = true;
+    }
+
+    columnPackaging.visible = vm.displayPackaging;
+
     loadInventories();
   };
 
@@ -204,6 +223,7 @@ function StockEntryController(
     vm.movement.entry_type = entryType.label;
     vm.stockForm.store.clear();
     vm.resetEntryExitTypes = false;
+    vm.displayPackaging = false;
 
     /**
      * if false, the bhAddItems will be deactived
@@ -212,6 +232,14 @@ function StockEntryController(
      */
     vm.entityAllowAddItems = !!(vm.movement.entry_type)
       && (vm.movement.entry_type !== 'purchase' && vm.movement.entry_type !== 'transfer_reception');
+
+    const columnPackaging = vm.gridOptions.columnDefs.find(col => col.field === 'packaging');
+    if (vm.stockSettings.enable_packaging_pharmaceutical_products && vm.movement.entry_type === 'transfer_reception'
+      && vm.depot.is_count_per_container) {
+      vm.displayPackaging = true;
+    }
+
+    columnPackaging.visible = vm.displayPackaging;
   }
 
   /**
@@ -490,6 +518,10 @@ function StockEntryController(
       item.unit_type = inventory.unit_type;
       item.package_size = items[index].package_size || 1;
 
+      if (item.package_size > 1) {
+        item.numberPackage = Math.floor(item.quantity / item.package_size);
+      }
+
       // Store the non-expired candidate lots for this inventory code
       Lots.candidates({ inventory_uuid : item.inventory_uuid, date : vm.movement.date })
         .then((lots) => {
@@ -601,7 +633,7 @@ function StockEntryController(
           vm.stockForm.store.data[lastIndex].inventory_uuid = dataInventory.uuid;
           vm.stockForm.store.data[lastIndex].label = dataInventory.label;
           vm.stockForm.store.data[lastIndex].unit_cost = stockLine.unit_price || stockLine.unit_cost;
-          vm.stockForm.store.data[lastIndex].quantity = 0; // stockLine.balance || stockLine.quantity;
+          vm.stockForm.store.data[lastIndex].quantity = 0;
           vm.stockForm.store.data[lastIndex].expiration_date = vm.movement.date || new Date();
           vm.stockForm.store.data[lastIndex].unit_type = dataInventory.unit_type;
           vm.stockForm.store.data[lastIndex].package_size = stockLine.package_size || 1;
@@ -660,6 +692,7 @@ function StockEntryController(
       return Notify.danger('ERRORS.ER_NO_STOCK_SOURCE');
     }
     vm.$loading = true;
+
     mapEntry.form = form;
     return mapEntry[vm.movement.entry_type].submit()
       .then(toggleLoadingIndicator);

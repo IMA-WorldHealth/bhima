@@ -1921,7 +1921,7 @@ CREATE TABLE `lot` (
   `is_assigned`       TINYINT(1) NULL DEFAULT 0,
   `reference_number`  TEXT NULL,
   `serial_number`     VARCHAR(40) NULL,
-  `package_size`      INT(11) DEFAULT 1,
+  `package_size`      INT(11) NOT NULL DEFAULT 1,
   PRIMARY KEY (`uuid`),
   KEY `inventory_uuid` (`inventory_uuid`),
   CONSTRAINT `lot__inventory` FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`)
