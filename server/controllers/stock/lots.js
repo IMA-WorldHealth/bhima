@@ -35,7 +35,7 @@ const detailsQuery = `
     (SELECT MIN(sm.date) FROM stock_movement sm
      WHERE sm.lot_uuid = l.uuid) AS entry_date,
     BUID(i.uuid) AS inventory_uuid, i.text as inventory_name,
-    i.code as inventory_code, i.is_asset
+    i.code as inventory_code, i.is_asset, i.is_count_per_container
   FROM lot l
   JOIN inventory i ON i.uuid = l.inventory_uuid
   `;

@@ -24,10 +24,11 @@ async function stockEntryIntegrationReceipt(documentUuid, session, options) {
     SELECT i.code, i.text, BUID(m.document_uuid) AS document_uuid,
       m.quantity, m.unit_cost, (m.quantity * m.unit_cost) AS total , m.date, m.description,
       u.display_name AS user_display_name,
-      l.label, l.expiration_date, d.text AS depot_name,
+      l.label, l.expiration_date, d.text AS depot_name, d.is_count_per_container,
       m.description, ig.tracking_expiration,
       IF(ig.tracking_expiration = 1, TRUE, FALSE) as expires,
-      dm.text as document_reference
+      dm.text as document_reference, l.package_size, FLOOR(m.quantity / l.package_size) number_package,
+      IF(l.package_size <= 1, 0, 1) AS displayDetail
     FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
@@ -67,7 +68,11 @@ async function stockEntryIntegrationReceipt(documentUuid, session, options) {
     barcode : barcode.generate(key, line.document_uuid),
     voucher_reference     : voucherReference,
     autoStockAccountingEnabled,
+    depot_count_per_container : line.is_count_per_container,
   };
+
+  data.displayPackagingDetails = session.stock_settings.enable_packaging_pharmaceutical_products
+    && data.details.depot_count_per_container;
 
   data.rows = rows;
   return report.render(data);
