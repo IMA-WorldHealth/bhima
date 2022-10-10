@@ -171,5 +171,13 @@
     </div>
   </div>
 
+  <footer></footer>
+
+  {{#if metadata.enterprise.settings.purchase_general_condition}}
+    <div class="text-justify" style="width: 960px;">
+      <pre>{{ metadata.enterprise.settings.purchase_general_condition }}</pre>
+    </div>
+  {{/if}}
+
   <script>JsBarcode('.barcode').init();</script>
 </div>

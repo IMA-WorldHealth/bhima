@@ -88,3 +88,7 @@
   width: 100%;
 }
 /* ========================== End Upload thumbnail ========================== */
+
+@media print {
+  footer {page-break-after: always;}
+}

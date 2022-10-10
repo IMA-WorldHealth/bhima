@@ -28,39 +28,6 @@
                     on-select-callback="PurchaseCtrl.order.setSupplier(supplier)">
                   </bh-supplier-select>
 
-                  <bh-input-text
-                    key="info_contact_name"
-                    text-value="PurchaseCtrl.order.details.info_contact_name"
-                    label="PURCHASES.INFO.CONTACT_NAME">
-                  </bh-input-text>
-
-                  <bh-input-text
-                    key="info_contact_title"
-                    text-value="PurchaseCtrl.order.details.info_contact_title"
-                    label="PURCHASES.INFO.CONTACT_TITLE">
-                  </bh-input-text>
-
-                  <bh-input-text
-                    key="info_contact_phone"
-                    text-value="PurchaseCtrl.order.details.info_contact_phone"
-                    label="PURCHASES.INFO.CONTACT_PHONE">
-                  </bh-input-text>
-
-                  <hr>
-
-                  <bh-input-text
-                    key="info_purchase_number"
-                    text-value="PurchaseCtrl.order.details.info_purchase_number"
-                    label="PURCHASES.INFO.PURCHASE_NUMBER">
-                  </bh-input-text>
-                  <bh-input-text
-                    key="info_prf_number"
-                    text-value="PurchaseCtrl.order.details.info_prf_number"
-                    label="PURCHASES.INFO.PRF_NUMBER">
-                  </bh-input-text>
-                  
-                </div>
-                <div class="col-md-4">
                   <bh-date-editor
                     date-value="PurchaseCtrl.order.details.date"
                     on-change="PurchaseCtrl.order.onDateChange(date)">
@@ -153,19 +120,62 @@
                     </div>
                   </div>
 
+                  <!-- note -->
                   <div
-                    class="form-group">
-                    <label class="control-label" translate>PURCHASES.INFO.PAYMENT_CONDITION</label>
+                    class="form-group"
+                    ng-class="{'has-error' : PurchaseOrderForm.$submitted && PurchaseOrderForm.notes.$invalid }">
+                    <label class="control-label" translate>FORM.LABELS.NOTES </label>
                     <textarea
-                      ng-model="PurchaseCtrl.order.details.info_payment_condition"
-                      name="info_payment_condition"
+                      ng-model="PurchaseCtrl.order.details.note"
+                      name="notes"
                       class="form-control"
-                      rows="3"
-                      ng-maxlength="PurchaseCtrl.maxLength">
+                      rows="2"
+                      ng-maxlength="PurchaseCtrl.maxLength"
+                      required>
                     </textarea>
+                    <div class="help-block" ng-messages="PurchaseOrderForm.notes.$error" ng-show="PurchaseOrderForm.$submitted">
+                      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                    </div>
                   </div>
+
                 </div>
                 <div class="col-md-4">
+                  
+                  <div ng-if="PurchaseCtrl.enterprise.settings.enable_prf_details">
+                    <bh-input-text
+                      key="info_contact_name"
+                      text-value="PurchaseCtrl.order.details.info_contact_name"
+                      label="PURCHASES.INFO.CONTACT_NAME">
+                    </bh-input-text>
+
+                    <bh-input-text
+                      key="info_contact_title"
+                      text-value="PurchaseCtrl.order.details.info_contact_title"
+                      label="PURCHASES.INFO.CONTACT_TITLE">
+                    </bh-input-text>
+
+                    <bh-input-text
+                      key="info_contact_phone"
+                      text-value="PurchaseCtrl.order.details.info_contact_phone"
+                      label="PURCHASES.INFO.CONTACT_PHONE">
+                    </bh-input-text>
+
+                    <hr>
+
+                    <bh-input-text
+                      key="info_purchase_number"
+                      text-value="PurchaseCtrl.order.details.info_purchase_number"
+                      label="PURCHASES.INFO.PURCHASE_NUMBER">
+                    </bh-input-text>
+                    <bh-input-text
+                      key="info_prf_number"
+                      text-value="PurchaseCtrl.order.details.info_prf_number"
+                      label="PURCHASES.INFO.PRF_NUMBER">
+                    </bh-input-text>
+                  </div>
+
+                </div>
+                <div ng-if="PurchaseCtrl.enterprise.settings.enable_prf_details" class="col-md-4">
 
                   <bh-input-text
                     key="info_delivery_date"
@@ -186,46 +196,36 @@
                       ng-model="PurchaseCtrl.order.details.info_delivery_condition"
                       name="info_delivery_condition"
                       class="form-control"
-                      rows="3"
+                      rows="2"
+                      ng-maxlength="PurchaseCtrl.maxLength">
+                    </textarea>
+                  </div>
+
+                  <div
+                    class="form-group">
+                    <label class="control-label" translate>PURCHASES.INFO.SPECIAL_INSTRUCTION</label>
+                    <textarea
+                      ng-model="PurchaseCtrl.order.details.info_special_instruction"
+                      name="info_special_instruction"
+                      class="form-control"
+                      rows="2"
+                      ng-maxlength="PurchaseCtrl.maxLength">
+                    </textarea>
+                  </div>
+
+                  <div
+                    class="form-group">
+                    <label class="control-label" translate>PURCHASES.INFO.PAYMENT_CONDITION</label>
+                    <textarea
+                      ng-model="PurchaseCtrl.order.details.info_payment_condition"
+                      name="info_payment_condition"
+                      class="form-control"
+                      rows="2"
                       ng-maxlength="PurchaseCtrl.maxLength">
                     </textarea>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-md-6">
-            <div
-              class="form-group"
-              ng-class="{'has-error' : PurchaseOrderForm.$submitted && PurchaseOrderForm.notes.$invalid }">
-              <label class="control-label" translate>FORM.LABELS.NOTES </label>
-              <textarea
-                ng-model="PurchaseCtrl.order.details.note"
-                name="notes"
-                class="form-control"
-                rows="2"
-                ng-maxlength="PurchaseCtrl.maxLength"
-                required>
-              </textarea>
-              <div class="help-block" ng-messages="PurchaseOrderForm.notes.$error" ng-show="PurchaseOrderForm.$submitted">
-                <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div
-              class="form-group">
-              <label class="control-label" translate>PURCHASES.INFO.SPECIAL_INSTRUCTION</label>
-              <textarea
-                ng-model="PurchaseCtrl.order.details.info_special_instruction"
-                name="info_special_instruction"
-                class="form-control"
-                rows="2"
-                ng-maxlength="PurchaseCtrl.maxLength">
-              </textarea>
             </div>
           </div>
         </div>
