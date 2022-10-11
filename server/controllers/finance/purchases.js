@@ -130,7 +130,8 @@ function lookupPurchaseOrder(uid) {
       p.info_delivery_condition,
       p.info_special_instruction,
       p.info_payment_condition,
-      s.address_1, s.email, s.phone
+      s.address_1, s.email, s.phone,
+      curr.format_key, curr.symbol
     FROM purchase AS p
       JOIN document_map dm ON p.uuid = dm.uuid
       JOIN project ON p.project_id = project.id
@@ -138,6 +139,7 @@ function lookupPurchaseOrder(uid) {
       JOIN project AS pr ON p.project_id = pr.id
       JOIN user AS u ON u.id = p.user_id
       JOIN purchase_status AS ps ON ps.id = p.status_id
+      JOIN currency curr ON curr.id = p.currency_id
     WHERE p.uuid = ?;
   `;
 

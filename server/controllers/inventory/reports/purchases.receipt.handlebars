@@ -8,11 +8,11 @@
     white-space: -pre-wrap;
     white-space: -o-pre-wrap;
     word-wrap: break-word;
-    font-size: 0.7em;
+    font-size: 0.5em;
   }
 </style>
 
-<div class="container" style="font-size: 0.9em;">
+<div class="container" style="font-size: 0.8em;">
   {{#> header}}
     <h3 class="text-right"><strong>{{purchase.reference}}</strong></h3>
     {{#if metadata.enterprise.settings.enable_barcodes}}
@@ -34,7 +34,7 @@
     </div>
   </div>
   
-  {{#if metadata.enterprise.settings.purchase_general_condition}}
+  {{#if metadata.enterprise.settings.enable_prf_details}}
     <div style="border: 1px solid #ccc; padding: 5px; margin-bottom: 15px;">
       <div class="row">
         <div class="col-xs-3"><span class="text-capitalize">{{translate 'PURCHASES.INFO.PURCHASE_NUMBER'}}</span></div>
@@ -81,20 +81,25 @@
 
   <table class="table table-condensed table-report">
     <thead>
-      <th>{{translate "FORM.LABELS.CODE" }}</th>
-      <th>{{translate "FORM.LABELS.INVENTORY_ITEM" }}</th>
-      <th>{{translate "FORM.LABELS.TYPE" }}</th>
-      <th>{{translate "FORM.LABELS.QUANTITY" }}</th>
-      <th>{{translate "FORM.LABELS.UNIT_PRICE" }}</th>
-      <th>{{translate "FORM.LABELS.TOTAL" }}</th>
+      <th colspan="4" class="text-right">{{translate "FORM.LABELS.CURRENCY" }}</th>
+      <th class="text-center text-uppercase">{{ purchase.format_key }}</th>
+      <th class="text-center text-uppercase">{{ purchase.format_key }}</th>
+    </thead>
+    <thead>
+      <th class="text-center">{{translate "FORM.LABELS.NR" }}</th>
+      <th class="text-center">{{translate "FORM.LABELS.QUANTITY" }}</th>
+      <th class="text-center">{{translate "FORM.LABELS.UNITS" }}</th>
+      <th class="text-center">{{translate "FORM.LABELS.DESCRIPTION" }}</th>
+      <th class="text-center">{{translate "FORM.LABELS.UNIT_PRICE" }}</th>
+      <th class="text-center">{{translate "FORM.LABELS.TOTAL" }}</th>
     </thead>
     <tbody>
       {{#each purchase.items}}
         <tr>
-          <td>{{this.code}}</td>
-          <td>{{this.text}}</td>
-          <td translate>{{this.unit}}</td>
+          <td class="text-right">{{add @index 1}}</td>
           <td class="text-right">{{this.quantity}}</td>
+          <td>{{translate this.unit_type}}</td>
+          <td>{{this.text}}</td>
           <td class="text-right">{{currency this.unit_price ../purchase.currency_id}}</td>
           <td class="text-right">{{currency this.total ../purchase.currency_id}}</td>
         </tr>
@@ -187,8 +192,8 @@
 
   <footer></footer>
 
-  {{#if metadata.enterprise.settings.purchase_general_condition}}
-    <div class="text-justify" style="width: 700px;">
+  {{#if metadata.enterprise.settings.enable_prf_details}}
+    <div class="text-justify" style="width: 700px; padding-top:50px;">
       <pre>{{ metadata.enterprise.settings.purchase_general_condition }}</pre>
     </div>
   {{/if}}
