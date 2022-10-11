@@ -1,7 +1,19 @@
 {{> head }}
 
-<div class="container" style="font-size: 0.9em;">
-  {{#> header }}
+<style>
+  pre {
+    overflow-x: auto;
+    white-space: pre-wrap;
+    white-space: -moz-pre-wrap;
+    white-space: -pre-wrap;
+    white-space: -o-pre-wrap;
+    word-wrap: break-word;
+    font-size: 0.5em;
+  }
+</style>
+
+<div class="container" style="font-size: 0.8em;">
+  {{#> header}}
     <h3 class="text-right"><strong>{{purchase.reference}}</strong></h3>
     {{#if metadata.enterprise.settings.enable_barcodes}}
       <div class="text-right">
@@ -11,32 +23,83 @@
   {{/header}}
 
   <!-- order details -->
-  <div class="row" style="border: 1px solid #ccc; padding: 5px; margin-bottom: 15px;">
-    <div class="col-xs-6">
-      <span class="text-capitalize">{{translate "FORM.LABELS.SUPPLIER"}}</span>: <strong>{{purchase.supplier}}</strong> <br>
-      <span class="text-capitalize">{{translate "FORM.LABELS.DATE"}}</span>: {{date purchase.date}} <br>
-      <span class="text-capitalize">{{translate "FORM.LABELS.REFERENCE"}}</span>: {{purchase.reference}} <br>
-      <span>{{translate "FORM.LABELS.NOTES"}}</span>: <strong>{{purchase.note}}</strong> <br>
-      <span class="text-capitalize">{{translate 'TABLE.COLUMNS.RESPONSIBLE'}}</span>: <strong>{{purchase.author}}</strong>
+  <div style="border: 1px solid #ccc; padding: 5px; margin-bottom: 15px;">
+    <div class="row">
+      <div class="col-xs-12">
+        <span class="text-capitalize">{{translate "FORM.LABELS.DATE"}}</span>: {{date purchase.date}} <br>
+        <span class="text-capitalize">{{translate "FORM.LABELS.REFERENCE"}}</span>: {{purchase.reference}} <br>
+        <span>{{translate "FORM.LABELS.NOTES"}}</span>: <strong>{{purchase.note}}</strong> <br>
+        <span class="text-capitalize">{{translate 'TABLE.COLUMNS.RESPONSIBLE'}}</span>: <strong>{{purchase.author}}</strong>
+      </div>
     </div>
   </div>
+  
+  {{#if metadata.enterprise.settings.enable_prf_details}}
+    <div style="border: 1px solid #ccc; padding: 5px; margin-bottom: 15px;">
+      <div class="row">
+        <div class="col-xs-3"><span class="text-capitalize">{{translate 'PURCHASES.INFO.PURCHASE_NUMBER'}}</span></div>
+        <div class="col-xs-3 text-center" style="border-bottom: 1px solid black;"> &nbsp; <strong>{{purchase.info_purchase_number}}</strong></div>
+        <div class="col-xs-3"><span class="text-capitalize">{{translate 'PURCHASES.INFO.PRF_NUMBER'}}</span></div>
+        <div class="col-xs-3 text-center" style="border-bottom: 1px solid black;"> &nbsp; <strong>{{purchase.info_prf_number}}</strong></div>
+
+        <div class="col-xs-3"><span class="text-capitalize">{{translate 'FORM.LABELS.SUPPLIER'}}</span>: </div>
+        <div class="col-xs-9 text-center" style="border-bottom: 1px solid black;"> &nbsp; <strong>{{purchase.supplier}}</strong></div>
+
+        <div class="col-xs-3"><span class="text-capitalize">{{translate 'FORM.LABELS.ADDRESS'}}</span>: </div>
+        <div class="col-xs-9 text-center" style="border-bottom: 1px solid black;"> &nbsp; <strong>{{purchase.address_1}}</strong></div>
+
+        <div class="col-xs-3"><span class="text-capitalize">{{translate 'FORM.LABELS.PHONE'}}</span>: </div>
+        <div class="col-xs-3 text-center" style="border-bottom: 1px solid black;"> &nbsp; <strong>{{purchase.phone}}</strong></div>
+        <div class="col-xs-3"><span class="text-capitalize">{{translate 'FORM.LABELS.EMAIL'}}</span>: </div>
+        <div class="col-xs-3 text-center" style="border-bottom: 1px solid black;"> &nbsp; <strong>{{purchase.email}}</strong></div>
+
+        <div class="col-xs-3"><span class="text-capitalize">{{translate 'PURCHASES.INFO.CONTACT_NAME'}}</span>: </div>
+        <div class="col-xs-3 text-center" style="border-bottom: 1px solid black;"> &nbsp; <strong>{{purchase.info_contact_name}}</strong></div>
+        <div class="col-xs-3"><span class="text-capitalize">{{translate 'PURCHASES.INFO.CONTACT_TITLE'}}</span>: </div>
+        <div class="col-xs-3 text-center" style="border-bottom: 1px solid black;"> &nbsp; <strong>{{purchase.info_contact_title}}</strong></div>
+
+        <div class="col-xs-3"><span class="text-capitalize">{{translate 'PURCHASES.INFO.CONTACT_PHONE'}}</span>: </div>
+        <div class="col-xs-9 text-center" style="border-bottom: 1px solid black;"> &nbsp; <strong>{{purchase.info_contact_phone}}</strong></div>
+
+        <div class="col-xs-3"><span class="text-capitalize">{{translate 'PURCHASES.INFO.DELIVERY_LOCATION'}}</span>: </div>
+        <div class="col-xs-3 text-center" style="border-bottom: 1px solid black;"> &nbsp; <strong>{{purchase.info_delivery_location}}</strong></div>
+        <div class="col-xs-3"><span class="text-capitalize">{{translate 'PURCHASES.INFO.DELIVERY_DATE'}}</span>: </div>
+        <div class="col-xs-3 text-center" style="border-bottom: 1px solid black;"> &nbsp; <strong>{{purchase.info_delivery_date}}</strong></div>
+      </div>
+
+      <div class="row">
+        <div class="col-xs-3"><span class="text-capitalize">{{translate 'PURCHASES.INFO.DELIVERY_CONDITION'}}</span>: </div>
+        <div class="col-xs-9 text-center" style="border-bottom: 1px solid black;"><strong>{{purchase.info_delivery_condition}}</strong></div>
+      </div>
+      
+      <div class="row">
+        <div class="col-xs-3"><span class="text-capitalize">{{translate 'PURCHASES.INFO.SPECIAL_INSTRUCTION'}}</span>: </div>
+        <div class="col-xs-9 text-center" style="border-bottom: 1px solid black;"><strong>{{purchase.info_special_instruction}}</strong></div>
+      </div>
+    </div>
+  {{/if}}
 
   <table class="table table-condensed table-report">
     <thead>
-      <th>{{translate "FORM.LABELS.CODE" }}</th>
-      <th>{{translate "FORM.LABELS.INVENTORY_ITEM" }}</th>
-      <th>{{translate "FORM.LABELS.TYPE" }}</th>
-      <th>{{translate "FORM.LABELS.QUANTITY" }}</th>
-      <th>{{translate "FORM.LABELS.UNIT_PRICE" }}</th>
-      <th>{{translate "FORM.LABELS.TOTAL" }}</th>
+      <th colspan="4" class="text-right">{{translate "FORM.LABELS.CURRENCY" }}</th>
+      <th class="text-center text-uppercase">{{ purchase.format_key }}</th>
+      <th class="text-center text-uppercase">{{ purchase.format_key }}</th>
+    </thead>
+    <thead>
+      <th class="text-center">{{translate "FORM.LABELS.NR" }}</th>
+      <th class="text-center">{{translate "FORM.LABELS.QUANTITY" }}</th>
+      <th class="text-center">{{translate "FORM.LABELS.UNITS" }}</th>
+      <th class="text-center">{{translate "FORM.LABELS.DESCRIPTION" }}</th>
+      <th class="text-center">{{translate "FORM.LABELS.UNIT_PRICE" }}</th>
+      <th class="text-center">{{translate "FORM.LABELS.TOTAL" }}</th>
     </thead>
     <tbody>
       {{#each purchase.items}}
         <tr>
-          <td>{{this.code}}</td>
-          <td>{{this.text}}</td>
-          <td translate>{{this.unit}}</td>
+          <td class="text-right">{{add @index 1}}</td>
           <td class="text-right">{{this.quantity}}</td>
+          <td>{{translate this.unit_type}}</td>
+          <td>{{this.text}}</td>
           <td class="text-right">{{currency this.unit_price ../purchase.currency_id}}</td>
           <td class="text-right">{{currency this.total ../purchase.currency_id}}</td>
         </tr>
@@ -55,5 +118,85 @@
       </tr>
     </tfoot>
   </table>
+
+  <br>
+
+  <div class="row">
+    <div class="col-xs-3"><span class="text-capitalize">{{translate 'PURCHASES.INFO.PAYMENT_CONDITION'}}</span>: </div>
+    <div class="col-xs-9 text-center" style="border-bottom: 1px solid black;"> &nbsp; <strong>{{purchase.info_payment_condition}}</strong></div>
+  </div>
+
+  <br>
+
+  <div class="row" style="margin-top: 25px; margin-bottom:25px">
+    <div class="col-xs-3 text-center">
+      <div style="border-top: 1px solid black;" class="text-capitalize"><small>{{translate 'PURCHASES.INFO.REQUESTED_BY'}}</small></div>
+    </div>
+    <div class="col-xs-3 text-center">
+      <div style="border-top: 1px solid black;" class="text-capitalize"><small>{{translate 'PURCHASES.INFO.TITLE'}}</small></div>
+    </div>
+    <div class="col-xs-3 text-center">
+      <div style="border-top: 1px solid black;" class="text-capitalize"><small>{{translate 'PURCHASES.INFO.SIGNATURE'}}</small></div>
+    </div>
+    <div class="col-xs-3 text-center">
+      <div style="border-top: 1px solid black;" class="text-capitalize"><small>{{translate 'PURCHASES.INFO.DATE'}}</small></div>
+    </div>
+  </div>
+
+  <div class="row" style="margin-top: 25px; margin-bottom:25px">
+    <div class="col-xs-3 text-center">
+      <div style="border-top: 1px solid black;" class="text-capitalize"><small>{{translate 'PURCHASES.INFO.APPROVED_BY'}}</small></div>
+    </div>
+    <div class="col-xs-3 text-center">
+      <div style="border-top: 1px solid black;" class="text-capitalize"><small>{{translate 'PURCHASES.INFO.TITLE'}}</small></div>
+    </div>
+    <div class="col-xs-3 text-center">
+      <div style="border-top: 1px solid black;" class="text-capitalize"><small>{{translate 'PURCHASES.INFO.SIGNATURE'}}</small></div>
+    </div>
+    <div class="col-xs-3 text-center">
+      <div style="border-top: 1px solid black;" class="text-capitalize"><small>{{translate 'PURCHASES.INFO.DATE'}}</small></div>
+    </div>
+  </div>
+
+  <div class="row" style="margin-top: 25px; margin-bottom:25px">
+    <div class="col-xs-3 text-center">
+      <div style="border-top: 1px solid black;" class="text-capitalize"><small>{{translate 'PURCHASES.INFO.APPROVED_TWO_BY'}}</small></div>
+    </div>
+    <div class="col-xs-3 text-center">
+      <div style="border-top: 1px solid black;" class="text-capitalize"><small>{{translate 'PURCHASES.INFO.TITLE'}}</small></div>
+    </div>
+    <div class="col-xs-3 text-center">
+      <div style="border-top: 1px solid black;" class="text-capitalize"><small>{{translate 'PURCHASES.INFO.SIGNATURE'}}</small></div>
+    </div>
+    <div class="col-xs-3 text-center">
+      <div style="border-top: 1px solid black;" class="text-capitalize"><small>{{translate 'PURCHASES.INFO.DATE'}}</small></div>
+    </div>
+  </div>
+
+  <p>{{translate 'PURCHASES.INFO.SUPPLIER_OBLIGATION'}}</p>
+
+  <div class="row" style="margin-top: 35px; margin-bottom:25px">
+    <div class="col-xs-5 text-center">
+      <div style="border-top: 1px solid black;" class="text-capitalize"><small>{{translate 'PURCHASES.INFO.SIGNATURE'}}</small></div>
+    </div>
+    <div class="col-xs-3 text-center">
+      <div style="border-top: 1px solid black;" class="text-capitalize"><small>{{translate 'FORM.LABELS.NAME'}}</small></div>
+    </div>
+    <div class="col-xs-2 text-center">
+      <div style="border-top: 1px solid black;" class="text-capitalize"><small>{{translate 'PURCHASES.INFO.TITLE'}}</small></div>
+    </div>
+    <div class="col-xs-2 text-center">
+      <div style="border-top: 1px solid black;" class="text-capitalize"><small>{{translate 'PURCHASES.INFO.DATE'}}</small></div>
+    </div>
+  </div>
+
+  <footer></footer>
+
+  {{#if metadata.enterprise.settings.enable_prf_details}}
+    <div class="text-justify" style="width: 700px; padding-top:50px;">
+      <pre>{{ metadata.enterprise.settings.purchase_general_condition }}</pre>
+    </div>
+  {{/if}}
+
   <script>JsBarcode('.barcode').init();</script>
 </div>

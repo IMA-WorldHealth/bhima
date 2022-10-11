@@ -29,6 +29,13 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
   vm.onSelectGainAccount = onSelectGainAccount;
   vm.onSelectLossAccount = onSelectLossAccount;
   vm.setThumbnail = setThumbnail;
+  vm.enablePRFDetails = enablePRFDetails;
+
+  function enablePRFDetails(value) {
+    const key = 'enable_prf_details';
+    vm.enterprise.settings[key] = value;
+    $touched = true;
+  }
 
   function uploadLogo(file) {
     if (!vm.hasThumbnail) { return null; }

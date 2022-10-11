@@ -9,7 +9,6 @@
  * @requires lib/db
  */
 
-
 const { uuid } = require('../../lib/util');
 const db = require('../../lib/db');
 
@@ -17,8 +16,14 @@ function lookupSupplier(uid) {
   const sql = `
     SELECT BUID(supplier.uuid) as uuid, BUID(supplier.creditor_uuid) as creditor_uuid, supplier.display_name,
       supplier.address_1, supplier.address_2, supplier.email, supplier.fax, supplier.note,
-      supplier.phone, supplier.international, supplier.locked
+      supplier.phone, supplier.international, supplier.locked,
+      BUID(entity.uuid) AS contact_uuid,
+      entity.display_name AS contact_name,
+      entity.title AS contact_title,
+      entity.phone AS contact_phone,
+      entity.email AS contact_email
     FROM supplier
+    LEFT JOIN entity ON entity.uuid = supplier.contact_uuid
     WHERE supplier.uuid = ?;
   `;
 
@@ -36,8 +41,16 @@ function list(req, res, next) {
     SELECT
       BUID(supplier.uuid) AS uuid, BUID(supplier.creditor_uuid) AS creditor_uuid, supplier.display_name,
       supplier.display_name, supplier.address_1, supplier.address_2, supplier.email, supplier.fax, supplier.note,
-      supplier.phone, supplier.international, supplier.locked, BUID(creditor.group_uuid) AS creditor_group_uuid
-    FROM supplier JOIN creditor ON supplier.creditor_uuid = creditor.uuid
+      supplier.phone, supplier.international, supplier.locked, BUID(creditor.group_uuid) AS creditor_group_uuid,
+      BUID(entity.uuid) AS contact_uuid,
+      entity.display_name AS contact_name,
+      entity.title AS contact_title,
+      entity.phone AS contact_phone,
+      entity.email AS contact_email
+    FROM supplier 
+    JOIN creditor ON supplier.creditor_uuid = creditor.uuid
+    LEFT JOIN entity ON entity.uuid = supplier.contact_uuid
+    
   `;
 
   const locked = Number(req.query.locked);
@@ -83,7 +96,7 @@ function detail(req, res, next) {
  * creditor for the it.
  */
 function create(req, res, next) {
-  const data = req.body;
+  const data = db.convert(req.body, ['contact_uuid']);
 
   // provide uuid if the client has not specified
   const recordUuid = data.uuid || uuid();
@@ -121,7 +134,7 @@ function create(req, res, next) {
  * Updates a supplier in the database.
  */
 function update(req, res, next) {
-  const data = req.body;
+  const data = db.convert(req.body, ['contact_uuid']);
   delete data.uuid;
   delete data.creditor_uuid;
 
@@ -173,7 +186,9 @@ function search(req, res, next) {
     SELECT BUID(supplier.uuid) as uuid, BUID(supplier.creditor_uuid) as creditor_uuid, supplier.display_name,
       supplier.address_1, supplier.address_2, supplier.email, supplier.fax, supplier.note, supplier.phone,
       supplier.international, supplier.locked, BUID(creditor.group_uuid) AS creditor_group_uuid
-    FROM supplier JOIN creditor ON supplier.creditor_uuid = creditor.uuid
+    FROM supplier 
+    JOIN creditor ON supplier.creditor_uuid = creditor.uuid
+    LEFT JOIN entity ON entity.uuid = supplier.contact_uuid
     WHERE supplier.display_name LIKE "%?%"
   `;
 
@@ -196,7 +211,6 @@ function remove(req, res, next) {
     res.sendStatus(200);
   }).catch(next);
 }
-
 
 // get list of a supplier
 exports.list = list;

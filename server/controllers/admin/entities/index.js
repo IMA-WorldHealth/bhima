@@ -18,7 +18,7 @@ exports.create = create;
 function list(req, res, next) {
   const query = `
     SELECT
-      BUID(e.uuid) AS uuid, e.display_name, e.gender, e.email, e.phone, e.address,
+      BUID(e.uuid) AS uuid, e.display_name, e.gender, e.title, e.email, e.phone, e.address,
       e.reference, et.id AS entity_type_id, et.label, et.translation_key
     FROM entity e
     JOIN entity_type et ON et.id = e.entity_type_id
@@ -93,7 +93,7 @@ function create(req, res, next) {
 function fetchEntity(uuid) {
   const query = `
     SELECT
-      BUID(e.uuid) AS uuid, e.display_name, e.gender, e.email, e.phone, e.address,
+      BUID(e.uuid) AS uuid, e.display_name, e.title, e.gender, e.email, e.phone, e.address,
       e.reference, et.id AS entity_type_id, et.label, et.translation_key
     FROM entity e
     JOIN entity_type et ON et.id = e.entity_type_id

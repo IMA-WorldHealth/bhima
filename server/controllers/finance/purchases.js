@@ -119,7 +119,19 @@ function lookupPurchaseOrder(uid) {
       p.cost, p.shipping_handling, p.date, s.display_name AS supplier, p.user_id,
       BUID(p.supplier_uuid) as supplier_uuid, p.currency_id,
       p.note, u.display_name AS author,
-      p.status_id, ps.text AS status
+      p.status_id, ps.text AS status,
+      p.info_purchase_number,
+      p.info_prf_number,
+      p.info_contact_name,
+      p.info_contact_title,
+      p.info_contact_phone,
+      p.info_delivery_location,
+      p.info_delivery_date,
+      p.info_delivery_condition,
+      p.info_special_instruction,
+      p.info_payment_condition,
+      s.address_1, s.email, s.phone,
+      curr.format_key, curr.symbol
     FROM purchase AS p
       JOIN document_map dm ON p.uuid = dm.uuid
       JOIN project ON p.project_id = project.id
@@ -127,6 +139,7 @@ function lookupPurchaseOrder(uid) {
       JOIN project AS pr ON p.project_id = pr.id
       JOIN user AS u ON u.id = p.user_id
       JOIN purchase_status AS ps ON ps.id = p.status_id
+      JOIN currency curr ON curr.id = p.currency_id
     WHERE p.uuid = ?;
   `;
 
