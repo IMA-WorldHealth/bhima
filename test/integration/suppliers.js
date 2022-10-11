@@ -27,6 +27,7 @@ describe('(/suppliers) The supplier API endpoint', () => {
   const responseKeys = [
     'uuid', 'creditor_uuid', 'display_name', 'address_1', 'address_2',
     'email', 'fax', 'note', 'phone', 'international', 'locked',
+    'contact_name', 'contact_email', 'contact_phone', 'contact_title', 'contact_uuid',
   ];
 
   const FILTER = {
@@ -38,7 +39,6 @@ describe('(/suppliers) The supplier API endpoint', () => {
     display_name : 'TEST',
     limit : 20,
   };
-
 
   it('POST /suppliers should create a new supplier ', () => {
     return agent.post('/suppliers')
@@ -55,7 +55,6 @@ describe('(/suppliers) The supplier API endpoint', () => {
       })
       .catch(helpers.handler);
   });
-
 
   it('GET /suppliers returns a list of supplier ', () => {
     return agent.get('/suppliers')
@@ -98,7 +97,6 @@ describe('(/suppliers) The supplier API endpoint', () => {
       })
       .catch(helpers.handler);
   });
-
 
   it('PUT /suppliers/:uuid should update an existing supplier', () => {
     return agent.put(`/suppliers/${supplier.uuid}`)
