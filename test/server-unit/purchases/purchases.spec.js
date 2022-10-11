@@ -15,9 +15,11 @@ function PurchaseUnitTests() {
 
     // create the purchase order
     await db.exec(`
-      INSERT INTO purchase VALUES
-        (HUID('${puid}'), 2, 1, 300, 0, 2, HUID('3ac4e83c-65f2-45a1-8357-8b025003d793'),
-        DATE_ADD(CURRENT_DATE, INTERVAL -1725 DAY), CURRENT_TIMESTAMP, NULL, 1, NULL, NULL, FALSE, 1);
+      INSERT INTO purchase VALUES (
+        HUID('${puid}'), 2, 1, 300, 0, 2, HUID('3ac4e83c-65f2-45a1-8357-8b025003d793'),
+        DATE_ADD(CURRENT_DATE, INTERVAL -1725 DAY), CURRENT_TIMESTAMP, NULL, 1, NULL, NULL, FALSE, 1,
+        NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL 
+      );
     `);
 
     // create a purchase item linked to the above purchase order.
