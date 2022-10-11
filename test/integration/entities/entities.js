@@ -29,6 +29,7 @@ describe('(/entities) Entities', () => {
   const responseKeys = [
     'uuid', 'display_name', 'gender', 'email', 'phone',
     'address', 'reference', 'entity_type_id', 'label', 'translation_key',
+    'title',
   ];
 
   const NUM_ENTITIES = 4;

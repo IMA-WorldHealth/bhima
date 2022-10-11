@@ -298,6 +298,23 @@
                 help-text="ENTERPRISE.SETTINGS.ENABLE_REQUIRE_COST_CENTER_FOR_POSTING_HELP_TEXT"
                 on-change-callback="EnterpriseCtrl.enableRequireCostCenterForPostingSetting(value)">
               </bh-yes-no-radios>
+
+              <bh-yes-no-radios
+                label="ENTERPRISE.SETTINGS.ENABLE_PRF_DETAILS"
+                value="EnterpriseCtrl.enterprise.settings.enable_prf_details"
+                name="enable_prf_details"
+                help-text="ENTERPRISE.SETTINGS.ENABLE_PRF_DETAILS_HELP_TEXT"
+                on-change-callback="EnterpriseCtrl.enablePRFDetails(value)">
+              </bh-yes-no-radios>
+
+              <div class="form-group"
+                ng-if="EnterpriseCtrl.enterprise.settings.enable_prf_details">
+                <textarea 
+                  class="form-control"
+                  ng-model="EnterpriseCtrl.enterprise.settings.purchase_general_condition"
+                  rows="5">
+                </textarea>
+              </div>
             </div>
           </div>
 

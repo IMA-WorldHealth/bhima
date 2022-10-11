@@ -48,6 +48,7 @@ describe('(/groups) Group subscriptions API', () => {
         expect(result).to.have.status(200);
         expect(result.body).to.not.be.empty;
         expect(result.body[1].affectedRows).to.equal(trueSubscriptions.length);
-      });
+      })
+      .catch(helpers.handler);
   });
 });
