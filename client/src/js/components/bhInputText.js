@@ -15,6 +15,7 @@ angular.module('bhima.components')
       key : '@?',
       description : '@?',
       isCurrency : '<?',
+      disabled : '<?',
     },
   });
 

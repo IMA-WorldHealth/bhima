@@ -29,7 +29,9 @@
       "ENABLE_REQUIRE_COST_CENTER_FOR_POSTING_HELP_TEXT" : "Exiger les centres de cout pour les comptes d'exploitation (6 et 7) avant de poster les ecritures dans le grand livre",
       "ENABLE_INDEX_PAYMENT_SYSTEM" : "Activer le systeme de payement par indice",
       "HELPDESK_TEXT" : "Coordonnées du service d'assistance",
-      "HELPDESK_TEXT_HELP" : "Si défini, affichez ces informations sur la façon de contacter le service d'assistance en bas de la page de connexion"
+      "HELPDESK_TEXT_HELP" : "Si défini, affichez ces informations sur la façon de contacter le service d'assistance en bas de la page de connexion",
+      "ENABLE_PRF_DETAILS": "Activer les informations supplementaires pour les achats",
+      "ENABLE_PRF_DETAILS_HELP_TEXT": "En activant cette option, les informations des PRF seront ajoutées pour les achats et les conditions générales d'achats"
     }
   }
 }

@@ -29,6 +29,13 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
   vm.onSelectGainAccount = onSelectGainAccount;
   vm.onSelectLossAccount = onSelectLossAccount;
   vm.setThumbnail = setThumbnail;
+  vm.enablePRFDetails = enablePRFDetails;
+
+  function enablePRFDetails(value) {
+    const key = 'enable_prf_details';
+    vm.enterprise.settings[key] = value;
+    $touched = true;
+  }
 
   function uploadLogo(file) {
     if (!vm.hasThumbnail) { return null; }
@@ -74,6 +81,7 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
          * this choice need the team point of view for to setting the default enterprise
          */
         vm.enterprise = vm.hasEnterprise ? vm.enterprises[0] : {};
+        console.log(vm.enterprise);
         return refreshProjects();
       })
       .catch(Notify.handleError);
