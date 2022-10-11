@@ -81,7 +81,6 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
          * this choice need the team point of view for to setting the default enterprise
          */
         vm.enterprise = vm.hasEnterprise ? vm.enterprises[0] : {};
-        console.log(vm.enterprise);
         return refreshProjects();
       })
       .catch(Notify.handleError);
