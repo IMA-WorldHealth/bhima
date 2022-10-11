@@ -26,12 +26,14 @@ async function stockEntryPurchaseReceipt(documentUuid, session, options) {
       BUID(m.document_uuid) AS document_uuid,
       m.quantity, m.unit_cost, (m.quantity * m.unit_cost) AS total , m.date, m.description,
       u.display_name AS user_display_name,
-      l.label, l.expiration_date, d.text AS depot_name,
+      l.label, l.expiration_date, d.text AS depot_name, d.is_count_per_container,
       dm2.text AS purchase_reference,
       p.note, p.cost, p.shipping_handling, p.currency_id, BUID(p.uuid) as po_uuid,
       p.date AS purchase_date, p.payment_method, s.display_name AS supplier_display_name,
       dm.text as document_reference, ig.tracking_expiration,
-      IF(ig.tracking_expiration = 1, TRUE, FALSE) as expires
+      IF(ig.tracking_expiration = 1, TRUE, FALSE) as expires,
+      l.package_size, FLOOR(m.quantity / l.package_size) number_package,
+      IF(l.package_size <= 1, 0, 1) AS displayDetail
     FROM stock_movement m
       JOIN lot l ON l.uuid = m.lot_uuid
       JOIN inventory i ON i.uuid = l.inventory_uuid
@@ -106,10 +108,14 @@ async function stockEntryPurchaseReceipt(documentUuid, session, options) {
     barcode               : barcode.generate(key, line.document_uuid),
     voucher_reference     : voucherReference,
     autoStockAccountingEnabled,
+    depot_count_per_container : line.is_count_per_container,
   };
 
   // Set up flag for handlebars
   data.not_in_enterprise_currency = session.enterprise.currency_id !== data.details.p_currency_id;
+
+  data.displayPackagingDetails = session.stock_settings.enable_packaging_pharmaceutical_products
+    && data.details.depot_count_per_container;
 
   // Add the original PO unit cost and quantity for each lot
   let sumCost = 0.0;
@@ -153,6 +159,7 @@ async function stockEntryPurchaseReceipt(documentUuid, session, options) {
 
   // For report table formatting
   data.ncols = data.details.p_shipping_handling ? 7 : 6;
+  data.ncols = data.displayPackagingDetails ? data.ncols + 1 : data.ncols;
 
   data.rows = rows;
 

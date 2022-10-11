@@ -41,6 +41,7 @@ function StockModalService(Modal) {
   service.openSearchMovements = openSearchMovements;
   service.openSearchStockAssign = openSearchStockAssign;
   service.openSearchStockRequisition = openSearchStockRequisition;
+  service.openSetPackaging = openSetPackaging;
 
   // generate tag numbers
   function openGenerateAssetBarcodes(request) {
@@ -375,6 +376,18 @@ function StockModalService(Modal) {
     const params = angular.extend(modalParameters, {
       templateUrl  : 'modules/stock/aggregated_consumption/modals/consumption_lot.modal.html',
       controller   : 'StockConsumptionLotsModalController',
+      size         : 'lg',
+      resolve      : { data : () => request },
+    });
+
+    const instance = Modal.open(params);
+    return instance.result;
+  }
+
+  function openSetPackaging(request) {
+    const params = angular.extend(modalParameters, {
+      templateUrl  : 'modules/stock/packaging.modal.html',
+      controller   : 'StockDefinePackagingModalController',
       size         : 'lg',
       resolve      : { data : () => request },
     });

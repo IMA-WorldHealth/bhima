@@ -1,0 +1,8 @@
+<div class="text-left">
+  <strong translate> FORM.LABELS.NUMBER_PACKAGES </strong> : {{ row.entity.numberPackage | number }} <br>
+  <strong translate> FORM.LABELS.PACK_SIZE </strong> : {{ row.entity.package_size }} <br>
+  <span ng-if="(row.entity.quantity % row.entity.package_size) > 0">
+    _______________<br>
+    <strong translate> FORM.LABELS.BULK_QUANTITY</strong> : {{ (row.entity.quantity % row.entity.package_size) | number }} <em> {{ row.entity.unit_type | translate }} </em>
+  </span>
+</div>

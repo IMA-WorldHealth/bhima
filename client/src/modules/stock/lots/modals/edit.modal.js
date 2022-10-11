@@ -15,6 +15,7 @@ function EditLotModalController(Data, Session, Lots, Inventory, Notify, Instance
   vm.onSelectTags = onSelectTags;
   vm.cancel = Instance.dismiss;
   vm.submit = submit;
+  vm.stockSettings = Session.stock_settings;
 
   vm.trackingExpiration = true;
 
