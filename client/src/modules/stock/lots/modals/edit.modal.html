@@ -49,6 +49,25 @@
         </div>
       </div>
 
+      <div class="form-group" ng-if="$ctrl.stockSettings.enable_packaging_pharmaceutical_products && $ctrl.model.is_count_per_container">
+        <label class="control-label" translate>FORM.LABELS.PACK_SIZE</label>
+        <span
+        uib-popover="{{ 'FORM.INFO.PACK_SIZE_INFO' | translate }}"
+        popover-placement="right"
+        popover-trigger="'mouseenter'"
+        popover-append-to-body="true">
+          <i class="text-primary fa fa-info-circle"></i>
+        </span>
+        <input
+          class="form-control"
+          type="number"
+          placeholder="{{ 'FORM.PLACEHOLDERS.BOX_PACKAGING' | translate }}"
+          ng-model="$ctrl.model.package_size"
+          ng-model-options="{ '*' : '$inherit' }"
+          required
+          min="1">
+      </div>
+
       <bh-date-editor
         label="STOCK.EXPIRATION_DATE"
         date-value="$ctrl.model.expiration_date"

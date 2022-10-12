@@ -98,7 +98,9 @@ async function getDepotMovement(documentUuid, enterprise, isExit) {
       m.quantity, m.unit_cost, (m.quantity * m.unit_cost) AS total, m.date, m.description,
       u.display_name AS user_display_name,
       dm.text AS document_reference,
-      l.label, l.expiration_date, d.text AS depot_name, dd.text as otherDepotName,
+      l.label, l.expiration_date, d.text AS depot_name, d.is_count_per_container, dd.text as otherDepotName,
+      dm.text as document_reference, l.package_size, FLOOR(m.quantity / l.package_size) number_package,
+      IF(l.package_size <= 1, 0, 1) AS displayDetail,
       BUID(m.stock_requisition_uuid) AS stock_requisition_uuid, sr_m.text AS document_requisition,
       BUID(s.uuid) AS shipment_uuid, s.status_id AS shipment_status, ship_dm.text AS shipment_reference
       ${joinToExitAttributes}
@@ -139,6 +141,7 @@ async function getDepotMovement(documentUuid, enterprise, isExit) {
     shipment_uuid      : line.shipment_uuid,
     shipment_status    : line.shipment_status,
     shipment_reference : line.shipment_reference,
+    depot_count_per_container : line.is_count_per_container,
   };
 
   data.rows = rows;

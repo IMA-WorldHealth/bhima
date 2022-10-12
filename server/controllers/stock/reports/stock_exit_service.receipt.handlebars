@@ -52,6 +52,9 @@
         <th>{{translate 'STOCK.INVENTORY'}}</th>
         <th>{{translate 'STOCK.LOT'}}</th>
         <th>{{translate 'STOCK.EXPIRATION'}}</th>
+        {{#if displayPackagingDetails}}
+          <th>{{translate 'STOCK.PACKAGING'}}</th>
+        {{/if}}
         <th>{{translate 'STOCK.QUANTITY'}}</th>
         <th>{{translate 'STOCK.INVENTORY_UNIT'}}</th>
       </tr>
@@ -63,16 +66,31 @@
           <td>{{text}}</td>
           <td>{{label}}</td>
           <td>{{date expiration_date}}</td>
+          {{#if ../displayPackagingDetails}}
+            <td class="text-left" style="font-size: 9.5px;">
+              {{#if displayDetail}}
+                {{translate 'STOCK.NUMBER_PACKAGES'}} : <strong>{{number_package}}</strong> : <strong>(B/{{package_size}})</strong>
+              {{/if}}
+            </td>
+          {{/if}}
           <td class="text-right">{{quantity}}</td>
           <td>{{ translate unit_type }}</td>
         </tr>
       {{else}}
-        {{> emptyTable columns=6}}
+        {{#if displayPackagingDetails}}
+          {{> emptyTable columns=7}}
+        {{else}}
+          {{> emptyTable columns=6}}
+        {{/if}}
       {{/each}}
     </tbody>
     <tfoot>
       <tr style="font-weight: bold;">
-        <td colspan="6">{{rows.length}} {{translate 'STOCK.ITEMS'}}</td>
+        {{#if displayPackagingDetails}}
+          <td colspan="7">{{rows.length}} {{translate 'STOCK.ITEMS'}}</td>
+        {{else}}
+          <td colspan="6">{{rows.length}} {{translate 'STOCK.ITEMS'}}</td>
+        {{/if}}
       </tr>
     </tfoot>
   </table>
