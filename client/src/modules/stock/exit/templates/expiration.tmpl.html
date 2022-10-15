@@ -1,5 +1,5 @@
 <div ng-if="row.entity.lot_uuid" class="ui-grid-cell-contents">
-  <span
+  <span ng-if="row.entity.__tracking_expiration"
     am-time-ago="row.entity.expiration_date"
     title="{{row.entity.expiration_date | date:grid.appScope.DATE_FMT }}"
   ></span>
