@@ -309,7 +309,8 @@ async function getAssets(params) {
       ) AS last_scan ON last_scan.asset_uuid = l.uuid
   `;
 
-  const groupByClause = ` GROUP BY l.uuid, m.depot_uuid ORDER BY i.code, l.label `;
+  const groupByClause = ` GROUP BY l.uuid, m.depot_uuid `;
+  const havingClause = ` HAVING quantity > 0 `;
 
   const filters = getLotFilters(params);
   if (['scanned', 'unscanned'].includes(params.scan_status)) {
@@ -318,6 +319,8 @@ async function getAssets(params) {
   }
   filters.setGroup(groupByClause);
 
+  filters.setHaving(havingClause);
+  filters.setOrder('ORDER BY i.code, l.label');
   const query = filters.applyQuery(sql);
   const queryParameters = filters.parameters();
 
