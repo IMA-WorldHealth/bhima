@@ -230,7 +230,7 @@ class FilterParser {
     const group = this._group;
     const having = this._having;
 
-    return `${sql} WHERE ${conditionStatements} ${group} ${having} ${order} ${limitCondition}`;
+    return `${sql} WHERE ${conditionStatements} ${group} ${having}${order} ${limitCondition}`;
   }
 
   parameters() {
