@@ -39,6 +39,11 @@ before(() => {
   return agent.post('/auth/login').send(user);
 });
 
+beforeEach(done => {
+  setTimeout(() => {}, 10000);
+  done();
+});
+
 // runs after all tests are completed
 after((done) => {
   console.log('Test suite completed.');
