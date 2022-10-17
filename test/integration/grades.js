@@ -8,7 +8,7 @@ const helpers = require('./helpers');
  *
  * This test suite implements full CRUD on the /grades   HTTP API endpoint.
  */
-describe.only('(/grades) API endpoint', () => {
+describe('(/grades) API endpoint', () => {
 
   // grade we will add during this test suite.
   const grade = {
