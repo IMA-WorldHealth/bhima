@@ -45,6 +45,7 @@ class FilterParser {
     this._parseUuids = _.isUndefined(options.parseUuids) ? true : options.parseUuids;
     this._autoParseStatements = _.isUndefined(options.autoParseStatements) ? false : options.autoParseStatements;
     this._group = '';
+    this._having = '';
   }
 
   /**
@@ -203,6 +204,18 @@ class FilterParser {
     this._group = groupString;
   }
 
+  /**
+   * @method setHaving
+   *
+   * @description
+   * Allows setting the SQL Having in the HAVING statement.  A developer is expected to
+   * provide a valid SQL string.  This will be appended to the SQL statement after the
+   * WHERE clause and/or GROUP BY
+   */
+  setHaving(havingClause) {
+    this._having = havingClause;
+  }
+
   applyQuery(sql, ignoreLimit = false) {
     // optionally call utility method to parse all remaining options as simple
     // equality filters into `_statements`
@@ -215,8 +228,9 @@ class FilterParser {
     const conditionStatements = this._parseStatements();
     const order = this._order;
     const group = this._group;
+    const having = this._having;
 
-    return `${sql} WHERE ${conditionStatements} ${group} ${order} ${limitCondition}`;
+    return `${sql} WHERE ${conditionStatements} ${group} ${having}${order} ${limitCondition}`;
   }
 
   parameters() {
