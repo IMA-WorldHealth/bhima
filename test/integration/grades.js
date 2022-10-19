@@ -28,7 +28,6 @@ describe('(/grades) API endpoint', () => {
       .catch(helpers.handler);
   });
 
-
   it('POST /grades should create a new grade', () => {
     return agent.post('/grades')
       .send(grade)
