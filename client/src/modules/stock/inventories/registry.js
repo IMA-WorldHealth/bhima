@@ -273,6 +273,7 @@ function StockInventoriesController(
         rows.forEach(row => {
           setStatusFlag(row);
           row.status_translated = $translate.instant(Stock.statusLabelMap(row.status));
+          row.unit_type = $translate.instant(row.unit_type);
         });
 
         glb.inventories = rows;

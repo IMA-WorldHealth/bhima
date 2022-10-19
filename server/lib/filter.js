@@ -230,7 +230,11 @@ class FilterParser {
     const group = this._group;
     const having = this._having;
 
-    return `${sql} WHERE ${conditionStatements} ${group} ${having}${order} ${limitCondition}`;
+    // To prevent blank character when formatting SQL queries in case the HAVING clause is not needed
+    const sqlQuery = having ? `${sql} WHERE ${conditionStatements} ${group} ${having} ${order} ${limitCondition}`
+      : `${sql} WHERE ${conditionStatements} ${group} ${order} ${limitCondition}`;
+
+    return sqlQuery;
   }
 
   parameters() {
