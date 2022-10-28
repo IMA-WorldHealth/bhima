@@ -52,6 +52,7 @@ CREATE PROCEDURE ImportInventory (
   IN inventoryUnitPrice DECIMAL(18, 4),
   IN inventoryConsumable TINYINT(1),
   IN inventoryIsAsset TINYINT(1),
+  IN inventoryDepreciationRate DECIMAL(18, 4),
   IN inventoryBrand TEXT,
   IN inventoryModel TEXT,
   IN tag VARCHAR(50)
@@ -77,7 +78,7 @@ BEGIN
   IF (existInventoryGroup = 0) THEN
     SET randomCode = (SELECT ROUND(RAND() * 10000000));
     SET inventoryGroupUuid = HUID(UUID());
-    INSERT INTO `inventory_group` (`uuid`, `name`, `code`) VALUES (inventoryGroupUuid, inventoryGroupName, randomCode);
+    INSERT INTO `inventory_group` (`uuid`, `name`, `code`, `depreciation_rate`) VALUES (inventoryGroupUuid, inventoryGroupName, randomCode, inventoryDepreciationRate);
   ELSE
     SET inventoryGroupUuid = (SELECT `uuid` FROM `inventory_group` WHERE `code` = inventoryGroupName OR `name` = inventoryGroupName LIMIT 1);
   END IF;
