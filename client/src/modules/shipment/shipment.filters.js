@@ -40,6 +40,7 @@ function ShipmentFilterService(Filters, AppCache, $httpParamSerializer, Language
     {
       key : 'expiration_date_to', label : 'STOCK.EXPIRATION_DATE', comparitor : '<', valueFilter : 'date',
     },
+    { key : 'project_id', label : 'FORM.LABELS.PROJECT' },
   ];
 
   class ShipmentFilterer {

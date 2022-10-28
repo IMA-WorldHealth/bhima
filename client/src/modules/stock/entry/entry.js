@@ -53,6 +53,8 @@ function StockEntryController(
   vm.onDateChange = onDateChange;
   vm.$loading = false;
   vm.generateAssetBarcodes = StockModal.openGenerateAssetBarcodes;
+  vm.stockSettings = Session.stock_settings;
+  vm.displayPackaging = false;
 
   vm.gridOptions = {
     appScopeProvider : vm,
@@ -96,8 +98,15 @@ function StockEntryController(
         headerCellFilter : 'translate',
         cellTemplate : 'modules/stock/entry/templates/lot.tmpl.html',
       },
-
       {
+        field : 'packaging',
+        displayName : '',
+        width : 40,
+        headerCellFilter : 'translate',
+        cellFilter : 'translate',
+        visible      : false,
+        cellTemplate : 'modules/stock/entry/templates/packaging.cell.tmpl.html',
+      }, {
         field : 'quantity',
         width : 150,
         displayName : 'TABLE.COLUMNS.QUANTITY',
@@ -105,7 +114,6 @@ function StockEntryController(
         cellTemplate : 'modules/stock/entry/templates/quantity.tmpl.html',
         aggregationType : uiGridConstants.aggregationTypes.sum,
       },
-
       {
         field : 'is_asset',
         width : 100,
@@ -128,6 +136,17 @@ function StockEntryController(
   // on change depot
   vm.onChangeDepot = depot => {
     vm.depot = depot;
+
+    vm.displayPackaging = false;
+
+    const columnPackaging = vm.gridOptions.columnDefs.find(col => col.field === 'packaging');
+    if (vm.stockSettings.enable_packaging_pharmaceutical_products && vm.movement.entry_type === 'transfer_reception'
+      && vm.depot.is_count_per_container) {
+      vm.displayPackaging = true;
+    }
+
+    columnPackaging.visible = vm.displayPackaging;
+
     loadInventories();
   };
 
@@ -204,6 +223,7 @@ function StockEntryController(
     vm.movement.entry_type = entryType.label;
     vm.stockForm.store.clear();
     vm.resetEntryExitTypes = false;
+    vm.displayPackaging = false;
 
     /**
      * if false, the bhAddItems will be deactived
@@ -212,6 +232,14 @@ function StockEntryController(
      */
     vm.entityAllowAddItems = !!(vm.movement.entry_type)
       && (vm.movement.entry_type !== 'purchase' && vm.movement.entry_type !== 'transfer_reception');
+
+    const columnPackaging = vm.gridOptions.columnDefs.find(col => col.field === 'packaging');
+    if (vm.stockSettings.enable_packaging_pharmaceutical_products && vm.movement.entry_type === 'transfer_reception'
+      && vm.depot.is_count_per_container) {
+      vm.displayPackaging = true;
+    }
+
+    columnPackaging.visible = vm.displayPackaging;
   }
 
   /**
@@ -337,7 +365,6 @@ function StockEntryController(
    */
   function loadInventories() {
     setupStock();
-
     return Inventory.read(null, { consumable_or_asset : 1, skipTags : true })
       .then((inventories) => {
         vm.inventories = inventories;
@@ -401,7 +428,6 @@ function StockEntryController(
       integration : 'STOCK.RECEPTION_INTEGRATION',
       transfer_reception : 'STOCK.RECEPTION_DESCRIPTION',
     };
-
     if (!entity || !entity.uuid) { return; }
 
     const description = $translate.instant(map[entity.type], {
@@ -490,6 +516,11 @@ function StockEntryController(
       item.cost = item.quantity * item.unit_cost;
       item.expiration_date = vm.movement.date || new Date();
       item.unit_type = inventory.unit_type;
+      item.package_size = items[index].package_size || 1;
+
+      if (item.package_size > 1) {
+        item.numberPackage = Math.floor(item.quantity / item.package_size);
+      }
 
       // Store the non-expired candidate lots for this inventory code
       Lots.candidates({ inventory_uuid : item.inventory_uuid, date : vm.movement.date })
@@ -568,22 +599,73 @@ function StockEntryController(
     stockLine.tracking_expiration = inventory.tracking_expiration;
     stockLine.unique_item = inventory.unique_item;
     stockLine.is_asset = inventory.is_asset;
+    stockLine.is_count_per_container = inventory.is_count_per_container;
     if (stockLine.lots && stockLine.lots.length > 0) {
       stockLine.quantity = stockLine.lots.reduce((n, row) => n + row.quantity, 0);
     } else {
       stockLine.quantity = inventory.is_asset ? 1 : 0;
+
+      if (inventory.is_count_per_container && vm.depot.is_count_per_container) {
+        stockLine.package_size = 0;
+        stockLine.box_unit_cost = 0;
+        stockLine.number_packages = 0;
+      }
     }
 
     StockModal.openDefineLots({
       stockLine,
       entry_type : vm.movement.entry_type,
       currency_id : vm.currencyId,
+      depotPackaged : vm.depot.is_count_per_container,
     })
       .then((res) => {
         if (!res) { return; }
         stockLine.lots = res.lots;
         stockLine.quantity = res.quantity;
         stockLine.unit_cost = res.unit_cost; // integration and donation price are defined in the lot modal
+
+        if (vm.movement.entry_type === 'purchase' && res.openMultiplePackaging) {
+          vm.addItems(1);
+          const lastIndex = vm.stockForm.store.data.length - 1;
+
+          const dataInventory = inventoryStore.get(stockLine.inventory_uuid);
+
+          vm.stockForm.store.data[lastIndex].code = dataInventory.code;
+          vm.stockForm.store.data[lastIndex].inventory_uuid = dataInventory.uuid;
+          vm.stockForm.store.data[lastIndex].label = dataInventory.label;
+          vm.stockForm.store.data[lastIndex].unit_cost = stockLine.unit_price || stockLine.unit_cost;
+          vm.stockForm.store.data[lastIndex].quantity = 0;
+          vm.stockForm.store.data[lastIndex].expiration_date = vm.movement.date || new Date();
+          vm.stockForm.store.data[lastIndex].unit_type = dataInventory.unit_type;
+          vm.stockForm.store.data[lastIndex].package_size = stockLine.package_size || 1;
+          vm.stockForm.store.data[lastIndex]._initialised = true;
+
+          // Store the non-expired candidate lots for this inventory code
+          Lots.candidates({
+            inventory_uuid : vm.stockForm.store.data[lastIndex].inventory_uuid,
+            date : vm.movement.date,
+          })
+            .then((lots) => {
+              vm.stockForm.store.data[lastIndex].availableLots = lots;
+              vm.stockForm.store.data[lastIndex].candidateLots = lots.filter(lot => !lot.expired);
+              return Inventory.inventoryWac(vm.stockForm.store.data[lastIndex].inventory_uuid);
+            })
+            .then(inventoryWacDetails => {
+              if (!inventoryWacDetails) { return; }
+              vm.stockForm.store.data[lastIndex].wacValue = inventoryWacDetails.wac;
+
+              // in case of transfer reception
+              // we force the movement to be made with current WAC
+              // since there is no way to edit the unit cost in this case
+              if (vm.movement.entity.type === 'transfer_reception') {
+                vm.stockForm.store.data[lastIndex].unit_cost = inventoryWacDetails.wac;
+                vm.stockForm.store.data[lastIndex].cost = vm.stockForm.store.data[lastIndex].quantity
+                  * vm.stockForm.store.data[lastIndex].unit_cost;
+              }
+            });
+
+        }
+
         vm.hasValidInput = hasValidInput();
       })
       .catch(Notify.handleError);
@@ -611,6 +693,7 @@ function StockEntryController(
       return Notify.danger('ERRORS.ER_NO_STOCK_SOURCE');
     }
     vm.$loading = true;
+
     mapEntry.form = form;
     return mapEntry[vm.movement.entry_type].submit()
       .then(toggleLoadingIndicator);

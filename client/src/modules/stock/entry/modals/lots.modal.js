@@ -24,7 +24,7 @@ function StockDefineLotsModalController(
 
   // Hide columns in the grid when it doesn't apply to this inventory item.
   const isAsset = Data.stockLine.is_asset;
-  const showShowExpirationDate = !(Data.stockLine.tracking_expiration === false || Data.stockLine.is_asset);
+  const showShowExpirationDate = !(Data.stockLine.tracking_expiration === 0 || Data.stockLine.is_asset);
 
   Data.stockLine.prev_unit_cost = Data.stockLine.unit_cost; // Save for later checks
 
@@ -42,12 +42,16 @@ function StockDefineLotsModalController(
   vm.hasInvalidLotQuantity = false;
   vm.hasDuplicateLotInvent = false;
   vm.hasDuplicateLotOrder = false;
+  vm.enablePackaging = false;
+  vm.lockBoxPurchasePrice = false;
+  vm.allowMultiplePackagingPurchase = false;
 
   vm.globalExpirationDate = new Date();
   vm.globalDefaultAcquisitionDate = new Date();
   vm.enableGlobalDescriptionAndExpiration = false;
 
   vm.enterprise = Session.enterprise;
+  vm.stockSettings = Session.stock_settings;
   vm.stockLine = angular.copy(Data.stockLine);
   vm.entryType = Data.entry_type;
   vm.entryDate = Data.entry_date;
@@ -56,8 +60,41 @@ function StockDefineLotsModalController(
   vm.currencyId = Data.currency_id !== undefined
     ? Data.currency_id : vm.enterprise.currency_id;
 
+  // To support the packaging of pharmaceutical products:
+  // It will be necessary that
+  // - the stock setting parameters can be activated
+  // - the depot must be configured as Warehouse but also and allows the packaging of the products
+  // - and lastly the inventory must also be configured as having a packaging by box
+
+  if (vm.stockSettings.enable_packaging_pharmaceutical_products && vm.stockLine.is_count_per_container
+     && Data.depotPackaged) {
+    vm.enablePackaging = true;
+  }
+
+  if (vm.enablePackaging && vm.entryType === 'purchase') {
+    vm.lockBoxPurchasePrice = true;
+    vm.allowMultiplePackagingPurchase = true;
+  }
+
+  if (vm.enablePackaging && vm.form.rows.length) {
+    let numberPackages = 0;
+
+    vm.stockLine.package_size = vm.form.rows[0].package_size;
+    vm.stockLine.box_unit_cost = vm.stockLine.package_size * vm.stockLine.unit_cost;
+
+    vm.form.rows.forEach((row) => {
+      numberPackages += row.quantity / row.package_size;
+    });
+
+    vm.stockLine.number_packages = numberPackages;
+  }
+
   vm.currency = null;
   vm.isTransfer = (vm.entryType === 'transfer_reception');
+
+  if (vm.isTransfer) {
+    vm.enablePackaging = false;
+  }
 
   // Get the status for this inventory article
   Inventory.getInventoryUnitCosts(Data.stockLine.inventory_uuid)
@@ -84,6 +121,8 @@ function StockDefineLotsModalController(
   vm.enterLotByBarcode = enterLotByBarcode;
   vm.onGlobalDateChange = onGlobalDateChange;
   vm.toggleGlobalDescExpColumn = toggleGlobalDescExpColumn;
+  vm.onChangePackageManagement = onChangePackageManagement;
+  vm.onChangesLotNumberPackage = onChangesLotNumberPackage;
 
   vm.isCostEditable = (vm.entryType !== 'transfer_reception');
 
@@ -122,6 +161,17 @@ function StockDefineLotsModalController(
     headerCellFilter : 'translate',
     width : 110,
     cellTemplate : 'modules/stock/entry/modals/templates/lot.barcode.tmpl.html',
+  }, {
+    field : 'number_package',
+    type : 'number',
+    width : 120,
+    displayName : 'FORM.LABELS.NUMBER_PACKAGES',
+    headerCellFilter : 'translate',
+    aggregationType : uiGridConstants.aggregationTypes.sum,
+    aggregationHideLabel : true,
+    footerCellClass : 'text-right',
+    cellTemplate : 'modules/stock/entry/modals/templates/lot.number_package.tmpl.html',
+    visible : vm.enablePackaging,
   }, {
     field : 'quantity',
     type : 'number',
@@ -214,6 +264,25 @@ function StockDefineLotsModalController(
   function lookupLotByUuid(uuid) {
     return vm.stockLine.availableLots
       .find(l => l.uuid === uuid);
+  }
+
+  function onChangePackageManagement() {
+    vm.stockLine.quantity = vm.stockLine.number_packages * vm.stockLine.package_size;
+
+    vm.form.rows.forEach((row) => {
+      row.quantity = row.number_package * vm.stockLine.package_size;
+      row.package_size = vm.stockLine.package_size;
+    });
+
+    if (!vm.lockBoxPurchasePrice) {
+      vm.stockLine.unit_cost = vm.stockLine.box_unit_cost / vm.stockLine.package_size;
+
+      vm.form.setMaxQuantity(vm.stockLine.quantity);
+    } else {
+      vm.stockLine.box_unit_cost = vm.stockLine.unit_cost * vm.stockLine.package_size;
+    }
+
+    onChanges();
   }
 
   /**
@@ -431,6 +500,15 @@ function StockDefineLotsModalController(
     }
   }
 
+  function onChangesLotNumberPackage(row) {
+    row.quantity = row.number_package * vm.stockLine.package_size;
+    row.package_size = vm.stockLine.package_size;
+
+    vm.form.setMaxQuantity(vm.stockLine.quantity);
+    if (!vm.form.rows.length) { return; }
+    onChanges();
+  }
+
   function lotMatch(row, label) {
     if (row.lot === null) {
       return false;
@@ -577,6 +655,7 @@ function StockDefineLotsModalController(
           lots : vm.form.rows,
           unit_cost : vm.stockLine.unit_cost,
           quantity : vm.form.total(),
+          openMultiplePackaging : vm.entryStockMultiplePackaging,
         });
       })
       .catch(Notify.handleError);

@@ -31,6 +31,7 @@ async function document(req, res, next) {
   params.enterprise_id = req.session.enterprise.id;
   params.isEnterpriseCurrency = (req.session.enterprise.currency_id === Number(params.currency_id));
   params.filename = 'REPORT.REPORT_ACCOUNTS_MULTIPLE.TITLE';
+  params.includeUnpostedValues = params.includeUnpostedValues ? Number(params.includeUnpostedValues) : 0;
 
   try {
     report = new ReportManager(TEMPLATE, req.session, params);
@@ -111,6 +112,7 @@ async function document(req, res, next) {
       globalBalance,
       dateFrom : params.dateFrom,
       dateTo : params.dateTo,
+      provisionary : params.includeUnpostedValues,
     }, { params });
 
     const result = await report.render(bundle);

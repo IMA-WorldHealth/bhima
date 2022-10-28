@@ -25,7 +25,7 @@ exports.list = function list(req, res, next) {
       enable_strict_depot_permission, enable_supplier_credit,
       enable_strict_depot_distribution, average_consumption_algo,
       min_delay, default_purchase_interval, enable_expired_stock_out,
-      default_cost_center_for_loss
+      default_cost_center_for_loss, enable_packaging_pharmaceutical_products
     FROM stock_setting
     WHERE enterprise_id = ? LIMIT 1;
     `;

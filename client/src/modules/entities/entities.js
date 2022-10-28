@@ -40,6 +40,11 @@ function EntityController(
         headerCellFilter : 'translate',
       },
       {
+        field : 'title',
+        displayName : 'ENTITY.TITLE',
+        headerCellFilter : 'translate',
+      },
+      {
         field : 'phone',
         displayName : 'ENTITY.PHONE',
         headerCellFilter : 'translate',

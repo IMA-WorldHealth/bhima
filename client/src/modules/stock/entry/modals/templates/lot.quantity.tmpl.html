@@ -1,5 +1,4 @@
 <div class="ui-grid-cell-contents">
-
   <input
     min="0"
     type="number"
@@ -8,5 +7,6 @@
     ng-model="row.entity.quantity"
     ng-model-options="{ 'debounce' : '$inherit' }"
     ng-change="grid.appScope.onChanges()"
+    ng-disabled="grid.appScope.enablePackaging"
     required>
 </div>

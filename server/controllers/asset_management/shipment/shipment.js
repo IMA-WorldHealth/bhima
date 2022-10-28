@@ -531,6 +531,7 @@ function getShipmentFilters(parameters) {
   filters.equals('label', 'label', 'l');
   filters.equals('reference', 'text', 'dm');
   filters.equals('is_asset', 'is_asset', 'i');
+  filters.equals('project_id', 'project_id', 'sh');
 
   // except current
   filters.custom(
@@ -604,6 +605,7 @@ function find(params) {
     LEFT JOIN document_map dm2 ON dm2.uuid = sh.document_uuid
   `;
 
+  filters.setOrder('ORDER BY sh.reference DESC');
   const query = filters.applyQuery(sql);
   const queryParameters = filters.parameters();
   return db.exec(query, queryParameters);

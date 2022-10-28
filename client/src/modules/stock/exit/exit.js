@@ -5,7 +5,7 @@ angular.module('bhima.controllers')
 StockExitController.$inject = [
   '$state', '$transition$', 'NotifyService', 'SessionService', 'util', 'bhConstants', 'ReceiptModal',
   'StockExitFormService', 'StockEntryExitTypeService', 'uiGridConstants', 'GridExportService', 'ShipmentService',
-  'DepotService', '$timeout', 'BarcodeService',
+  'DepotService', '$timeout', 'BarcodeService', 'StockModalService',
 ];
 /** @class StockExitController
  *
@@ -15,7 +15,7 @@ StockExitController.$inject = [
 function StockExitController(
   $state, $transition$, Notify, Session, util, bhConstants, ReceiptModal,
   StockForm, ExitTypes, uiGridConstants, GridExportService, Shipments,
-  Depot, $timeout, Barcode,
+  Depot, $timeout, Barcode, StockModal,
 ) {
   const vm = this;
 
@@ -29,6 +29,10 @@ function StockExitController(
   vm.gridApi = {};
   vm.ROW_ERROR_FLAG = bhConstants.grid.ROW_ERROR_FLAG;
   vm.DATE_FMT = bhConstants.dates.format;
+
+  vm.enablePackaging = false;
+  vm.stockSettings = Session.stock_settings;
+  vm.setPackaging = setPackaging;
 
   // bind methods
   vm.maxLength = util.maxLength;
@@ -74,6 +78,14 @@ function StockExitController(
       displayName : 'TABLE.COLUMNS.LOT',
       headerCellFilter : 'translate',
       cellTemplate : 'modules/stock/exit/templates/lot.tmpl.html',
+    }, {
+      field : 'packaging',
+      displayName : '',
+      width : 40,
+      headerCellFilter : 'translate',
+      cellFilter : 'translate',
+      visible      : false,
+      cellTemplate : 'modules/stock/exit/templates/packaging.cell.tmpl.html',
     }, {
       field : 'quantity',
       width : 150,
@@ -128,6 +140,16 @@ function StockExitController(
   };
 
   vm.setDepot = function setDepot(depot) {
+    vm.enablePackaging = false;
+    const column = vm.gridOptions.columnDefs.find(col => col.field === 'packaging');
+
+    if (depot.is_count_per_container && vm.stockSettings.enable_packaging_pharmaceutical_products) {
+      vm.enablePackaging = true;
+    }
+
+    column.visible = vm.enablePackaging;
+    vm.gridApi.grid.refresh();
+
     vm.stockForm.setDepot(depot);
     vm.validate();
   };
@@ -151,6 +173,32 @@ function StockExitController(
   };
 
   /**
+   * @method setPackaging
+   * @param {object} item
+   * @description [grid] pop up a modal for defining packaging
+   */
+  function setPackaging(item) {
+    if (!item.inventory_uuid) {
+      // Prevent the packaging modal pop-up if new inventory code has been selected
+      return;
+    }
+
+    StockModal.openSetPackaging({
+      item,
+      currency_id : vm.currencyId,
+      basic : true,
+    })
+      .then((res) => {
+        if (!res) { return; }
+        item.lots = res.lots;
+        item.quantity = res.quantity;
+
+        vm.validate();
+      })
+      .catch(Notify.handleError);
+  }
+
+  /**
    * @method exportGrid
    * @description export the content of the grid to csv.
    */
@@ -164,8 +212,13 @@ function StockExitController(
 
   //
   function onSelectExitType(exitType, entity) {
+    vm.stockForm.details.description = null;
     vm.selectedExitType = exitType;
     vm.stockForm.setExitType(exitType.label);
+
+    if (entity.shipment) {
+      vm.stockForm.details.description = entity.shipment.description;
+    }
 
     switch (exitType.label) {
     case 'patient':

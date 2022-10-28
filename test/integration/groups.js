@@ -22,7 +22,8 @@ describe('(/groups) Group subscriptions API', () => {
       .send(validSubscriptions)
       .then((result) => {
         helpers.api.errored(result, 400, 'ERROR.INVALID_REQUEST');
-      });
+      })
+      .catch(helpers.handler);
   });
 
   it('POST /groups/:key/:id rejects a requst with valid key and no subscriptions', () => {
@@ -30,7 +31,8 @@ describe('(/groups) Group subscriptions API', () => {
       .send({})
       .then((result) => {
         helpers.api.errored(result, 400, 'ERROR.ERR_MISSING_INFO');
-      });
+      })
+      .catch(helpers.handler);
   });
 
   it('POST /groups/:key/:id updates group subscriptions with valid request', () => {
@@ -46,6 +48,7 @@ describe('(/groups) Group subscriptions API', () => {
         expect(result).to.have.status(200);
         expect(result.body).to.not.be.empty;
         expect(result.body[1].affectedRows).to.equal(trueSubscriptions.length);
-      });
+      })
+      .catch(helpers.handler);
   });
 });

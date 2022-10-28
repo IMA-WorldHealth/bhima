@@ -49,6 +49,7 @@
         "INVENTORY_TYPE_INFO" : "inventory_type : le type d'inventaire tel que Article, Service, Assemblage ou Autre",
         "INVENTORY_UNIT_INFO" : "inventory_unit : les unités de l'inventaire telles que Piece, Tablet, Box, Bottle, etc",
         "IS_BROKEN" : "est endommagé",
+        "IS_COUNT_PER_CONTAINER" : "est conditionné par paquet",
         "IS_IT_ASSET": "Est ce un actif",
         "LIST": "Liste des données d'inventaire",
         "LIST_GROUP": "Groupes d'inventaires",
