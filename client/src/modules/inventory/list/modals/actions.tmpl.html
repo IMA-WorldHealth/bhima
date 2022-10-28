@@ -110,15 +110,20 @@
     <div class="form-group"
       ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.group_uuid.$invalid }">
       <label class="control-label" translate>FORM.LABELS.GROUP</label>
-      <select class="form-control" name="group_uuid"
+      <ui-select
+        name="group_uuid"
         ng-model="$ctrl.item.group_uuid"
-        ng-options="group.uuid as group.name for group in $ctrl.groups | orderBy:'name'"
-        required>
-        <option value="" disabled translate>FORM.SELECT.INVENTORY_GROUP</option>
-      </select>
-      <div class="help-block" ng-messages="ActionForm.group_uuid.$error" ng-show="ActionForm.$submitted">
-        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-      </div>
+        ng-required="$ctrl.required">
+        <ui-select-match placeholder="{{ ::'FORM.SELECT.INVENTORY_GROUP' | translate }}">
+          <span>{{$select.selected.name}}</span>
+        </ui-select-match>
+
+        <ui-select-choices
+          ui-select-focus-patch
+          repeat="group.uuid as group in $ctrl.groups | filter: { 'name' : $select.search } track by $index">
+          <span ng-bind-html="group.name | highlight:$select.search"></span>
+        </ui-select-choices>
+      </ui-select>
     </div>
 
     <div class="form-group"
@@ -140,17 +145,20 @@
     <div class="form-group"
       ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.unit_id.$invalid }">
       <label class="control-label" translate>FORM.LABELS.UNIT</label>
-      <select
-        class="form-control"
+      <ui-select
         name="unit_id"
         ng-model="$ctrl.item.unit_id"
-        ng-options="unit.id as unit.text for unit in $ctrl.units | orderBy:'text'"
-        required>
-        <option value="" disabled translate>FORM.SELECT.INVENTORY_UNIT</option>
-      </select>
-      <div class="help-block" ng-messages="ActionForm.unit_id.$error" ng-show="ActionForm.$submitted">
-        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-      </div>
+        ng-required="$ctrl.required">
+        <ui-select-match placeholder="{{ ::'FORM.SELECT.INVENTORY_UNIT' | translate }}">
+          <span>{{$select.selected.text}}</span>
+        </ui-select-match>
+
+        <ui-select-choices
+          ui-select-focus-patch
+          repeat="unit.id as unit in $ctrl.units | filter: { 'text' : $select.search } track by $index">
+          <span ng-bind-html="unit.text | highlight:$select.search"></span>
+        </ui-select-choices>
+      </ui-select>
     </div>
 
     <div class="checkbox">
