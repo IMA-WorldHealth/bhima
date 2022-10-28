@@ -101,8 +101,9 @@ async function createStock(req, res, next) {
         // Create new lot (if one it does not already exist)
         lotUuid = uuid();
 
-        // parse the expiration date
+        // parse the dates
         const date = new Date(lot.expiration_date);
+        const acquitionDate = new Date(lot.acquisition_date);
 
         // the lot object to insert
         const createLotObject = {
@@ -115,6 +116,7 @@ async function createStock(req, res, next) {
           inventory_uuid : db.bid(lot.inventory_uuid),
           reference_number : lot.reference_number,
           serial_number : lot.serial_number,
+          acquisition_date : acquitionDate || null,
           package_size : lot.package_size || 1,
         };
 
@@ -230,6 +232,7 @@ async function insertNewStock(session, params) {
         unit_cost : lot.unit_cost,
         description : lot.description,
         expiration_date : new Date(lot.expiration_date),
+        acquisition_date : new Date(lot.acquisition_date) || null,
         inventory_uuid : db.bid(lot.inventory_uuid),
         serial_number : lot.serial_number,
         package_size : lot.package_size || 1,

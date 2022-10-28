@@ -106,7 +106,6 @@ function getLotFilters(parameters) {
   filters.equals('group_uuid', 'uuid', 'ig');
   filters.equals('text', 'text', 'i');
   filters.equals('label', 'label', 'l');
-  filters.equals('is_asset', 'is_asset', 'i');
   filters.equals('assigned_to_uuid', 'entity_uuid', 'sa');
   filters.fullText('reference_number', 'reference_number', 'l');
   filters.equals('period_id', 'period_id', 'm');
@@ -267,15 +266,20 @@ async function getAssets(params) {
     SELECT BUID(l.uuid) AS uuid, l.label, l.description AS lot_description,
       SUM(m.quantity * IF(m.is_exit = 1, -1, 1)) AS quantity,
       d.text AS depot_text, l.unit_cost, l.expiration_date,
-      l.serial_number, l.reference_number, l.package_size,
+      l.serial_number, l.reference_number, l.acquisition_date, l.package_size,
       BUID(l.inventory_uuid) AS inventory_uuid,
       i.code AS inventory_code, i.text as inventory_label,
       BUID(m.depot_uuid) AS depot_uuid,
       i.is_asset, i.manufacturer_brand, i.manufacturer_model,
       m.date AS entry_date,
       IF(ISNULL(iu.token), iu.text, CONCAT("INVENTORY.UNITS.",iu.token,".TEXT")) AS unit_type,
-      ig.name AS group_name, ig.tracking_expiration, ig.tracking_consumption,
-      dm.text AS documentReference,
+      ig.name AS group_name, ig.tracking_expiration, ig.tracking_consumption, ig.depreciation_rate,
+      TIMESTAMPDIFF(YEAR, l.acquisition_date, CURRENT_DATE()) AS year_life,
+      (TIMESTAMPDIFF(YEAR, l.acquisition_date, CURRENT_DATE()) * ig.depreciation_rate) AS percentage_depreciation,
+      (((TIMESTAMPDIFF(YEAR, l.acquisition_date, CURRENT_DATE()) * ig.depreciation_rate) / 100)
+      * l.unit_cost) AS depreciated_value,
+      (l.unit_cost - (((TIMESTAMPDIFF(YEAR, l.acquisition_date, CURRENT_DATE()) * ig.depreciation_rate) / 100)
+      * l.unit_cost)) AS book_value, dm.text AS documentReference,
       CONCAT('LT', LEFT(HEX(l.uuid), 8)) AS barcode,
 
       BUID(sa.uuid) AS assignment_uuid, BUID(sa.entity_uuid) AS assigned_to_uuid,
@@ -559,7 +563,7 @@ async function getLotsMovements(depotUuid, params) {
 
   const sql = `
     SELECT
-      BUID(l.uuid) AS uuid, l.label, l.serial_number, l.unit_cost, l.expiration_date,
+      BUID(l.uuid) AS uuid, l.label, l.serial_number, l.unit_cost, l.expiration_date, l.acquisition_date,
       m.quantity, m.reference, m.description, l.package_size,
       d.text AS depot_text, d.min_months_security_stock,
       IF(is_exit = 1, "OUT", "IN") AS io, BUID(l.inventory_uuid) AS inventory_uuid,

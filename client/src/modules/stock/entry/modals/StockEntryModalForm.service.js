@@ -28,6 +28,7 @@ function StockEntryModalForm(uuid) {
     this.isInvalid = true;
     this.isValid = false;
     this.identifier = uuid();
+    this.acquisition_date = row.acquisition_date || new Date();
     this.number_package = row.number_package || null;
     this.package_size = row.package_size || null;
 

@@ -549,6 +549,7 @@ function StockEntryController(
           quantity : item.quantity,
           serial_number : items[index].serial_number,
           expiration_date : new Date(items[index].expiration_date),
+          acquisition_date : new Date(items[index].acquisition_date),
           uuid : items[index].uuid,
         });
       }

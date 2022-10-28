@@ -1,1 +1,1 @@
-inventory_group_name, inventory_code, inventory_text, inventory_type, inventory_unit, inventory_unit_price, inventory_consumable, inventory_is_asset, inventory_brand, inventory_model
+inventory_group_name, inventory_code, inventory_text, inventory_type, inventory_unit, inventory_unit_price, inventory_consumable, inventory_is_asset, depreciation_rate, inventory_brand, inventory_model
