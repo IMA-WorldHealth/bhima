@@ -116,11 +116,8 @@ async function createStock(req, res, next) {
           inventory_uuid : db.bid(lot.inventory_uuid),
           reference_number : lot.reference_number,
           serial_number : lot.serial_number,
-<<<<<<< HEAD
           acquisition_date : acquitionDate || null,
-=======
           package_size : lot.package_size || 1,
->>>>>>> bhima_master/master
         };
 
         // adding a lot insertion query into the transaction
