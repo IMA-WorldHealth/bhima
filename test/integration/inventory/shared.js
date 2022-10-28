@@ -15,6 +15,7 @@ const inventoryGroup = {
   cogs_account : 209, // 60310010 - Médicaments en comprimés
   tracking_expiration : 1,
   unique_item : 0,
+  depreciation_rate : 0,
 };
 
 const updateGroup = {
@@ -26,6 +27,7 @@ const updateGroup = {
   unique_item : 0,
   tracking_expiration : 1,
   tracking_consumption : 0,
+  depreciation_rate : 10,
 };
 
 const inventoryType = {

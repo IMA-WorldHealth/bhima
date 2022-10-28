@@ -19,6 +19,14 @@ CALL add_column_if_missing('supplier', 'contact_uuid', 'BINARY(16) NULL');
 CALL add_column_if_missing('enterprise_setting', 'enable_prf_details', 'TINYINT(1) NOT NULL DEFAULT 0');
 CALL add_column_if_missing('enterprise_setting', 'purchase_general_condition', 'TEXT NULL');
 
+/**
+ * @author: lomamech
+ * @description: Added new information for asset management
+ * @date: 2022-08-18
+ */
+CALL add_column_if_missing('inventory_group', 'depreciation_rate', 'FLOAT DEFAULT 0');
+CALL add_column_if_missing('lot', 'acquisition_date', 'DATE DEFAULT NULL');
+
 /*
  * @author: lomamech
  * @date: 2022-09-07

@@ -36,6 +36,7 @@
         description : '',
         reference_number : undefined,
         serial_number : undefined,
+        acquisition_date : undefined,
         package_size : 1,
       },
       {
@@ -48,6 +49,7 @@
         description : '',
         reference_number : undefined,
         serial_number : undefined,
+        acquisition_date : undefined,
         package_size : 1,
       },
     ]);
