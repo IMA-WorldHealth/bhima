@@ -1296,3 +1296,9 @@ form.NoSubmitButton div.modal-footer button.btn-primary {
 .stepper-item:last-child::after {
   content: none;
 }
+
+/* -------------------- lots modal grid -------------------- */
+.lots-modal-grid {
+  min-height: calc(320px);
+}
+/* -------------------- end lots modal grid ---------------- */
