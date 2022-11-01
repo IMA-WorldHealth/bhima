@@ -170,6 +170,7 @@
     "MONTHLY_CONSUM"  : "Consommation Mensuelle Moyenne",
     "MONTH_OF_STOCK"  : "Mois de stock - Nombre de mois avant epuisement du stock",
     "NUMBER_PACKAGES" : "Nombre de paquet",
+    "OPTIONS"         : "Options",
     "MSD"             : "MSD",
     "RISK"            : "Risque",
     "RISK_QUANTITY"   : "Quantité à risque",
