@@ -120,7 +120,7 @@
     "handlebars": "^4.7.7",
     "helmet": "^6.0.0",
     "inline-source": "^8.0.2",
-    "ioredis": "^5.2.3",
+    "ioredis": "^5.2.4",
     "jaro-winkler": "^0.2.8",
     "jquery": "^3.6.1",
     "jsbarcode": "^3.11.5",
