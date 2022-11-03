@@ -309,12 +309,37 @@
 
               <div class="form-group"
                 ng-if="EnterpriseCtrl.enterprise.settings.enable_prf_details">
-                <textarea 
+                <textarea
                   class="form-control"
                   ng-model="EnterpriseCtrl.enterprise.settings.purchase_general_condition"
                   rows="5">
                 </textarea>
               </div>
+
+              <div class="form-group"
+                ng-if="EnterpriseCtrl.enterprise.settings.enable_prf_details">
+                <label class="control-label" translate>
+                  ENTERPRISE.SETTINGS.TERMS_OF_DELIVERY
+                </label>
+                <textarea
+                  class="form-control"
+                  ng-model="EnterpriseCtrl.enterprise.settings.terms_of_delivery"
+                  rows="5">
+                </textarea>
+              </div>
+
+              <div class="form-group"
+                ng-if="EnterpriseCtrl.enterprise.settings.enable_prf_details">
+                <label class="control-label" translate>
+                  ENTERPRISE.SETTINGS.SPECIAL_INSTRUCTIONS
+                </label>
+                <textarea
+                  class="form-control"
+                  ng-model="EnterpriseCtrl.enterprise.settings.special_instructions"
+                  rows="5">
+                </textarea>
+              </div>
+
             </div>
           </div>
 

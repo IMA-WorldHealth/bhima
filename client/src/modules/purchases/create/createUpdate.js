@@ -32,6 +32,7 @@ function PurchaseOrderController(
 
   vm.enterprise = Session.enterprise;
   vm.stockSettings = Session.stock_settings;
+
   vm.maxLength = util.maxLength;
   vm.maxDate = new Date();
   vm.loadingState = false;
@@ -136,6 +137,18 @@ function PurchaseOrderController(
   function selectInventoryArticle(item) {
     vm.order.configureItem(item);
   }
+
+  vm.onSelectRequestedBy = entity => {
+    vm.order.details.requested_by = entity.uuid;
+  };
+
+  vm.onSelectReviewed = entity => {
+    vm.order.details.reviewed_by = entity.uuid;
+  };
+
+  vm.onSelectApprovedBy = entity => {
+    vm.order.details.approved_by = entity.uuid;
+  };
 
   function onChangeUnitCost(item) {
     // Sanity check on new unit cost
@@ -244,6 +257,7 @@ function PurchaseOrderController(
     const inventUuids = [];
     let dupItem = null;
     vm.order.store.data.forEach(item => {
+      delete item.is_count_per_container;
       const invUUID = item.inventory_uuid;
       if (inventUuids.includes(invUUID)) {
         dupItem = item;

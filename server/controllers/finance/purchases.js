@@ -130,6 +130,12 @@ function lookupPurchaseOrder(uid) {
       p.info_delivery_condition,
       p.info_special_instruction,
       p.info_payment_condition,
+      req.display_name AS request_display_name,
+      req.title AS request_title,
+      rev.display_name AS review_display_name,
+      rev.title AS review_title,
+      appr.display_name AS approved_display_name,
+      appr.title AS approved_title,
       s.address_1, s.email, s.phone,
       curr.format_key, curr.symbol
     FROM purchase AS p
@@ -140,6 +146,9 @@ function lookupPurchaseOrder(uid) {
       JOIN user AS u ON u.id = p.user_id
       JOIN purchase_status AS ps ON ps.id = p.status_id
       JOIN currency curr ON curr.id = p.currency_id
+      LEFT JOIN entity AS req ON req.uuid = p.requested_by
+      LEFT JOIN entity AS rev ON rev.uuid = p.reviewed_by
+      LEFT JOIN entity AS appr ON appr.uuid = p.approved_by
     WHERE p.uuid = ?;
   `;
 
@@ -198,7 +207,7 @@ async function create(req, res, next) {
     data.user_id = req.session.user.id;
     data.project_id = req.session.project.id;
     data.currency_id = data.currency_id ? data.currency_id : req.session.enterprise.currency_id;
-    data = db.convert(data, ['supplier_uuid']);
+    data = db.convert(data, ['supplier_uuid', 'requested_by', 'reviewed_by', 'approved_by']);
 
     if (data.date) {
       data.date = new Date(data.date);

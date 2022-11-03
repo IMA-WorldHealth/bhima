@@ -36,3 +36,15 @@ CALL add_column_if_missing('stock_setting', 'enable_packaging_pharmaceutical_pro
 CALL add_column_if_missing('inventory', 'is_count_per_container', 'TINYINT(1) NOT NULL DEFAULT 0');
 CALL add_column_if_missing('depot', 'is_count_per_container', 'TINYINT(1) NOT NULL DEFAULT 0');
 CALL add_column_if_missing('lot', 'package_size', 'INT(11) NOT NULL DEFAULT 1');
+
+/*
+ * @author: lomamech
+ * @date: 2022-11-02
+ * @description: Improvement of the purchase order module
+*/
+CALL add_column_if_missing('enterprise_setting', 'terms_of_delivery', 'TEXT NULL');
+CALL add_column_if_missing('enterprise_setting', 'special_instructions', 'TEXT NULL');
+
+CALL add_column_if_missing('purchase', 'requested_by', 'BINARY(16) NULL');
+CALL add_column_if_missing('purchase', 'reviewed_by', 'BINARY(16) NULL');
+CALL add_column_if_missing('purchase', 'approved_by', 'BINARY(16) NULL');
