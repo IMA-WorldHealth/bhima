@@ -21,8 +21,10 @@ function lookupSupplier(uid) {
       entity.display_name AS contact_name,
       entity.title AS contact_title,
       entity.phone AS contact_phone,
-      entity.email AS contact_email
+      entity.email AS contact_email,
+      creditor.group_uuid AS creditor_group_uuid
     FROM supplier
+    JOIN creditor ON creditor.uuid = supplier.creditor_uuid
     LEFT JOIN entity ON entity.uuid = supplier.contact_uuid
     WHERE supplier.uuid = ?;
   `;

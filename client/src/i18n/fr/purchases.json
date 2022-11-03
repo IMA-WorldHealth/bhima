@@ -38,6 +38,7 @@
       "PAYMENT_CONDITION" : "Condition de paiement",
       "SPECIAL_INSTRUCTION" : "Instruction speciale",
       "REQUESTED_BY": "Demandé par (nom en caractères d'imprimerie)",
+      "REVIEWED_BY": "Revue par (nom en caractères d'imprimerie)",
       "APPROVED_BY": "Approuvé par (nom en caractères d'imprimerie)",
       "APPROVED_TWO_BY": "Deuxième approbation (nom en caractères d'imprimerie)",
       "SIGNATURE": "Signature",

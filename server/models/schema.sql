@@ -595,6 +595,8 @@ CREATE TABLE `enterprise_setting` (
   `enable_require_cost_center_for_posting` TINYINT(1) NOT NULL DEFAULT 0,
   `enable_prf_details` TINYINT(1) NOT NULL DEFAULT 0,
   `purchase_general_condition` TEXT NULL,
+  `terms_of_delivery` TEXT NULL,
+  `special_instructions` TEXT NULL,
   PRIMARY KEY (`enterprise_id`),
   CONSTRAINT `enterprise_setting__enterprise` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
@@ -1423,6 +1425,9 @@ CREATE TABLE `purchase` (
   `info_delivery_condition`  TEXT,
   `info_special_instruction` TEXT,
   `info_payment_condition`   TEXT,
+  `requested_by` BINARY(16) NULL,
+  `reviewed_by` BINARY(16) NULL,
+  `approved_by` BINARY(16) NULL,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `purchase_1` (`project_id`, `reference`),
   KEY `project_id` (`project_id`),

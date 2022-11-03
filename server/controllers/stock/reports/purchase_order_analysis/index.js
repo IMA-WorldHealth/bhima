@@ -82,19 +82,16 @@ async function report(req, res, next) {
 
     // This query is used to get the quantities in stock for a purchase order
     const sqlInventoriesInStock = `
-      SELECT BUID(p.uuid) AS purchase_uuid, BUID(iv.uuid) AS inventory_uuid,
-        iv.text AS inventoryText, l.label AS lotLabel, p.project_id,
-        p.reference, p.user_id, l.uuid AS lotUuid, SUM(sm.quantity) AS quantity_inStock,
-        l.expiration_date,
-        iv.code
+      SELECT BUID(p.uuid) AS purchase_uuid, BUID(inv.uuid) AS inventory_uuid, inv.text AS inventoryText,
+        l.label AS lotLabel, p.project_id, p.reference, p.user_id, SUM(sm.quantity) AS quantity_inStock,
+        l.expiration_date, inv.code
       FROM purchase AS p
-        JOIN purchase_item pi ON p.uuid = pi.purchase_uuid
-        JOIN stock_movement sm ON sm.entity_uuid = p.uuid
+        JOIN stock_movement AS sm ON sm.entity_uuid = p.uuid
         JOIN lot l ON l.uuid = sm.lot_uuid
-        JOIN inventory AS iv ON iv.uuid = pi.inventory_uuid
+        JOIN inventory AS inv ON inv.uuid = l.inventory_uuid
       WHERE p.uuid = ?
-      GROUP BY iv.uuid
-      ORDER BY iv.text ASC;
+      GROUP BY inv.uuid
+      ORDER BY inv.text ASC;
     `;
 
     // NOTE: Removed entry_date from previous query since it was removed from the lot table.
