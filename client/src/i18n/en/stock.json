@@ -169,6 +169,7 @@
     "MONTH"           : "Stock Months",
     "MONTHLY_CONSUM"  : "Average Monthly Consumption",
     "MONTH_OF_STOCK"  : "Stock Months - Months until Stock Out",
+    "OPTIONS"         : "Options",
     "MSD"             : "MSD",
     "NUMBER_PACKAGES" : "Number Package",
     "RISK"            : "Risk",
