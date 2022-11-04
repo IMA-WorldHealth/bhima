@@ -12,7 +12,6 @@ function SupplierCreateUpdateController(data, SupplierService, Notify,
   const vm = this;
   vm.close = Instance.close;
   vm.submit = submit;
-
   vm.supplier = angular.copy(data);
   vm.isCreate = !vm.supplier.uuid;
   vm.action = vm.isCreate ? 'FORM.LABELS.CREATE' : 'FORM.LABELS.UPDATE';
@@ -27,6 +26,13 @@ function SupplierCreateUpdateController(data, SupplierService, Notify,
     if (form.$invalid) {
       Notify.danger('FORM.ERRORS.HAS_ERRORS');
       return false;
+    }
+
+    if (data.uuid) {
+      delete vm.supplier.contact_name;
+      delete vm.supplier.contact_phone;
+      delete vm.supplier.contact_email;
+      delete vm.supplier.contact_title;
     }
 
     const operation = (!data.uuid)
@@ -49,13 +55,6 @@ function SupplierCreateUpdateController(data, SupplierService, Notify,
       vm.groups = groups;
       return data.uuid ? SupplierService.read(data.uuid) : null;
     })
-      .then(supplier => {
-        delete supplier.contact_name;
-        delete supplier.contact_phone;
-        delete supplier.contact_email;
-        delete supplier.contact_title;
-        vm.supplier = supplier || data;
-      })
       .catch(Notify.handleError);
   }
 

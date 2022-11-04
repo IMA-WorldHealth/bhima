@@ -41,8 +41,7 @@
                     name="notes"
                     class="form-control"
                     rows="2"
-                    ng-maxlength="PurchaseCtrl.maxLength"
-                    required>
+                    ng-maxlength="PurchaseCtrl.maxLength">
                   </textarea>
                   <div class="help-block" ng-messages="PurchaseOrderForm.notes.$error" ng-show="PurchaseOrderForm.$submitted">
                     <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
@@ -224,6 +223,36 @@
                 </div>
               </div>
             </div>
+
+            <div class="row" ng-if="PurchaseCtrl.enterprise.settings.enable_prf_details">
+              <!-- supplier contact -->
+              <div class="col-md-6">
+                <bh-entity-select
+                  label = "PURCHASES.INFO.REQUESTED_BY"
+                  entity-uuid="PurchaseCtrl.order.details.requested_by"
+                  on-select-callback="PurchaseCtrl.onSelectRequestedBy(entity)"
+                  required="false">
+                  <bh-clear on-clear="PurchaseCtrl.clear('requested_by')"></bh-clear>
+                </bh-entity-select>
+
+                <bh-entity-select
+                  label = "PURCHASES.INFO.REVIEWED_BY"
+                  entity-uuid="PurchaseCtrl.order.details.reviewed_by"
+                  on-select-callback="PurchaseCtrl.onSelectReviewed(entity)"
+                  required="false">
+                  <bh-clear on-clear="PurchaseCtrl.clear('reviewed_by')"></bh-clear>
+                </bh-entity-select>
+
+                <bh-entity-select
+                  label = "PURCHASES.INFO.APPROVED_BY"
+                  entity-uuid="PurchaseCtrl.order.details.approved_by"
+                  on-select-callback="PurchaseCtrl.onSelectApprovedBy(entity)"
+                  required="false">
+                  <bh-clear on-clear="PurchaseCtrl.clear('approved_by')"></bh-clear>
+                </bh-entity-select>
+              </div>
+
+            </div>
           </div>
         </div>
 
@@ -319,7 +348,8 @@
               data-method="cancel">
               <span ng-show="PurchaseCtrl.isUpdateState" translate>FORM.BUTTONS.CANCEL_EDIT</span>
               <span ng-show="!PurchaseCtrl.isUpdateState" translate>FORM.BUTTONS.CANCEL</span>
-            </button>            <p
+            </button>
+            <p
               class="text-danger"
               ng-show="PurchaseCtrl.order._invalid && PurchaseOrderForm.$submitted">
               <span class="fa fa-exclamation-circle"></span>

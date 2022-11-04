@@ -31,7 +31,9 @@
       "HELPDESK_TEXT" : "Coordonnées du service d'assistance",
       "HELPDESK_TEXT_HELP" : "Si défini, affichez ces informations sur la façon de contacter le service d'assistance en bas de la page de connexion",
       "ENABLE_PRF_DETAILS": "Activer les informations supplementaires pour les achats",
-      "ENABLE_PRF_DETAILS_HELP_TEXT": "En activant cette option, les informations des PRF seront ajoutées pour les achats et les conditions générales d'achats"
+      "ENABLE_PRF_DETAILS_HELP_TEXT": "En activant cette option, les informations des PRF seront ajoutées pour les achats et les conditions générales d'achats",
+      "SPECIAL_INSTRUCTIONS" : "Instructions spéciales",
+      "TERMS_OF_DELIVERY" : "Conditions de livraison"
     }
   }
 }
