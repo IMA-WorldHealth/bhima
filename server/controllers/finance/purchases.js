@@ -130,12 +130,15 @@ function lookupPurchaseOrder(uid) {
       p.info_delivery_condition,
       p.info_special_instruction,
       p.info_payment_condition,
+      BUID(p.requested_by) AS requested_by,
+      BUID(p.reviewed_by) AS reviewed_by,
+      BUID(p.approved_by) AS approved_by,
       req.display_name AS request_display_name,
-      req.title AS request_title,
+      p.requested_title AS request_title,
       rev.display_name AS review_display_name,
-      rev.title AS review_title,
+      p.reviewed_title AS review_title,
       appr.display_name AS approved_display_name,
-      appr.title AS approved_title,
+      p.approved_title AS approved_title,
       s.address_1, s.email, s.phone,
       curr.format_key, curr.symbol
     FROM purchase AS p
@@ -347,7 +350,7 @@ async function update(req, res, next) {
       PURCHASE_STATUS_WAITING_CONFIRMATION,
     ];
 
-    const data = db.convert(req.body, ['supplier_uuid']);
+    const data = db.convert(req.body, ['supplier_uuid', 'requested_by', 'reviewed_by', 'approved_by']);
     const poUuid = db.bid(req.params.uuid);
     const purchase = await db.one('SELECT * FROM purchase WHERE uuid = ?', [poUuid]);
 

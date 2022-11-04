@@ -95,6 +95,9 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
     this.details.currency_id = order.currency_id;
     this.details.note = order.note;
     this.details.supplier_uuid = order.supplier_uuid;
+    this.details.requested_by = order.requested_by;
+    this.details.reviewed_by = order.reviewed_by;
+    this.details.approved_by = order.approved_by;
 
     this.details.info_purchase_number = order.info_purchase_number;
     this.details.info_prf_number = order.info_prf_number;

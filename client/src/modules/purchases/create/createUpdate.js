@@ -140,14 +140,17 @@ function PurchaseOrderController(
 
   vm.onSelectRequestedBy = entity => {
     vm.order.details.requested_by = entity.uuid;
+    vm.order.details.requested_title = entity.title;
   };
 
   vm.onSelectReviewed = entity => {
     vm.order.details.reviewed_by = entity.uuid;
+    vm.order.details.reviewed_title = entity.title;
   };
 
   vm.onSelectApprovedBy = entity => {
     vm.order.details.approved_by = entity.uuid;
+    vm.order.details.approved_title = entity.title;
   };
 
   function onChangeUnitCost(item) {

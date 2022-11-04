@@ -48,3 +48,7 @@ CALL add_column_if_missing('enterprise_setting', 'special_instructions', 'TEXT N
 CALL add_column_if_missing('purchase', 'requested_by', 'BINARY(16) NULL');
 CALL add_column_if_missing('purchase', 'reviewed_by', 'BINARY(16) NULL');
 CALL add_column_if_missing('purchase', 'approved_by', 'BINARY(16) NULL');
+
+CALL add_column_if_missing('purchase', 'requested_title', 'VARCHAR(100)');
+CALL add_column_if_missing('purchase', 'reviewed_title', 'VARCHAR(100)');
+CALL add_column_if_missing('purchase', 'approved_title', 'VARCHAR(100)');
