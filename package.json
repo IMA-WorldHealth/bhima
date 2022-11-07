@@ -136,7 +136,7 @@
     "ngstorage": "^0.3.11",
     "nodemailer": "^6.7.8",
     "p-retry": "^4.6.1",
-    "pako": "^2.0.4",
+    "pako": "^2.1.0",
     "q": "^1.5.1",
     "qrcode": "^1.5.1",
     "stream-to-promise": "^3.0.0",
