@@ -854,6 +854,7 @@ exports.configure = function configure(app) {
   app.post('/stock/lots/movements', stock.createMovement);
   app.get('/stock/lots/movements', stock.listLotsMovements);
 
+  app.post('/stock/lots/create', lots.create);
   app.post('/stock/lots', stock.createStock);
   app.get('/stock/lots', stock.listLots);
   app.get('/stock/assetLots', stock.listAssetLots);

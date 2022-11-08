@@ -423,7 +423,8 @@ async function movementsFromMobile(params) {
   const [mobile] = mobileLots;
   const STOCK_EXIT_TO_DEPOT = 8;
 
-  if (!mobile.isExit) {
+  if (!mobile.isExit && mobile.reference) {
+
     // find the initial stock exit movement
     const findMovements = `
       SELECT 
@@ -471,6 +472,26 @@ async function movementsFromMobile(params) {
       to_depot : mobile.depotUuid,
       lots : validLots,
     } : {};
+
+  }
+
+  if (!mobile.isExit && !mobile.reference) {
+    // stock integration
+    return {
+      flux_id : mobile.fluxId,
+      is_exit : mobile.isExit,
+      depot_uuid : mobile.depotUuid,
+      date : mobile.date,
+      lots : mobileLots.map(item => {
+        return {
+          uuid : item.lotUuid,
+          inventory_uuid : item.inventoryUuid,
+          description : item.description,
+          quantity : item.quantity,
+          unit_cost : item.unitCost,
+        };
+      }),
+    };
   }
 
   // default stock exit movement
@@ -490,6 +511,7 @@ async function movementsFromMobile(params) {
       };
     }),
   } : {};
+
 }
 
 /**
