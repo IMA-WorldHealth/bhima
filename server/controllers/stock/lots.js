@@ -40,6 +40,7 @@ const detailsQuery = `
   JOIN inventory i ON i.uuid = l.inventory_uuid
   `;
 
+exports.create = create;
 exports.update = update;
 exports.details = details;
 exports.getLotTags = getLotTags;
@@ -59,6 +60,42 @@ function getLotTags(bid) {
     WHERE lt.lot_uuid = ?
   `;
   return db.exec(queryTags, [bid]);
+}
+
+/**
+ * POST /stock/lots/create
+ * Create new lots
+ */
+async function create(req, res, next) {
+  const params = req.body;
+  const tx = db.transaction();
+  const sql = `INSERT IGNORE INTO lot SET ?;`;
+
+  const lots = params.lots || [];
+  lots.forEach(lot => {
+    const value = {
+      uuid : db.bid(lot.uuid) || db.bid(util.uuid()),
+      label : lot.label,
+      quantity : lot.quantity,
+      unit_cost : lot.unit_cost,
+      description : lot.description,
+      expiration_date : lot.expiration_date,
+      inventory_uuid : db.bid(lot.inventory_uuid),
+      is_assigned : lot.is_assigned || 0,
+      reference_number : lot.reference_number || '',
+      serial_number : lot.serial_number || '',
+      acquisition_date : lot.acquisition_date || null,
+      package_size : lot.package_size || 1,
+    };
+    tx.addQuery(sql, value);
+  });
+
+  try {
+    await tx.execute();
+    res.status(201).json({});
+  } catch (error) {
+    next(error);
+  }
 }
 
 /**
