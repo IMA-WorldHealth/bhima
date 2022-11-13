@@ -482,6 +482,7 @@ async function movementsFromMobile(params) {
       is_exit : mobile.isExit,
       depot_uuid : mobile.depotUuid,
       date : mobile.date,
+      description : mobile.description,
       lots : mobileLots.map(item => {
         return {
           uuid : item.lotUuid,
@@ -500,6 +501,7 @@ async function movementsFromMobile(params) {
     is_exit : mobile.isExit,
     depot_uuid : mobile.depotUuid,
     date : mobile.date,
+    description : mobile.description,
     lots : mobileLots.map(item => {
       return {
         unique_line : item.uuid,
