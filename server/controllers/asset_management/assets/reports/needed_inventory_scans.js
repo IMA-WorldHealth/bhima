@@ -39,7 +39,6 @@ async function neededInventoryScansReport(req, res, next) {
       is_asset : scan.is_asset,
       scan_start_date : new Date(scan.start_date),
       scan_end_date : new Date(scan.end_date),
-      reference_number : scan.reference_number,
       // Do not pass in scan_status, filter after the query
     };
 
