@@ -255,11 +255,11 @@ async function getAssets(params) {
   let scanWhere = 'WHERE s2.uuid IS NULL';
   if ('scan_start_date' in params) {
     const startDate = moment(params.scan_start_date).format('YYYY-MM-DD');
-    scanWhere += ` AND scan.created_at >= DATE(${db.escape(startDate)})`;
+    scanWhere += ` AND DATE(scan.created_at) >= DATE(${db.escape(startDate)})`;
   }
   if ('scan_end_date' in params) {
     const endDate = moment(params.scan_end_date).format('YYYY-MM-DD');
-    scanWhere += ` AND scan.created_at <= DATE(${db.escape(endDate)})`;
+    scanWhere += ` AND DATE(scan.created_at) <= DATE(${db.escape(endDate)})`;
   }
 
   const sql = `
@@ -317,6 +317,7 @@ async function getAssets(params) {
   const havingClause = ` HAVING quantity > 0 `;
 
   const filters = getLotFilters(params);
+
   if (['scanned', 'unscanned'].includes(params.scan_status)) {
     filters.custom('scan_status',
       params.scan_status === 'scanned' ? 'last_scan.uuid IS NOT NULL' : 'last_scan.uuid IS NULL');
