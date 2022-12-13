@@ -170,7 +170,7 @@
     "gulp-less": "^5.0.0",
     "gulp-merge-json": "^2.1.2",
     "gulp-postcss": "^9.0.1",
-    "gulp-rev": "^9.0.0",
+    "gulp-rev": "^10.0.0",
     "gulp-rev-rewrite": "^5.0.0",
     "gulp-template": "^5.0.0",
     "gulp-typescript": "^5.0.0",
