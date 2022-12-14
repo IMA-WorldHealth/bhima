@@ -46,6 +46,7 @@
           key='phone'
           required = "true"
           autocomplete="off"
+          max-length="15"
           on-change="ModalCtrl.onInputTextChange(key, value)"
           text-value='ModalCtrl.supplier.phone'>
         </bh-input-text>
@@ -53,12 +54,11 @@
         <bh-input-text 
           label="FORM.LABELS.EMAIL" 
           key='email'
-          required = "true"
           autocomplete="off"
           on-change="ModalCtrl.onInputTextChange(key, value)"
           text-value='ModalCtrl.supplier.email'>
         </bh-input-text>
-                
+
         <bh-input-text 
           label="FORM.LABELS.ADDR_1" 
           key='address_1'

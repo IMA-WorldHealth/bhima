@@ -3,7 +3,7 @@ angular.module('bhima.services')
 
 PurchaseOrderFormService.$inject = [
   'InventoryService', 'AppCache', 'Store', 'Pool', 'PurchaseOrderItemService', '$q',
-  'uuid',
+  'uuid', 'SessionService',
 ];
 
 /**
@@ -14,7 +14,7 @@ PurchaseOrderFormService.$inject = [
  * associated with purchase order creation.  The developer must specify a cacheKey
  * to enable the class to be instantiated correctly.
  */
-function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrderItem, $q, uuid) {
+function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrderItem, $q, uuid, Session) {
   /**
    * @constructor
    *
@@ -95,6 +95,9 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
     this.details.currency_id = order.currency_id;
     this.details.note = order.note;
     this.details.supplier_uuid = order.supplier_uuid;
+    this.details.requested_by = order.requested_by;
+    this.details.reviewed_by = order.reviewed_by;
+    this.details.approved_by = order.approved_by;
 
     this.details.info_purchase_number = order.info_purchase_number;
     this.details.info_prf_number = order.info_prf_number;
@@ -146,6 +149,8 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
       date : new Date(),
       cost : 0,
       shipping_handling : 0,
+      info_delivery_condition : Session.enterprise.settings.terms_of_delivery,
+      info_special_instruction : Session.enterprise.settings.special_instructions,
     };
 
     // this object holds the totals for the order.

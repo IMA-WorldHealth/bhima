@@ -28,6 +28,7 @@ describe('(/suppliers) The supplier API endpoint', () => {
     'uuid', 'creditor_uuid', 'display_name', 'address_1', 'address_2',
     'email', 'fax', 'note', 'phone', 'international', 'locked',
     'contact_name', 'contact_email', 'contact_phone', 'contact_title', 'contact_uuid',
+    'creditor_group_uuid',
   ];
 
   const FILTER = {
