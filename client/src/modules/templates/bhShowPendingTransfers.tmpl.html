@@ -1,0 +1,39 @@
+<div class="form-group" data-bh-show-pending-transfers>
+  <label class="control-label" translate>
+    FORM.LABELS.TRANSFERS_IN_TRANSIT
+  </label>
+
+  <ng-transclude></ng-transclude>
+
+  <div>
+    <div class="radio">
+      <label class="radio-inline" data-exclude-exhausted-lots>
+        <input
+          type="radio"
+          name="{{$ctrl.name}}"
+          ng-value="1"
+          ng-model="$ctrl.value"
+          ng-change="$ctrl.onChange($ctrl.value)"
+          required>
+        <span translate>FORM.LABELS.VIEW_INVENTORIES_IN_TRANSIT</span>
+      </label>
+    </div>
+
+    <div class="radio">
+      <label class="radio-inline" data-include-exhausted-lots>
+        <input
+          type="radio"
+          name="{{$ctrl.name}}"
+          ng-value="0"
+          ng-model="$ctrl.value"
+          ng-change="$ctrl.onChange($ctrl.value)"
+          required>
+        <span translate>FORM.LABELS.HIDE_INVENTORIES_IN_TRANSIT</span>
+      </label>
+    </div>
+
+    <span class="help-block" ng-show="$ctrl.helpText" translate>
+      {{$ctrl.helpText}}
+    </span>
+  </div>
+</div>

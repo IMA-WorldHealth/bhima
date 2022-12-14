@@ -116,6 +116,12 @@
             on-change-callback="$ctrl.setIncludeEmptyLot(value)">
           </bh-stock-filter-exhausted>
 
+          <bh-show-pending-transfers
+            name="showPendingTransfers"
+            value="$ctrl.defaultQueries.showPendingTransfers"
+            on-change-callback="$ctrl.showPendingTransfers(value)">
+          </bh-show-pending-transfers>
+
           <bh-period-select
             default-period="{{$ctrl.filters.period}}"
             on-select-callback="$ctrl.onSelectPeriod(period)">
