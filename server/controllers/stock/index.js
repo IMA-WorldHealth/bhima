@@ -836,10 +836,6 @@ async function listLots(req, res, next) {
 function listLotsMovements(req, res, next) {
   const params = req.query;
 
-  if (req.session.stock_settings.enable_strict_depot_permission) {
-    params.check_user_id = req.session.user.id;
-  }
-
   core.getLotsMovements(null, params)
     .then((rows) => {
       res.status(200).json(rows);

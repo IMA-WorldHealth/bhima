@@ -72,6 +72,13 @@ function SearchInventoriesModalController(data, Instance, Store, Periods, util, 
     }
   };
 
+  vm.showPendingTransfers = (value) => {
+    vm.defaultQueries.showPendingTransfers = value;
+    if (angular.isDefined(value)) {
+      changes.post({ key : 'showPendingTransfers', value });
+    }
+  };
+
   vm.onSelectTags = tags => {
     vm.searchQueries.tags = tags;
     displayValues.tags = tags.map(t => t.name).join(',');
@@ -94,6 +101,12 @@ function SearchInventoriesModalController(data, Instance, Store, Periods, util, 
     vm.defaultQueries.includeEmptyLot = data.includeEmptyLot;
   } else {
     vm.defaultQueries.includeEmptyLot = 0;
+  }
+
+  if (data.showPendingTransfers) {
+    vm.defaultQueries.showPendingTransfers = data.showPendingTransfers;
+  } else {
+    vm.defaultQueries.showPendingTransfers = 0;
   }
 
   vm.cancel = function cancel() { Instance.close(); };

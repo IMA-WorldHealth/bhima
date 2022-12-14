@@ -142,6 +142,18 @@ function StockService(Api, StockFilterer, HttpCache, util, Periods) {
   // assign non empty lots filter to the stockLots Filterer
   assignNoEmptyLotsDefaultFilter(stockFilter.lot);
 
+  function assignPendingTransfers(service) {
+    // add in the default key for the stock lots filter
+    const assignedKeys = Object.keys(service._filters.formatHTTP());
+    // assign default Pending Transfers filter
+    if (assignedKeys.indexOf('showPendingTransfers') === -1) {
+      service._filters.assignFilter('showPendingTransfers', 0);
+    }
+  }
+
+  // assign Pending Transfers filter to the stockLots Filterer
+  assignPendingTransfers(stockFilter.movements);
+
   // uniformSelectedEntity function implementation
   // change name, text and display_nam into displayName
   function uniformSelectedEntity(entity) {
@@ -241,7 +253,7 @@ function StockService(Api, StockFilterer, HttpCache, util, Periods) {
 
   // shipment in-transit inventory list
   shipment.getInTransitInventories = query => {
-    return shipment.$http.get('/stock/shipment/transit', { query })
+    return shipment.$http.get('/stock/shipment/transit', { params : query })
       .then(util.unwrapHttpResponse);
   };
 

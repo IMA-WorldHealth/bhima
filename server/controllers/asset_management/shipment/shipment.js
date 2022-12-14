@@ -450,6 +450,18 @@ exports.listInTransitInventories = async (req, res, next) => {
   try {
     const params = req.query;
 
+    const showPendingTransfers = Number(params.showPendingTransfers);
+
+    if (showPendingTransfers === 0) {
+      res.status(200).json([]);
+
+      return;
+    }
+
+    if (req.session.stock_settings.enable_strict_depot_permission) {
+      params.check_user_id = req.session.user.id;
+    }
+
     params.status = [SHIPMENT_READY_TO_ENTER];
 
     const filters = getShipmentFilters(params);
@@ -483,6 +495,7 @@ exports.listInTransitInventories = async (req, res, next) => {
     filters.setGroup(
       'GROUP BY i.uuid, sh.origin_depot_uuid ORDER BY i.code, l.label',
     );
+
     const query = filters.applyQuery(sql);
     const queryParameters = filters.parameters();
 
@@ -515,12 +528,14 @@ function getShipmentFilters(parameters) {
     'inventory_uuid',
     'group_uuid',
     'except_current_shipment',
+    'depot_uuid',
   ]);
 
   const filters = new FilterParser(params);
 
   filters.equals('uuid', 'uuid', 'l');
   filters.equals('origin_depot_text', 'text', 'd');
+  filters.equals('depot_uuid', 'uuid', 'd');
   filters.equals('destination_depot_text', 'text', 'd2');
   filters.equals('origin_depot_uuid', 'origin_depot_uuid', 'sh');
   filters.equals('destination_depot_uuid', 'destination_depot_uuid', 'sh');
@@ -573,6 +588,12 @@ function getShipmentFilters(parameters) {
   filters.dateTo('custom_period_end', 'created_at', 'sh');
 
   filters.equals('user_id', 'created_by', 'sh');
+
+  // depot permission check
+  filters.custom(
+    'check_user_id',
+    'd.uuid IN (SELECT depot_uuid FROM depot_permission WHERE user_id = ?)',
+  );
 
   return filters;
 }
