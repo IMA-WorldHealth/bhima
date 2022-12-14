@@ -122,7 +122,7 @@
     "inline-source": "^8.0.2",
     "ioredis": "^5.2.3",
     "jaro-winkler": "^0.2.8",
-    "jquery": "^3.6.1",
+    "jquery": "^3.6.2",
     "jsbarcode": "^3.11.5",
     "json-2-csv": "^3.17.1",
     "jsonwebtoken": "^8.5.1",
