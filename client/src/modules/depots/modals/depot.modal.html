@@ -185,6 +185,7 @@
               <input type="checkbox" id="{{depot.uuid}}" ng-model="depot._checked" ng-change="DepotModalCtrl.setNodeValue(depot.children, depot)" />
               <span translate>{{depot.text}}</span>
             </label>
+            <span class="fa fa-arrow-left" role="button" ng-click="DepotModalCtrl.setRootValue(depot)"></span>
           </div>
         </div>
       </div>

@@ -134,6 +134,14 @@ function getStockRequisition(params) {
   filters.custom('status', 'sr.status_id IN (?)', [params.status]);
   filters.setOrder('ORDER BY sr.date DESC');
 
+  // depot permission check
+  filters.custom(
+    'check_user_id',
+    `((d.uuid IN (SELECT depot_uuid FROM depot_permission WHERE user_id = ?))
+     OR (dd.uuid IN (SELECT depot_uuid FROM depot_permission WHERE user_id = ?)))`,
+    [params.check_user_id, params.check_user_id],
+  );
+
   const query = filters.applyQuery(SELECT_QUERY);
   const queryParameters = filters.parameters();
   return { query, queryParameters };
@@ -154,6 +162,11 @@ exports.details = async (req, res, next) => {
 exports.list = async (req, res, next) => {
   try {
     const params = binarize(req.query);
+
+    if (req.session.stock_settings.enable_strict_depot_permission) {
+      params.check_user_id = req.session.user.id;
+    }
+
     const sr = getStockRequisition(params);
     const result = await db.exec(sr.query, sr.queryParameters);
     res.status(200).json(result);

@@ -435,6 +435,12 @@ function searchByName(req, res, next) {
     options.user_id = req.session.user.id;
   }
 
+  // When the enable_strict_depot_distribution option is activated, you can only make
+  // a requisition request if the supplier depot is configured to distribute to the beneficiary depot
+  if (req.query.only_distributor && req.session.stock_settings.enable_strict_depot_distribution) {
+    options.only_distributor_for = req.query.exception;
+  }
+
   options.exception = req.query.exception;
   options.limit = req.query.limit || 10;
   options.enterprise_id = req.session.enterprise.id;
@@ -443,7 +449,7 @@ function searchByName(req, res, next) {
     return next(new BadRequest('text attribute must be specified for a name search'));
   }
 
-  db.convert(options, ['exception']);
+  db.convert(options, ['exception', 'only_distributor_for']);
 
   const filters = new FilterParser(options, { tableAlias : 'd' });
 
@@ -468,6 +474,11 @@ function searchByName(req, res, next) {
   filters.custom(
     'user_id',
     'd.uuid IN (SELECT depot_permission.depot_uuid FROM depot_permission WHERE depot_permission.user_id = ?)',
+  );
+
+  filters.custom(
+    'only_distributor_for',
+    'd.uuid IN (SELECT dp.depot_uuid FROM depot_distribution_permission AS dp WHERE dp.distribution_depot_uuid = ?)',
   );
 
   filters.fullText('text', 'text', 'd');
