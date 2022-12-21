@@ -90,6 +90,9 @@ function ActionRequisitionModalController(
     vm.model.requestor_uuid = requestor.uuid;
     // enable auto suggestions only if a depot is selected
     vm.enableAutoSuggest = (requestor.requestor_type_id === DEPOT_REQUESTOR_TYPE && requestor.uuid);
+
+    // Cancel the supplier depot selection if the user changes the requesting depot
+    vm.model.depot_uuid = [];
   };
 
   if (data.uuid) {
