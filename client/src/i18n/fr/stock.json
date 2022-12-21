@@ -72,6 +72,7 @@
     "TRACK_CONSUMPTION":"Suivre la consommation",
     "TRACK_EXPIRATION":"Suivre l'expiration",
     "ERRORS" : {
+      "DEPOT_NOT_ALLOWED_DISTRIBUTE": "ERREUR ! <strong>'{{ depot }}'</strong> n'est pas autorisé à distribuer vers aucun dépôt",
       "EXCESSIVE_QUANTITY": "Quantité excessive",
       "INVALID_GLOBAL_QUANTITY" : "Quantité globale des lots invalide",
       "INVALID_LOT_EXPIRATION" : "Date d'expiration invalide",

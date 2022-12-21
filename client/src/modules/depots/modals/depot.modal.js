@@ -148,6 +148,11 @@ function DepotModalController($state, Depots, Notify, Session, params, FormatTre
   }
   vm.setNodeValue = setNodeValue;
 
+  function setRootValue(depot) {
+    depot._checked = !depot._checked;
+  }
+  vm.setRootValue = setRootValue;
+
   function setAllNodeValue(depots, allStatus) {
     depots.forEach(depot => {
       depot._checked = allStatus;

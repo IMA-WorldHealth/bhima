@@ -22,6 +22,7 @@
       typeahead-min-length="0"
       autocomplete="off"
       translate-attr="{ 'placeholder': 'FORM.SELECT.DEPOT' }"
+      ng-disabled="$ctrl.disabled"
       ng-required="$ctrl.required">
 
     <span ng-show="$ctrl.$loading" class="glyphicon glyphicon-hourglass form-control-feedback"></span>
