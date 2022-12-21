@@ -223,9 +223,16 @@ function StockInventoriesController(
   function setDefaultFilters() {
     const assignedKeys = Object.keys(stockInventoryFilters.formatHTTP());
 
-    // assign default includeEmptyLot filter
-    if (assignedKeys.indexOf('includeEmptyLot') === -1) {
-      stockInventoryFilters.assignFilter('includeEmptyLot', 0);
+    // assign default includeEmptyLot filter or showPendingTransfers
+    if ((assignedKeys.indexOf('includeEmptyLot') === -1) || (assignedKeys.indexOf('showPendingTransfers') === -1)) {
+      if (assignedKeys.indexOf('includeEmptyLot') === -1) {
+        stockInventoryFilters.assignFilter('includeEmptyLot', 0);
+      }
+
+      if (assignedKeys.indexOf('showPendingTransfers') === -1) {
+        stockInventoryFilters.assignFilter('showPendingTransfers', 0);
+      }
+
       stockInventoryFilters.formatCache();
       vm.latestViewFilters = stockInventoryFilters.formatView();
     }
