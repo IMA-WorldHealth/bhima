@@ -6,9 +6,11 @@ angular.module('bhima.components')
     bindings    : {
       depotUuid        : '<',
       filterByUserPermission  : '@?',
+      filterAuthorizedDepotForDistribution : '@?',
       onSelectCallback : '&',
       label            : '@?',
       required         : '<?',
+      disabled         : '<?',
       exception        : '<?', // uuid string or an array of uuids
     },
   });
@@ -60,6 +62,10 @@ function DepotSelectController(Depots, Notify) {
 
     if ($ctrl.filterByUserPermission) {
       options.only_user = true;
+    }
+
+    if ($ctrl.filterAuthorizedDepotForDistribution) {
+      options.only_distributor = true;
     }
 
     return Depots.searchByName(options);

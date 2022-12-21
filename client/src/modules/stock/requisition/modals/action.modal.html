@@ -32,10 +32,11 @@
     <div id="depot-supplier" class="form-group">
       <bh-depot-select
         depot-uuid="$ctrl.model.depot_uuid"
-        filter-by-user-permission="true"
         label="REQUISITION.DEPOT_SUPPLIER"
+        filter-authorized-depot-for-distribution="true"
         required="true"
         exception="$ctrl.model.requestor_uuid"
+        disabled="!$ctrl.model.requestor_uuid"
         on-select-callback="$ctrl.onSelectDepot(depot)">
       </bh-depot-select>
     </div>

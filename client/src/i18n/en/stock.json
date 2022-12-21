@@ -72,6 +72,7 @@
     "TRACK_CONSUMPTION":"Track consumption",
     "TRACK_EXPIRATION":"Track expiration",
     "ERRORS" : {
+      "DEPOT_NOT_ALLOWED_DISTRIBUTE": "ERROR! <b>'{{ depot }}'</b> depot is not allowed to distribute to any depot",
       "EXCESSIVE_QUANTITY": "Excessive Quantity",
       "INVALID_GLOBAL_QUANTITY" : "Invalid Global Lot's Quantity",
       "INVALID_LOT_EXPIRATION" : "Invalid Lot Expiration Date",
