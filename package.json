@@ -86,7 +86,7 @@
     "@types/angular": "^1.8.4",
     "@uirouter/angularjs": "^1.0.29",
     "accounting-js": "^1.1.1",
-    "adm-zip": "^0.5.9",
+    "adm-zip": "^0.5.10",
     "angular": "^1.8.3",
     "angular-animate": "^1.8.3",
     "angular-dynamic-locale": "^0.1.38",
