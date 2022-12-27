@@ -365,7 +365,7 @@ function StockEntryController(
    */
   function loadInventories() {
     setupStock();
-    return Inventory.read(null, { consumable_or_asset : 1, skipTags : true })
+    return Inventory.read(null, { skipTags : true })
       .then((inventories) => {
         vm.inventories = inventories;
         inventoryStore = new Store({ identifier : 'uuid', data : inventories });
@@ -507,7 +507,6 @@ function StockEntryController(
 
     vm.stockForm.store.data.forEach((item, index) => {
       const inventory = inventoryStore.get(items[index].inventory_uuid);
-
       item.code = inventory.code;
       item.inventory_uuid = inventory.uuid;
       item.label = inventory.label;
