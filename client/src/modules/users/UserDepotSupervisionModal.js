@@ -1,14 +1,14 @@
 angular.module('bhima.controllers')
-  .controller('UsersDepotManagementController', UsersDepotManagementController);
+  .controller('UsersDepotSupervisionController', UsersDepotSupervisionController);
 
-UsersDepotManagementController.$inject = [
+UsersDepotSupervisionController.$inject = [
   '$state', 'UserService',
   'NotifyService', 'appcache', 'DepotService', 'FormatTreeDataService', 'params',
 ];
 
-function UsersDepotManagementController($state, Users, Notify, AppCache, Depots, FormatTreeData, params) {
+function UsersDepotSupervisionController($state, Users, Notify, AppCache, Depots, FormatTreeData, params) {
   const vm = this;
-  const cache = AppCache('UserDepot');
+  const cache = AppCache('UserDepotSupervision');
 
   if (params.id) {
     cache.stateParams = params;
@@ -79,7 +79,7 @@ function UsersDepotManagementController($state, Users, Notify, AppCache, Depots,
     const userDepots = filterChecked.map(depot => depot.uuid);
 
     if (userForm.$invalid || !vm.user.id) { return 0; }
-    return Users.updateDepots(vm.user.id, userDepots || [])
+    return Users.updateDepotsSupervision(vm.user.id, userDepots || [])
       .then(() => {
         Notify.success('USERS.UPDATED');
         $state.go('users.list', null, { reload : true });
@@ -87,7 +87,7 @@ function UsersDepotManagementController($state, Users, Notify, AppCache, Depots,
       .catch(Notify.handleError);
   }
 
-  Users.depots(vm.stateParams.id)
+  Users.depotsSupervision(vm.stateParams.id)
     .then((depots) => {
       vm.depotsUser = depots;
       return Depots.read();
