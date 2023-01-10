@@ -435,6 +435,11 @@ function searchByName(req, res, next) {
     options.user_id = req.session.user.id;
   }
 
+  // For Depot managers and supervisors
+  if (req.query.only_management_supervision && req.session.stock_settings.enable_strict_depot_permission) {
+    options.user_management_id = req.session.user.id;
+  }
+
   // When the enable_strict_depot_distribution option is activated, you can only make
   // a requisition request if the supplier depot is configured to distribute to the beneficiary depot
   if (req.query.only_distributor && req.session.stock_settings.enable_strict_depot_distribution) {
@@ -479,6 +484,21 @@ function searchByName(req, res, next) {
   filters.custom(
     'only_distributor_for',
     'd.uuid IN (SELECT dp.depot_uuid FROM depot_distribution_permission AS dp WHERE dp.distribution_depot_uuid = ?)',
+  );
+
+  filters.custom(
+    'user_management_id',
+    `d.uuid IN (
+      SELECT DISTINCT d.depot_uuid
+        FROM (
+          SELECT dp.depot_uuid, dp.user_id
+          FROM depot_permission AS dp
+          UNION
+          SELECT ds.depot_uuid, ds.user_id
+          FROM depot_supervision AS ds
+        ) AS d
+      WHERE d.user_id = ?
+    )`,
   );
 
   filters.fullText('text', 'text', 'd');
