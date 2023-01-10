@@ -55,6 +55,14 @@ angular.module('bhima.routes')
         },
         onEnter : ['$uibModal', '$transition$', userPasswordModal],
         onExit : ['$uibModalStack', closeModal],
+      })
+      .state('users.depotSupervision', {
+        url : '/:id/depotSupervision',
+        params : {
+          id : null,
+        },
+        onEnter : ['$uibModal', '$transition$', depotSupervisionModal],
+        onExit : ['$uibModalStack', closeModal],
       });
   }]);
 
@@ -80,6 +88,15 @@ function depotManagementModal($modal, $transition) {
     size : 'md',
     templateUrl : 'modules/users/UserDepotManagementModal.html',
     controller :  'UsersDepotManagementController as UsersDepotModalCtrl',
+    resolve : { params : () => $transition.params('to') },
+  }).result.catch(angular.noop);
+}
+
+function depotSupervisionModal($modal, $transition) {
+  $modal.open({
+    size : 'md',
+    templateUrl : 'modules/users/UserDepotSupervisionModal.html',
+    controller :  'UsersDepotSupervisionController as UsersDepotModalCtrl',
     resolve : { params : () => $transition.params('to') },
   }).result.catch(angular.noop);
 }

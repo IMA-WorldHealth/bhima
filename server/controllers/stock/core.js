@@ -140,7 +140,17 @@ function getLotFilters(parameters) {
   // depot permission check
   filters.custom(
     'check_user_id',
-    'd.uuid IN (SELECT depot_uuid FROM depot_permission WHERE user_id = ?)',
+    `d.uuid IN (
+      SELECT DISTINCT d.depot_uuid
+        FROM (
+          SELECT dp.depot_uuid, dp.user_id
+          FROM depot_permission AS dp
+          UNION
+          SELECT ds.depot_uuid, ds.user_id
+          FROM depot_supervision AS ds
+        ) AS d
+      WHERE d.user_id = ?
+    )`,
   );
 
   // lot tags
