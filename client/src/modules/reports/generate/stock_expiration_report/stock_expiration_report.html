@@ -37,7 +37,8 @@
               <!-- select depot -->
               <bh-depot-select
                 depot-uuid="ReportConfigCtrl.reportDetails.depot_uuid"
-                on-select-callback="ReportConfigCtrl.onSelectDepot(depot)">
+                on-select-callback="ReportConfigCtrl.onSelectDepot(depot)"
+                filter-management-supervision="true">
                 <bh-clear on-clear="ReportConfigCtrl.clear('depot_uuid')"></bh-clear>
               </bh-depot-select>
             </div>
