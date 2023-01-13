@@ -99,7 +99,7 @@
     "angular-translate-loader-static-files": "^2.19.0",
     "angular-translate-loader-url": "^2.19.0",
     "angular-ui-bootstrap": "^2.5.6",
-    "angular-ui-grid": "^4.11.1",
+    "angular-ui-grid": "^4.12.0",
     "body-parser": "^1.20.0",
     "bootstrap": "^3.3.0",
     "chart.js": "^3.9.1",
