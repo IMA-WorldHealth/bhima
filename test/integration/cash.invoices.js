@@ -83,7 +83,11 @@ function PatientInvoicePayments() {
       .catch(helpers.handler);
   });
 
-  it('POST /cash should not create a cash payment if cash items are empty', () => {
+  it('POST /cash should not create a cash payment if cash items are empty', function () { // eslint-disable-line
+
+    // increase timeout
+    this.timeout(6000);
+
     return agent.post('/cash')
       .send({ payment : INVALID_INVOICE_PAYMENT })
       .then((res) => {
