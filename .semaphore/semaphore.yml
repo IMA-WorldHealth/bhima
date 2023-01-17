@@ -67,7 +67,6 @@ blocks:
                 - '8.0'
             - env_var: NODEJS_VERSION
               values:
-                - '14'
                 - '16'
                 - 'node'
 
@@ -119,6 +118,5 @@ blocks:
                 - '8.0'
             - env_var: NODEJS_VERSION
               values:
-                - '14'
                 - '16'
                 - 'node'
