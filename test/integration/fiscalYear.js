@@ -5,9 +5,9 @@ const helpers = require('./helpers');
 
 describe('(/fiscal) Fiscal Year', () => {
   const newFiscalYear = {
-    label : 'A New Fiscal Year 2023',
-    start_date : new Date('2023-01-01 01:00'),
-    end_date : new Date('2023-12-31 01:00'),
+    label : 'A New Fiscal Year 2024',
+    start_date : new Date('2024-01-01 01:00'),
+    end_date : new Date('2024-12-31 01:00'),
     number_of_months : 12,
     note : 'Fiscal Year for Integration Test',
     closing_account : 111, // 1311 - Résusltat net : Bénéfice *
