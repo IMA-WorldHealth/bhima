@@ -899,14 +899,20 @@ function dashboard(req, res, next) {
   const { status } = req.query;
 
   const getDepotsByUser = `
-    SELECT BUID(p.depot_uuid) AS depot_uuid, d.text AS depot_text
-    FROM depot_permission p
-      JOIN depot AS d
-      ON d.uuid = p.depot_uuid
-    WHERE p.user_id = ?
-    ORDER BY d.text ASC`;
+    SELECT DISTINCT BUID(dep.depot_uuid) AS depot_uuid, d.text AS depot_text
+    FROM (
+      SELECT dp.depot_uuid
+      FROM depot_permission AS dp
+      WHERE dp.user_id = ?
+      UNION
+      SELECT ds.depot_uuid
+      FROM depot_supervision AS ds
+      WHERE ds.user_id = ?
+    ) AS dep
+    JOIN depot AS d ON d.uuid = dep.depot_uuid
+    ORDER BY d.text ASC;`;
 
-  db.exec(getDepotsByUser, [req.session.user.id])
+  db.exec(getDepotsByUser, [req.session.user.id, req.session.user.id])
     .then((_depots) => {
       depotsByUser = _depots;
 

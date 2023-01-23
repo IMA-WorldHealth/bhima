@@ -7,6 +7,7 @@ angular.module('bhima.components')
       depotUuid        : '<',
       filterByUserPermission  : '@?',
       filterAuthorizedDepotForDistribution : '@?',
+      filterManagementSupervision : '@?',
       onSelectCallback : '&',
       label            : '@?',
       required         : '<?',
@@ -66,6 +67,10 @@ function DepotSelectController(Depots, Notify) {
 
     if ($ctrl.filterAuthorizedDepotForDistribution) {
       options.only_distributor = true;
+    }
+
+    if ($ctrl.filterManagementSupervision) {
+      options.only_management_supervision = true;
     }
 
     return Depots.searchByName(options);
