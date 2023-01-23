@@ -20,6 +20,7 @@ const BadRequest = require('../../../lib/errors/BadRequest');
 // expose submodules
 exports.projects = require('./projects');
 exports.depots = require('./depots');
+exports.depotsSupervision = require('./depotsSupervision');
 exports.cashboxes = require('./cashboxes');
 
 // expose API routes

@@ -11,6 +11,7 @@
     "PERMISSIONS" : "Permissions",
     "SET_CASHBOX" : "Assignation des gestionnaires des Caisses",
     "SET_DEPOT" : "Assignation des gestionnaires des dépôts",
+    "SET_DEPOT_SUPERVISION" : "Assignation des superviseurs des dépôts",
     "SET_PASSWORD_AGAIN" : "Saisissez à nouveau le mot de passe",
     "SET_PASSWORD" : "Définir le mot de passe",
     "SUPER" : "Super utilisateur",

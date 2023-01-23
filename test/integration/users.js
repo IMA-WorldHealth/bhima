@@ -29,6 +29,10 @@ describe('(/users) Users and Permissions', () => {
     'd4bb1452-e4fa-4742-a281-814140246877',
   ];
 
+  const depotsSupervision = [
+    'bd4b1452-4742-e4fa-a128-246814140877',
+  ];
+
   const cashboxes = [1, 2];
 
   it('GET /users returns a list of users', () => {
@@ -174,6 +178,22 @@ describe('(/users) Users and Permissions', () => {
       })
       .then(res => {
         helpers.api.listed(res, 2);
+        expect(res).to.have.status(200);
+        expect(res.body).to.not.be.empty;
+      })
+      .catch(helpers.handler);
+  });
+
+  // Add depot supervision for user
+  it('POST /users/:id/depotsSupervision will create user depots for Supervision', () => {
+    return agent.post(`/users/${newUser.id}/depotsSupervision`)
+      .send({ depots : depotsSupervision }) // just the root node
+      .then(res => {
+        expect(res).to.have.status(201);
+        return agent.get(`/users/${newUser.id}/depotsSupervision`);
+      })
+      .then(res => {
+        helpers.api.listed(res, 1);
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
       })

@@ -11,6 +11,7 @@
     "PERMISSIONS" : "Permissions",
     "SET_CASHBOX" : "Cashbox Permissions",
     "SET_DEPOT" : "Depot Permissions",
+    "SET_DEPOT_SUPERVISION" : "Depot supervision",
     "SET_PASSWORD_AGAIN" : "Set Password Again",
     "SET_PASSWORD" : "Set Password",
     "SUPER" : "Super User",
