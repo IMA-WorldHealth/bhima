@@ -15,11 +15,13 @@ function UserService(Api, Filters, bhConstants, AppCache, Periods) {
   service.update = update;
   service.projects = projects;
   service.depots = depots;
+  service.depotsSupervision = depotsSupervision;
   service.cashboxes = cashboxes;
   service.updatePassword = updatePassword;
   service.updatePermissions = updatePermissions;
   service.validatePassword = validatePassword;
   service.updateDepots = updateDepots;
+  service.updateDepotsSupervision = updateDepotsSupervision;
   service.cashBoxManagement = cashBoxManagement;
 
   const filters = new Filters();
@@ -106,6 +108,12 @@ function UserService(Api, Filters, bhConstants, AppCache, Periods) {
       .then(service.util.unwrapHttpResponse);
   }
 
+  // loads the users's depot supervisions
+  function depotsSupervision(id) {
+    return service.$http.get(`/users/${id}/depotsSupervision`)
+      .then(service.util.unwrapHttpResponse);
+  }
+
   // loads the users's cashbox permissions
   function cashboxes(id) {
     return service.$http.get(`/users/${id}/cashboxes`)
@@ -121,6 +129,12 @@ function UserService(Api, Filters, bhConstants, AppCache, Periods) {
   // sets a user's Depot Management using the public API
   function updateDepots(id, data) {
     return service.$http.post(`/users/${id}/depots`, { depots : data })
+      .then(service.util.unwrapHttpResponse);
+  }
+
+  // sets a user's Depot Supervision using the public API
+  function updateDepotsSupervision(id, data) {
+    return service.$http.post(`/users/${id}/depotsSupervision`, { depots : data })
       .then(service.util.unwrapHttpResponse);
   }
 
