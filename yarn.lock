@@ -3503,12 +3503,12 @@ expand-tilde@^2.0.0, expand-tilde@^2.0.2:
   dependencies:
     homedir-polyfill "^1.0.1"
 
-express-handlebars@^6.0.6:
-  version "6.0.6"
-  resolved "https://registry.yarnpkg.com/express-handlebars/-/express-handlebars-6.0.6.tgz#2589bcc4cf9545918047c767e66fa625f5ace85b"
-  integrity sha512-E4QHYCh+9fyfdBEb8uKJ8p6HD4qq/sUSHBq83lRNlLJp2TQKEg2nFJYbVdC+M3QzaV19dODe43lgjQWVaIpbyQ==
+express-handlebars@^6.0.7:
+  version "6.0.7"
+  resolved "https://registry.yarnpkg.com/express-handlebars/-/express-handlebars-6.0.7.tgz#f779254664eff0e250362ef1c2b30587059c212a"
+  integrity sha512-iYeMFpc/hMD+E6FNAZA5fgWeXnXr4rslOSPkeEV6TwdmpJ5lEXuWX0u9vFYs31P2MURctQq2batR09oeNj0LIg==
   dependencies:
-    glob "^8.0.2"
+    glob "^8.1.0"
     graceful-fs "^4.2.10"
     handlebars "^4.7.7"
 
@@ -4299,10 +4299,10 @@ glob@7.2.0, glob@^7.0.0, glob@^7.0.3, glob@^7.0.6, glob@^7.1.1, glob@^7.1.3, glo
     once "^1.3.0"
     path-is-absolute "^1.0.0"
 
-glob@^8.0.2:
-  version "8.0.2"
-  resolved "https://registry.yarnpkg.com/glob/-/glob-8.0.2.tgz#1b87a70413e702431b17d5fb4363a70e3a6e29de"
-  integrity sha512-0jzor6jfIKaDg/2FIN+9L8oDxzHTkI/+vwJimOmOZjaVjFVVZJFojOYbbWC0okXbBVSgYpbcuQ7xy6gDP9f8gw==
+glob@^8.1.0:
+  version "8.1.0"
+  resolved "https://registry.yarnpkg.com/glob/-/glob-8.1.0.tgz#d388f656593ef708ee3e34640fdfb99a9fd1c33e"
+  integrity sha512-r8hpEjiQEYlF2QU0df3dS+nxxSIreXQS1qRhMJM0Q5NDdR386C7jb7Hwwod8Fgiuex+k0GFjgft18yvxm5XoCQ==
   dependencies:
     fs.realpath "^1.0.0"
     inflight "^1.0.4"
