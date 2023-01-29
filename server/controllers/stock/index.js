@@ -464,6 +464,7 @@ async function movementsFromMobile(params) {
     const [bhima] = movements;
     return validLots.length ? {
       document_uuid : bhima.document_uuid,
+      description : mobile.description,
       flux_id : mobile.fluxId,
       is_exit : mobile.isExit,
       depot_uuid : mobile.depotUuid,
@@ -500,6 +501,7 @@ async function movementsFromMobile(params) {
     flux_id : mobile.fluxId,
     is_exit : mobile.isExit,
     depot_uuid : mobile.depotUuid,
+    entity_uuid : mobile.depotUuid,
     date : mobile.date,
     description : mobile.description,
     lots : mobileLots.map(item => {
@@ -1070,7 +1072,7 @@ async function listLotsDepot(req, res, next) {
   params.min_delay = req.session.stock_settings.min_delay;
   params.default_purchase_interval = req.session.stock_settings.default_purchase_interval;
 
-  if (req.session.stock_settings.enable_strict_depot_permission) {
+  if (req.session.stock_settings.enable_strict_depot_permission && !params.fullList) {
     params.check_user_id = req.session.user.id;
   }
 
