@@ -8,7 +8,6 @@
  * @date: 2023-01-09
  */
 DROP TABLE IF EXISTS `depot_supervision`;
-
 CREATE TABLE `depot_supervision` (
   `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
   `user_id` SMALLINT(5) UNSIGNED NOT NULL,
@@ -20,3 +19,11 @@ CREATE TABLE `depot_supervision` (
   CONSTRAINT `depot_supervision__depot` FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`),
   CONSTRAINT `depot_supervision__user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+
+/*
+ * @author: mbayopanda
+ * @desc: increase precision for wac
+ * @date: 2023-02-08
+ */
+ALTER TABLE stock_value MODIFY COLUMN `wac` DECIMAL(19,9) NOT NULL;

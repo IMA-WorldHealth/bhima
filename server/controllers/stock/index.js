@@ -349,7 +349,19 @@ async function createInventoryAdjustment(req, res, next) {
       );
     }
 
+    // get unit costs from stock_value
+    const inventoryUuids = lots.map(l => db.bid(l.inventory_uuid));
+    const unitCosts = await db.exec(
+      'SELECT BUID(inventory_uuid) as inventory_uuid, wac FROM stock_value WHERE inventory_uuid in (?);',
+      [inventoryUuids]);
+
+    const unitCostMap = new Map(unitCosts.map(cost => [cost.inventory_uuid, cost.wac]));
+
     lots.forEach(lot => {
+      // adjust lot's unit cost with the wac cost of the inventory
+      // so that the receipt will reflect the stock sheet paper
+      lot.unit_cost = unitCostMap.get(lot.inventory_uuid);
+
       const difference = lot.quantity - lot.oldQuantity;
 
       const adjustmentMovement = {
@@ -735,14 +747,15 @@ async function normalMovement(document, params, metadata) {
     transaction.addQuery('CALL PostStockMovement(?, ?, ?);', postStockParameters);
   }
 
-  if (!parameters.is_exit) {
-    transaction.addQuery('CALL RecomputeStockValue(NULL);');
-  }
-
   const result = await transaction.execute();
 
   // update the quantity in stock as needed
   await updateQuantityInStockAfterMovement(inventoryUuids, document.date, parameters.depot_uuid);
+
+  // compute stock value after entry movements
+  if (!parameters.is_exit) {
+    transaction.addQuery('CALL RecomputeStockValue(NULL);');
+  }
 
   return result;
 }
