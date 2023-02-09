@@ -1,38 +1,42 @@
 angular.module('bhima.controllers')
-  .controller('PurchaseRegistryController', PurchaseRegistryController);
+  .controller('PurchaseDetailedController', PurchaseDetailedController);
 
-PurchaseRegistryController.$inject = [
-  '$state', 'PurchaseOrderService', 'NotifyService', 'uiGridConstants',
+PurchaseDetailedController.$inject = [
+  '$state', 'NotifyService', 'uiGridConstants',
   'GridColumnService', 'GridStateService', 'SessionService', 'ModalService',
-  'ReceiptModal', 'bhConstants', 'BarcodeService',
+  'ReceiptModal', 'bhConstants', 'BarcodeService', 'PurchaseDetailedService',
+  'GridGroupingService',
 ];
 
 /**
- * Purchase Order Registry Controller
+ * Purchase Order Detailed Controller
  *
- * This module is responsible for the management of Purchase Order Registry.
+ * This module is responsible for the management of Purchase Order Detailed.
  */
-function PurchaseRegistryController(
-  $state, PurchaseOrder, Notify, uiGridConstants,
-  Columns, GridState, Session, Modal, ReceiptModal, bhConstants, Barcode,
+function PurchaseDetailedController(
+  $state, Notify, uiGridConstants,
+  Columns, GridState, Session, Modal, ReceiptModal, bhConstants, Barcode, PurchaseDetailed, Grouping,
 ) {
   const vm = this;
-  const cacheKey = 'PurchaseRegistry';
+  const cacheKey = 'PurchaseDetailed';
 
   vm.search = search;
   vm.openColumnConfiguration = openColumnConfiguration;
   vm.gridApi = {};
   vm.toggleInlineFilter = toggleInlineFilter;
   vm.onRemoveFilter = onRemoveFilter;
-  vm.download = PurchaseOrder.download;
+  vm.download = PurchaseDetailed.download;
   vm.status = bhConstants.purchaseStatus;
   vm.actions = bhConstants.actions;
+
+  // grouping box
+  vm.groupingBox = PurchaseDetailed.groupingBox;
 
   // barcode scanner
   vm.openBarcodeScanner = openBarcodeScanner;
 
-  vm.openPurchaseOrderAnalysisReport = (uuid) => {
-    const params = PurchaseOrder.openPurchaseOrderAnalysisReport(uuid);
+  vm.openPurchaseDetailedAnalysisReport = (uuid) => {
+    const params = PurchaseDetailed.openPurchaseDetailedAnalysisReport(uuid);
     const link = `/reports/purchase_order_analysis?${params}`;
     return link;
   };
@@ -58,7 +62,6 @@ function PurchaseRegistryController(
     field : 'reference',
     displayName : 'FORM.LABELS.REFERENCE',
     headerCellFilter : 'translate',
-    cellTemplate : 'modules/purchases/templates/uuid.tmpl.html',
     aggregationType : uiGridConstants.aggregationTypes.count,
     aggregationHideLabel : true,
   }, {
@@ -78,18 +81,48 @@ function PurchaseRegistryController(
     displayName : 'FORM.LABELS.SUPPLIER',
     headerCellFilter : 'translate',
   }, {
+    field : 'inventory_text',
+    displayName : 'FORM.LABELS.DESIGNATION',
+    headerCellFilter : 'translate',
+  }, {
+    field : 'quantity',
+    displayName : 'FORM.LABELS.QUANTITY_ORDERED',
+    headerTooltip : 'FORM.LABELS.QUANTITY_ORDERED',
+    cellClass : 'text-right',
+    headerCellFilter : 'translate',
+    type : 'number',
+  }, {
+    field : 'quatity_delivered',
+    displayName : 'STOCK.QUANTITY_RECEIVED',
+    headerTooltip : 'STOCK.QUANTITY_RECEIVED',
+    cellClass : 'text-right',
+    headerCellFilter : 'translate',
+    type : 'number',
+  }, {
+    field : 'balance',
+    displayName : 'STOCK.QUANTITY_REMAINING',
+    headerTooltip : 'STOCK.QUANTITY_REMAINING',
+    cellClass : 'text-right',
+    headerCellFilter : 'translate',
+    type : 'number',
+  }, {
+    cellTemplate : '/modules/purchases/templates/purchase_price.tmpl.html',
+    field : 'inventory_purchase_price',
+    displayName : 'TABLE.COLUMNS.PURCHASE_UNIT_PRICE',
+    headerCellFilter : 'translate',
+    // footerCellFilter: 'currency:'.concat(Session.enterprise.currency_id),
+    get footerCellFilter() {
+      return this._footerCellFilter;
+    },
+    set footerCellFilter(value) {
+      this._footerCellFilter = value;
+    },
+    aggregationHideLabel : true,
+    type : 'number',
+  }, {
     field : 'note',
     displayName : 'FORM.LABELS.DESCRIPTION',
     headerCellFilter : 'translate',
-  }, {
-    cellTemplate : '/modules/purchases/templates/cellCost.tmpl.html',
-    field : 'cost',
-    displayName : 'FORM.LABELS.COST',
-    headerCellFilter : 'translate',
-    footerCellFilter : 'currency:'.concat(Session.enterprise.currency_id),
-    aggregationType : uiGridConstants.aggregationTypes.sum,
-    aggregationHideLabel : true,
-    type : 'number',
   }, {
     field : 'responsible',
     displayName : 'FORM.LABELS.RESPONSIBLE',
@@ -101,7 +134,7 @@ function PurchaseRegistryController(
   }, {
     field : 'status',
     displayName : 'FORM.LABELS.STATUS',
-    cellTemplate : '/modules/purchases/templates/cellStatus.tmpl.html',
+    cellTemplate : '/modules/purchases/templates/cellStatusDetailed.tmpl.html',
     headerCellFilter : 'translate',
     enableFiltering : false,
     enableSorting : false,
@@ -119,6 +152,7 @@ function PurchaseRegistryController(
     showColumnFooter : true,
     enableSorting : true,
     enableColumnMenus : false,
+    enableGroupHeaderSelection : true,
     flatEntityAccess : true,
     fastWatch : true,
     onRegisterApi : (api) => { vm.gridApi = api; },
@@ -127,6 +161,9 @@ function PurchaseRegistryController(
 
   const columnConfig = new Columns(vm.uiGridOptions, cacheKey);
   const state = new GridState(vm.uiGridOptions, cacheKey);
+
+  // expose to the view model
+  vm.grouping = new Grouping(vm.uiGridOptions, true, 'reference', vm.grouped, true);
 
   vm.saveGridState = state.saveGridState;
   vm.clearGridState = function clearGridState() {
@@ -139,6 +176,23 @@ function PurchaseRegistryController(
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 
+  // select group
+  vm.selectGroup = (group) => {
+    if (!group) { return; }
+    vm.selectedGroup = group;
+  };
+
+  // toggle group
+  vm.toggleGroup = (column) => {
+    if (vm.grouped) {
+      vm.grouping.removeGrouping(column);
+      vm.grouped = false;
+    } else {
+      vm.grouping.changeGrouping(column);
+      vm.grouped = true;
+    }
+  };
+
   // error handler
   function handler(error) {
     vm.hasError = true;
@@ -149,10 +203,10 @@ function PurchaseRegistryController(
 
   // edit status
   function editStatus(purchase) {
-    Modal.openPurchaseOrderStatus(purchase)
+    Modal.openPurchaseDetailedStatus(purchase)
       .then((reload) => {
         if (reload) {
-          load(PurchaseOrder.filters.formatHTTP(true));
+          load(PurchaseDetailed.filters.formatHTTP(true));
         }
       })
       .catch(handler);
@@ -164,7 +218,7 @@ function PurchaseRegistryController(
     vm.hasError = false;
     toggleLoadingIndicator();
 
-    PurchaseOrder.read(null, filters)
+    PurchaseDetailed.getPurchaseDetailed(filters)
       .then((purchases) => {
 
         purchases.forEach(purchase => {
@@ -172,34 +226,37 @@ function PurchaseRegistryController(
         });
 
         vm.uiGridOptions.data = purchases;
+
+        vm.grouping.unfoldAllGroups();
+        vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
       })
       .catch(handler)
       .finally(toggleLoadingIndicator);
   }
 
   function search() {
-    const filtersSnapshot = PurchaseOrder.filters.formatHTTP();
+    const filtersSnapshot = PurchaseDetailed.filters.formatHTTP();
 
-    PurchaseOrder.openSearchModal(filtersSnapshot)
+    PurchaseDetailed.openSearchModal(filtersSnapshot)
       .then((changes) => {
         if (!changes) {
           // Exit immediatly if the user closes the Search dialog with no changes
           return;
         }
-        PurchaseOrder.filters.replaceFilters(changes);
-        PurchaseOrder.cacheFilters();
-        vm.latestViewFilters = PurchaseOrder.filters.formatView();
+        PurchaseDetailed.filters.replaceFilters(changes);
+        PurchaseDetailed.cacheFilters();
+        vm.latestViewFilters = PurchaseDetailed.filters.formatView();
         // eslint-disable-next-line consistent-return
-        return load(PurchaseOrder.filters.formatHTTP(true));
+        return load(PurchaseDetailed.filters.formatHTTP(true));
       });
   }
 
   // remove a filter with from the filter object, save the filters and reload
   function onRemoveFilter(key) {
-    PurchaseOrder.removeFilter(key);
-    PurchaseOrder.cacheFilters();
-    vm.latestViewFilters = PurchaseOrder.filters.formatView();
-    return load(PurchaseOrder.filters.formatHTTP(true));
+    PurchaseDetailed.removeFilter(key);
+    PurchaseDetailed.cacheFilters();
+    vm.latestViewFilters = PurchaseDetailed.filters.formatView();
+    return load(PurchaseDetailed.filters.formatHTTP(true));
   }
 
   function openColumnConfiguration() {
@@ -214,16 +271,16 @@ function PurchaseRegistryController(
   // startup function. Checks for cached filters and loads them.  This behavior could be changed.
   function startup() {
     if ($state.params.filters.length) {
-      PurchaseOrder.filters.replaceFiltersFromState($state.params.filters);
-      PurchaseOrder.cacheFilters();
+      PurchaseDetailed.filters.replaceFiltersFromState($state.params.filters);
+      PurchaseDetailed.cacheFilters();
     }
 
-    load(PurchaseOrder.filters.formatHTTP(true));
-    vm.latestViewFilters = PurchaseOrder.filters.formatView();
+    load(PurchaseDetailed.filters.formatHTTP(true));
+    vm.latestViewFilters = PurchaseDetailed.filters.formatView();
   }
 
-  vm.deletePurchaseOrder = deletePurchaseOrderWithConfirmation;
-  function deletePurchaseOrderWithConfirmation(entity) {
+  vm.deletePurchaseDetailed = deletePurchaseDetailedWithConfirmation;
+  function deletePurchaseDetailedWithConfirmation(entity) {
     Modal.confirm('FORM.DIALOGS.CONFIRM_DELETE')
       .then((isOk) => {
         if (isOk) { remove(entity); }
@@ -232,10 +289,10 @@ function PurchaseRegistryController(
 
   // allows users to delete purchase orders
   function remove(purchase) {
-    PurchaseOrder.delete(purchase.uuid)
+    PurchaseDetailed.delete(purchase.uuid)
       .then(() => {
         Notify.success('FORM.INFO.DELETE_RECORD_SUCCESS');
-        return load(PurchaseOrder.filters.formatHTTP(true));
+        return load(PurchaseDetailed.filters.formatHTTP(true));
       });
   }
 
@@ -253,13 +310,13 @@ function PurchaseRegistryController(
   function openBarcodeScanner() {
     Barcode.modal({ shouldSearch : true })
       .then(record => {
-        PurchaseOrder.filters.replaceFilters([
+        PurchaseDetailed.filters.replaceFilters([
           { key : 'uuid', value : record.uuid, displayValue : record.reference },
           { key : 'period', value : 'allTime' },
         ]);
 
-        load(PurchaseOrder.filters.formatHTTP(true));
-        vm.latestViewFilters = PurchaseOrder.filters.formatView();
+        load(PurchaseDetailed.filters.formatHTTP(true));
+        vm.latestViewFilters = PurchaseDetailed.filters.formatView();
       });
 
   }

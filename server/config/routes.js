@@ -690,6 +690,7 @@ exports.configure = function configure(app) {
   app.get('/purchases', purchases.list);
   app.get('/purchases/search', purchases.search);
   app.get('/purchases/purchaseState', purchases.purchaseState);
+  app.get('/purchases/detailed', purchases.detailed);
   app.get('/purchases/:uuid', purchases.detail);
   app.put('/purchases/:uuid', purchases.update);
   app.delete('/purchases/:uuid/', purchases.remove);

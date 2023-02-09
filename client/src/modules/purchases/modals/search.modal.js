@@ -77,6 +77,12 @@ function SearchPurchaseOrderModalController(
     vm.searchQueries.supplier_uuid = supplier.uuid;
   };
 
+  // Select Reponsible
+  vm.onSelectBeneficiary = entity => {
+    displayValues.responsible = entity.display_name;
+    vm.searchQueries.responsible = entity.uuid;
+  };
+
   vm.onPurchaseStatusChange = function onPurchaseStatusChange(purchaseStatus) {
     vm.searchQueries.status_id = purchaseStatus;
     let statusText = '/';

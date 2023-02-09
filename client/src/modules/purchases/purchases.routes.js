@@ -22,5 +22,13 @@ angular.module('bhima.routes')
         controller  : 'PurchaseRegistryController as PurchaseRegistryCtrl',
         templateUrl : 'modules/purchases/registry/registry.html',
         params      : { filters : [] },
+      })
+
+      // purchases detailed
+      .state('purchasesDetailed', {
+        url         : '/purchases/detailed',
+        controller  : 'PurchaseDetailedController as PurchaseDetailedCtrl',
+        templateUrl : 'modules/purchases/detailed/registry.html',
+        params      : { filters : [] },
       });
   }]);

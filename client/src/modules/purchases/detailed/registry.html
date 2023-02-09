@@ -1,0 +1,120 @@
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.PURCHASE</li>
+      <li class="title" translate>TREE.PURCHASE_REGISTRY_DETAILED</li>
+    </ol>
+
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <div uib-dropdown dropdown-append-to-body data-action="open-tools">
+          <a class="btn btn-default" uib-dropdown-toggle>
+            <span class="fa fa-bars"></span> <span class="hidden-xs" translate>FORM.LABELS.MENU</span> <span class="caret"></span>
+          </a>
+
+          <ul uib-dropdown-menu role="menu" class="dropdown-menu-right">
+            <li role="menuitem">
+              <a href data-method="configure" ng-click="PurchaseDetailedCtrl.openColumnConfiguration()">
+                <i class="fa fa-columns"></i> <span translate>FORM.LABELS.COLUMNS</span>
+              </a>
+            </li>
+
+            <li role="separator" class="divider"></li>
+            <li role="menuitem">
+              <a href data-method="save-state" ng-click="PurchaseDetailedCtrl.saveGridState()">
+                <i class="fa fa-save"></i> <span translate>FORM.BUTTONS.SAVE_GRID_CONFIGURATION</span>
+              </a>
+            </li>
+
+            <li role="menuitem">
+              <a href data-method="clear-state" ng-click="PurchaseDetailedCtrl.clearGridState()">
+                <i class="fa fa-close"></i> <span translate>FORM.BUTTONS.CLEAR_GRID_CONFIGURATION</span>
+              </a>
+            </li>
+
+            <li role="separator" class="divider"></li>
+            <li role="menuitem">
+              <a ng-href="/reports/finance/purchases/?{{ PurchaseDetailedCtrl.download('pdf') }}" download="{{ 'PURCHASES.ORDER' | translate }}">
+                <span class="fa fa-file-pdf-o"></span> <span translate>DOWNLOADS.PDF</span>
+              </a>
+
+            </li>
+            <li role="menuitem">
+              <a ng-href="/reports/finance/purchases/?{{ PurchaseDetailedCtrl.download('csv') }}" download="{{ 'PURCHASES.ORDER' | translate }}">
+                <span class="fa fa-file-excel-o"></span> <span translate>DOWNLOADS.CSV</span>
+              </a>
+            </li>
+
+            <li role="separator" class="divider" bh-require-enterprise-setting="barcodes"></li>
+            <li role="menuitem" bh-require-enterprise-setting="barcodes">
+              <a href ng-click="PurchaseDetailedCtrl.openBarcodeScanner()" data-action="scan-barcode">
+                <span class="fa fa-barcode"></span> <span translate>BARCODE.SCAN_BARCODE</span>
+              </a>
+            </li>
+
+          </ul>
+        </div>
+      </div>
+
+      <div class="toolbar-item">
+        <div class="btn-group" uib-dropdown>
+          <a class="btn btn-default"
+            ng-class="{ 'btn-info' : PurchaseDetailedCtrl.grouped }"
+            ng-click="PurchaseDetailedCtrl.toggleGroup(PurchaseDetailedCtrl.selectedGroup.value)"
+            ng-disabled="!PurchaseDetailedCtrl.selectedGroup.label">
+            <span>
+              <i class="fa fa-object-group"></i>
+              <span ng-hide="PurchaseDetailedCtrl.selectedGroup.label" translate>STOCK.GROUPING</span>
+              <span ng-show="PurchaseDetailedCtrl.selectedGroup.label" translate>
+                {{ PurchaseDetailedCtrl.selectedGroup.label }}
+              </span>
+            </span>
+          </a>
+          <a class="btn btn-default" uib-dropdown-toggle>
+            <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
+            <li ng-repeat="option in PurchaseDetailedCtrl.groupingBox">
+              <a href ng-click="PurchaseDetailedCtrl.selectGroup(option)">
+                <span translate>{{ option.label }}</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <bh-search-button on-click="PurchaseDetailedCtrl.search()"></bh-search-button>
+
+      <bh-filter-toggle on-toggle="PurchaseDetailedCtrl.toggleInlineFilter()">
+      </bh-filter-toggle>
+    </div>
+  </div>
+</div>
+
+<div class="flex-util bh-filter-bar">
+  <bh-filters
+    filters="PurchaseDetailedCtrl.latestViewFilters"
+    on-remove-filter="PurchaseDetailedCtrl.onRemoveFilter(filter)">
+  </bh-filters>
+</div>
+
+<div class="flex-content">
+  <div class="container-fluid">
+    <div
+      id="purchase-registry"
+      class="grid-full-height-with-filters"
+      ui-grid="PurchaseDetailedCtrl.uiGridOptions"
+      ui-grid-auto-resize
+      ui-grid-resize-columns
+      ui-grid-move-columns
+      ui-grid-save-state
+      ui-grid-grouping>
+
+      <bh-grid-loading-indicator
+        loading-state="PurchaseDetailedCtrl.loading"
+        empty-state="PurchaseDetailedCtrl.uiGridOptions.data.length === 0"
+        error-state="PurchaseDetailedCtrl.hasError">
+      </bh-grid-loading-indicator>
+    </div>
+  </div>
+</div>
