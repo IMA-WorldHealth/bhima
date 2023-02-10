@@ -100,8 +100,8 @@
           <td class="text-right">{{this.quantity}}</td>
           <td>{{translate this.unit_type}}</td>
           <td>{{this.text}}</td>
-          <td class="text-right">{{currency this.unit_price ../purchase.currency_id}}</td>
-          <td class="text-right">{{currency this.total ../purchase.currency_id}}</td>
+          <td class="text-right">{{currency this.unit_price ../purchase.currency_id 4}}</td>
+          <td class="text-right">{{currency this.total ../purchase.currency_id 4}}</td>
         </tr>
       {{/each}}
     </tbody>

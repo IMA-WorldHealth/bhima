@@ -14,11 +14,13 @@
         <th>{{translate 'TABLE.COLUMNS.REFERENCE'}}</th>
         <th>{{translate 'TABLE.COLUMNS.DATE'}}</th>
         <th>{{translate 'TABLE.COLUMNS.SUPPLIER'}}</th>
-        <th>{{translate 'TABLE.COLUMNS.DESCRIPTION'}}</th>
+        <th>{{translate 'TABLE.COLUMNS.ITEM'}}</th>
+        <th>{{translate 'TABLE.COLUMNS.QUANTITY'}}</th>
+        <th>{{translate 'STOCK.QUANTITY_RECEIVED'}}</th>
+        <th>{{translate 'STOCK.QUANTITY_REMAINING'}}</th>
         <th>{{translate 'TABLE.COLUMNS.COST'}}</th>
         <th>{{translate 'FORM.LABELS.RESPONSIBLE'}}</th>
         <th>{{translate 'TABLE.COLUMNS.USER'}}</th>
-        <th>{{translate 'TABLE.COLUMNS.STATUS'}}</th>
       </tr>
     </thead>
     <tbody>
@@ -27,14 +29,16 @@
           <td>{{reference}}</td>
           <td>{{date date}}</td>
           <td>{{supplier}}</td>
-          <td>{{note}}</td>
-          <td>{{currency cost currency_id}}</td>
+          <td  class="text-left">{{inventory_text}}</td>
+          <td>{{quantity}}</td>
+          <td>{{quatity_delivered}}</td>
+          <td>{{balance}}</td>
+          <td>{{currency inventory_purchase_price currency_id 4}}</td>
           <td><strong>{{responsible}}</strong></td>
           <td><strong>{{author}}</strong></td>
-          <td><strong>{{translate status}} </strong></td>
         </tr>
       {{else}}
-        {{> emptyTable columns=6}}
+        {{> emptyTable columns=10}}
       {{/each}}
     </tbody>
   </table>
