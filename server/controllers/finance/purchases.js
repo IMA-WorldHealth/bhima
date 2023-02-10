@@ -67,6 +67,7 @@ exports.stockBalance = purchaseBalance;
 exports.purchaseState = purchaseState;
 
 exports.find = find;
+exports.findDetailed = findDetailed;
 
 exports.remove = remove;
 
