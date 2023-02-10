@@ -67,8 +67,12 @@ exports.stockBalance = purchaseBalance;
 exports.purchaseState = purchaseState;
 
 exports.find = find;
+exports.findDetailed = findDetailed;
 
 exports.remove = remove;
+
+// read all purchase order detailed
+exports.detailed = detailed;
 
 /**
  * @function linkPurchaseItems
@@ -133,12 +137,14 @@ function lookupPurchaseOrder(uid) {
       BUID(p.requested_by) AS requested_by,
       BUID(p.reviewed_by) AS reviewed_by,
       BUID(p.approved_by) AS approved_by,
+      BUID(p.responsible) AS responsible,
       req.display_name AS request_display_name,
       p.requested_title AS request_title,
       rev.display_name AS review_display_name,
       p.reviewed_title AS review_title,
       appr.display_name AS approved_display_name,
       p.approved_title AS approved_title,
+      benf.display_name AS responsible_display_name,
       s.address_1, s.email, s.phone,
       curr.format_key, curr.symbol
     FROM purchase AS p
@@ -152,6 +158,7 @@ function lookupPurchaseOrder(uid) {
       LEFT JOIN entity AS req ON req.uuid = p.requested_by
       LEFT JOIN entity AS rev ON rev.uuid = p.reviewed_by
       LEFT JOIN entity AS appr ON appr.uuid = p.approved_by
+      LEFT JOIN entity AS benf ON benf.uuid = p.responsible
     WHERE p.uuid = ?;
   `;
 
@@ -210,7 +217,7 @@ async function create(req, res, next) {
     data.user_id = req.session.user.id;
     data.project_id = req.session.project.id;
     data.currency_id = data.currency_id ? data.currency_id : req.session.enterprise.currency_id;
-    data = db.convert(data, ['supplier_uuid', 'requested_by', 'reviewed_by', 'approved_by']);
+    data = db.convert(data, ['supplier_uuid', 'requested_by', 'reviewed_by', 'approved_by', 'responsible']);
 
     if (data.date) {
       data.date = new Date(data.date);
@@ -295,6 +302,21 @@ function list(req, res, next) {
 }
 
 /**
+ * @method detailed
+ *
+ * @description
+ * GET /purchases/detailed
+ *
+ * Returns the details all purchase order
+ */
+function detailed(req, res, next) {
+  findDetailed(req.query)
+    .then(rows => res.status(200).json(rows))
+    .catch(next)
+    .done();
+}
+
+/**
  * @method detail
  *
  * @description
@@ -350,7 +372,7 @@ async function update(req, res, next) {
       PURCHASE_STATUS_WAITING_CONFIRMATION,
     ];
 
-    const data = db.convert(req.body, ['supplier_uuid', 'requested_by', 'reviewed_by', 'approved_by']);
+    const data = db.convert(req.body, ['supplier_uuid', 'requested_by', 'reviewed_by', 'approved_by', 'responsible']);
     const poUuid = db.bid(req.params.uuid);
     const purchase = await db.one('SELECT * FROM purchase WHERE uuid = ?', [poUuid]);
 
@@ -447,7 +469,7 @@ function search(req, res, next) {
 function find(options) {
 
   // ensure expected options are parsed appropriately as binary
-  db.convert(options, ['supplier_uuid', 'uuid', 'inventory_uuid']);
+  db.convert(options, ['supplier_uuid', 'uuid', 'inventory_uuid', 'responsible']);
   const filters = new FilterParser(options, { tableAlias : 'p' });
   let statusIds = [];
 
@@ -461,6 +483,7 @@ function find(options) {
   filters.dateTo('custom_period_end', 'date');
   filters.equals('user_id');
   filters.equals('uuid');
+  filters.equals('responsible');
 
   filters.custom('inventory_uuid',
     'p.uuid IN (SELECT pi.purchase_uuid FROM purchase_item pi WHERE pi.inventory_uuid = ?)');
@@ -473,13 +496,14 @@ function find(options) {
         p.cost, p.shipping_handling, p.date, s.display_name  AS supplier,
         p.user_id, p.note,
         BUID(p.supplier_uuid) as supplier_uuid, u.display_name AS author,
-        p.currency_id, p.status_id, ps.text AS status, p.created_at
+        p.currency_id, p.status_id, ps.text AS status, ent.display_name AS responsible, p.created_at
       FROM purchase AS p
       JOIN document_map dm ON p.uuid = dm.uuid
       JOIN supplier AS s ON s.uuid = p.supplier_uuid
       JOIN project AS pr ON p.project_id = pr.id
       JOIN user AS u ON u.id = p.user_id
       JOIN purchase_status AS ps ON ps.id = p.status_id
+      LEFT JOIN entity AS ent ON ent.uuid = p.responsible
   `;
 
   filters.equals('reference', 'text', 'dm');
@@ -764,4 +788,66 @@ async function resetPurchaseInterval(purchaseUuid) {
   });
 
   return transactionWrapper.execute();
+}
+
+/**
+ * @method findDetailed
+ *
+ * @description
+ * This method will apply filters from the options object passed in to
+ * filter the purchase orders detailed.
+ */
+function findDetailed(options) {
+  // Filter only inventory is consumable
+  options.consumable = 1;
+
+  // ensure expected options are parsed appropriately as binary
+  db.convert(options, ['supplier_uuid', 'uuid', 'inventory_uuid', 'responsible']);
+  const filters = new FilterParser(options, { tableAlias : 'p' });
+  let statusIds = [];
+
+  if (options.status_id) {
+    statusIds = statusIds.concat(options.status_id);
+  }
+
+  // default purchase date
+  filters.period('period', 'date');
+  filters.dateFrom('custion_period_start', 'date');
+  filters.dateTo('custom_period_end', 'date');
+  filters.equals('user_id');
+  filters.equals('uuid');
+  filters.equals('responsible');
+  filters.custom('status_id', 'p.status_id IN (?)', [statusIds]);
+  filters.equals('supplier_uuid', 'uuid', 's');
+  filters.equals('inventory_uuid', 'uuid', 'inv');
+  filters.equals('consumable', 'consumable', 'inv');
+
+  const sql = `
+    SELECT BUID(p.uuid) AS uuid, dm.text as reference,
+      p.cost, p.shipping_handling, p.date, s.display_name  AS supplier,
+      p.user_id, p.note, inv.text AS inventory_text, it.quantity, it.unit_price AS inventory_purchase_price,
+      it.total, BUID(p.supplier_uuid) as supplier_uuid, u.display_name AS author,
+      p.currency_id, p.status_id, ps.text AS status, ent.display_name AS responsible, p.created_at,
+      SUM(IFNULL(mov.quantity, 0)) AS quatity_delivered, (it.quantity - SUM(mov.quantity)) AS balance
+    FROM purchase AS p
+    JOIN purchase_item AS it ON it.purchase_uuid = p.uuid
+    JOIN document_map dm ON p.uuid = dm.uuid
+    JOIN supplier AS s ON s.uuid = p.supplier_uuid
+    JOIN project AS pr ON p.project_id = pr.id
+    JOIN inventory AS inv ON inv.uuid = it.inventory_uuid
+    JOIN user AS u ON u.id = p.user_id
+    JOIN purchase_status AS ps ON ps.id = p.status_id
+    LEFT JOIN entity AS ent ON ent.uuid = p.responsible
+    LEFT JOIN lot AS l ON l.inventory_uuid = inv.uuid
+    LEFT JOIN stock_movement AS mov ON (mov.lot_uuid = l.uuid AND mov.entity_uuid = p.uuid)
+  `;
+
+  filters.equals('reference', 'text', 'dm');
+  filters.setGroup('GROUP BY p.uuid, it.inventory_uuid');
+  filters.setOrder('ORDER BY p.date DESC');
+
+  const query = filters.applyQuery(sql);
+  const parameters = filters.parameters();
+
+  return db.exec(query, parameters);
 }

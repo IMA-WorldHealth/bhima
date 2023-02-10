@@ -14,8 +14,10 @@ const Purchases = require('../../purchases');
 const shared = require('../shared');
 
 const REPORT_TEMPLATE = './server/controllers/finance/reports/purchases/report.handlebars';
+const REPORT_TEMPLATE_DETAILED = './server/controllers/finance/reports/purchases/report_detailed.handlebars';
 
 exports.report = report;
+exports.reportDetailed = reportDetailed;
 
 /**
  * @function report
@@ -37,6 +39,33 @@ async function report(req, res, next) {
   try {
     const reportInstance = new ReportManager(REPORT_TEMPLATE, req.session, query);
     const rows = await Purchases.find(query);
+    const result = await reportInstance.render({ filters, rows });
+    res.set(result.headers).send(result.report);
+  } catch (e) {
+    next(e);
+  }
+}
+
+/**
+ * @function reportDetailed
+ *
+ * @description
+ * Build a report detailed for Purchase Registry report of metadata
+ *
+ */
+async function reportDetailed(req, res, next) {
+  const query = _.clone(req.query);
+  const filters = shared.formatFilters(req.query);
+
+  _.extend(query, {
+    filename : 'TREE.PURCHASE_REGISTRY_DETAILED',
+    csvKey : 'rows',
+    orientation : 'landscape',
+  });
+
+  try {
+    const reportInstance = new ReportManager(REPORT_TEMPLATE_DETAILED, req.session, query);
+    const rows = await Purchases.findDetailed(query);
     const result = await reportInstance.render({ filters, rows });
     res.set(result.headers).send(result.report);
   } catch (e) {

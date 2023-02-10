@@ -20,3 +20,13 @@ CREATE TABLE `depot_supervision` (
   CONSTRAINT `depot_supervision__depot` FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`),
   CONSTRAINT `depot_supervision__user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+/**
+ * @author: lomamech
+ * @description: Improved purchase order module #6929
+ * @date: 2023-01-31
+ */
+CALL add_column_if_missing('purchase', 'responsible', 'BINARY(16) NULL');
+CALL add_column_if_missing('purchase', 'responsible_title', 'VARCHAR(100)');
+
+INSERT INTO unit values (316, 'Detailed record of purchases','TREE.PURCHASE_REGISTRY_DETAILED','The purchase registry detailed',154,'/purchases/detailed');
