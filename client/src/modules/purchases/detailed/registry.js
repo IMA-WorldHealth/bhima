@@ -110,7 +110,6 @@ function PurchaseDetailedController(
     field : 'inventory_purchase_price',
     displayName : 'TABLE.COLUMNS.PURCHASE_UNIT_PRICE',
     headerCellFilter : 'translate',
-    // footerCellFilter: 'currency:'.concat(Session.enterprise.currency_id),
     get footerCellFilter() {
       return this._footerCellFilter;
     },
