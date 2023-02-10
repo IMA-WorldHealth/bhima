@@ -146,6 +146,7 @@
     "PURCHASE_ORDER" : "Purchase Orders",
     "PURCHASE" : "Purchase",
     "PURCHASE_REGISTRY" : "Purchase Registry",
+    "PURCHASE_REGISTRY_DETAILED" : "Purchase Registry Detailed",
     "PURCHASE_SETTINGS":"Purchase Settings",
     "PURCHASING" : "Purchasing",
     "REALIZED_PROFIT_REPORT": "Collection on invoices",

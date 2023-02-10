@@ -27,6 +27,7 @@
       "WAITING_CONFIRMATION_DESC" : "Le fournisseur n'a pas encore confirmé qu'il saura fournir la commande"
     },
     "INFO" : {
+      "BENEFICIARY": "Bénéficiaire",
       "PURCHASE_NUMBER" : "Numero commande",
       "PRF_NUMBER" : "Numero PRF",
       "CONTACT_NAME" : "Personne de contact",
@@ -38,6 +39,7 @@
       "PAYMENT_CONDITION" : "Condition de paiement",
       "SPECIAL_INSTRUCTION" : "Instruction speciale",
       "REQUESTED_BY": "Demandé par (nom en caractères d'imprimerie)",
+      "RESPONSIBLE": "Responsable",
       "REVIEWED_BY": "Revue par (nom en caractères d'imprimerie)",
       "APPROVED_BY": "Approuvé par (nom en caractères d'imprimerie)",
       "APPROVED_TWO_BY": "Deuxième approbation (nom en caractères d'imprimerie)",

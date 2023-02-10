@@ -41,6 +41,15 @@
             <bh-clear on-clear="$ctrl.clear('inventory_uuid')"></bh-clear>
           </bh-inventory-select>
 
+          <!-- responsible -->
+          <bh-entity-select
+            label = "PURCHASES.INFO.RESPONSIBLE"
+            entity-uuid="PurchaseCtrl.order.details.responsible"
+            on-select-callback="$ctrl.onSelectBeneficiary(entity)"
+            required="false">
+            <bh-clear on-clear="PurchaseCtrl.clear('responsible')"></bh-clear>
+          </bh-entity-select>
+
           <!-- user -->
           <bh-user-select
             user-id="$ctrl.searchQueries.user_id"

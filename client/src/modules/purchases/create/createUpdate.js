@@ -153,6 +153,11 @@ function PurchaseOrderController(
     vm.order.details.approved_title = entity.title;
   };
 
+  vm.onSelectBeneficiary = entity => {
+    vm.order.details.responsible = entity.uuid;
+    vm.order.details.responsible_title = entity.title;
+  };
+
   function onChangeUnitCost(item) {
     // Sanity check on new unit cost
     const previousPurchases = item.stats.median_unit_cost !== null;

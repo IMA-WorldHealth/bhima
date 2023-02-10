@@ -228,6 +228,14 @@
               <!-- supplier contact -->
               <div class="col-md-6">
                 <bh-entity-select
+                  label = "PURCHASES.INFO.RESPONSIBLE"
+                  entity-uuid="PurchaseCtrl.order.details.responsible"
+                  on-select-callback="PurchaseCtrl.onSelectBeneficiary(entity)"
+                  required="false">
+                  <bh-clear on-clear="PurchaseCtrl.clear('responsible')"></bh-clear>
+                </bh-entity-select>                
+
+                <bh-entity-select
                   label = "PURCHASES.INFO.REQUESTED_BY"
                   entity-uuid="PurchaseCtrl.order.details.requested_by"
                   on-select-callback="PurchaseCtrl.onSelectRequestedBy(entity)"
