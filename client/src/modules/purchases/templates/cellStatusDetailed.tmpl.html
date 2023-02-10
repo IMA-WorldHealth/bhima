@@ -1,0 +1,25 @@
+<div class="ui-grid-cell-contents">
+  <div ng-if="row.entity.quatity_delivered === 0"
+    class="label label-default"
+    uib-tooltip="{{ 'PURCHASES.STATUS.WAITING_CONFIRMATION' | translate }}" tooltip-placement="left"
+    translate> PURCHASES.STATUS.NOT_RECEIVED_DESC
+  </div>
+
+  <div ng-if="row.entity.balance === 0"
+    class="label label-success"
+    uib-tooltip="{{ 'PURCHASES.STATUS.RECEIVED' | translate }}" tooltip-placement="left"
+    translate> PURCHASES.STATUS.RECEIVED
+  </div>
+
+  <div ng-if="row.entity.balance > 0"
+    class="label label-warning"
+    uib-tooltip="{{ 'PURCHASES.STATUS.PARTIALLY_RECEIVED' | translate }}" tooltip-placement="left"
+    translate> PURCHASES.STATUS.PARTIALLY_RECEIVED
+  </div>
+
+  <div ng-if="row.entity.balance < 0"
+    class="label label-danger"
+    uib-tooltip="{{ 'PURCHASES.STATUS.EXCESSIVE_RECEIVED_QUANTITY' | translate }}" tooltip-placement="left"
+    translate> PURCHASES.STATUS.EXCESSIVE_RECEIVED_QUANTITY
+  </div>
+</div>

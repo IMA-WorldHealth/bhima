@@ -1,20 +1,20 @@
 angular.module('bhima.services')
-  .service('PurchaseOrderService', PurchaseOrderService);
+  .service('PurchaseDetailedService', PurchaseDetailedService);
 
-PurchaseOrderService.$inject = [
+PurchaseDetailedService.$inject = [
   '$uibModal', 'FilterService', 'appcache', 'PeriodService',
   'PrototypeApiService', '$httpParamSerializer', 'LanguageService',
   'bhConstants', 'SessionService',
 ];
 
 /**
- * @class PurchaseOrderService
+ * @class PurchaseDetailedService
  * @extends PrototypeApiService
  *
  * @description
  * Connects client controllers with the purchase order backend.
  */
-function PurchaseOrderService(
+function PurchaseDetailedService(
   $uibModal,
   Filters,
   AppCache,
@@ -29,7 +29,7 @@ function PurchaseOrderService(
   const service = new Api(baseUrl);
 
   const purchaseFilters = new Filters();
-  const filterCache = new AppCache('purchases-filters');
+  const filterCache = new AppCache('purchases-detailed-filters');
 
   service.filters = purchaseFilters;
   service.openSearchModal = openSearchModal;
@@ -46,6 +46,11 @@ function PurchaseOrderService(
   service.openPurchaseOrderAnalysisReport = openPurchaseOrderAnalysisReport;
 
   service.getPurchaseDetailed = getPurchaseDetailed;
+
+  service.groupingBox = [
+    { label : 'FORM.LABELS.RESPONSIBLE', value : 'responsible' },
+    { label : 'FORM.LABELS.AUTHOR', value : 'author' },
+  ];
 
   // loads get purchases detailed
   function getPurchaseDetailed(options) {
