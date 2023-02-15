@@ -20,8 +20,14 @@ exports.getPackingList = getPackingList;
 exports.getStep = getStep;
 
 exports.list = async (req, res, next) => {
+  const params = req.query;
   try {
-    const result = await find(req.query);
+
+    if (req.session.stock_settings.enable_strict_depot_permission) {
+      params.check_user_id = req.session.user.id;
+    }
+
+    const result = await find(params);
     res.status(200).json(result);
   } catch (error) {
     next(error);
@@ -625,6 +631,22 @@ function find(params) {
     JOIN user u ON u.id = sh.created_by
     LEFT JOIN document_map dm2 ON dm2.uuid = sh.document_uuid
   `;
+
+  // depot permission check
+  filters.custom(
+    'check_user_id',
+    `d.uuid IN (
+      SELECT DISTINCT d.depot_uuid
+        FROM (
+          SELECT dp.depot_uuid, dp.user_id
+          FROM depot_permission AS dp
+          UNION
+          SELECT ds.depot_uuid, ds.user_id
+          FROM depot_supervision AS ds
+        ) AS d
+      WHERE d.user_id = ?
+    )`,
+  );
 
   filters.setOrder('ORDER BY sh.reference DESC');
   const query = filters.applyQuery(sql);
