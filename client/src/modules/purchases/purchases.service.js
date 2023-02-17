@@ -64,11 +64,9 @@ function PurchaseOrderService(
     { key : 'status_id', label : 'PURCHASES.ORDER' },
     { key : 'defaultPeriod', label : 'TABLE.COLUMNS.PERIOD', ngFilter : 'translate' },
     { key : 'responsible', label : 'FORM.LABELS.RESPONSIBLE' },
+    { key : 'info_purchase_number', label : 'PURCHASES.INFO.PURCHASE_NUMBER' },
+    { key : 'info_prf_number', label : 'PURCHASES.INFO.PRF_NUMBER' },
   ]);
-
-  if (filterCache.filters) {
-    purchaseFilters.loadCache(filterCache.filters);
-  }
 
   // once the cache has been loaded - ensure that default filters are provided appropriate values
   assignDefaultFilters();

@@ -484,6 +484,8 @@ function find(options) {
   filters.equals('user_id');
   filters.equals('uuid');
   filters.equals('responsible');
+  filters.equals('info_purchase_number');
+  filters.equals('info_prf_number');
 
   filters.custom('inventory_uuid',
     'p.uuid IN (SELECT pi.purchase_uuid FROM purchase_item pi WHERE pi.inventory_uuid = ?)');
@@ -496,7 +498,8 @@ function find(options) {
         p.cost, p.shipping_handling, p.date, s.display_name  AS supplier,
         p.user_id, p.note,
         BUID(p.supplier_uuid) as supplier_uuid, u.display_name AS author,
-        p.currency_id, p.status_id, ps.text AS status, ent.display_name AS responsible, p.created_at
+        p.info_purchase_number, p.info_prf_number, p.currency_id, p.status_id,
+        ps.text AS status, ent.display_name AS responsible, p.created_at
       FROM purchase AS p
       JOIN document_map dm ON p.uuid = dm.uuid
       JOIN supplier AS s ON s.uuid = p.supplier_uuid
@@ -821,6 +824,8 @@ function findDetailed(options) {
   filters.equals('supplier_uuid', 'uuid', 's');
   filters.equals('inventory_uuid', 'uuid', 'inv');
   filters.equals('consumable', 'consumable', 'inv');
+  filters.equals('info_purchase_number');
+  filters.equals('info_prf_number');
 
   const sql = `
     SELECT BUID(p.uuid) AS uuid, dm.text as reference,
@@ -828,6 +833,7 @@ function findDetailed(options) {
       p.user_id, p.note, inv.text AS inventory_text, it.quantity, it.unit_price AS inventory_purchase_price,
       it.total, BUID(p.supplier_uuid) as supplier_uuid, u.display_name AS author,
       p.currency_id, p.status_id, ps.text AS status, ent.display_name AS responsible, p.created_at,
+      p.info_purchase_number, p.info_prf_number,
       SUM(IFNULL(mov.quantity, 0)) AS quatity_delivered, (it.quantity - SUM(mov.quantity)) AS balance
     FROM purchase AS p
     JOIN purchase_item AS it ON it.purchase_uuid = p.uuid

@@ -65,6 +65,16 @@ function PurchaseDetailedController(
     aggregationType : uiGridConstants.aggregationTypes.count,
     aggregationHideLabel : true,
   }, {
+    field : 'info_purchase_number',
+    displayName : 'PURCHASES.INFO.PURCHASE_NUMBER',
+    headerCellFilter : 'translate',
+    visible : false,
+  }, {
+    field : 'info_prf_number',
+    displayName : 'PURCHASES.INFO.PRF_NUMBER',
+    headerCellFilter : 'translate',
+    visible : false,
+  }, {
     field : 'date',
     displayName : 'FORM.LABELS.DATE',
     headerCellFilter : 'translate',

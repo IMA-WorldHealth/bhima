@@ -26,6 +26,28 @@
             </div>
           </div>
 
+          <!-- info_purchase_number -->
+          <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.info_purchase_number.$invalid }">
+            <label class="control-label" translate> PURCHASES.INFO.PURCHASE_NUMBER </label>
+            <bh-clear on-clear="$ctrl.clear('info_purchase_number')"></bh-clear>
+
+            <input type="text" class="form-control" name="info_purchase_number" ng-model="$ctrl.searchQueries.info_purchase_number">
+            <div class="help-block" ng-messages="ModalForm.info_purchase_number.$error" ng-show="ModalForm.$submitted">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+
+          <!-- info_prf_number -->
+          <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.info_prf_number.$invalid }">
+            <label class="control-label" translate> PURCHASES.INFO.PRF_NUMBER </label>
+            <bh-clear on-clear="$ctrl.clear('info_prf_number')"></bh-clear>
+
+            <input type="text" class="form-control" name="info_prf_number" ng-model="$ctrl.searchQueries.info_prf_number">
+            <div class="help-block" ng-messages="ModalForm.info_prf_number.$error" ng-show="ModalForm.$submitted">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+
           <!-- supplier -->
           <bh-supplier-select
             supplier-uuid="$ctrl.searchQueries.supplier_uuid"
