@@ -68,6 +68,10 @@ function PurchaseOrderService(
     { key : 'info_prf_number', label : 'PURCHASES.INFO.PRF_NUMBER' },
   ]);
 
+  if (filterCache.filters) {
+    purchaseFilters.loadCache(filterCache.filters);
+  }
+
   // once the cache has been loaded - ensure that default filters are provided appropriate values
   assignDefaultFilters();
 
