@@ -228,11 +228,11 @@
               <!-- supplier contact -->
               <div class="col-md-6">
                 <bh-entity-select
-                  label = "PURCHASES.INFO.RESPONSIBLE"
+                  label = "PURCHASES.INFO.BENEFICIARY"
                   entity-uuid="PurchaseCtrl.order.details.responsible"
                   on-select-callback="PurchaseCtrl.onSelectBeneficiary(entity)"
                   required="false">
-                  <bh-clear on-clear="PurchaseCtrl.clear('responsible')"></bh-clear>
+                  <bh-clear on-clear="PurchaseCtrl.clearElement('responsible')"></bh-clear>
                 </bh-entity-select>                
 
                 <bh-entity-select
@@ -240,7 +240,7 @@
                   entity-uuid="PurchaseCtrl.order.details.requested_by"
                   on-select-callback="PurchaseCtrl.onSelectRequestedBy(entity)"
                   required="false">
-                  <bh-clear on-clear="PurchaseCtrl.clear('requested_by')"></bh-clear>
+                  <bh-clear on-clear="PurchaseCtrl.clearElement('requested_by')"></bh-clear>
                 </bh-entity-select>
 
                 <bh-entity-select
@@ -248,7 +248,7 @@
                   entity-uuid="PurchaseCtrl.order.details.reviewed_by"
                   on-select-callback="PurchaseCtrl.onSelectReviewed(entity)"
                   required="false">
-                  <bh-clear on-clear="PurchaseCtrl.clear('reviewed_by')"></bh-clear>
+                  <bh-clear on-clear="PurchaseCtrl.clearElement('reviewed_by')"></bh-clear>
                 </bh-entity-select>
 
                 <bh-entity-select
@@ -256,7 +256,7 @@
                   entity-uuid="PurchaseCtrl.order.details.approved_by"
                   on-select-callback="PurchaseCtrl.onSelectApprovedBy(entity)"
                   required="false">
-                  <bh-clear on-clear="PurchaseCtrl.clear('approved_by')"></bh-clear>
+                  <bh-clear on-clear="PurchaseCtrl.clearElement('approved_by')"></bh-clear>
                 </bh-entity-select>
               </div>
 
