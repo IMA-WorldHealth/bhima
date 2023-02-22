@@ -42,6 +42,8 @@ function PurchaseOrderController(
   vm.handleChange = handleUIGridChange;
   vm.onChangeUnitCost = onChangeUnitCost;
   vm.setPackaging = setPackaging;
+  vm.clearElement = clearElement;
+
   vm.$invalid = false;
 
   vm.format = Currencies.format;
@@ -437,6 +439,11 @@ function PurchaseOrderController(
     if (vm.isUpdateState) { $state.go('purchasesCreate'); }
     clear();
   };
+
+  // clears search parameters.  Custom logic if a date is used so that we can clear two properties
+  function clearElement(value) {
+    delete vm.order.details[value];
+  }
 
   vm.cancel = () => {
     $state.go('purchasesRegistry');

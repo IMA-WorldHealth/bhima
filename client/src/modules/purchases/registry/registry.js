@@ -67,6 +67,16 @@ function PurchaseRegistryController(
     headerCellFilter : 'translate',
     cellFilter : 'date',
   }, {
+    field : 'info_purchase_number',
+    displayName : 'PURCHASES.INFO.PURCHASE_NUMBER',
+    headerCellFilter : 'translate',
+    visible : false,
+  }, {
+    field : 'info_prf_number',
+    displayName : 'PURCHASES.INFO.PRF_NUMBER',
+    headerCellFilter : 'translate',
+    visible : false,
+  }, {
     field : 'created_at',
     type : 'date',
     displayName : 'FORM.LABELS.SERVER_DATE',
