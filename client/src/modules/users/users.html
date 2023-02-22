@@ -43,7 +43,8 @@
       <bh-grid-loading-indicator
         loading-state="UsersCtrl.loading"
         empty-state="UsersCtrl.gridOptions.data.length === 0"
-        error-state="UsersCtrl.hasError">
+        error-state="UsersCtrl.hasError"
+        error-state-message="{{ UsersCtrl.errorMessage }}">
       </bh-grid-loading-indicator>
     </div>
   </div>
