@@ -58,7 +58,8 @@
     "ER_DUP_FIELDNAME" : "Le nom de la colonne a été dupliquée",
     "ER_DUP_UNIQUE" : "Une clé unique a été dupliquée",
     "ER_ACCESS_DENIED_ERROR" : "Accès interdit pour ce utilisateur",
-    "ER_NO_DB_ERROR" : "Aucune base de donnée selectionée"
+    "ER_NO_DB_ERROR" : "Aucune base de donnée selectionée",
+    "FORBIDDEN" : "Vous n'avez pas la permission d'effectuer cette action"
   },
   "WARNINGS" : {
     "WARN_UNIT_COST_TOO_HIGH" : "Le nouveau coût unitaire de {{newUnitCost}} {{curr}} est beaucoup plus élevé que le coût unitaire typique de {{medianUnitCost}} {{curr}}.",

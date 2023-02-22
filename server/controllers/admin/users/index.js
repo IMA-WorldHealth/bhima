@@ -16,6 +16,7 @@ const db = require('../../../lib/db');
 const FilterParser = require('../../../lib/filter');
 const NotFound = require('../../../lib/errors/NotFound');
 const BadRequest = require('../../../lib/errors/BadRequest');
+const Forbidden = require('../../../lib/errors/Forbidden');
 
 // expose submodules
 exports.projects = require('./projects');
@@ -315,8 +316,8 @@ async function isAdmin(req, res, next) {
   try {
     const query = `SELECT username FROM user WHERE user.id = ? AND user.is_admin = 1`;
     const user = await db.one(query, [req.session.user.id]);
-    if (user && user.username) { next(); } else { next(new NotFound('ERRORS.ER_ACCESS_DENIED_ERROR')); }
+    if (user && user.username) { next(); } else { next(new Forbidden('ERRORS.ER_ACCESS_DENIED_ERROR')); }
   } catch (error) {
-    next(new NotFound('ERRORS.ER_ACCESS_DENIED_ERROR'));
+    next(new Forbidden('ERRORS.ER_ACCESS_DENIED_ERROR'));
   }
 }
