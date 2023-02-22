@@ -36,3 +36,14 @@ CALL add_column_if_missing('purchase', 'responsible', 'BINARY(16) NULL');
 CALL add_column_if_missing('purchase', 'responsible_title', 'VARCHAR(100)');
 
 INSERT INTO unit values (316, 'Detailed record of purchases','TREE.PURCHASE_REGISTRY_DETAILED','The purchase registry detailed',154,'/purchases/detailed');
+
+/**
+ * 1.27.1
+ */
+
+/*
+ * @author: mbayopanda
+ * @desc: Add is_admin column in the user table for API restriction
+ * @date: 2023-02-22
+ */
+CALL add_column_if_missing('user', 'is_admin', 'TINYINT(1) NOT NULL DEFAULT 0');

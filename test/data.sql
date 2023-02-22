@@ -330,11 +330,11 @@ UPDATE account set hidden = 1 WHERE id = 184;
 UPDATE enterprise SET `gain_account_id` = 267, `loss_account_id` = 134;
 
 -- create test users
-INSERT INTO user (id, username, password, display_name, email, deactivated) VALUES
-  (1, 'superuser', MYSQL5_PASSWORD('superuser'), 'Super User', 'SuperUser@test.org', 0),
-  (2, 'RegularUser', MYSQL5_PASSWORD('RegularUser'), 'Regular User', 'RegUser@test.org', 0),
-  (3, 'NoUserPermissions', MYSQL5_PASSWORD('NoUserPermissions'), 'No Permissrepertoireions', 'Invalid@test.org', 1),
-  (4, 'admin', MYSQL5_PASSWORD('1'), 'Admin User', 'admin@test.org', 1);
+INSERT INTO user (id, username, password, display_name, email, deactivated, is_admin) VALUES
+  (1, 'superuser', MYSQL5_PASSWORD('superuser'), 'Super User', 'SuperUser@test.org', 0, 1),
+  (2, 'RegularUser', MYSQL5_PASSWORD('RegularUser'), 'Regular User', 'RegUser@test.org', 0, 0),
+  (3, 'NoUserPermissions', MYSQL5_PASSWORD('NoUserPermissions'), 'No Permissrepertoireions', 'Invalid@test.org', 1, 0),
+  (4, 'admin', MYSQL5_PASSWORD('1'), 'Admin User', 'admin@test.org', 1, 1);
 
 SET @superUser = 1;
 
