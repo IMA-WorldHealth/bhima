@@ -151,7 +151,7 @@
   },
   "devDependencies": {
     "@ima-worldhealth/rewire": "^4.1.0",
-    "@types/node": "^18.11.18",
+    "@types/node": "^18.14.0",
     "angular-mocks": "^1.8.3",
     "chai": "^4.3.7",
     "chai-as-promised": "^7.1.1",
