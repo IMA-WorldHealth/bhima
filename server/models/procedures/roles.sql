@@ -17,5 +17,7 @@ BEGIN
 
     INSERT INTO role_actions(uuid, role_uuid, actions_id)
     SELECT HUID(uuid()) as uuid, roleUUID, id FROM actions;
+
+    UPDATE user SET is_admin = 1 WHERE id = user_id;
 END $$
 DELIMITER ;
