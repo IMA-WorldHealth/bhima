@@ -568,18 +568,18 @@ exports.configure = function configure(app) {
   app.delete('/debtor_groups/:uuid', debtorGroups.delete);
 
   // users controller
-  app.get('/users', users.list);
-  app.post('/users', users.create);
+  app.get('/users', users.isAdmin, users.list);
+  app.post('/users', users.isAdmin, users.create);
   app.get('/users/:id', users.detail);
-  app.get('/users/:username/exists', users.exists);
-  app.put('/users/:id', users.update);
-  app.delete('/users/:id', users.delete);
+  app.get('/users/:username/exists', users.isAdmin, users.exists);
+  app.put('/users/:id', users.isAdmin, users.update);
+  app.delete('/users/:id', users.isAdmin, users.delete);
   app.get('/users/:id/projects', users.projects.list);
   app.get('/users/:id/depots', users.depots.list);
   app.post('/users/:id/depots', users.depots.create);
   app.get('/users/:id/depotsSupervision', users.depotsSupervision.list);
   app.post('/users/:id/depotsSupervision', users.depotsSupervision.create);
-  app.put('/users/:id/password', users.password);
+  app.put('/users/:id/password', users.isAdmin, users.password);
   app.get('/users/:id/cashboxes', users.cashboxes.list);
   app.post('/users/:id/cashboxes', users.cashboxes.create);
 

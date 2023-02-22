@@ -119,6 +119,7 @@ function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstant
 
   function handleError(error) {
     vm.hasError = true;
+    vm.errorMessage = error && error.data ? error.data.description : 'An error occured';
     Notify.handleError(error);
   }
 

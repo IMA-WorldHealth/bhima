@@ -107,7 +107,6 @@ async function stockSheetReport(req, res, next) {
       };
     }
 
-
     const result = await report.render(data);
     res.set(result.headers).send(result.report);
   } catch (e) {
