@@ -130,6 +130,7 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
 
         current.quantity = prev.quantity;
         current.unit_price = prev.unit_price;
+        current.package_size = prev.package_size;
       });
 
       // update the store's uuid -> object mapping since we

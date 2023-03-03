@@ -1,0 +1,6 @@
+<div class="ui-grid-cell-contents">
+  <div class="text-right" ng-if="row.entity.package_size > 1">
+    {{ row.entity.number_packages }}  {{ 'INVENTORY.UNITS.BOX.TEXT' | translate }} : ({{ row.entity.package_size }}) 
+    // {{ 'FORM.LABELS.PACKAGE_UNIT_COST' | translate }} : {{ row.entity.box_unit_price | currency: row.entity.currency_id: '4' }}
+  </div>
+</div>
