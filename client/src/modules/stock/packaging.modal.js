@@ -25,6 +25,11 @@ function StockDefinePackagingModalController(
   vm.packaging = angular.copy(Data.item);
   vm.basic = Data.basic;
 
+  if (vm.packaging.package_size) {
+    vm.packaging.box_unit_price = vm.packaging.unit_price * vm.packaging.package_size;
+    vm.packaging.number_packages = vm.packaging.quantity / vm.packaging.package_size;
+  }
+
   vm.currencyId = Data.currency_id !== undefined
     ? Data.currency_id : vm.enterprise.currency_id;
 

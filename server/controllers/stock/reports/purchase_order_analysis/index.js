@@ -72,7 +72,7 @@ async function report(req, res, next) {
     // This request makes it possible to obtain the quantities of the ordered products
     const sqlInventoriesOrdered = `
       SELECT BUID(p.uuid) AS purchase_uuid, BUID(iv.uuid) AS inventory_uuid, iv.code,
-        iv.text AS inventory_text, pi.quantity AS quantity_ordered
+        iv.text AS inventory_text, pi.quantity AS quantity_ordered, pi.package_size
       FROM purchase AS p
         JOIN purchase_item AS pi ON pi.purchase_uuid = p.uuid
         JOIN inventory AS iv ON iv.uuid = pi.inventory_uuid

@@ -33,11 +33,13 @@ describe('(/purchases) Purchases', () => {
       quantity       : 200,
       unit_price     : 0.0538,
       total          : 10.7520,
+      package_size   : 1,
     }, {
       inventory_uuid : helpers.data.PREDNISONE,
       quantity       : 16000,
       unit_price     : 0.0335,
       total          : 536.0000,
+      package_size   : 1,
     }],
   };
 
@@ -54,6 +56,7 @@ describe('(/purchases) Purchases', () => {
       quantity       : 16000,
       unit_price     : 0.0335,
       total          : 536.0000,
+      package_size   : 1,
     }],
   };
 
@@ -70,6 +73,7 @@ describe('(/purchases) Purchases', () => {
       quantity       : 200,
       unit_price     : 0.0538,
       total          : 10.7520,
+      package_size   : 1,
     }],
   };
 
@@ -86,11 +90,13 @@ describe('(/purchases) Purchases', () => {
       quantity       : 200,
       unit_price     : 0.0538,
       total          : 10.7520,
+      package_size   : 1,
     }, {
       inventory_uuid : helpers.data.PREDNISONE,
       quantity       : 16000,
       unit_price     : 0.0335,
       total          : 536.0000,
+      package_size   : 1,
     }],
   };
 
@@ -107,11 +113,13 @@ describe('(/purchases) Purchases', () => {
       quantity       : 200,
       unit_price     : 0.0538,
       total          : 10.7520,
+      package_size   : 1,
     }, {
       inventory_uuid : helpers.data.PREDNISONE,
       quantity       : 16000,
       unit_price     : 0.0335,
       total          : 536.0000,
+      package_size   : 1,
     }],
   };
 
