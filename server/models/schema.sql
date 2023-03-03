@@ -1455,6 +1455,7 @@ CREATE TABLE `purchase_item` (
   `quantity`        INT(11) NOT NULL DEFAULT 0,
   `unit_price`      DECIMAL(19,8) UNSIGNED NOT NULL DEFAULT 0.00,
   `total`           DECIMAL(19,8) UNSIGNED NULL DEFAULT 0.00,
+  `package_size`    INT(11) NOT NULL DEFAULT 1,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `purchase_item_1` (`purchase_uuid`, `inventory_uuid`),
   KEY `purchase_uuid` (`purchase_uuid`),

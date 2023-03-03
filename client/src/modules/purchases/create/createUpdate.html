@@ -283,7 +283,7 @@
                 type="button"
                 ng-click="PurchaseCtrl.optimalPurchase()"
                 id="optimal_purchase"
-                ng-disabled="!PurchaseCtrl.order.hasSupplier() || PurchaseCtrl.optimalPurchaseLoading">
+                ng-disabled="!PurchaseCtrl.order.hasSupplier() || PurchaseCtrl.optimalPurchaseLoading || PurchaseCtrl.isUpdateState">
                 <span ng-hide="PurchaseCtrl.optimalPurchaseLoading">
                   <i class="fa fa-shopping-cart"></i>
                   <span translate>FORM.BUTTONS.OPTIMAL_PURCHASE_ORDER </span>
