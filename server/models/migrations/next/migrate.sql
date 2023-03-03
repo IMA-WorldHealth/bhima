@@ -47,3 +47,10 @@ INSERT INTO unit values (316, 'Detailed record of purchases','TREE.PURCHASE_REGI
  * @date: 2023-02-22
  */
 CALL add_column_if_missing('user', 'is_admin', 'TINYINT(1) NOT NULL DEFAULT 0');
+
+/**
+ * @author: lomamech
+ * @description: Problem on the management of product packaging #6956
+ * @date: 2023-03-02
+ */
+CALL add_column_if_missing('purchase_item', 'package_size', 'INT(11) NOT NULL DEFAULT 1');

@@ -102,6 +102,16 @@ function PurchaseDetailedController(
     headerCellFilter : 'translate',
     type : 'number',
   }, {
+    field : 'packaged',
+    displayName : 'TABLE.COLUMNS.PACKAGED',
+    headerTooltip : 'TABLE.COLUMNS.PACKAGED',
+    cellClass : 'text-right',
+    width : 150,
+    headerCellFilter : 'translate',
+    cellTemplate : '/modules/purchases/templates/packaged.tmpl.html',
+    type : 'number',
+    visible : false,
+  }, {
     field : 'quatity_delivered',
     displayName : 'STOCK.QUANTITY_RECEIVED',
     headerTooltip : 'STOCK.QUANTITY_RECEIVED',

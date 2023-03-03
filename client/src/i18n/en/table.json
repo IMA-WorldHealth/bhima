@@ -52,6 +52,7 @@
             "CHARGES": "costs",
             "CLIENT": "Client",
             "CODE": "Code",
+            "PACKAGED": "Packaged",
             "CONTRIBUTION_DEDUCTIONS": "Contributions and deductions",
             "CONSULT": "Consult",
             "CONSUMPTION": "Detailed consumption",
