@@ -241,6 +241,13 @@ function getLots(sqlQuery, parameters, finalClause = '', orderBy = '') {
     filters.setOrder(orderBy);
   }
 
+  if (parameters.paging) {
+    const FROM_INDEX = String(sql).lastIndexOf('FROM');
+    const select = String(sql).substring(0, FROM_INDEX - 1);
+    const tables = String(sql).substring(FROM_INDEX, sql.length - 1);
+    return db.paginateQuery(select, parameters, tables, filters);
+  }
+
   const query = filters.applyQuery(sql);
   const queryParameters = filters.parameters();
 

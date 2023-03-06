@@ -289,6 +289,39 @@ class DatabaseConnector {
       .catch(next)
       .done();
   }
+
+  async paginateQuery(sql, params, tables, filters) {
+    let pager = {};
+    let rows = [];
+    let fetchAllData = false;
+
+    if (!params.limit) {
+      params.limit = 100;
+    } else if (params.limit && parseInt(params.limit, 10) === -1) {
+      fetchAllData = true;
+      delete params.limit;
+    }
+
+    if (params.page && parseInt(params.page, 10) === 0) {
+      delete params.page;
+    }
+
+    const queryParameters = filters.parameters();
+
+    if (fetchAllData) {
+      // fetch all data
+      const query = filters.applyQuery(sql.concat(' ', tables));
+      rows = await this.exec(query, queryParameters);
+    } else {
+      // paginated data
+      const paginationLimits = filters.paginationLimitQuery(tables, params.limit, params.page);
+      [pager] = await this.exec(paginationLimits, queryParameters);
+      const paginatedQuery = filters.applyPaginationQuery(sql.concat(' ', tables), pager.page_size, pager.page_min);
+      rows = await this.exec(paginatedQuery, queryParameters);
+    }
+
+    return { rows, pager };
+  }
 }
 
 module.exports = new DatabaseConnector();
