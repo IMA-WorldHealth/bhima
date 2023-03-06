@@ -299,6 +299,38 @@ class FilterParser {
 
     return limitString;
   }
+
+  /**
+   * pagination handler
+   */
+  paginationLimitQuery(table, limit = 100, page = 1) {
+    if (this._autoParseStatements) {
+      this._parseDefaultFilters();
+    }
+
+    const conditionStatements = this._parseStatements();
+
+    return `
+      SELECT
+        COUNT(*) AS total, ${page} AS page,
+        ${limit} AS page_size, (${(page - 1) * limit}) AS page_min, (${(page) * limit}) AS page_max,
+        CEIL(COUNT(*) / ${limit}) AS page_count
+      ${table} 
+      WHERE ${conditionStatements} 
+    `;
+  }
+
+  applyPaginationQuery(sql, limit, page) {
+    if (this._autoParseStatements) {
+      this._parseDefaultFilters();
+    }
+
+    const conditionStatements = this._parseStatements();
+    const order = this._order;
+    const group = this._group;
+
+    return `${sql} WHERE ${conditionStatements} ${group} ${order} LIMIT ${limit} OFFSET ${page}`;
+  }
 }
 
 module.exports = FilterParser;
