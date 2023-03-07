@@ -612,8 +612,8 @@ INSERT INTO `purchase`
   (@purchase_order, 1, 1, 300, 2, HUID('3ac4e83c-65f2-45a1-8357-8b025003d793'), DATE_ADD(CURRENT_DATE, INTERVAL -1725 DAY), 1, NULL, 1);
 
 INSERT INTO `purchase_item` VALUES
-  (HUID('fca58822-b1b2-11e8-9103-7782f63484ff'), @purchase_order, @quinine, 1, 200, 200),
-  (HUID('fd505f72-b1b2-11e8-bc07-eb08d6c952b1'), @purchase_order, @prednisone, 10, 10, 100);
+  (HUID('fca58822-b1b2-11e8-9103-7782f63484ff'), @purchase_order, @quinine, 1, 200, 200, 1),
+  (HUID('fd505f72-b1b2-11e8-bc07-eb08d6c952b1'), @purchase_order, @prednisone, 10, 10, 100, 1);
 
 -- confirmed purchase order
 SET @purchase = HUID('8027d1c8-dd68-4686-9f4c-8860f856f8ba');
@@ -621,7 +621,7 @@ INSERT INTO `purchase` (uuid, project_id, reference, cost, currency_id, supplier
   (@purchase, 1, 2, (1000 * 0.05), 2, HUID('3ac4e83c-65f2-45a1-8357-8b025003d793'), DATE_ADD(CURRENT_DATE, INTERVAL -1321 DAY), 1, NULL, 'Purchase Order Confirmed', 2);
 
 INSERT INTO `purchase_item` VALUES
-  (HUID('1fcc1316-b1b3-11e8-b276-bfdbdae020fb'), @purchase, @prednisone, 1000, 0.05, (1000 * 0.05));
+  (HUID('1fcc1316-b1b3-11e8-b276-bfdbdae020fb'), @purchase, @prednisone, 1000, 0.05, (1000 * 0.05), 1);
 
 
 -- default depots

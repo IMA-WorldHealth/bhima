@@ -267,7 +267,14 @@ function PurchaseOrderController(
     const inventUuids = [];
     let dupItem = null;
     vm.order.store.data.forEach(item => {
+
       delete item.is_count_per_container;
+      delete item.number_packages;
+      delete item.box_unit_price;
+
+      // set default inventory package_size
+      item.package_size = item.package_size || 1;
+
       const invUUID = item.inventory_uuid;
       if (inventUuids.includes(invUUID)) {
         dupItem = item;
