@@ -42,7 +42,7 @@ async function build(req, res, next) {
         item.quantity /= item.package_size;
         item.unit_price *= item.package_size;
         item.unit_type = 'INVENTORY.UNITS.BOX.TEXT';
-        item.size = `:( ${item.package_size} )`;
+        item.size = `( ${item.package_size} )`;
       }
     });
 
