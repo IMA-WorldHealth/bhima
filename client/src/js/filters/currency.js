@@ -104,9 +104,8 @@ function CurrencyFilter(CurrencyFormat, Session, $translate) {
       }
 
       // Just to use the number of decimals defined in the parameters
-      if (decimalSetting) {
-        fractionSize = decimalSetting;
-      }
+      // eslint-disable-next-line no-param-reassign
+      fractionSize = decimalSetting || fractionSize;
 
       // safely round numbers in JS without hitting imprecisions of floating-point arithmetics
       // inspired by:
