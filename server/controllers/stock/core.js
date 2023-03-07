@@ -438,10 +438,19 @@ async function getLotsDepot(depotUuid, params, finalClause) {
   const filters = getLotFilters(params);
   filters.setGroup(groupByClause);
 
-  const query = filters.applyQuery(sql);
-  const queryParameters = filters.parameters();
-
-  const resultFromProcess = await db.exec(query, queryParameters);
+  let resultFromProcess;
+  let paginatedResults;
+  if (params.paging) {
+    const FROM_INDEX = String(sql).lastIndexOf('FROM');
+    const select = String(sql).substring(0, FROM_INDEX - 1);
+    const tables = String(sql).substring(FROM_INDEX, sql.length - 1);
+    paginatedResults = await db.paginateQuery(select, params, tables, filters);
+    resultFromProcess = paginatedResults.rows;
+  } else {
+    const query = filters.applyQuery(sql);
+    const queryParameters = filters.parameters();
+    resultFromProcess = await db.exec(query, queryParameters);
+  }
 
   // add minumum delay
   resultFromProcess.forEach(row => {
@@ -471,6 +480,13 @@ async function getLotsDepot(depotUuid, params, finalClause) {
 
   if (parseInt(params.is_expiry_risk, 10) === 0) {
     inventoriesWithLotsProcessed = inventoriesWithLotsProcessed.filter(lot => !lot.near_expiration);
+  }
+
+  if (params.paging) {
+    return {
+      pager : paginatedResults,
+      rows : inventoriesWithLotsProcessed,
+    };
   }
 
   return inventoriesWithLotsProcessed;
