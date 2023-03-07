@@ -136,8 +136,7 @@ function StockInventoriesController(
     displayName      : 'STOCK.WAC',
     headerTooltip    : 'STOCK.WAC',
     headerCellFilter : 'translate',
-    cellFilter       : 'currency:grid.appScope.enterprise.currency_id',
-    cellClass        : 'text-right',
+    cellFilter       : 'currency:grid.appScope.enterprise.currency_id:4',
     type             : 'number',
     visible          : false,
   }, {

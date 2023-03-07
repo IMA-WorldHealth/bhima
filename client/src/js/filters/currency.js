@@ -17,11 +17,10 @@ CurrencyFilter.$inject = [
   'currencyFormat', 'SessionService', '$translate',
 ];
 
-
 function CurrencyFilter(CurrencyFormat, Session, $translate) {
   var requireCurrencyDefinition = false;
 
-  function currencyFilter(amount, currencyId) {
+  function currencyFilter(amount, currencyId, decimalSetting) {
     var formatConfiguration;
     var amountUndefined = angular.isUndefined(amount) || angular === null;
 
@@ -58,7 +57,8 @@ function CurrencyFilter(CurrencyFormat, Session, $translate) {
       return formatError('EXCHANGE.CURRENCY_NOT_SUPPORTED', amount);
     }
 
-    return formatNumber(amount, formatConfiguration.PATTERNS[1], formatConfiguration.GROUP_SEP, formatConfiguration.DECIMAL_SEP)
+    return formatNumber(amount,
+      formatConfiguration.PATTERNS[1], formatConfiguration.GROUP_SEP, formatConfiguration.DECIMAL_SEP, decimalSetting)
       .replace(/\u00A4/g, formatConfiguration.CURRENCY_SYM);
   }
 
@@ -69,7 +69,7 @@ function CurrencyFilter(CurrencyFormat, Session, $translate) {
 
   // Formatting method directly from angular native filter - does not support BHIMA coding guidelines
   var DECIMAL_SEP = '.';
-  function formatNumber(number, pattern, groupSep, decimalSep, fractionSize) {
+  function formatNumber(number, pattern, groupSep, decimalSep, fractionSize, decimalSetting) {
     if (angular.isObject(number)) return '';
 
     var isNegative = number < 0;
@@ -101,6 +101,11 @@ function CurrencyFilter(CurrencyFormat, Session, $translate) {
       // determine fractionSize if it is not specified
       if (angular.isUndefined(fractionSize)) {
         fractionSize = Math.min(Math.max(pattern.minFrac, fractionLen), pattern.maxFrac);
+      }
+
+      // Just to use the number of decimals defined in the parameters
+      if (decimalSetting) {
+        fractionSize = decimalSetting;
       }
 
       // safely round numbers in JS without hitting imprecisions of floating-point arithmetics

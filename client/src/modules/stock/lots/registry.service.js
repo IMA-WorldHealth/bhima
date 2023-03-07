@@ -85,7 +85,7 @@ function LotsRegistryService(uiGridConstants, Session) {
       cellClass : 'text-right',
       headerCellFilter : 'translate',
       type : 'number',
-      cellFilter : 'currency: '.concat(Session.enterprise.currency_id),
+      cellFilter : `currency:${Session.enterprise.currency_id}:4`,
     }, {
       field : 'unit_type',
       width : 75,
