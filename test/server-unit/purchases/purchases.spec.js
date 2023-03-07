@@ -24,7 +24,7 @@ function PurchaseUnitTests() {
 
     // create a purchase item linked to the above purchase order.
     await db.exec(`INSERT INTO purchase_item VALUES
-      (HUID('${uuid()}'), HUID('${puid}'), HUID('${prednisone}'), 2000, 0.15, (2000 * 0.15));`);
+      (HUID('${uuid()}'), HUID('${puid}'), HUID('${prednisone}'), 2000, 0.15, (2000 * 0.15), 1);`);
 
     const [purchase] = await db.exec(`SELECT * FROM purchase WHERE uuid = HUID('${puid}');`);
     expect(purchase.cost).to.equal(300);

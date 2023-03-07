@@ -89,7 +89,7 @@ function linkPurchaseItems(items, purchaseUuid) {
   // this columns array exists so that we are sure to order to columns in the
   // correct order
   const columns = [
-    'uuid', 'inventory_uuid', 'quantity', 'unit_price', 'total', 'purchase_uuid',
+    'uuid', 'inventory_uuid', 'quantity', 'unit_price', 'total', 'purchase_uuid', 'package_size',
   ];
 
   // loop through each item, making sure we have escapes and orderings correct
@@ -171,7 +171,7 @@ function lookupPurchaseOrder(uid) {
       debug(`#lookupPurchaseorder() found a match!  Looking up purchase items...`);
 
       sql = `
-        SELECT BUID(pi.uuid) AS uuid, pi.quantity, pi.unit_price, pi.total,
+        SELECT BUID(pi.uuid) AS uuid, pi.quantity, pi.unit_price, pi.total, pi.package_size,
           BUID(pi.inventory_uuid) AS inventory_uuid, i.text, i.code, i.is_count_per_container,
           IF(ISNULL(iu.token), iu.text, CONCAT("INVENTORY.UNITS.",iu.token,".TEXT")) AS unit_type
         FROM purchase_item AS pi
@@ -237,7 +237,7 @@ async function create(req, res, next) {
     const sql = 'INSERT INTO purchase SET ?';
     const itemSql = `
     INSERT INTO purchase_item
-      (uuid, inventory_uuid, quantity, unit_price, total, purchase_uuid)
+      (uuid, inventory_uuid, quantity, unit_price, total, purchase_uuid, package_size)
     VALUES ?;
   `;
 
@@ -354,7 +354,7 @@ async function update(req, res, next) {
   const updateItemSql = 'UPDATE purchase_item SET ? WHERE uuid = ?';
   const createItemSql = `
   INSERT INTO purchase_item
-    (uuid, inventory_uuid, quantity, unit_price, total, purchase_uuid)
+    (uuid, inventory_uuid, quantity, unit_price, total, purchase_uuid, package_size)
   VALUES ?
   `;
   const deleteItemSql = 'DELETE FROM purchase_item WHERE uuid = ?';
@@ -831,9 +831,11 @@ function findDetailed(options) {
     SELECT BUID(p.uuid) AS uuid, dm.text as reference,
       p.cost, p.shipping_handling, p.date, s.display_name  AS supplier,
       p.user_id, p.note, inv.text AS inventory_text, it.quantity, it.unit_price AS inventory_purchase_price,
-      it.total, BUID(p.supplier_uuid) as supplier_uuid, u.display_name AS author,
-      p.currency_id, p.status_id, ps.text AS status, ent.display_name AS responsible, p.created_at,
-      p.info_purchase_number, p.info_prf_number,
+      it.total, it.package_size, (it.quantity / it.package_size) AS number_packages,
+      (it.unit_price * it.package_size) box_unit_price, BUID(p.supplier_uuid) as supplier_uuid,
+      u.display_name AS author, p.currency_id, p.status_id, ps.text AS status,
+      ent.display_name AS responsible,
+      p.created_at, p.info_purchase_number, p.info_prf_number,
       SUM(IFNULL(mov.quantity, 0)) AS quatity_delivered, (it.quantity - SUM(mov.quantity)) AS balance
     FROM purchase AS p
     JOIN purchase_item AS it ON it.purchase_uuid = p.uuid
