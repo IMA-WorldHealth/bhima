@@ -55,3 +55,7 @@ client/upload/
 migration-*.sql
 yarn-error.log
 *.log
+/test-results/
+/playwright-report/
+/playwright/.cache/
+/tests-examples
