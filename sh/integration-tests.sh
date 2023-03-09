@@ -13,6 +13,6 @@ echo "[test] building the server..."
 
 echo "[test] running tests using mocha"
 # run the tests
-./node_modules/.bin/mocha --recursive --bail --exit --timeout 20000 ./test/integration/
+./node_modules/.bin/mocha --recursive --bail --exit --timeout 20000 ./test/integration/ 2>&1 | tee ./test/integration/report
 
 echo "[/test]"
