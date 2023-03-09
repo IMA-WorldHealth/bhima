@@ -144,7 +144,7 @@ function addJob(frequency, cb, ...params) {
   const job = new Cron(frequency, () => cb(...params));
   job.start();
 
-  const nextRunDate = job.nextDate().format('YYYY-MM-DD HH:mm:ss');
+  const nextRunDate = job.nextDate().toFormat('yyyy-MM-dd HH:mm:ss');
   debug(`Added and started new job.  Next run at: ${nextRunDate}`);
   return job;
 }
@@ -299,7 +299,7 @@ function updateCronEmailReportNextSend(id, job) {
     UPDATE cron_email_report SET ? WHERE id = ?;
   `;
   const params = {
-    next_send : job.nextDate() ? job.nextDate().toDate() : null,
+    next_send : job.nextDate() ? job.nextDate().toJSDate() : null,
   };
   return db.exec(sql, [params, id]);
 }

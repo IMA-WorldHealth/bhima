@@ -52,6 +52,13 @@ docs/.sass-cache/
 
 client/upload/
 
+test/*/report
+
 migration-*.sql
 yarn-error.log
 *.log
+/test-results/
+/playwright-report/
+/playwright/.cache/
+/tests-examples
+/test-results
