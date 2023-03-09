@@ -1,11 +1,16 @@
 #!/bin/bash
 
+echo ""
+echo "==============================================="
 echo "Running the end-to-end tests using playwright"
+echo "==============================================="
+echo ""
 
 # bash script mode
 set -euo pipefail
 
-trap 'kill $(jobs -p)' EXIT
+# Kill the BHIMA server when the test is finished
+trap 'jobs -p | xargs -r kill' EXIT
 
 echo "Building Test Databases"
 
@@ -16,7 +21,7 @@ echo "[test]"
 # set build timeout
 TIMEOUT=${BUILD_TIMEOUT:-5}
 
-echo "[test] Spawning server process..."
+echo "[test] Spawning BHIMA server process..."
 # build and start the server
 ./node_modules/.bin/gulp build
 cd bin
