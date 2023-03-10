@@ -1,12 +1,38 @@
-// Playwright Test Utilities
+/**
+ * Utilities for Playwright End-to-End testing
+ */
 
 const { expect } = require('@playwright/test');
 
-// expose routes to the view
+// Expose function routes
 module.exports = {
 
-  // Log into the BHIMA server
-  // @param {page} Playwright browser page
+  registerPage : function registerPage(page) {
+    this.page = page;
+  },
+
+  /**
+   * Fill and <input> element
+   *
+   * @param {object} page - Playwright browser page
+   * @param {string} selector - css/xpath/etc selector for the input field
+   * @param {string} value - value to fill into the input field
+   * @returns {Promise} for the fill operation
+   */
+  input : async function input(page, selector, value) {
+    return page.fill(selector, value);
+  },
+
+  /**
+   * Log into the BHIMA server
+   *
+   * Callers should use 'await' with this function
+   *
+   * @param {object} page - Playwright browser page
+   * @param {string} username - username to log in (optional)
+   * @param {string} password - password to log in (optional)
+   * @returns {Promise} promise to return the main page after logging in
+   */
   login : async function login(page, username, password) {
 
     // Go to the login page
@@ -29,8 +55,14 @@ module.exports = {
     return page.waitForURL('http://localhost:8080/#!/');
   },
 
-  // Log out of the BHIMA server
-  // @param {page} Playwright browser page
+  /**
+   * Log out of the BHIMA server
+   *
+   * Callers should use 'await' with this function
+   *
+   * @param {object} page - Playwright browser page
+   * @returns {Promise} promise to return the login page after logging out
+   */
   logout : async function logout(page) {
     // Go to the Settings page to log out
     await page.goto('http://localhost:8080/#!/settings');
