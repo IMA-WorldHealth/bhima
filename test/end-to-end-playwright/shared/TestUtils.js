@@ -4,6 +4,8 @@
 
 const { expect } = require('@playwright/test');
 
+const PATH_REGEXP = /^#!|^#|^!/g;
+
 /**
  * Remember the page being used to simplify function calls
  */
@@ -43,7 +45,29 @@ module.exports = {
     page = newPage;
   },
 
-  //
+  /**
+   * Request navigation to a desired browser page
+   *
+   * @param {string} browserPath - the path desired (the part after the baseUrl)
+   * @returns {Promise} of navigation to the desired path
+   */
+  navigate : async function navigate(browserPath) {
+    const destination = browserPath.replace(PATH_REGEXP, '');
+    return page.goto(`/#!/${destination}`);
+  },
+
+  /**
+   * get the browser path (after the baseUrl)
+   *
+   * @returns {string} the normalized current path
+   */
+  getCurrentPath : async function getCurrentPath() {
+    const url = page.url();
+    const partial = url.split('#!')[1];
+    partial.replace(PATH_REGEXP, '');
+    return `/#!/${partial}`;
+  },
+
   /**
    * Asserts whether an element exists or not
    *
@@ -103,7 +127,7 @@ module.exports = {
     }
 
     // Go to the login page
-    await page.goto('http://localhost:8080/#!/login');
+    await page.goto('/#!/login');
     expect(page).toHaveTitle(/BHIMA/);
 
     // First, switch to English
@@ -112,7 +136,7 @@ module.exports = {
     await page.click('div.panel-heading > div.dropdown > a');
     // Click on the English option
     await page.click('li[role=menuitem]:last-child > a');
-    await page.waitForURL('http://localhost:8080/#!/login');
+    await page.waitForURL('**/login');
 
     expect(await page.innerText('.panel-heading')).toBe('Login');
 
@@ -121,7 +145,7 @@ module.exports = {
     await page.fill('input[name=password]', password || 'superuser');
     await page.click('button[type=submit]');
 
-    return page.waitForURL('http://localhost:8080/#!/');
+    return page.waitForURL('**/#!/');
   },
 
   /**
@@ -137,19 +161,19 @@ module.exports = {
     }
 
     // If we are already logged out, don't log out again
-    const url = await page.url();
-    if (url === 'about:blank' || url === 'http://localhost:8080/#!/login') {
-      return page.url();
+    const url = page.url();
+    if (url === 'about:blank' || url.endsWith('/login')) {
+      return url;
     }
 
     // Go to the Settings page to log out
-    await page.goto('http://localhost:8080/#!/settings');
-    await page.waitForURL('http://localhost:8080/#!/settings');
+    await page.goto('/#!/settings');
+    await page.waitForURL('**/settings');
 
     // log out
-    await page.click('button[ng-click="SettingsCtrl.logout()"]');
+    await page.click('button[data-logout-button]');
 
-    return page.waitForURL('http://localhost:8080/#!/login');
+    return page.waitForURL('**/login');
   },
 
   buttons,
