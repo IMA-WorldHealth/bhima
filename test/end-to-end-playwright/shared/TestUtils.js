@@ -68,21 +68,21 @@ module.exports = {
     return `/#!/${partial}`;
   },
 
-  /**
-   * Asserts whether an element exists or not
-   *
-   * @param {string} locator - locator string
-   * @param {bool} bool - whether it should exist or not
-   */
-  exists : async function exists(locator, bool) {
-    if (typeof page === 'undefined') {
-      throw new Error('Must call registerPage() first!');
-    }
-    expect(
-      await page(locator).isPresent(),
-      `Expected locator ${locator.toString()} to ${bool ? '' : 'not'} exist.`,
-    ).to.equal(bool);
-  },
+  // /**
+  //  * Asserts whether an element exists or not
+  //  *
+  //  * @param {string} locator - locator string
+  //  * @param {bool} bool - whether it should exist or not
+  //  */
+  // exists : async function exists(locator, bool) {
+  //   if (typeof page === 'undefined') {
+  //     throw new Error('Must call registerPage() first!');
+  //   }
+  //   expect(
+  //     await page(locator).isPresent(),
+  //     `Expected locator ${locator.toString()} to ${bool ? '' : 'not'} exist.`,
+  //   ).to.equal(bool);
+  // },
 
   /**
    * Fill an <input> element
@@ -111,6 +111,20 @@ module.exports = {
 
   //   return input;
   // },
+
+  /**
+   * Selects an option from an <select> html element.  Accepts the model
+   * selector, the option text, and an optional anchor element to search within.
+   * If no anchor is provided, it defaults to the body.
+   *
+   * @param {string} model - the ng-model target to select
+   * @param {string} option - the text of the <option> element to choose
+   * @param {string} anchor - tag for the element to search within
+   * @returns {Element} - a protractor <option> element
+   */
+  select : async function select(model, option, anchor = 'body') {
+    return page.click(`${anchor} [ng-model="${model}"] > option[label="${option}"]`);
+  },
 
   /**
    * Log into the BHIMA server
