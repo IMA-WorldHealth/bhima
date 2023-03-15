@@ -3,16 +3,14 @@ const TU = require('../shared/TestUtils');
 
 // routes used in tests
 const settings = 'settings';
-const login = 'login';
 
 test.beforeEach(async ({ page }) => {
   TU.registerPage(page);
-  await TU.navigate(login);
   await TU.login();
   await TU.navigate(settings);
 });
 
-test.describe('Settings Tests', () => {
+test.describe('Settings', () => {
 
   test('loads the page, and selects a language', async ({ page }) => {
     // confirm that we can change the languages (to French)

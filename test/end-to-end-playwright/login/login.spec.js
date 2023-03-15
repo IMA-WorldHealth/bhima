@@ -2,15 +2,15 @@ const { test, expect } = require('@playwright/test');
 const TU = require('../shared/TestUtils');
 
 // routes used in tests
-const settings = 'settings';
 const login = 'login';
+const settings = 'settings';
 
 test.beforeEach(async ({ page }) => {
   TU.registerPage(page);
   await TU.navigate(login);
 });
 
-test.describe('Login Tests', () => {
+test.describe('Login', () => {
 
   test('verify we can log in', async ({ page }) => {
     await TU.login();
@@ -52,6 +52,3 @@ test.describe('Login Tests', () => {
   });
 
 });
-
-// console.debug('Page: ', Object.getOwnPropertyNames(page));
-// console.table(Object.getOwnPropertyNames(Object.getPrototypeOf(page)).sort());

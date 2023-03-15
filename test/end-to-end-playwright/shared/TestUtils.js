@@ -171,3 +171,6 @@ module.exports = {
   navigate,
   selectOption,
 };
+
+// console.debug('Page: ', Object.getOwnPropertyNames(page));
+// console.table(Object.getOwnPropertyNames(Object.getPrototypeOf(page)).sort());
