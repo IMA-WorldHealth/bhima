@@ -1099,8 +1099,12 @@ async function listLotsDepot(req, res, next) {
 
     // if no data is returned or if the skipTags flag is set, we don't need to do any processing
     // of tags.  Skip the SQL query and JS loops.
-    if (data.length !== 0 && !params.skipTags) {
+    if (!params.paging && data.length !== 0 && !params.skipTags) {
       await core.addLotTags(data);
+    }
+
+    if (params.paging && data.rows.length !== 0 && !params.skipTags) {
+      await core.addLotTags(data.rows);
     }
 
     res.status(200).json(data);
@@ -1169,18 +1173,21 @@ async function listLotsDepotDetailed(req, res, next) {
       db.exec(sqlGetMonthlyStockMovements, [db.bid(params.depot_uuid), params.startDate, params.dateTo]),
     ]);
 
-    data.forEach(current => {
+    const _data = !params.paging ? data : data.rows;
+    const _dataPreviousMonth = !params.paging ? dataPreviousMonth : dataPreviousMonth.rows;
+
+    (_data || []).forEach(current => {
       current.quantity_opening = 0;
       current.total_quantity_entry = 0;
       current.total_quantity_exit = 0;
 
-      dataPreviousMonth.forEach(previous => {
+      (_dataPreviousMonth || []).forEach(previous => {
         if (current.uuid === previous.uuid) {
           current.quantity_opening = previous.quantity;
         }
       });
 
-      dataStockMovements.forEach(row => {
+      (dataStockMovements || []).forEach(row => {
         if (current.uuid === row.lot_uuid) {
           current.total_quantity_entry = row.entry_quantity;
           current.total_quantity_exit = row.exit_quantity;
@@ -1196,19 +1203,19 @@ async function listLotsDepotDetailed(req, res, next) {
     `;
 
     // if we have an empty set, do not query tags.
-    if (data.length !== 0) {
-      const lotUuids = data.map(row => db.bid(row.uuid));
+    if (_data.length !== 0) {
+      const lotUuids = _data.map(row => db.bid(row.uuid));
       const tags = await db.exec(queryTags, [lotUuids]);
 
       // make a lot_uuid -> tags map.
       const tagMap = _.groupBy(tags, 'lot_uuid');
 
-      data.forEach(lot => {
+      _data.forEach(lot => {
         lot.tags = tagMap[lot.uuid] || [];
       });
     }
 
-    res.status(200).json(data);
+    res.status(200).json(params.paging ? { pager : data.pager, rows : _data } : _data);
   } catch (error) {
     next(error);
   }
