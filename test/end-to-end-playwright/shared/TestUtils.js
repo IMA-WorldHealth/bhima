@@ -4,7 +4,6 @@
 
 const { expect } = require('@playwright/test');
 
-// ??? const PATH_REGEXP = /^#!|^#|^!/g;
 const PATH_REGEXP = /^[#!/]+/g;
 
 /**
