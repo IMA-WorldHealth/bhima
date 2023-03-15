@@ -3,10 +3,11 @@ const TU = require('../shared/TestUtils');
 
 // routes used in tests
 const settings = 'settings';
+const login = 'login';
 
 test.beforeEach(async ({ page }) => {
   TU.registerPage(page);
-  await page.goto('/#!/login');
+  await TU.navigate(login);
 });
 
 test.describe('Login Tests', () => {

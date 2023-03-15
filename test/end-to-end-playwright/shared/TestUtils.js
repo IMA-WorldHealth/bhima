@@ -4,7 +4,8 @@
 
 const { expect } = require('@playwright/test');
 
-const PATH_REGEXP = /^#!|^#|^!/g;
+// ??? const PATH_REGEXP = /^#!|^#|^!/g;
+const PATH_REGEXP = /^[#!/]+/g;
 
 /**
  * Remember the page being used to simplify function calls
@@ -19,7 +20,7 @@ let page;
 const buttons = {
   // create : () => $('[data-method="create"]').click(),
   // search : () => $('[data-method="search"]').click(),
-  submit : () => page.click('[data-method="submit"]'),
+  submit : () => page.locator('[data-method="submit"]').click(),
   // cancel : () => $('[data-method="cancel"]').click(),
   // edit   : () => $('[data-method="edit"]').click(),
   // clear  : () => $('[data-method="clear"]').click(),
@@ -33,27 +34,58 @@ const buttons = {
   // grouping : () => $('[data-method="grouping"]').click(),
 };
 
+/**
+ * Fill an <input> element for a model
+ *
+ * @param {string} model - name of the ng-model
+ * @param {string} value - value to fill into the input field
+ * @returns {Promise} for the fill operation
+ */
+async function input(model, value) {
+  if (typeof page === 'undefined') {
+    throw new Error('Must call registerPage() first!');
+  }
+
+  return page.locator(`[ng-model="${model}"]`).fill(value);
+
+//   const elt = await page.locator(`[ng-model="${model}"]`);
+//   return elt.fill(value);
+}
+
+/**
+ * Selects an option from an <select> html element
+ *
+ * @param {*} selector - Selector for the select field (must produce unique element)
+ * @param {*} value - the option to select (with value="<value>")
+ * @returns {Promise} of the result of the selection action
+ */
+async function selectOption(selector, value) {
+  return page.locator(selector).selectOption(value);
+}
+
+/**
+ * Request navigation to a desired browser page
+ *
+ * @param {string} browserPath - the path desired (the part after the baseUrl)
+ * @returns {Promise} of navigation to the desired path
+ */
+async function navigate(browserPath) {
+  const destination = browserPath.replace(PATH_REGEXP, '');
+  return page.goto(`/#!/${destination}`);
+}
+
 // Expose function routes
 module.exports = {
 
   /**
    * registerPage - Save the page object for the functions in this module
    *
+   * Note: NOT async
+   *
    * @param {object} newPage - Playwright test browser test page
    */
   registerPage : function registerPage(newPage) {
     page = newPage;
-  },
-
-  /**
-   * Request navigation to a desired browser page
-   *
-   * @param {string} browserPath - the path desired (the part after the baseUrl)
-   * @returns {Promise} of navigation to the desired path
-   */
-  navigate : async function navigate(browserPath) {
-    const destination = browserPath.replace(PATH_REGEXP, '');
-    return page.goto(`/#!/${destination}`);
   },
 
   /**
@@ -63,67 +95,9 @@ module.exports = {
    */
   getCurrentPath : async function getCurrentPath() {
     const url = page.url();
-    const partial = url.split('#!')[1];
+    const partial = url.split('#!/')[1];
     partial.replace(PATH_REGEXP, '');
     return `/#!/${partial}`;
-  },
-
-  // /**
-  //  * Asserts whether an element exists or not
-  //  *
-  //  * @param {string} locator - locator string
-  //  * @param {bool} bool - whether it should exist or not
-  //  */
-  // exists : async function exists(locator, bool) {
-  //   if (typeof page === 'undefined') {
-  //     throw new Error('Must call registerPage() first!');
-  //   }
-  //   expect(
-  //     await page(locator).isPresent(),
-  //     `Expected locator ${locator.toString()} to ${bool ? '' : 'not'} exist.`,
-  //   ).to.equal(bool);
-  // },
-
-  /**
-   * Fill an <input> element
-   *
-   * @param {string} model - name of the ng-model
-   * @param {string} value - value to fill into the input field
-   * @returns {Promise} for the fill operation
-   */
-  input : async function input(model, value) {
-    if (typeof page === 'undefined') {
-      throw new Error('Must call registerPage() first!');
-    }
-
-    return page.fill(`[ng-model="${model}"]`, value);
-  },
-
-  // // get an <input> element by its ng-model
-  // input : async function input(model, value, anchor) {
-
-  //   // get the HTML <input> element
-  //   const input = anchor
-  //     ? anchor.element(by.model(model))
-  //     : element(by.model(model));
-
-  //   await input.clear().sendKeys(value);
-
-  //   return input;
-  // },
-
-  /**
-   * Selects an option from an <select> html element.  Accepts the model
-   * selector, the option text, and an optional anchor element to search within.
-   * If no anchor is provided, it defaults to the body.
-   *
-   * @param {string} model - the ng-model target to select
-   * @param {string} option - the text of the <option> element to choose
-   * @param {string} anchor - tag for the element to search within
-   * @returns {Element} - a protractor <option> element
-   */
-  select : async function select(model, option, anchor = 'body') {
-    return page.click(`${anchor} [ng-model="${model}"] > option[label="${option}"]`);
   },
 
   /**
@@ -145,19 +119,21 @@ module.exports = {
     expect(page).toHaveTitle(/BHIMA/);
 
     // First, switch to English
-    expect((await page.innerText('li[role=menuitem]:last-child > a')).trim()).toBe('English');
-    // Expose the language drop-down menu
-    await page.click('div.panel-heading > div.dropdown > a');
-    // Click on the English option
-    await page.click('li[role=menuitem]:last-child > a');
+    const lang = await page.locator('li[role=menuitem]:last-child > a').innerText();
+    expect(lang.trim()).toBe('English');
+    // (expose the language drop-down menu)
+    await page.locator('div.panel-heading > div.dropdown > a').click();
+    // (click on the English option)
+    await page.locator('li[role=menuitem]:last-child > a').click();
     await page.waitForURL('**/login');
-
-    expect(await page.innerText('.panel-heading')).toBe('Login');
+    // (verify it is now English)
+    const loginLabel = await page.locator('.panel-heading').innerText();
+    expect(loginLabel).toBe('Login');
 
     // Log in
-    await page.fill('input[name=username]', username || 'superuser');
-    await page.fill('input[name=password]', password || 'superuser');
-    await page.click('button[type=submit]');
+    await input('LoginCtrl.credentials.username', username || 'superuser');
+    await input('LoginCtrl.credentials.password', password || 'superuser');
+    await buttons.submit();
 
     return page.waitForURL('**/#!/');
   },
@@ -185,10 +161,13 @@ module.exports = {
     await page.waitForURL('**/settings');
 
     // log out
-    await page.click('button[data-logout-button]');
+    await page.locator('button[data-logout-button]').click();
 
     return page.waitForURL('**/login');
   },
 
   buttons,
+  input,
+  navigate,
+  selectOption,
 };
