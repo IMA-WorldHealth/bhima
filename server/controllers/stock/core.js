@@ -340,7 +340,6 @@ async function getAssets(params) {
       params.scan_status === 'scanned' ? 'last_scan.uuid IS NOT NULL' : 'last_scan.uuid IS NULL');
   }
   filters.setGroup(groupByClause);
-
   filters.setHaving(havingClause);
   filters.setOrder('ORDER BY i.code, l.label');
   const query = filters.applyQuery(sql);
@@ -434,7 +433,6 @@ async function getLotsDepot(depotUuid, params, finalClause) {
   `;
 
   const groupByClause = finalClause || ` GROUP BY l.uuid, m.depot_uuid ${emptyLotToken} ORDER BY i.code, l.label `;
-
   const filters = getLotFilters(params);
   filters.setGroup(groupByClause);
 
@@ -484,7 +482,7 @@ async function getLotsDepot(depotUuid, params, finalClause) {
 
   if (params.paging) {
     return {
-      pager : paginatedResults,
+      pager : paginatedResults.pager,
       rows : inventoriesWithLotsProcessed,
     };
   }
@@ -979,24 +977,26 @@ async function getInventoryQuantityAndConsumption(params) {
 
   const clause = ` GROUP BY l.inventory_uuid, m.depot_uuid ${emptyLotToken} ORDER BY ig.name, i.text `;
 
-  let filteredRows = await getLots(sql, params, clause);
-  if (filteredRows.length === 0) { return []; }
+  const filteredRows = await getLots(sql, params, clause);
+  let _filteredRows = params.paging ? filteredRows.rows : filteredRows;
+
+  if (_filteredRows.length === 0) { return []; }
 
   const settingsql = `
     SELECT month_average_consumption, average_consumption_algo, min_delay, default_purchase_interval
     FROM stock_setting WHERE enterprise_id = ?
   `;
 
-  const opts = await db.one(settingsql, filteredRows[0].enterprise_id);
+  const opts = await db.one(settingsql, _filteredRows[0].enterprise_id);
 
   // add the minimum delay to the rows
-  filteredRows.forEach(row => {
+  _filteredRows.forEach(row => {
     row.min_delay = opts.min_delay;
   });
 
   // add the CMM
-  filteredRows = await getBulkInventoryCMM(
-    filteredRows,
+  _filteredRows = await getBulkInventoryCMM(
+    _filteredRows,
     opts.month_average_consumption,
     opts.average_consumption_algo,
     opts.default_purchase_interval,
@@ -1004,14 +1004,14 @@ async function getInventoryQuantityAndConsumption(params) {
   );
 
   if (_status) {
-    filteredRows = filteredRows.filter(row => row.status === _status);
+    _filteredRows = _filteredRows.filter(row => row.status === _status);
   }
 
   if (requirePurchaseOrder) {
-    filteredRows = filteredRows.filter(row => row.S_Q > 0);
+    _filteredRows = _filteredRows.filter(row => row.S_Q > 0);
   }
 
-  return filteredRows;
+  return params.paging ? { ...filteredRows, rows : _filteredRows } : _filteredRows;
 }
 
 /**
