@@ -1,5 +1,6 @@
 const { test, expect } = require('@playwright/test');
 const TU = require('../shared/TestUtils');
+const components = require('../shared/components');
 
 // routes used in tests
 const location = 'enterprises';
@@ -48,15 +49,35 @@ test.describe('Enterprises', () => {
     abbr : abbrUpdate,
   };
 
-  test('test', async ({ page }) => {
-    // ???
+  /**
+   * The actual enterprise module doesn't need to create new one
+   * so we need only to update enterprise informations
+   */
+  test('set enterprise data', async ({ page }) => {
+    await TU.input('EnterpriseCtrl.enterprise.name', enterprise.name);
+    await TU.input('EnterpriseCtrl.enterprise.abbr', enterprise.abbr);
+
+    // ??? await components.accountSelect.set(enterprise.gain_account_id, 'gain-account-id');
+    // await components.accountSelect.set(enterprise.loss_account_id, 'loss-account-id');
+
+    // await FU.input('EnterpriseCtrl.enterprise.po_box', enterprise.po_box);
+    // await FU.input('EnterpriseCtrl.enterprise.email', enterprise.email);
+    // await FU.input('EnterpriseCtrl.enterprise.phone', enterprise.phone);
+
+    // // select the locations specified
+    // await components.locationSelect.set(helpers.data.locations);
+
+    // // submit the page to the server
+    // await FU.buttons.submit();
+
+    // await components.notification.hasSuccess();
   });
 
   /**
    * This function returns a random 3 characters string as an abbreviation
    *
    * @function suffix
-   * @returns {string} random 3-letter suffix
+   * @returns {string} random 3-letter suffix (A-Z)
    */
   function suffix() {
     const a = String.fromCharCode(random(65, 90));

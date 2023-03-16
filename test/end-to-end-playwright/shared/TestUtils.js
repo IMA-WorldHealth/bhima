@@ -36,19 +36,40 @@ const buttons = {
 /**
  * Fill an <input> element for a model
  *
- * @param {string} model - name of the ng-model
+ * @param {string} model - name/selector of the ng-model for the input field
  * @param {string} value - value to fill into the input field
+ * @param {string} [anchor] - optional selector for the parent/anchor for the input field
  * @returns {Promise} for the fill operation
  */
-async function input(model, value) {
+async function input(model, value, anchor) {
   if (typeof page === 'undefined') {
     throw new Error('Must call registerPage() first!');
   }
+  const selector = anchor
+    ? `${anchor} [ng-model="${model}"]`
+    : `[ng-model="${model}"]`;
 
-  return page.locator(`[ng-model="${model}"]`).fill(value);
+  return page.locator(selector).fill(value);
+}
 
-//   const elt = await page.locator(`[ng-model="${model}"]`);
-//   return elt.fill(value);
+/**
+ * Get the specified model element
+ *
+ * @param {string} modelName - name/id of the model
+ * @param {string} [anchor] - optional selector/locator for the anchor element (defaults to page)
+ * @returns {Promise} promise for the desired model element
+ */
+async function getModel(modelName, anchor) {
+  if (typeof page === 'undefined') {
+    throw new Error('Must call registerPage() first!');
+  }
+  if (typeof anchor === 'string') {
+    return page.locator(`${anchor} [ng-model="${modelName}"]`);
+  }
+  if (anchor) {
+    return anchor.locator(`[ng-model="${modelName}"]`);
+  }
+  return page.locator(`[ng-model="${modelName}"]`);
 }
 
 /**
@@ -90,6 +111,8 @@ module.exports = {
   /**
    * get the browser path (after the baseUrl)
    *
+   * Note: NOT async
+   *
    * @returns {string} the normalized current path
    */
   getCurrentPath : function getCurrentPath() {
@@ -100,9 +123,19 @@ module.exports = {
   },
 
   /**
-   * Log into the BHIMA server
+   * Get the desired locator.
    *
-   * Callers should use 'await' with this function
+   * Convenience function for modules that do not have direct access to the page object.
+   *
+   * @param {string} selector - selector for the desired element
+   * @returns {Promise} for the locator
+   */
+  locator : async function locator(selector) {
+    return page.locator(selector);
+  },
+
+  /**
+   * Log into the BHIMA server
    *
    * @param {string} username - username to log in (optional)
    * @param {string} password - password to log in (optional)
@@ -140,8 +173,6 @@ module.exports = {
   /**
    * Log out of the BHIMA server
    *
-   * Callers should use 'await' with this function
-   *
    * @returns {Promise} promise to return the login page after logging out
    */
   logout : async function logout() {
@@ -165,7 +196,66 @@ module.exports = {
     return page.waitForURL('**/login');
   },
 
+  /**
+   * Selects an option from the ui-select dropdown
+   *
+   * @function uiSelect
+   * @param {string} model - the ng-model target to select
+   * @param {string} label - the text of the option element to choose
+   * @param {Element} anchor - a protractor element to search within
+   * @param {boolean} isMultipleSelection
+   * @param {string} searchType - contains|exact|fullWord|accountName
+   * @returns {Element} - a protractor option element
+   */
+  uiSelect: async function uiSelect(
+    model, label, anchor, isMultipleSelection, searchType = 'contains',
+  ) {
+    if (typeof page === 'undefined') {
+      throw new Error('Must call registerPage() first!');
+    }
+
+    // const anchorSelector = anchor || 'body';
+
+    // get the HTML <div> element that will trigger the select input
+    const select = await getModel(model, anchor);
+
+    // trigger the <input> rendering
+    await select.click();
+
+    // type into the <input> element the searchable value
+    // only for multiple selection
+    if (isMultipleSelection) {
+      await this.input('$select.search', label, select);
+    }
+
+    // select the item of the dropdown menu matching the label
+    let searchString = label;
+    let labelForRegex = label.replace('(', '\\(');
+    labelForRegex = labelForRegex.replace(')', '\\)');
+
+    switch (searchType) {
+    case 'exact':
+      searchString = new RegExp(`^\\s*${labelForRegex}$`, 'm');
+      break;
+    case 'fullWord':
+      searchString = new RegExp(`\\s+${labelForRegex}(\\s|$)`);
+      break;
+    case 'accountName':
+      searchString = new RegExp(`\\d+\\s+${labelForRegex}\\s+`);
+      break;
+    case 'contains':
+      searchString = label;
+      break;
+    default:
+      searchString = label;
+      break;
+    }
+
+    return select.locator(`.dropdown-menu [role="option"] >> text="${searchString}"`).click();
+  },
+
   buttons,
+  getModel,
   input,
   navigate,
   selectOption,
