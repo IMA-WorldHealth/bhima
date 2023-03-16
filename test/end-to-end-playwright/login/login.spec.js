@@ -47,7 +47,7 @@ test.describe('Login', () => {
     await TU.login();
     await TU.navigate(settings);
     await page.reload();
-    const path = await TU.getCurrentPath();
+    const path = TU.getCurrentPath();
     expect(path.endsWith('/settings'));
   });
 

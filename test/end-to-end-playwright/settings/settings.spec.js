@@ -24,15 +24,15 @@ test.describe('Settings', () => {
     // load the settings page w/o backwards navigation
     await TU.navigate(start);
     await TU.navigate('settings');
-    expect(await TU.getCurrentPath()).toBe('/#!/settings');
+    expect(TU.getCurrentPath()).toBe('/#!/settings');
 
-    // Ensure we navigate back to the main page.
+    // Ensure we can navigate back to the main page with the back button.
 
     // click the back button
     await page.locator('[data-back-button]').click();
 
     // ensure we navigate back to the main page.
-    expect(await TU.getCurrentPath()).toBe(start);
+    expect(TU.getCurrentPath()).toBe(start);
   });
 
 });

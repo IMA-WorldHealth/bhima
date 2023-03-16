@@ -92,7 +92,7 @@ module.exports = {
    *
    * @returns {string} the normalized current path
    */
-  getCurrentPath : async function getCurrentPath() {
+  getCurrentPath : function getCurrentPath() {
     const url = page.url();
     const partial = url.split('#!/')[1];
     partial.replace(PATH_REGEXP, '');
