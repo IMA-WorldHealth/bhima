@@ -289,6 +289,50 @@ class DatabaseConnector {
       .catch(next)
       .done();
   }
+
+  async paginateQuery(sql, params, tables, filters) {
+    let pager = {};
+    let rows = [];
+    let fetchAllData = false;
+
+    if (!params.limit) {
+      params.limit = 100;
+    } else if (params.limit && parseInt(params.limit, 10) === -1) {
+      fetchAllData = true;
+      delete params.limit;
+    }
+
+    if (params.page && parseInt(params.page, 10) === 0) {
+      delete params.page;
+    }
+
+    const queryParameters = filters.parameters();
+
+    if (fetchAllData) {
+      // fetch all data
+      const query = filters.applyQuery(sql.concat(' ', tables));
+      rows = await this.exec(query, queryParameters);
+    } else {
+      // paginated data
+
+      // FIXME: Performance issue, use SQL COUNT in a better way
+      const total = (await this.exec(filters.getAllResultQuery(sql.concat(' ', tables)), queryParameters)).length;
+      const page = params.page ? parseInt(params.page, 10) : 1;
+      const limit = params.limit ? parseInt(params.limit, 10) : 100;
+      pager = {
+        total,
+        page,
+        page_size : limit,
+        page_min : (page - 1) * limit,
+        page_max : (page) * limit,
+        page_count : Math.ceil(total / limit),
+      };
+      const paginatedQuery = filters.applyPaginationQuery(sql.concat(' ', tables), pager.page_size, pager.page_min);
+      rows = await this.exec(paginatedQuery, queryParameters);
+    }
+
+    return { rows, pager };
+  }
 }
 
 module.exports = new DatabaseConnector();
