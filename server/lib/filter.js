@@ -312,12 +312,29 @@ class FilterParser {
 
     return `
       SELECT
-        COUNT(*) AS total, ${page} AS page,
-        ${limit} AS page_size, (${(page - 1) * limit}) AS page_min, (${(page) * limit}) AS page_max,
+        COUNT(*) AS total,
+        ${page} AS page,
+        ${limit} AS page_size, 
+        (${(page - 1) * limit}) AS page_min, 
+        (${(page) * limit}) AS page_max,
         CEIL(COUNT(*) / ${limit}) AS page_count
       ${table} 
       WHERE ${conditionStatements} 
     `;
+  }
+
+  // FIXME: This strategie is temp solution to fix the pager.total compare to the rows.size
+  // The reason is we have to use COUNT(DISTINCT specific_column) FOR ALL OUR CASES in the above
+  // query
+  getAllResultQuery(sql) {
+    if (this._autoParseStatements) {
+      this._parseDefaultFilters();
+    }
+
+    const conditionStatements = this._parseStatements();
+    const group = this._group;
+
+    return `${sql} WHERE ${conditionStatements} ${group}`;
   }
 
   applyPaginationQuery(sql, limit, page) {
