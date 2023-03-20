@@ -314,8 +314,19 @@ class DatabaseConnector {
       rows = await this.exec(query, queryParameters);
     } else {
       // paginated data
-      const paginationLimits = filters.paginationLimitQuery(tables, params.limit, params.page);
-      [pager] = await this.exec(paginationLimits, queryParameters);
+
+      // FIXME: Performance issue, use SQL COUNT in a better way
+      const total = (await this.exec(filters.getAllResultQuery(sql.concat(' ', tables)), queryParameters)).length;
+      const page = params.page ? parseInt(params.page, 10) : 1;
+      const limit = params.limit ? parseInt(params.limit, 10) : 100;
+      pager = {
+        total,
+        page,
+        page_size : limit,
+        page_min : (page - 1) * limit,
+        page_max : (page) * limit,
+        page_count : Math.ceil(total / limit),
+      };
       const paginatedQuery = filters.applyPaginationQuery(sql.concat(' ', tables), pager.page_size, pager.page_min);
       rows = await this.exec(paginatedQuery, queryParameters);
     }
