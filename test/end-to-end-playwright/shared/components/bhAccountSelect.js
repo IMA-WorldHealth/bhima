@@ -7,11 +7,7 @@ module.exports = {
     const locator = id ? `#${id}` : selector;
     const target = optional || await TU.locator(locator);
 
-    // ??? console.log("id, account, locator: ", id, account, locator);
-
-    console.table(Object.getOwnPropertyNames(Object.getPrototypeOf(target)).sort());
-
-    // hack to make sure previous 'blur' event fires if we are using
+    // Hack to make sure previous 'blur' event fires if we are using
     // ngModelOptions updateOn 'blur' for every input
     await target.click();
 

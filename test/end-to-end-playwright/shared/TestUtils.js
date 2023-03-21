@@ -207,14 +207,12 @@ module.exports = {
    * @param {string} searchType - contains|exact|fullWord|accountName
    * @returns {Element} - a protractor option element
    */
-  uiSelect: async function uiSelect(
+  uiSelect : async function uiSelect(
     model, label, anchor, isMultipleSelection, searchType = 'contains',
   ) {
     if (typeof page === 'undefined') {
       throw new Error('Must call registerPage() first!');
     }
-
-    // const anchorSelector = anchor || 'body';
 
     // get the HTML <div> element that will trigger the select input
     const select = await getModel(model, anchor);
@@ -225,6 +223,7 @@ module.exports = {
     // type into the <input> element the searchable value
     // only for multiple selection
     if (isMultipleSelection) {
+      // WARNING: Not tested yet with Playwright
       await this.input('$select.search', label, select);
     }
 
@@ -235,23 +234,28 @@ module.exports = {
 
     switch (searchType) {
     case 'exact':
+      console.debug("WARNING: 'exact' may not work with XPath");
       searchString = new RegExp(`^\\s*${labelForRegex}$`, 'm');
       break;
     case 'fullWord':
+      console.debug("WARNING: 'fullWord' may not work with XPath");
       searchString = new RegExp(`\\s+${labelForRegex}(\\s|$)`);
       break;
     case 'accountName':
+      console.debug("WARNING: 'accountName' may not work with XPath");
       searchString = new RegExp(`\\d+\\s+${labelForRegex}\\s+`);
       break;
     case 'contains':
-      searchString = label;
-      break;
     default:
       searchString = label;
       break;
     }
 
-    return select.locator(`.dropdown-menu [role="option"] >> text="${searchString}"`).click();
+    // To get the regexes working, we may need to get the text of the title and check using the regex
+    // If it okay, click; otherwise complain?
+    // const selectorText = await select.locator('.dropdown-menu').locator(`//*[contains(text(), '${label}')]`);
+
+    return select.locator('.dropdown-menu').locator(`//*[contains(text(), '${label}')]`).click();
   },
 
   buttons,

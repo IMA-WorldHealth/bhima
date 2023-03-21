@@ -24,7 +24,7 @@ module.exports = defineConfig({
   },
 
   /* Run tests in files in parallel */
-  fullyParallel: false,  // JMC WAS: true
+  fullyParallel: false,  // JMC WAS: true for test development
 
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
@@ -98,4 +98,3 @@ module.exports = defineConfig({
   //   port: 3000,
   // },
 });
-

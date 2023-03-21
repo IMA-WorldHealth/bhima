@@ -1,5 +1,6 @@
 const { test, expect } = require('@playwright/test');
 const TU = require('../shared/TestUtils');
+const helpers = require('../shared/helpers');
 const components = require('../shared/components');
 
 // routes used in tests
@@ -57,20 +58,21 @@ test.describe('Enterprises', () => {
     await TU.input('EnterpriseCtrl.enterprise.name', enterprise.name);
     await TU.input('EnterpriseCtrl.enterprise.abbr', enterprise.abbr);
 
-    // ??? await components.accountSelect.set(enterprise.gain_account_id, 'gain-account-id');
-    // await components.accountSelect.set(enterprise.loss_account_id, 'loss-account-id');
+    await components.accountSelect.set(enterprise.gain_account_id, 'gain-account-id');
+    await components.accountSelect.set(enterprise.loss_account_id, 'loss-account-id');
 
-    // await FU.input('EnterpriseCtrl.enterprise.po_box', enterprise.po_box);
-    // await FU.input('EnterpriseCtrl.enterprise.email', enterprise.email);
-    // await FU.input('EnterpriseCtrl.enterprise.phone', enterprise.phone);
+    await TU.input('EnterpriseCtrl.enterprise.po_box', enterprise.po_box);
+    await TU.input('EnterpriseCtrl.enterprise.email', enterprise.email);
+    await TU.input('EnterpriseCtrl.enterprise.phone', enterprise.phone);
 
-    // // select the locations specified
-    // await components.locationSelect.set(helpers.data.locations);
+    // select the locations specified
+    await components.locationSelect.set(helpers.data.locations);
 
-    // // submit the page to the server
-    // await FU.buttons.submit();
+    // submit the page to the server
+    await TU.buttons.submit();
 
     // await components.notification.hasSuccess();
+    // ???
   });
 
   /**
