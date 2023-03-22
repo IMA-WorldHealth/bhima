@@ -17,20 +17,57 @@ let page;
  * potentially collide.
  */
 const buttons = {
-  // create : () => $('[data-method="create"]').click(),
-  // search : () => $('[data-method="search"]').click(),
-  submit : () => page.locator('[data-method="submit"]').click(),
-  // cancel : () => $('[data-method="cancel"]').click(),
-  // edit   : () => $('[data-method="edit"]').click(),
-  // clear  : () => $('[data-method="clear"]').click(),
-  // print  : () => $('[data-method="print"]').click(),
-  // back   : () => $('[data-method="back"]').click(),
-  // reset  : () => $('[data-method="reset"]').click(),
-  // delete : () => $('[data-method="delete"]').click(),
-  // configure : () => $('[data-method="configure"]').click(),
-  // add : () => $('[data-method="add"]').click(),
-  // save : () => $('[data-method="save"]').click(),
-  // grouping : () => $('[data-method="grouping"]').click(),
+  create    : () => page.locator('[data-method="create"]').click(),
+  search    : () => page.locator('[data-method="search"]').click(),
+  submit    : () => page.locator('[data-method="submit"]').click(),
+  cancel    : () => page.locator('[data-method="cancel"]').click(),
+  edit      : () => page.locator('[data-method="edit"]').click(),
+  clear     : () => page.locator('[data-method="clear"]').click(),
+  print     : () => page.locator('[data-method="print"]').click(),
+  back      : () => page.locator('[data-method="back"]').click(),
+  reset     : () => page.locator('[data-method="reset"]').click(),
+  delete    : () => page.locator('[data-method="delete"]').click(),
+  configure : () => page.locator('[data-method="configure"]').click(),
+  add       : () => page.locator('[data-method="add"]').click(),
+  save      : () => page.locator('[data-method="save"]').click(),
+  grouping  : () => page.locator('[data-method="grouping"]').click(),
+};
+
+// This methods are for easily working with modals.  Works with the same custom
+// data tags used in form buttons.
+const modal = {
+  submit : function submit() {
+    return page.locator('[uib-modal-window] [data-method="submit"]').click();
+  },
+  cancel : function cancel() {
+    return page.locator('[uib-modal-window] [data-method="cancel"]').click();
+  },
+  close : function close() {
+    return page.locator('[uib-modal-window] [data-method="close"]').click();
+  },
+  print : function print() {
+    return page.locator('[uib-modal-window] [data-method="print"]').click();
+  },
+};
+
+// convenience methods to check form element validation states
+const validation = {
+
+  // an error state is present
+  error : async function error(model) {
+    const modelElt = await page.locator(`[ng-model="${model}"]`);
+    const eltClass = await modelElt.getAttribute('class');
+    expect(eltClass.includes('ng-invalid'),
+      `Expected ${model} to be invalid, but could not find the ng-invalid class.`);
+  },
+
+  // no error state present
+  ok : async function success(model) {
+    const modelElt = await page.locator(`[ng-model="${model}"]`);
+    const eltClass = await modelElt.getAttribute('class');
+    expect(eltClass.includes('ng-valid'),
+      `Expected ${model} to be valid, but could not find the ng-valid class.`);
+  },
 };
 
 /**
@@ -264,17 +301,19 @@ module.exports = {
    *
    * @param {string} selector - The selector to wait for
    * @param {Array} options - the options to use
-   * @returns {Promise <boolean>} - promise for the request
+   * @returns {Promise} - promise for the request
    */
-  waitForSelector : async function waitForSelector(selector, options = {}) {
+  waitForSelector : function waitForSelector(selector, options = {}) {
     return page.waitForSelector(selector, options);
   },
 
   buttons,
   getModel,
   input,
+  modal,
   navigate,
   selectOption,
+  validation,
 };
 
 // console.debug('Page: ', Object.getOwnPropertyNames(page));
