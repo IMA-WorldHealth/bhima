@@ -251,11 +251,23 @@ module.exports = {
       break;
     }
 
+    // WARNING: tests using the regexes above will probably fail due to limitations of Playwright
     // To get the regexes working, we may need to get the text of the title and check using the regex
     // If it okay, click; otherwise complain?
     // const selectorText = await select.locator('.dropdown-menu').locator(`//*[contains(text(), '${label}')]`);
 
-    return select.locator('.dropdown-menu').locator(`//*[contains(text(), '${label}')]`).click();
+    return select.locator('.dropdown-menu').locator(`//*[contains(text(), '${searchString}')]`).click();
+  },
+
+  /**
+   * Wait for the specified selector
+   *
+   * @param {string} selector - The selector to wait for
+   * @param {Array} options - the options to use
+   * @returns {Promise <boolean>} - promise for the request
+   */
+  waitForSelector : async function waitForSelector(selector, options = {}) {
+    return page.waitForSelector(selector, options);
   },
 
   buttons,
@@ -267,3 +279,7 @@ module.exports = {
 
 // console.debug('Page: ', Object.getOwnPropertyNames(page));
 // console.table(Object.getOwnPropertyNames(Object.getPrototypeOf(page)).sort());
+
+// console.time('Timer name');
+// <CMDS>
+// console.timeEnd('Timer name');

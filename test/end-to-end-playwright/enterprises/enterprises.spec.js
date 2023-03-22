@@ -71,8 +71,7 @@ test.describe('Enterprises', () => {
     // submit the page to the server
     await TU.buttons.submit();
 
-    // await components.notification.hasSuccess();
-    // ???
+    await components.notification.hasSuccess();
   });
 
   /**

@@ -8,6 +8,9 @@
  * @module e2e/components
  * @public
  */
+
+/* eslint-disable global-require */
+
 module.exports = {
   // accountConfigSelect : require('./bhAccountConfigSelect'),
   // accountReferenceSelect : require('./bhAccountReferenceSelect'),
@@ -52,7 +55,7 @@ module.exports = {
   locationSelect : require('./bhLocationSelect'),
   // modalAction : require('./bhModalAction'),
   // multipleCashBoxSelect : require('./bhMultipleCashBoxSelect'),
-  // notification : require('./notify'),
+  notification : require('./notify'),
   // patientGroupSelect : require('./bhPatientGroupSelect'),
   // payrollPeriodSelect : require('./bhPayrollPeriodSelect'),
   // payrollStatusSelect : require('./bhPayrollStatusSelect'),
