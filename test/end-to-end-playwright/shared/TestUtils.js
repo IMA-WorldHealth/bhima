@@ -234,13 +234,29 @@ module.exports = {
   },
 
   /**
+   * Selects an option from an <select> html element.  Accepts the model
+   * selector, the option text, and an optional anchor element to search within.
+   * If no anchor is provided, it defaults to the body.
+   *
+   * @param {string} modelName - the ng-model target to select
+   * @param {string} option - the text of the <option> element to choose
+   * @param {Element} anchor - a protractor element to search within
+   * @returns {Element} - a protractor <option> element
+   */
+  select : async function select(modelName, option, anchor) {
+    const model = `[ng-model="${modelName}"]`;
+    const optionSelect = (anchor) ? await anchor.locator(model) : await page.locator(model);
+    return optionSelect.selectOption(option);
+  },
+
+  /**
    * Selects an option from the ui-select dropdown
    *
    * @function uiSelect
    * @param {string} model - the ng-model target to select
    * @param {string} label - the text of the option element to choose
    * @param {Element} anchor - a protractor element to search within
-   * @param {boolean} isMultipleSelection
+   * @param {boolean} isMultipleSelection - flag
    * @param {string} searchType - contains|exact|fullWord|accountName
    * @returns {Element} - a protractor option element
    */
