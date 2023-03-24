@@ -46,7 +46,7 @@ module.exports = {
   // fonctionSelect : require('./bhFonctionSelect'),
   genderSelect : require('./bhGenderSelect'),
   // gradeSelect : require('./bhGradeSelect'),
-  // inpuText : require('./bhInputText'),
+  inputText : require('./bhInputText'),
   // inventoryGroupSelect : require('./bhInventoryGroupSelect'),
   // inventorySelect : require('./bhInventorySelect'),
   // inventoryTypeSelect : require('./bhInventoryTypeSelect'),
