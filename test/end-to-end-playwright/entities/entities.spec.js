@@ -7,14 +7,14 @@ const location = 'entities';
 
 const Page = new EntityPage();
 
-test.beforeEach(async ({ page }) => {
-  TU.registerPage(page);
-  await TU.login();
-  await TU.navigate(location);
-  Page.init();
-});
-
 test.describe('Entity Management', () => {
+
+  test.beforeEach(async ({ page }) => {
+    TU.registerPage(page);
+    await TU.login();
+    await TU.navigate(location);
+    Page.init();
+  });
 
   const entity = {
     display_name : 'IMA DEVELOPPERS OFFICE',

@@ -9,13 +9,13 @@ const fixtures = path.resolve(__dirname, '../../fixtures/');
 // routes used in tests
 const location = 'enterprises';
 
-test.beforeEach(async ({ page }) => {
-  TU.registerPage(page);
-  await TU.login();
-  await TU.navigate(location);
-});
-
 test.describe('Enterprises', () => {
+
+  test.beforeEach(async ({ page }) => {
+    TU.registerPage(page);
+    await TU.login();
+    await TU.navigate(location);
+  });
 
   // enterprise
   const enterprise = {

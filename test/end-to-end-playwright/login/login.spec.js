@@ -5,12 +5,12 @@ const TU = require('../shared/TestUtils');
 const login = 'login';
 const settings = 'settings';
 
-test.beforeEach(async ({ page }) => {
-  TU.registerPage(page);
-  await TU.navigate(login);
-});
-
 test.describe('Login', () => {
+
+  test.beforeEach(async ({ page }) => {
+    TU.registerPage(page);
+    await TU.navigate(login);
+  });
 
   test('verify we can log in', async ({ page }) => {
     await TU.login();
