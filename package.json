@@ -152,7 +152,7 @@
   },
   "devDependencies": {
     "@ima-worldhealth/rewire": "^4.1.0",
-    "@types/node": "^18.15.6",
+    "@types/node": "^18.15.10",
     "angular-mocks": "^1.8.3",
     "chai": "^4.3.7",
     "chai-as-promised": "^7.1.1",
@@ -191,7 +191,7 @@
     "protractor-console-plugin": "^0.1.1",
     "qs": "^6.11.1",
     "release-it": "^15.9.3",
-    "sinon": "^15.0.2",
+    "sinon": "^15.0.3",
     "standard-version": "^9.5.0",
     "typescript": "^5.0.2"
   },
