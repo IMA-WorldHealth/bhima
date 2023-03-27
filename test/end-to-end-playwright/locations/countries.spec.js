@@ -2,12 +2,10 @@ const { test } = require('@playwright/test');
 const TU = require('../shared/TestUtils');
 const GU = require('../shared/GridUtils');
 const GridRow = require('../shared/GridRow');
-
 const components = require('../shared/components');
-// const helpers = require('../shared/helpers');
 
 test.describe('Countries Management', () => {
-  const path = 'locations/country';
+  const path = '/#!/locations/country';
 
   test.beforeEach(async ({ page }) => {
     TU.registerPage(page);
@@ -77,7 +75,6 @@ test.describe('Countries Management', () => {
   });
 
   test('should delete the test country', async () => {
-    // click the edit button
     const menu = dropdownMenu(country2.name);
     await menu.dropdown();
     await menu.remove();

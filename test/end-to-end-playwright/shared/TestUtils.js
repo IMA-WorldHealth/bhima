@@ -168,6 +168,9 @@ module.exports = {
    * @returns {Promise} for the locator
    */
   locator : async function locator(selector) {
+    if (typeof page === 'undefined') {
+      throw new Error('Must call registerPage() first!');
+    }
     return page.locator(selector);
   },
 

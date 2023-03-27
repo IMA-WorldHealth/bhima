@@ -1,0 +1,17 @@
+#!/usr/bin/perl -i
+#
+# PARTIALLY convert protractor tests to playwright tests
+
+while (<>) {
+    s|/\* global element\, by \*/||g;
+    s|const { expect } = require\('chai'\);|const { test, expect } = require('\@playwright/test');|g;
+    s|const FU = require\('../shared/FormUtils'\);|const TU = require('../shared/TestUtils');|g;
+    s|FU\.|TU.|g;
+    s|^( )*describe\(|\1test.describe(|g;
+    s|^( )+before\(|\1 ??? (|g;
+    s|^( )+it\(|\1 test(|g;
+    s|\.to\.equal|.toBe|g;
+    s|await element\(by\.css\(([^\)]+)\)\)\.click\(\);|await (await TU.locator(\1)).click();|g;
+    s|helpers\.getCurrentPath|TU.getCurrentPath|g;
+    print;
+}
