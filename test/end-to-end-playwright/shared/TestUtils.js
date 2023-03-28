@@ -159,6 +159,23 @@ module.exports = {
     return `/#!/${partial}`;
   },
 
+
+  /**
+   * Check to see an element exists (or not) on the page
+   *
+   * @param {string} selector - the selector to check
+   * @param {boolean} bool - whether it should exist or not (default: true)
+   * @returns {Promise} for the result of the assertion
+   */
+  exists : async function exists(selector, bool = true) {
+    const elt = await page.locator(selector);
+    const count = await elt.count();
+    return expect( count > 0,
+      `Expected locator ${selector} to ${bool ? '' : 'not'} exist.`,
+    ).toBe(bool);
+  },
+
+
   /**
    * Get the desired locator.
    *

@@ -13,7 +13,7 @@ const { defineConfig, devices } = require('@playwright/test');
 module.exports = defineConfig({
   testDir: './test/end-to-end-playwright',
   /* Maximum time one test can run for. */
-  timeout: 10 * 1000, // JMC WAS 30, temporarily shortened for test development
+  timeout: 20 * 1000, // JMC WAS 30, temporarily shortened for test development
 
   expect: {
     /**
