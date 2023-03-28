@@ -1173,15 +1173,15 @@ async function listLotsDepotDetailed(req, res, next) {
       db.exec(sqlGetMonthlyStockMovements, [db.bid(params.depot_uuid), params.startDate, params.dateTo]),
     ]);
 
-    const _data = !params.paging ? data : data.rows;
-    const _dataPreviousMonth = !params.paging ? dataPreviousMonth : dataPreviousMonth.rows;
+    const dataPaged = !params.paging ? data : data.rows;
+    const dataPagedPreviousMonth = !params.paging ? dataPreviousMonth : dataPreviousMonth.rows;
 
-    (_data || []).forEach(current => {
+    (dataPaged || []).forEach(current => {
       current.quantity_opening = 0;
       current.total_quantity_entry = 0;
       current.total_quantity_exit = 0;
 
-      (_dataPreviousMonth || []).forEach(previous => {
+      (dataPagedPreviousMonth || []).forEach(previous => {
         if (current.uuid === previous.uuid) {
           current.quantity_opening = previous.quantity;
         }
@@ -1203,19 +1203,19 @@ async function listLotsDepotDetailed(req, res, next) {
     `;
 
     // if we have an empty set, do not query tags.
-    if (_data.length !== 0) {
-      const lotUuids = _data.map(row => db.bid(row.uuid));
+    if (dataPaged.length !== 0) {
+      const lotUuids = dataPaged.map(row => db.bid(row.uuid));
       const tags = await db.exec(queryTags, [lotUuids]);
 
       // make a lot_uuid -> tags map.
       const tagMap = _.groupBy(tags, 'lot_uuid');
 
-      _data.forEach(lot => {
+      dataPaged.forEach(lot => {
         lot.tags = tagMap[lot.uuid] || [];
       });
     }
 
-    res.status(200).json(params.paging ? { pager : data.pager, rows : _data } : _data);
+    res.status(200).json(params.paging ? { pager : data.pager, rows : dataPaged } : dataPaged);
   } catch (error) {
     next(error);
   }

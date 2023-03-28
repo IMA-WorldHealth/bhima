@@ -978,25 +978,27 @@ async function getInventoryQuantityAndConsumption(params) {
   const clause = ` GROUP BY l.inventory_uuid, m.depot_uuid ${emptyLotToken} ORDER BY ig.name, i.text `;
 
   const filteredRows = await getLots(sql, params, clause);
-  let _filteredRows = params.paging ? filteredRows.rows : filteredRows;
+  let filteredRowsPaged = params.paging ? filteredRows.rows : filteredRows;
 
-  if (_filteredRows.length === 0) { return []; }
+  if (filteredRowsPaged.length === 0) {
+    return params.paging ? { ...filteredRows } : [];
+  }
 
   const settingsql = `
     SELECT month_average_consumption, average_consumption_algo, min_delay, default_purchase_interval
     FROM stock_setting WHERE enterprise_id = ?
   `;
 
-  const opts = await db.one(settingsql, _filteredRows[0].enterprise_id);
+  const opts = await db.one(settingsql, filteredRowsPaged[0].enterprise_id);
 
   // add the minimum delay to the rows
-  _filteredRows.forEach(row => {
+  filteredRowsPaged.forEach(row => {
     row.min_delay = opts.min_delay;
   });
 
   // add the CMM
-  _filteredRows = await getBulkInventoryCMM(
-    _filteredRows,
+  filteredRowsPaged = await getBulkInventoryCMM(
+    filteredRowsPaged,
     opts.month_average_consumption,
     opts.average_consumption_algo,
     opts.default_purchase_interval,
@@ -1004,14 +1006,14 @@ async function getInventoryQuantityAndConsumption(params) {
   );
 
   if (_status) {
-    _filteredRows = _filteredRows.filter(row => row.status === _status);
+    filteredRowsPaged = filteredRowsPaged.filter(row => row.status === _status);
   }
 
   if (requirePurchaseOrder) {
-    _filteredRows = _filteredRows.filter(row => row.S_Q > 0);
+    filteredRowsPaged = filteredRowsPaged.filter(row => row.S_Q > 0);
   }
 
-  return params.paging ? { ...filteredRows, rows : _filteredRows } : _filteredRows;
+  return params.paging ? { ...filteredRows, rows : filteredRowsPaged } : filteredRowsPaged;
 }
 
 /**
