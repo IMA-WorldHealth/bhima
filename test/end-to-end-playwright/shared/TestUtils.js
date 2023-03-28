@@ -191,14 +191,17 @@ module.exports = {
     expect(page).toHaveTitle(/BHIMA/);
 
     // First, switch to English
-    const lang = await page.locator('li[role=menuitem]:last-child > a').innerText();
-    expect(lang.trim()).toBe('English');
+
     // (expose the language drop-down menu)
-    await page.locator('div.panel-heading > div.dropdown > a').click();
+    const dropdown = await page.locator('div.panel-heading > div.dropdown > a');
+    await dropdown.click();
+
     // (click on the English option)
-    await page.locator('li[role=menuitem]:last-child > a').click();
-    await page.waitForURL('**/login');
+    const english = await page.locator('div.panel-heading > div.dropdown a[lang="en"]');
+    await english.click();
+
     // (verify it is now English)
+    await page.waitForURL('**/login');
     const loginLabel = await page.locator('.panel-heading').innerText();
     expect(loginLabel).toBe('Login');
 
