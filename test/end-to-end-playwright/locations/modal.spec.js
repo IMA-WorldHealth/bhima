@@ -1,14 +1,19 @@
-
-const { test, expect } = require('@playwright/test');
+const { chromium } = require('playwright');
+const { test } = require('@playwright/test');
 const TU = require('../shared/TestUtils');
 const notification = require('../shared/components/notify');
+
+test.beforeAll(async () => {
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  TU.registerPage(page);
+  await TU.login();
+});
 
 test.describe('Locations (create patient modal)', () => {
   const path = '#!/patients/register';
 
-  test.beforeEach(async ({ page }) => {
-    TU.registerPage(page);
-    await TU.login();
+  test.beforeEach(async () => {
     await TU.navigate(path);
   });
 
@@ -21,20 +26,33 @@ test.describe('Locations (create patient modal)', () => {
 
   const selector = '#origin-location-id';
 
-  // open the modal
+  /**
+   * open the modal
+   *
+   * @returns {Promise} of the button click
+   */
   async function open() {
     const openBtn = await TU.locator(`${selector} [data-location-modal-open]`);
     return openBtn.click();
   }
 
-  // switch to a certain view on the modal
+  /**
+   * switch to a certain view on the modal
+   *
+   * @param {string} key - which view (tab) open
+   * @returns {Promise} of the button click
+   */
   async function view(key) {
     // Click on the correct tab button
     const btn = await TU.locator(`[data-location-view-key=${key}]`);
     return btn.click();
   }
 
-  // submit the modal
+  /**
+   * Submit the modal
+   *
+   * @returns {Promise} of the button click
+   */
   async function submit() {
     const submitBtn = await TU.locator(`form[name=LocationModalForm] [type=submit]`);
     return submitBtn.click();

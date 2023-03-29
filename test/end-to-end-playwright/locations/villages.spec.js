@@ -1,15 +1,21 @@
+const { chromium } = require('playwright');
 const { test, expect } = require('@playwright/test');
 const TU = require('../shared/TestUtils');
 const GU = require('../shared/GridUtils');
 const components = require('../shared/components');
 const GridRow = require('../shared/GridRow');
 
+test.beforeAll(async () => {
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  TU.registerPage(page);
+  await TU.login();
+});
+
 test.describe('Villages Management', () => {
   const path = '/#!/locations/village';
 
-  test.beforeEach(async ({ page }) => {
-    TU.registerPage(page);
-    await TU.login();
+  test.beforeEach(async () => {
     await TU.navigate(path);
   });
 
