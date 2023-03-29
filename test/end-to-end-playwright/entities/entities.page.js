@@ -12,10 +12,6 @@ class EntityPage {
     this.gridId = 'entity-grid';
   }
 
-  async init() {
-    // ??? this.entityGrid = await TU.locator(`#${this.gridId}`);
-  }
-
   /**
    * create an entity
    */

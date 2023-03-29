@@ -3,12 +3,24 @@
 # PARTIALLY convert protractor tests to playwright tests
 
 while (<>) {
-    s|/\* global element\, by \*/||g;
+    print 'const { chromium } = require(\'playwright\');
+const { test, expect } = require(\'@playwright/test\');
+
+' if $. == 1;  # Insert needed imports
+    next if /\* global element\, by \*/;  # Omit this unneeded line
     s|const { expect } = require\('chai'\);|const { test, expect } = require('\@playwright/test');|g;
     s|const FU = require\('../shared/FormUtils'\);|const TU = require('../shared/TestUtils');|g;
     s|FU\.|TU.|g;
-    s|^( )*describe\(|\1test.describe(|g;
-    s|^( )+before\(|\1 ??? (|g;
+    s|^( )*describe\('|test.beforeAll(async () => {
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  TU.registerPage(page);
+  await TU.login();
+});
+
+test.describe('|g;
+    s|^( )+before\(\(\)|\1 test.beforeEach(async ()|g;
+    s|helpers\.navigate\(|TU.navigate(|g;
     s|^( )+it\(|\1 test(|g;
     s|\.to\.equal|.toBe|g;
     s|await element\(by\.css\(([^\)]+)\)\)\.click\(\);|await (await TU.locator(\1)).click();|g;

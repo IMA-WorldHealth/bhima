@@ -159,7 +159,6 @@ module.exports = {
     return `/#!/${partial}`;
   },
 
-
   /**
    * Check to see an element exists (or not) on the page
    *
@@ -174,7 +173,6 @@ module.exports = {
       `Expected locator ${selector} to ${bool ? '' : 'not'} exist.`,
     ).toBe(bool);
   },
-
 
   /**
    * Get the desired locator.
@@ -218,9 +216,9 @@ module.exports = {
     await english.click();
 
     // (verify it is now English)
-    await page.waitForURL('**/login');
-    const loginLabel = await page.locator('.panel-heading').innerText();
-    expect(loginLabel).toBe('Login');
+    await page.waitForSelector('.panel-heading');
+    const loginLabel = await page.locator('.panel-heading');
+    expect(await loginLabel.innerText()).toBe('Login');
 
     // Log in
     await input('LoginCtrl.credentials.username', username || 'superuser');
@@ -254,6 +252,19 @@ module.exports = {
     await page.locator('button[data-logout-button]').click();
 
     return page.waitForURL('**/login');
+  },
+
+  /**
+   * Reload the page
+   *
+   * @param {object} options - Options for page.reload
+   * @returns {Promise} for reloaded page
+   */
+  reloadPage : async function reloadPage(options) {
+    if (typeof page === 'undefined') {
+      throw new Error('Must call registerPage() first!');
+    }
+    return page.reload(options);
   },
 
   /**

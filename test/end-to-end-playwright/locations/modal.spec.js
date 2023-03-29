@@ -10,7 +10,7 @@ test.beforeAll(async () => {
   await TU.login();
 });
 
-test.describe('Locations (create patient modal)', () => {
+test.describe('Locations (in create patient modal)', () => {
   const path = '#!/patients/register';
 
   test.beforeEach(async () => {

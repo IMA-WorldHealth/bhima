@@ -1,3 +1,4 @@
+const { chromium } = require('playwright');
 const { test } = require('@playwright/test');
 const TU = require('../shared/TestUtils');
 const EntityPage = require('./entities.page');
@@ -7,13 +8,17 @@ const location = 'entities';
 
 const Page = new EntityPage();
 
+test.beforeAll(async () => {
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  TU.registerPage(page);
+  await TU.login();
+});
+
 test.describe('Entity Management', () => {
 
-  test.beforeEach(async ({ page }) => {
-    TU.registerPage(page);
-    await TU.login();
+  test.beforeEach(async () => {
     await TU.navigate(location);
-    Page.init();
   });
 
   const entity = {

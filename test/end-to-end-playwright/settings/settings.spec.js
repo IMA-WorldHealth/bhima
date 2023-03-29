@@ -1,24 +1,31 @@
+const { chromium } = require('playwright');
 const { test, expect } = require('@playwright/test');
 const TU = require('../shared/TestUtils');
 
 // routes used in tests
 const settings = 'settings';
 
+test.beforeAll(async () => {
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  TU.registerPage(page);
+  await TU.login();
+});
+
 test.describe('Settings', () => {
 
-  test.beforeEach(async ({ page }) => {
-    TU.registerPage(page);
-    await TU.login();
+  test.beforeEach(async () => {
     await TU.navigate(settings);
   });
 
-  test('loads the page, and selects a language', async ({ page }) => {
+  test('loads the page, and selects a language', async () => {
     // confirm that we can change the languages (to French)
-    await page.locator('#select-language').selectOption('string:fr');
-    expect(await page.locator('label[for="select-language"]').innerText()).toBe('Langue');
+    await (await TU.locator('#select-language')).selectOption('string:fr');
+    const label = await TU.locator('label[for="select-language"]');
+    expect(await label.innerText()).toBe('Langue');
   });
 
-  test('uses the back button to return to previous state', async ({ page }) => {
+  test('uses the back button to return to previous state', async () => {
     const start = '/#!/';
 
     // load the settings page w/o backwards navigation
@@ -29,7 +36,8 @@ test.describe('Settings', () => {
     // Ensure we can navigate back to the main page with the back button.
 
     // click the back button
-    await page.locator('[data-back-button]').click();
+    const back = await TU.locator('[data-back-button]');
+    await back.click();
 
     // ensure we navigate back to the main page.
     expect(TU.getCurrentPath()).toBe(start);

@@ -16,7 +16,8 @@ test.describe('Login', () => {
     await TU.login();
 
     // Check the project title to verify that we are logged in
-    expect(await page.innerText('.title-content')).toBe('Test Project A');
+    const title = await page.locator('.title-content');
+    expect(await title.innerText()).toBe('Test Project A');
 
     await TU.logout();
 

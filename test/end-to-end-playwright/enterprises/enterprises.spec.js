@@ -1,21 +1,22 @@
 const path = require('path');
+const { chromium } = require('playwright');
 const { test, expect } = require('@playwright/test');
+
 const TU = require('../shared/TestUtils');
-const helpers = require('../shared/helpers');
 const components = require('../shared/components');
+const helpers = require('../shared/helpers');
 
 const fixtures = path.resolve(__dirname, '../../fixtures/');
 
-// routes used in tests
-const location = 'enterprises';
+test.beforeAll(async () => {
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  TU.registerPage(page);
+  await TU.login();
+});
 
 test.describe('Enterprises', () => {
-
-  test.beforeEach(async ({ page }) => {
-    TU.registerPage(page);
-    await TU.login();
-    await TU.navigate(location);
-  });
+  const location = '#!/enterprises';
 
   // enterprise
   const enterprise = {
@@ -53,6 +54,9 @@ test.describe('Enterprises', () => {
     abbr : abbrUpdate,
   };
 
+  // navigate to the enterprise module before running tests
+  test.beforeEach(async () => TU.navigate(location));
+
   /**
    * The actual enterprise module doesn't need to create a new one
    * so we need only to update enterprise information
@@ -81,7 +85,7 @@ test.describe('Enterprises', () => {
     await TU.input('EnterpriseCtrl.enterprise.name', '');
     await TU.input('EnterpriseCtrl.enterprise.abbr', '');
 
-    TU.buttons.submit();
+    await TU.buttons.submit();
 
     // The following fields should be required
     await TU.validation.error('EnterpriseCtrl.enterprise.name');
@@ -113,18 +117,19 @@ test.describe('Enterprises', () => {
     await components.notification.hasSuccess();
   });
 
-  test('upload a new enterprise logo', async ({ page }) => {
+  test('upload a new enterprise logo', async () => {
     const fileToUpload = 'logo.ico';
     const absolutePath = path.resolve(fixtures, fileToUpload);
-    const upload = await page.locator('input[type=file][name="logo"]');
+
+    const upload = await TU.locator('input[type=file][name="logo"]');
     await upload.setInputFiles(absolutePath);
     await TU.buttons.submit();
     await components.notification.hasSuccess();
 
-    // Verify the page has a new image
-    await page.reload();
-    await page.waitForSelector('div.logo');
-    const count = await page.locator('div.logo img').count();
+    // Verify the reloaded page has a new logo image
+    await TU.reloadPage();
+    await TU.waitForSelector('div.logo');
+    const count = await (await TU.locator('div.logo img')).count();
     expect(count, 'Logo image upload failed').toBe(1);
   });
 
@@ -139,8 +144,9 @@ test.describe('Enterprises', () => {
     await components.notification.hasSuccess();
   });
 
-  test('edit an existing project', async ({ page }) => {
-    await page.locator(`[data-project="${abbr}"] a[data-method="update"]`).click();
+  test('edit an existing project', async () => {
+    const editProj = await TU.locator(`[data-project="${abbr}"] a[data-method="update"]`);
+    await editProj.click();
     await TU.input('$ctrl.project.name', projectUpdate.name);
     await TU.input('$ctrl.project.abbr', projectUpdate.abbr);
 
@@ -149,9 +155,10 @@ test.describe('Enterprises', () => {
     await components.notification.hasSuccess();
   });
 
-  test('delete an existing project', async ({ page }) => {
+  test('delete an existing project', async () => {
     // Pop up the project deletion dialog
-    await page.locator(`[data-project="${projectUpdate.abbr}"] a[data-method="delete"]`).click();
+    const deleteProj = await TU.locator(`[data-project="${projectUpdate.abbr}"] a[data-method="delete"]`);
+    await deleteProj.click();
     await TU.input('$ctrl.text', projectUpdate.name);
     await TU.modal.submit();
 
