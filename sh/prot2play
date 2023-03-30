@@ -24,6 +24,10 @@ test.describe('|g;
     s|^( )+it\(|\1 test(|g;
     s|\.to\.equal|.toBe|g;
     s|await element\(by\.css\(([^\)]+)\)\)\.click\(\);|await (await TU.locator(\1)).click();|g;
+    s|await \$\(([^\)]+)\)\.click\(\);|await (await TU.locator(\1)).click();|g;
+    s|= \$\(([^\)]+)\);|= await TU.locator(\1);|g;
     s|helpers\.getCurrentPath|TU.getCurrentPath|g;
     print;
 }
+
+# const elm = $('[class="fa fa-eraser"]');

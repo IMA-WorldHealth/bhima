@@ -142,7 +142,7 @@
     "nodemailer": "^6.9.1",
     "p-retry": "^4.6.1",
     "pako": "^2.0.4",
-    "playwright": "^1.31.2",
+    "playwright": "^1.32.1",
     "q": "^1.5.1",
     "qrcode": "^1.5.1",
     "stream-to-promise": "^3.0.0",
@@ -157,7 +157,7 @@
   },
   "devDependencies": {
     "@ima-worldhealth/rewire": "^4.1.0",
-    "@playwright/test": "^1.31.2",
+    "@playwright/test": "^1.32.1",
     "@types/node": "^18.15.11",
     "angular-mocks": "^1.8.3",
     "chai": "^4.3.7",

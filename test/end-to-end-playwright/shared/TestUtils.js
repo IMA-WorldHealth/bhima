@@ -86,7 +86,8 @@ async function input(model, value, anchor) {
     ? `${anchor} [ng-model="${model}"]`
     : `[ng-model="${model}"]`;
 
-  return page.locator(selector).fill(value);
+  // Playwright is having problems with input fields with type=number
+  return page.locator(selector).fill(typeof value === 'number' ? value.toString() : value);
 }
 
 /**

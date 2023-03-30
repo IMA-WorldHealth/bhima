@@ -36,8 +36,8 @@ exports.data = {
   // location IDs for the location select component
   locations : [
     'DBE330B65CDE48308C30DC00ECCD1A5F', // Democratic Republic of the Congo
-    'F6FC74697E5845CBB87CF08AF93EDADE', // Bas Congo,
-    '0404E9EAEBD64F20B1F86DC9F9313450', // Tshikapa,
-    '1F162A109F6747889EFFC1FEA42FCC9B', // kele
+    'F6FC74697E5845CBB87CF08AF93EDADE', // Kinshasa (province),
+    '0404E9EAEBD64F20B1F86DC9F9313450', // Lukunga,
+    '1F162A109F6747889EFFC1FEA42FCC9B', // Gombe
   ],
 };
