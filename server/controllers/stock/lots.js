@@ -135,6 +135,10 @@ async function update(req, res, next) {
     params.expiration_date = moment(params.expiration_date).format('YYYY-MM-DD');
   }
 
+  if (params.acquisition_date) {
+    params.acquisition_date = moment(params.acquisition_date).format('YYYY-MM-DD');
+  }
+
   try {
     await db.exec('UPDATE lot SET ? WHERE uuid = ?', [params, bid]);
 

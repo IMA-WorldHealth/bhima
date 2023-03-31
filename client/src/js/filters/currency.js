@@ -69,15 +69,13 @@ function CurrencyFilter(CurrencyFormat, Session, $translate) {
 
   // Formatting method directly from angular native filter - does not support BHIMA coding guidelines
   const DECIMAL_SEP = '.';
-  function formatNumber(number, pattern, groupSep, decimalSep, fractionSize) {
-    console.log('-----------------------------------------------');
-    console.log('Nombre:', number);
-    console.log('Pattern:', pattern);
-    console.log('GroupSep:', groupSep);
-    console.log('DecimalSep:', decimalSep);
-    console.log('FranctiinSIZE:', fractionSize);
 
-    console.log('+++++++++++++++++++++++++++++++++++++++++++++');
+  /**
+ * @function formatNumber
+ * @number is the ammount
+ * @numDecimals is the number of decimals allowed
+ */
+  function formatNumber(number, pattern, groupSep, decimalSep, fractionSize, numDecimals) {
 
     if (angular.isObject(number)) return '';
 
@@ -120,6 +118,11 @@ function CurrencyFilter(CurrencyFormat, Session, $translate) {
       // Just to use the number of decimals defined in the parameters
       // eslint-disable-next-line no-param-reassign
       fractionSize = numDecimals || fractionSize;
+
+      if (number > 0.01) {
+        // eslint-disable-next-line no-param-reassign
+        fractionSize = Math.min(Math.max(pattern.minFrac, fractionLen), pattern.maxFrac);
+      }
 
       // safely round numbers in JS without hitting imprecisions of floating-point arithmetics
       // inspired by:
