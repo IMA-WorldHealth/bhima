@@ -55,7 +55,7 @@
   <table class="table table-condensed table-bordered table-report">
     <thead>
       <tr>
-        <th>{{translate 'STOCK.CODE'}}</th>
+        <th>{{translate 'STOCK.CODE'}} BBB</th>
         <th>{{translate 'STOCK.INVENTORY'}}</th>
         <th>{{translate 'STOCK.LOT'}}</th>
         <th>{{translate 'STOCK.EXPIRATION'}}</th>
@@ -87,7 +87,7 @@
           {{#if ../entry.details.partialDelivery}}
           <td class="text-right">{{quantity_difference}}</td>
           {{/if}}
-          <td class="text-right">{{currency unit_cost ../metadata.enterprise.currency_id}}</td>
+          <td class="text-right">{{currency unit_cost ../metadata.enterprise.currency_id 4}}</td>
           <td class="text-right">{{currency total ../metadata.enterprise.currency_id}}</td>
           <td style="width: 25%;">&nbsp;</td>
         </tr>
