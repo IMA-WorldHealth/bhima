@@ -322,15 +322,15 @@ module.exports = {
 
     switch (searchType) {
     case 'exact':
-      console.debug("WARNING: 'exact' may not work with XPath");
+      console.debug(`WARNING: 'exact' search may not work with XPath`);
       searchString = new RegExp(`^\\s*${labelForRegex}$`, 'm');
       break;
     case 'fullWord':
-      console.debug("WARNING: 'fullWord' may not work with XPath");
+      console.debug(`WARNING: 'fullWord' search may not work with XPath`);
       searchString = new RegExp(`\\s+${labelForRegex}(\\s|$)`);
       break;
     case 'accountName':
-      console.debug("WARNING: 'accountName' may not work with XPath");
+      console.debug(`WARNING: 'accountName' search may not work with XPath`);
       searchString = new RegExp(`\\d+\\s+${labelForRegex}\\s+`);
       break;
     case 'contains':

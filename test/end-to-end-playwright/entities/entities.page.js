@@ -1,12 +1,12 @@
-/**
- * This class is represents a entity page in term of structure and
- * behavior so it is a entity page object.
- */
 const TU = require('../shared/TestUtils');
 const components = require('../shared/components');
 
 const GridRow = require('../shared/GridRow');
 
+/**
+ * This class is represents a entity page in term of structure and
+ * behavior so it is a entity page object.
+ */
 class EntityPage {
   constructor() {
     this.gridId = 'entity-grid';
