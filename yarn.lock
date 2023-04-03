@@ -3515,10 +3515,10 @@ eventemitter3@^4.0.0:
   resolved "https://registry.npmjs.org/eventemitter3/-/eventemitter3-4.0.7.tgz#2de9b68f6528d5644ef5c59526a1b4a07306169f"
   integrity sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw==
 
-excel4node@^1.8.0:
-  version "1.8.0"
-  resolved "https://registry.yarnpkg.com/excel4node/-/excel4node-1.8.0.tgz#d86dc8280e4790f2add9a370903f5369f552f25e"
-  integrity sha512-xFbnHlPNMHVNyEiXb8XV/PhbOAiBHygT7wrCcUL5H0V1IsLNKhIQ1E3qdwzCsOIg+2dHCnAuaoqIaH1wAbx9Gg==
+excel4node@^1.8.1:
+  version "1.8.1"
+  resolved "https://registry.yarnpkg.com/excel4node/-/excel4node-1.8.1.tgz#84ceeaeef53a19730cec4f95b6dfe8fc01e94828"
+  integrity sha512-aWuz1v63U3zc9tkjAMpx1ZrYfrButTOFFj/OW8owlRHAe3BvRFoFWDzRukOH5tsK6xcnlB8YD7HX1H0aSJ/RAg==
   dependencies:
     deepmerge "^4.2.2"
     image-size "^1.0.2"
@@ -3529,7 +3529,7 @@ excel4node@^1.8.0:
     lodash.reduce "^4.6.0"
     lodash.uniqueid "^4.0.1"
     mime "^3.0.0"
-    uuid "^8.3.2"
+    uuid "^9.0.0"
     xmlbuilder "^15.1.1"
 
 execa@7.1.1, execa@^7.1.1:
@@ -9967,11 +9967,6 @@ uuid@^3.3.2:
   version "3.4.0"
   resolved "https://registry.npmjs.org/uuid/-/uuid-3.4.0.tgz#b23e4358afa8a202fe7a100af1f5f883f02007ee"
   integrity sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==
-
-uuid@^8.3.2:
-  version "8.3.2"
-  resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
-  integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==
 
 uuid@^9.0.0:
   version "9.0.0"
