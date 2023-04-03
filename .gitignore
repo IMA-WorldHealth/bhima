@@ -52,6 +52,8 @@ docs/.sass-cache/
 
 client/upload/
 
+test/*/report
+
 migration-*.sql
 yarn-error.log
 *.log
