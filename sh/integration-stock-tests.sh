@@ -11,6 +11,6 @@ echo "[test] Spawning server process..."
 
 echo "[test] running tests using mocha"
 # run the tests
-./node_modules/.bin/mocha --recursive --bail --exit ./test/integration-stock/
+./node_modules/.bin/mocha --recursive --bail --exit ./test/integration-stock/ 2>&1 | tee ./test/integration-stock/report
 
 echo "[/test]"
