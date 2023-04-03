@@ -170,7 +170,7 @@ module.exports = {
   exists : async function exists(selector, bool = true) {
     const elt = await page.locator(selector);
     const count = await elt.count();
-    return expect( count > 0,
+    return expect(count > 0,
       `Expected locator ${selector} to ${bool ? '' : 'not'} exist.`,
     ).toBe(bool);
   },

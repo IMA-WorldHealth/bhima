@@ -7,26 +7,21 @@ while (<>) {
 const { test, expect } = require(\'@playwright/test\');
 
 ' if $. == 1;  # Insert needed imports
-    next if /\* global element\, by \*/;  # Omit this unneeded line
-    s|const { expect } = require\('chai'\);|const { test, expect } = require('\@playwright/test');|g;
+    next if /\/\* global .* \*\//;  # Omit
+    next if /^[ ]*const { expect } = require\('chai'\);/;  # Omit
     s|const FU = require\('../shared/FormUtils'\);|const TU = require('../shared/TestUtils');|g;
     s|FU\.|TU.|g;
-    s|^( )*describe\('|test.beforeAll(async () => {
-  const browser = await chromium.launch();
-  const page = await browser.newPage();
-  TU.registerPage(page);
-  await TU.login();
-});
-
-test.describe('|g;
     s|^( )+before\(\(\)|\1 test.beforeEach(async ()|g;
+    s|helpers\.getCurrentPath|TU.getCurrentPath|g;
     s|helpers\.navigate\(|TU.navigate(|g;
     s|^( )+it\(|\1 test(|g;
     s|\.to\.equal|.toBe|g;
-    s|await element\(by\.css\(([^\)]+)\)\)\.click\(\);|await (await TU.locator(\1)).click();|g;
-    s|await \$\(([^\)]+)\)\.click\(\);|await (await TU.locator(\1)).click();|g;
+    s|element\(|TU.locator(|g;
+    s|by\.id\('([^\']+)'\)|'#\1'|g;
+    s|by\.css\(([^\)]+)\)|\1|g;
+    s|\$\(([^\)]+)\)|(await TU.locator(\1))|g;
     s|= \$\(([^\)]+)\);|= await TU.locator(\1);|g;
-    s|helpers\.getCurrentPath|TU.getCurrentPath|g;
+    s|await TU\.locator\(([^\)]+)\)\.click\(\);|await (await TU.locator(\1)).click();|g;
     print;
 }
 
