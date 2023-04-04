@@ -17,12 +17,9 @@ const { test, expect } = require(\'@playwright/test\');
     s|^( )+it\(|\1 test(|g;
     s|\.to\.equal|.toBe|g;
     s|element\(|TU.locator(|g;
-    s|by\.id\('([^\']+)'\)|'#\1'|g;
-    s|by\.css\(([^\)]+)\)|\1|g;
     s|\$\(([^\)]+)\)|(await TU.locator(\1))|g;
     s|= \$\(([^\)]+)\);|= await TU.locator(\1);|g;
     s|await TU\.locator\(([^\)]+)\)\.click\(\);|await (await TU.locator(\1)).click();|g;
     print;
 }
 
-# const elm = $('[class="fa fa-eraser"]');
