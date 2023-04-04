@@ -1,4 +1,5 @@
 const TU = require('../TestUtils');
+const { by } = require('../TestUtils');
 
 /**
  * set the depot
@@ -8,8 +9,8 @@ const TU = require('../TestUtils');
  * @returns {Promise} of the typing into the selection field
  */
 async function set(depot, id) {
-  const anchor = (id) ? await TU.locator(`#${id}`) : await TU.locator('body');
-  const elt = await anchor.locator('[ng-model="$ctrl.depotText"]');
+  const anchor = (id) ? await TU.locator(by.id(id)) : await TU.locator('body');
+  const elt = await anchor.locator(by.model('$ctrl.depotText'));
   return elt.type(depot);
 }
 

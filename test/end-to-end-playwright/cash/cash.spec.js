@@ -69,7 +69,11 @@ test.describe('Cash Payments', () => {
 
       expect(await TU.getCurrentPath()).toBe(target);
 
+      // Back to the root path
       await TU.navigate(path);
+
+      // Wait for it to redirect
+      await TU.waitForURL(`**/${path}/${cashboxB.id}`);
 
       // the cashbox selection modal should not appear
       await TU.exists('[data-cashbox-modal]', false);
@@ -116,7 +120,7 @@ test.describe('Cash Payments', () => {
 
     // This caution payment should succeed
     const mockCautionPayment = {
-      patientName  'Test 2',
+      patientName : 'Test 2',
       amount : 150,
     };
 

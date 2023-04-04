@@ -1,4 +1,5 @@
 const TU = require('../TestUtils');
+const { by } = require('../TestUtils');
 
 const selector = '[bh-gender-select]';
 
@@ -10,7 +11,7 @@ const selector = '[bh-gender-select]';
  * @returns {Promise} promise for the selection
  */
 async function set(gender, id) {
-  const locator = (id) ? `#${id}` : selector;
+  const locator = (id) ? by.id(id) : selector;
   const target = await TU.locator(locator);
   return TU.select('$ctrl.value', { label : gender }, target);
 }

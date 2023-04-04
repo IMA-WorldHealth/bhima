@@ -10,6 +10,7 @@
  */
 
 const TU = require('../TestUtils');
+const { by } = require('../TestUtils');
 
 module.exports = {
   selector : '[data-bh-location-select]',
@@ -45,7 +46,7 @@ module.exports = {
   set : async function set(array, id) {
 
     /** if an id was passed in, use it as the target */
-    const target = (id) ? `#${id}` : this.selector;
+    const target = (id) ? by.id(id) : this.selector;
 
     /** <select> element selectors */
     const { models } = this;

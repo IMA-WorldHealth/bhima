@@ -1,5 +1,6 @@
 const { expect } = require('@playwright/test');
 const TU = require('./TestUtils');
+const { by } = require('./TestUtils');
 
 /**
  * Get the element with gridId
@@ -8,7 +9,7 @@ const TU = require('./TestUtils');
  * @returns {Promise} of the locator for element with gridId
  */
 async function getGrid(gridId) {
-  return TU.locator(`#${gridId}`);
+  return TU.locator(by.id(gridId));
 
   // ADAPTED FROM PROTRACTOR CODE:
   // return element(by.id(gridId));

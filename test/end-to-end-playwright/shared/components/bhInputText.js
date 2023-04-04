@@ -1,5 +1,6 @@
 const { expect } = require('@playwright/test');
 const TU = require('../TestUtils');
+const { by } = require('../TestUtils');
 
 module.exports = {
 
@@ -8,7 +9,7 @@ module.exports = {
 
   getInput : async (id) => {
     if (id) {
-      return TU.locator(`#${id}`);
+      return TU.locator(by.id(id));
     }
     const root = await TU.locator(this.selector);
     if (root) {

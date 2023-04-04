@@ -1,10 +1,11 @@
 const TU = require('../TestUtils');
+const { by } = require('../TestUtils');
 
 const selector = '[bh-account-select]';
 
 module.exports = {
   set      : async function set(account, id, optional = null, searchType = null) {
-    const locator = id ? `#${id}` : selector;
+    const locator = id ? by.id(id) : selector;
     const target = optional || await TU.locator(locator);
 
     // Hack to make sure previous 'blur' event fires if we are using

@@ -1,4 +1,5 @@
 const TU = require('../TestUtils');
+const { by } = require('../TestUtils');
 
 const selector = '[bh-entity-select]';
 
@@ -10,7 +11,7 @@ const selector = '[bh-entity-select]';
  * @returns {Promise} promise for the selection
  */
 async function set(entity, id) {
-  const locator = (id) ? `#${id}` : selector;
+  const locator = (id) ? by.id(id) : selector;
   const target = await TU.locator(locator);
   return TU.uiSelect('$ctrl.entityUuid', entity, target);
 }

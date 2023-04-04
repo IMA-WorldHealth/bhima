@@ -1,4 +1,5 @@
 const TU = require('../TestUtils');
+const { by } = require('../TestUtils');
 
 /**
  * test harness for the currency select component described in the component
@@ -19,7 +20,7 @@ module.exports = {
   set : async function set(value, id) {
 
     // get the root value of the
-    const root = await TU.locator(id ? `#${id}` : this.selector);
+    const root = await TU.locator(id ? by.id(id) : this.selector);
 
     // construct a locator for the value
     const locator = `[data-currency-option="${value}"]`;

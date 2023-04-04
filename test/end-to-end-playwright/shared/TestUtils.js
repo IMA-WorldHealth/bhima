@@ -50,6 +50,15 @@ const modal = {
   },
 };
 
+/**
+ * Convenience function for 'by' functions
+ */
+const by = {
+  id : (arg) => `#${arg}`,
+  css : (arg) => arg,
+  model : (arg) => `[ng-model="${arg}"]`,
+};
+
 // convenience methods to check form element validation states
 const validation = {
 
@@ -125,11 +134,12 @@ async function selectOption(selector, value) {
  * Request navigation to a desired browser page
  *
  * @param {string} browserPath - the path desired (the part after the baseUrl)
+ * @param {object} [options] - associative array of options (optional)
  * @returns {Promise} of navigation to the desired path
  */
-async function navigate(browserPath) {
+async function navigate(browserPath, options) {
   const destination = browserPath.replace(PATH_REGEXP, '');
-  return page.goto(`/#!/${destination}`);
+  return page.goto(`/#!/${destination}`, options);
 }
 
 // Expose function routes
@@ -269,6 +279,18 @@ module.exports = {
   },
 
   /**
+   * get a radio button by its position and click
+   *
+   * @param {string} model - model for radio element
+   * @param {number} n - which one to click on
+   * @returns {Promise} for clicking on nth radio button
+   */
+  radio : async function radio(model, n) {
+    const radioBtn = await (await page.locator(`[ng-model="${model}"]`)).nth(n);
+    return radioBtn.click();
+  },
+
+  /**
    * Selects an option from an <select> html element.  Accepts the model
    * selector, the option text, and an optional anchor element to search within.
    * If no anchor is provided, it defaults to the body.
@@ -351,14 +373,29 @@ module.exports = {
    * Wait for the specified selector
    *
    * @param {string} selector - The selector to wait for
-   * @param {Array} options - the options to use
+   * @param {Array} [options] - the options to use (optional)
    * @returns {Promise} - promise for the request
    */
-  waitForSelector : function waitForSelector(selector, options = {}) {
+  waitForSelector : async function waitForSelector(selector, options = {}) {
     return page.waitForSelector(selector, options);
   },
 
+  /**
+   * Wait for the page to navigate to the given URL
+   *
+   * For more info on the options, see
+   * https://playwright.dev/docs/api/class-page#page-wait-for-url
+   *
+   * @param {string} url - The URL to wait for
+   * @param {Array} [options] - the options to use (optional)
+   * @returns {Promise} for waiting for the url
+   */
+  waitForURL : async function waitForURL(url, options = {}) {
+    return page.waitForURL(url, options);
+  },
+
   buttons,
+  by,
   getModel,
   input,
   modal,
