@@ -79,7 +79,6 @@ function CurrencyFilter(CurrencyFormat, Session, $translate) {
 
     if (angular.isObject(number)) return '';
 
-    let isNegative = number < 0;
     // eslint-disable-next-line no-param-reassign
     number = Math.abs(number);
 
@@ -88,12 +87,12 @@ function CurrencyFilter(CurrencyFormat, Session, $translate) {
     if (!isInfinity && !isFinite(number)) return '';
 
     const numStr = `${number} `;
-    let formatedText = '';
+    let formattedText = '';
     let hasExponent = false;
     const parts = [];
 
     // eslint-disable-next-line no-const-assign
-    if (isInfinity) formatedText = '\u221e';
+    if (isInfinity) formattedText = '\u221e';
 
     if (!isInfinity && numStr.indexOf('e') !== -1) {
       const match = numStr.match(/([\d\.]+)e(-?)(\d+)/);
@@ -101,7 +100,7 @@ function CurrencyFilter(CurrencyFormat, Session, $translate) {
         // eslint-disable-next-line no-param-reassign
         number = 0;
       } else {
-        formatedText = numStr;
+        formattedText = numStr;
         hasExponent = true;
       }
     }
@@ -143,17 +142,17 @@ function CurrencyFilter(CurrencyFormat, Session, $translate) {
         pos = whole.length - lgroup;
         for (i = 0; i < pos; i++) {
           if ((pos - i) % group === 0 && i !== 0) {
-            formatedText += groupSep;
+            formattedText += groupSep;
           }
-          formatedText += whole.charAt(i);
+          formattedText += whole.charAt(i);
         }
       }
 
       for (i = pos; i < whole.length; i++) {
         if ((whole.length - i) % lgroup === 0 && i !== 0) {
-          formatedText += groupSep;
+          formattedText += groupSep;
         }
-        formatedText += whole.charAt(i);
+        formattedText += whole.charAt(i);
       }
 
       // format fraction part.
@@ -161,19 +160,17 @@ function CurrencyFilter(CurrencyFormat, Session, $translate) {
         fraction += '0';
       }
 
-      if (fractionSize && fractionSize !== '0') { formatedText += decimalSep + fraction.substr(0, fractionSize); }
+      if (fractionSize && fractionSize !== '0') { formattedText += decimalSep + fraction.substr(0, fractionSize); }
     } else if (fractionSize > 0 && number < 1) {
-      formatedText = number.toFixed(fractionSize);
+      formattedText = number.toFixed(fractionSize);
       // eslint-disable-next-line no-param-reassign
-      number = parseFloat(formatedText);
+      number = parseFloat(formattedText);
     }
 
-    if (number === 0) {
-      isNegative = false;
-    }
+    const isNegative = number < 0;
 
     parts.push(isNegative ? pattern.negPre : pattern.posPre,
-      formatedText,
+      formattedText,
       isNegative ? pattern.negSuf : pattern.posSuf);
     return parts.join('');
   }
