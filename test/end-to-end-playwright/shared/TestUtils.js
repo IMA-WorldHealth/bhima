@@ -394,6 +394,20 @@ module.exports = {
     return page.waitForURL(url, options);
   },
 
+  /**
+   * chains an array of promises and runs them in series.
+   *
+   * @param {Array} items - an array of items
+   * @param {Function} callback - the callback function
+   * @returns {Promise} for resolution of the last promise
+   */
+  series : async (items, callback) => {
+    return items.reduce(
+      (promise, item, index, array) => promise.then(() => callback(item, index, array)),
+      Promise.resolve(),
+    );
+  },
+
   buttons,
   by,
   getModel,
