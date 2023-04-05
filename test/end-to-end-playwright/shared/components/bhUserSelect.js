@@ -1,17 +1,25 @@
-/* global element, by */
+const TU = require('../TestUtils');
+const { by } = require('../TestUtils');
 
-const FU = require('../FormUtils');
+const selector = '[bh-user-select]';
 
 module.exports = {
-  selector : '[bh-user-select]',
-  set      : async function set(user, id) {
-    const locator = (id) ? by.id(id) : by.css(this.selector);
-    const target = element(locator);
+
+  /**
+   * Select a user
+   *
+   * @param {string} user - the user id for the desired user
+   * @param {string} [id] - the id of the selection field (optional)
+   * @returns {Promise} for selecting the desired user
+   */
+  set : async function set(user, id) {
+    const locator = (id) ? by.id(id) : by.css(selector);
+    const target = await TU.locator(locator);
 
     // hack to make sure previous 'blur' event fires if we are using
     // ngModelOptions updateOn 'blur' for every input
     await target.click();
 
-    return FU.uiSelect('$ctrl.userId', user, target);
+    return TU.uiSelect('$ctrl.userId', user, target);
   },
 };

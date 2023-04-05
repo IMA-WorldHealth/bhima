@@ -1,15 +1,21 @@
-/* global element, by */
+const TU = require('../TestUtils');
+const { by } = require('../TestUtils');
 
-const FU = require('../FormUtils');
+const selector = '[bh-flux-select]';
 
 module.exports = {
-  selector : '[bh-flux-select]',
-  set      : async function set(fluxes, id) {
-    const locator = (id) ? by.id(id) : by.css(this.selector);
-    const target = element(locator);
 
+  /**
+   * Select a set of fluxes
+   *
+   * @param {Array} fluxes - array of fluxes to select
+   * @param {*} [id] - flux input field (optional)
+   */
+  set : async function set(fluxes, id) {
+    const locator = (id) ? by.id(id) : by.css(selector);
+    const target = await TU.locator(locator);
     await target.click();
 
-    await FU.series(fluxes, flux => FU.uiSelect('$ctrl.selectedFlux', flux));
+    return TU.series(fluxes, flux => TU.uiSelect('$ctrl.selectedFlux', flux));
   },
 };
