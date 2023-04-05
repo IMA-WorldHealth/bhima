@@ -4,10 +4,11 @@ const { by } = require('../TestUtils');
 /**
  * hooks for the currency input component described in the component
  * bhCurrencyInput.js.
- *
  */
+
+const selector = '[data-bh-currency-input]';
+
 module.exports = {
-  selector : '[data-bh-currency-input]',
 
   /**
    * sets the value of the currency input
@@ -17,9 +18,11 @@ module.exports = {
    * @returns {Promise} of entering the desired currency
    */
   set : async function set(value, id) {
-    const root = await TU.locator(id ? by.id(id) : this.selector);
-    const elm = await root.TU.locator(by.model('$ctrl.model'));
-    return elm.type(value);
+    const root = await TU.locator(id ? by.id(id) : selector);
+    const elm = await root.locator(by.model('$ctrl.model'));
+
+    // Playwright is having problems with input fields with type=number
+    return elm.type(typeof value === 'number' ? value.toString() : value);
   },
 
   /**
@@ -28,7 +31,7 @@ module.exports = {
    * @returns {Promise} for the value of the currency field
    */
   get : async function get() {
-    const elm = await TU.locator(this.selector);
+    const elm = await TU.locator(selector);
     return elm.getAttribute('value');
   },
 };

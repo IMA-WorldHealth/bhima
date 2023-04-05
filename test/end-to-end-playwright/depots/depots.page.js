@@ -1,6 +1,4 @@
-const { expect } = require('@playwright/test');
 const TU = require('../shared/TestUtils');
-const { by } = require('../shared/TestUtils');
 const components = require('../shared/components');
 const GridRow = require('../shared/GridRow');
 

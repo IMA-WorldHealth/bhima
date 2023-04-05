@@ -11,20 +11,21 @@ const periodSelector = '[data-bh-period-select]';
  * @returns {Promise} for opening the selections drop-down
  */
 async function openSelections() {
-  const toggle = await TU.locator('[ng-click="$ctrl.toggleSelectionOptions())"]');
-  return toggle.click();
+  await TU.waitForSelector('[data-bh-period-select] > a');
+  const periodSelect = await TU.locator('[data-bh-period-select] > a');
+  return periodSelect.click();
 }
 
 /**
  * Select a specific period
  *
- * @param {string} period - desired period
+ * @param {string} periodName - desired period
  * @returns {Promise} for clicking on the desired period
  */
-exports.select = async (period) => {
+exports.select = async (periodName) => {
   await openSelections();
-  const elt = await TU.locator(`${periodSelector} [data-link="${period}"]`);
-  return elt.click();
+  const period = await TU.locator(`[data-bh-period-select] a[data-link="${periodName}"]`);
+  return period.click();
 };
 
 /**

@@ -5,11 +5,20 @@
 while (<>) {
     print 'const { chromium } = require(\'playwright\');
 const { test, expect } = require(\'@playwright/test\');
+const TU = require(\'../shared/TestUtils\');
+const { by } = require(\'../shared/TestUtils\');
 
-' if $. == 1;  # Insert needed imports
+test.beforeAll(async () => {
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  TU.registerPage(page);
+  await TU.login();
+});
+
+' if $. == 1;  # Insert needed imports, etc
     next if /\/\* global .* \*\//;  # Omit
     next if /^[ ]*const { expect } = require\('chai'\);/;  # Omit
-    s|const FU = require\('../shared/FormUtils'\);|const TU = require('../shared/TestUtils');|g;
+    next if /const FU = require.*/;  # Omit
     s|FU\.|TU.|g;
     s|^( )+before\(\(\)|\1 test.beforeEach(async ()|g;
     s|helpers\.getCurrentPath|TU.getCurrentPath|g;

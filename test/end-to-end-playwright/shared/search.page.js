@@ -17,9 +17,6 @@ const CUSTOM_FILTER_TAB = '[data-custom-filter-tab]';
 const DEFAULT_FILTER_TAB = '[data-default-filter-tab]';
 
 /**
- * @class SearchModal
- *
- * @description
  * A generic wrapper for all search forms.  It's gigantic so that the spec.js
  * runners can be smaller.  It should be able to handle most test runners as
  * needed.
@@ -28,18 +25,34 @@ const DEFAULT_FILTER_TAB = '[data-default-filter-tab]';
  * let modal;
  * beforeEach(() => {
  *   modal = new SearchModal('your-search-modal-attribute');
- *   SearchModal.open();
+ *   await modal.init();
+ *   await SearchModal.open();
  * });
  *
- * it('can do stuff', () => {
+ * test('can do stuff', () => {
  *   modal.setReference('TP.OKY.1');
  *   modal.submit();
  * });
  */
 class SearchModal {
-  constructor(dataAttribute) {
-    // specify the modal attribute to use.
-    this.element = await TU.locator(`[data-modal="${dataAttribute}"]`);
+  constructor(selector) {
+    this.selector = `[data-modal="${selector}"]`;
+  }
+
+  async init() {
+    this.element = await TU.locator(this.selector);
+  }
+
+  async open() {
+    return TU.buttons.search();
+  }
+
+  async close() {
+    return TU.buttons.submit();
+  }
+
+  async submit() {
+    return TU.buttons.submit();
   }
 
   async switchToCustomFilterTab() {
@@ -52,47 +65,47 @@ class SearchModal {
     return tab.click();
   }
 
-  isOnDefaultFilterTab() {
+  async isOnDefaultFilterTab() {
     const tab = await this.element.locator(DEFAULT_FILTER_TAB);
     const tabClass = await tab.getAttribute('class');
     return tabClass.includes('active');
   }
 
-  isOnCustomFilterTab() {
+  async isOnCustomFilterTab() {
     const tab = await this.element.locator(CUSTOM_FILTER_TAB);
     const tabClass = await tab.getAttribute('class');
     return tabClass.includes('active');
   }
 
-  setCashbox(cashbox) {
+  async setCashbox(cashbox) {
     return TU.uiSelect('$ctrl.searchQueries.cashbox_id', cashbox, this.element);
   }
 
-  setService(service) {
+  async setService(service) {
     return TU.select('$ctrl.searchQueries.service_uuid', service, this.element);
   }
 
-  setDebtorGroup(name) {
+  async setDebtorGroup(name) {
     return TU.uiSelect('$ctrl.searchQueries.debtor_group_uuid', name, this.element);
   }
 
-  setInventoryGroup(name) {
+  async setInventoryGroup(name) {
     return TU.uiSelect('$ctrl.searchQueries.group_uuid', name, this.element);
   }
 
-  setPatientGroup(name) {
+  async setPatientGroup(name) {
     return TU.uiSelect('$ctrl.searchQueries.patient_group_uuid', name, this.element);
   }
 
-  setReference(reference) {
+  async setReference(reference) {
     return TU.input('$ctrl.searchQueries.reference', reference, this.element);
   }
 
-  setDescription(description) {
+  async setDescription(description) {
     return TU.input('$ctrl.searchQueries.description', description, this.element);
   }
 
-  setEntryExit(value) {
+  async setEntryExit(value) {
     return TU.radio('$ctrl.searchQueries.is_exit', value);
   }
 
@@ -103,85 +116,76 @@ class SearchModal {
    registry under test.  Use the other setXXXReference() when you need to filter by references
    _not_ contained in the registry under test.
   */
-  setPatientReference(reference) {
+  async setPatientReference(reference) {
     return TU.input('$ctrl.searchQueries.patientReference', reference, this.element);
   }
 
-  setCashReference(reference) {
+  async setCashReference(reference) {
     return TU.input('$ctrl.searchQueries.cashReference', reference, this.element);
   }
 
-  setInvoiceReference(reference) {
+  async setInvoiceReference(reference) {
     return TU.input('$ctrl.searchQueries.invoiceReference', reference, this.element);
   }
 
-  setLimit(limit) {
+  async setLimit(limit) {
     return TU.input('$ctrl.defaultQueries.limit', limit, this.element);
   }
 
-  /* eslint  */
-  setUser(user) {
+  async setUser(user) {
     return bhUserSelect.set(user);
   }
 
-  setSupplier(supplier) {
+  async setSupplier(supplier) {
     return bhSupplierSelect.set(supplier);
   }
 
-  setDepot(depot) {
+  async setDepot(depot) {
     return bhDepotSelect.set(depot);
   }
 
-  setServiceUuid(service) {
+  async setServiceUuid(service) {
     return bhServiceSelect.set(service);
   }
 
-  setInventory(inventory) {
+  async setInventory(inventory) {
     return bhInventorySelect.set(inventory);
   }
 
-  setLotLabel(label) {
+  async setLotLabel(label) {
     return TU.input('$ctrl.searchQueries.label', label, this.element);
   }
 
-  setdateInterval(dateFrom, dateTo, id) {
+  async setdateInterval(dateFrom, dateTo, id) {
     return bhDateInterval.range(dateFrom, dateTo, id);
   }
 
-  setTransactionType(transactionTypes) {
+  async setTransactionType(transactionTypes) {
     return bhTransactionTypeSelect.set(transactionTypes);
   }
 
-  setPeriod(period) {
+  async setPeriod(period) {
     return bhPeriodSelect.select(period);
   }
 
-  setCustomPeriod(start, end) {
+  async setCustomPeriod(start, end) {
     return bhPeriodSelect.custom(start, end);
   }
 
-  close() {
-    return this.element.(await TU.locator('[data-method="submit"')).click();
-  }
-
-  setMovementReason(flux) {
+  async setMovementReason(flux) {
     return bhFluxSelect.set(flux);
   }
 
-  setEntity(entity) {
+  async setEntity(entity) {
     return bhEntitySelect.set(entity);
   }
 
-  setEntityType(type) {
+  async setEntityType(type) {
     return bhEntityTypeSelect.set(type);
   }
 
-  setRequestor(requestor, type) {
+  async setRequestor(requestor, type) {
     return bhServiceOrDepotSelect.set(requestor, type);
-  }
-
-  submit() {
-    return TU.buttons.submit();
   }
 
   /**
@@ -199,7 +203,5 @@ class SearchModal {
     }
   }
 }
-
-SearchModal.open = () => TU.buttons.search();
 
 module.exports = SearchModal;

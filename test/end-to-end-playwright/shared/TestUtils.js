@@ -84,19 +84,22 @@ const validation = {
  *
  * @param {string} model - name/selector of the ng-model for the input field
  * @param {string} value - value to fill into the input field
- * @param {string} [anchor] - optional selector for the parent/anchor for the input field
+ * @param {any} [anchor] - optional selector (or locator object) for the parent/anchor for the input field
  * @returns {Promise} for the fill operation
  */
 async function input(model, value, anchor) {
   if (typeof page === 'undefined') {
     throw new Error('Must call registerPage() first!');
   }
-  const selector = anchor
+  const selector = (anchor && typeof anchor === 'string')
     ? `${anchor} [ng-model="${model}"]`
     : `[ng-model="${model}"]`;
+  const field = (anchor && typeof anchor !== 'string')
+    ? await anchor.locator(selector)
+    : await page.locator(selector);
 
   // Playwright is having problems with input fields with type=number
-  return page.locator(selector).fill(typeof value === 'number' ? value.toString() : value);
+  return field.fill(typeof value === 'number' ? value.toString() : value);
 }
 
 /**
@@ -181,7 +184,7 @@ module.exports = {
     const elt = await page.locator(selector);
     const count = await elt.count();
     return expect(count > 0,
-      `Expected locator ${selector} to ${bool ? '' : 'not'} exist.`,
+      `Expected locator ${selector} to ${bool ? '' : 'not '}exist.`,
     ).toBe(bool);
   },
 
@@ -288,6 +291,28 @@ module.exports = {
   radio : async function radio(model, n) {
     const radioBtn = await (await page.locator(`[ng-model="${model}"]`)).nth(n);
     return radioBtn.click();
+  },
+
+  /**
+   * Selects a dropdown option from a typeahead html element.  Accepts the model
+   * selector, the option label, and an optional anchor element to search within.
+   * If no anchor is provided, it defaults to the body.
+   *
+   * @param {string} model - the ng-model target to select
+   * @param {string} label - the text of the option element to choose
+   * @param {Element} anchor_ - a protractor element to search within
+   * @returns {Promise} - a protractor option element
+   */
+  typeahead : async function typeahead(model, label, anchor_) {
+    const anchor = anchor_ || await page.locator('body');
+
+    // type into the <input> element
+    await this.input(model, label, anchor);
+
+    // select the item of the dropdown menu matching the label
+    // ??? const option = anchor.element(by.cssContainingText('.dropdown-menu > [role="option"]', label));
+    const option = await anchor.locator(`.dropdown-menu > [role="option"] >> text="${label}"`);
+    await option.click();
   },
 
   /**

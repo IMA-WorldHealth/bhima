@@ -5,7 +5,7 @@ const components = require('../shared/components');
 const TU = require('../shared/TestUtils');
 const GU = require('../shared/GridUtils');
 const GridRow = require('../shared/GridRow');
-// ??? const SearchModal = require('../shared/search.page');
+const SearchModal = require('../shared/search.page');
 
 test.beforeAll(async () => {
   const browser = await chromium.launch();
@@ -131,169 +131,171 @@ test.describe('Cash Payments', () => {
       amount : 5.12,
     };
 
-    // test('should make a caution payment', async () => {
-    //   // select the proper patient
-    //   await components.findPatient.findByName(mockCautionPayment.patientName);
+    test('should make a caution payment', async () => {
+      // select the proper patient
+      await components.findPatient.findByName(mockCautionPayment.patientName);
 
-    //   // we will leave the date input as default
+      // we will leave the date input as default
 
-    //   // select the proper is caution type
-    //   const cautionOption = TU.locator('[data-caution-option="1"]');
-    //   await cautionOption.click();
+      // select the proper is caution type
+      const cautionOption = await TU.locator('[data-caution-option="1"]');
+      await cautionOption.click();
 
-    //   // select the FC currency from the currency select
-    //   await components.currencySelect.set(1);
+      // select the FC currency from the currency select
+      await components.currencySelect.set(1);
 
-    //   // enter the amount to pay for a caution
-    //   await components.currencyInput.set(mockCautionPayment.amount);
+      // enter the amount to pay for a caution
+      await components.currencyInput.set(mockCautionPayment.amount);
 
-    //   // click the submit button
-    //   await TU.buttons.submit();
+      // click the submit button
+      await TU.buttons.submit();
 
-    //   // expect the receipt modal to appear
-    //   await TU.exists('#receipt-confirm-created', true);
+      // expect the receipt modal to appear
+      await TU.waitForSelector('#receipt-confirm-created');
 
-    //   // dismiss the modal
-    //   await (await TU.locator('[data-action="close"]')).click();
-    // });
+      // dismiss the modal
+      await (await TU.locator('[data-action="close"]')).click();
+    });
 
-  //   test('should block invoice payments without invoices', async () => {
-  //     // select the proper patient
-  //     await components.findPatient.findByName(mockCautionPayment.patientName);
+    test('should block invoice payments without invoices', async () => {
+      // select the proper patient
+      await components.findPatient.findByName(mockCautionPayment.patientName);
 
-  //     // we will leave the date input as default
+      // we will leave the date input as default
 
-  //     // select the proper is caution type
-  //     const cautionOption = TU.locator('[data-caution-option="0"]');
-  //     await cautionOption.click();
+      // select the proper is caution type
+      const cautionOption = await TU.locator('[data-caution-option="0"]');
+      await cautionOption.click();
 
-  //     // select the FC currency from the currency select
-  //     await components.currencySelect.set(1);
+      // select the FC currency from the currency select
+      await components.currencySelect.set(1);
 
-  //     // enter the amount to pay for a caution
-  //     await components.currencyInput.set(mockCautionPayment.amount);
+      // enter the amount to pay for a caution
+      await components.currencyInput.set(mockCautionPayment.amount);
 
-  //     // click the submit button
-  //     await TU.buttons.submit();
+      // click the submit button
+      await TU.buttons.submit();
 
-  //     // expect a danger notification
-  //     await components.notification.hasDanger();
+      // expect a danger notification
+      await components.notification.hasDanger();
 
-  //     await (await TU.locator('[data-method="clear"]')).click();
-  //   });
+      await (await TU.locator('[data-method="clear"]')).click();
+    });
 
-  //   test('should make a payment against previous invoices', async () => {
-  //     const gridId = 'debtorInvoicesGrid';
+    test('should make a payment against previous invoices', async () => {
+      const gridId = 'debtorInvoicesGrid';
 
-  //     // select the proper patient
-  //     await components.findPatient.findById(mockInvoicesPayment.patientId);
+      // select the proper patient
+      await components.findPatient.findById(mockInvoicesPayment.patientId);
 
-  //     // select the proper date
-  //     await components.dateEditor.set(mockInvoicesPayment.date);
+      // select the proper date
+      await components.dateEditor.set(mockInvoicesPayment.date);
 
-  //     // select the "invoices payment" option type
-  //     const cautionOption = TU.locator('[data-caution-option="0"]');
-  //     await cautionOption.click();
+      // select the "invoices payment" option type
+      const cautionOption = await TU.locator('[data-caution-option="0"]');
+      await cautionOption.click();
 
-  //     // open the invoices modal to select constious invoices
-  //     await TU.exists('[data-open-invoices-btn]', true);
-  //     await (await TU.locator('[data-open-invoices-btn]')).click();
+      // open the invoices modal to select constious invoices
+      await TU.exists('[data-open-invoices-btn]', true);
+      await (await TU.locator('[data-open-invoices-btn]')).click();
 
-  //     // be sure that the modal opened
-  //     await TU.exists('[data-debtor-invoice-modal]', true);
+      // be sure that the modal opened
+      await TU.exists('[data-debtor-invoice-modal]', true);
 
-  //     // inside the modal, we want to select the first row to pay against
-  //     await GU.selectRow(gridId, 2);
+      // inside the modal, we want to select the first row to pay against
+      await GU.selectRow(gridId, 2);
 
-  //     // submit the modal
-  //     await TU.modal.submit();
+      // submit the modal
+      await TU.modal.submit();
 
-  //     // select the USD currency from the currency radio buttons
-  //     await components.currencySelect.set(2);
+      // select the USD currency from the currency radio buttons
+      await components.currencySelect.set(2);
 
-  //     // enter the amount to pay for an invoice
-  //     await components.currencyInput.set(mockInvoicesPayment.amount);
+      // enter the amount to pay for an invoice
+      await components.currencyInput.set(mockInvoicesPayment.amount);
 
-  //     // click the submit button
-  //     await TU.buttons.submit();
+      // click the submit button
+      await TU.buttons.submit();
 
-  //     // expect the receipt modal to appear
-  //     await TU.exists('#receipt-confirm-created', true);
+      // expect the receipt modal to appear
+      await TU.waitForSelector('#receipt-confirm-created');
 
-  //     // dismiss the modal
-  //     await (await TU.locator('[data-action="close"]')).click();
-  //   });
+      // dismiss the modal
+      await (await TU.locator('[data-action="close"]')).click();
+    });
   });
 
-  // test.describe('Cash Transfer ', CashTransfer);
+  test.describe('Cash transfer', () => {
+    test.beforeEach(async () => {
+      await TU.navigate(path);
+    });
 
-  // test.describe('Credit Notes', CreditNoteTests);
+    const gridId = 'debtorInvoicesGrid';
+    // test.describe('Cash Transfer ', CashTransfer);
+
+    // this transfer should succeed
+    const mockTransfer = { amount : 100 };
+
+    test('should make a transfer between accounts', async () => {
+      // open the dropdown menu
+      await (await TU.locator('[data-action="open-tools"]')).click();
+
+      // get the transfer button and click it
+      await (await TU.locator('[data-action="transfer"]')).click();
+
+      // choose CDF as transfer currency
+      await components.currencySelect.set(2, 'transfer-currency-select');
+
+      // set a value in the currency component by model to avoid conflict
+      await components.currencyInput.set(mockTransfer.amount, 'transfer-currency-input');
+
+      // submit the modal button
+      await TU.modal.submit();
+
+      // expect the receipt modal to appear
+      await TU.waitForSelector('#receipt-confirm-created');
+
+      // dismiss the modal
+      await (await TU.locator('[data-action="close"]')).click();
+    });
+
+  });
+
+  test.describe('Credit Notes', () => {
+    test.beforeEach(async () => {
+      await TU.navigate('payments');
+    });
+
+    test('cancels a payment with a credit note', async () => {
+      const row = new GridRow('CP.TPA.1');
+      await row.dropdown();
+      await row.reverse(); // Eg cancel
+
+      await TU.input('ModalCtrl.cancelCash.description', 'Cancel This Payment');
+      await TU.modal.submit();
+      await components.notification.hasSuccess();
+    });
+
+    test('deletes a cash payment from the database', async () => {
+      const modal = new SearchModal('cash-payment-search');
+      modal.init();
+      await modal.init();
+      await modal.open();
+      await modal.switchToDefaultFilterTab();
+      await modal.setPeriod('allTime');
+      await modal.setLimit(1000);
+      await modal.submit();
+
+      const row = new GridRow('CP.TPA.4');
+      await row.dropdown();
+      await row.remove();
+
+      // accept the confirm modal
+      await TU.modal.submit();
+
+      await components.notification.hasSuccess();
+    });
+
+  });
+
 });
-
-function CashTransfer() {
-  const path = 'cash';
-
-  test.beforeEach(async () => {
-    await TU.navigate(path);
-  });
-
-  // this transfer should succeed
-  const mockTransfer = { amount : 100 };
-
-  test('should make a transfer between accounts', async () => {
-    // open the dropdown menu
-    await (await TU.locator('[data-action="open-tools"]')).click();
-
-    // get the transfer button and click it
-    await (await TU.locator('[data-action="transfer"]')).click();
-
-    // choose CDF as transfer currency
-    await components.currencySelect.set(2, 'transfer-currency-select');
-
-    // set a value in the currency component by model to avoid conflict
-    await components.currencyInput.set(mockTransfer.amount, 'transfer-currency-input');
-
-    // submit the modal button
-    await TU.modal.submit();
-
-    // expect the receipt modal to appear
-    await TU.exists('#receipt-confirm-created', true);
-
-    // dismiss the modal
-    await (await TU.locator('[data-action="close"]')).click();
-  });
-}
-
-function CreditNoteTests() {
-  test.beforeEach(async () => {
-    await TU.navigate('payments');
-  });
-
-  test('cancels a payment with a credit note', async () => {
-    const row = new GridRow('CP.TPA.3');
-    await row.dropdown().click();
-    await row.reverse().click();
-
-    await TU.input('ModalCtrl.cancelCash.description', 'Cancel This Payment');
-    await TU.modal.submit();
-    await components.notification.hasSuccess();
-  });
-
-  test('deletes a cash payment from the database', async () => {
-    await SearchModal.open();
-    const modal = new SearchModal('cash-payment-search');
-    await modal.switchToDefaultFilterTab();
-    await modal.setPeriod('allTime');
-    await modal.setLimit(1000);
-    await modal.submit();
-
-    const row = new GridRow('CP.TPA.4');
-    await row.dropdown().click();
-    await row.remove().click();
-
-    // accept the confirm modal
-    await TU.modal.submit();
-
-    await components.notification.hasSuccess();
-  });
-}
