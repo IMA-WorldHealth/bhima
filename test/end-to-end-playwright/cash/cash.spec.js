@@ -61,6 +61,7 @@ test.describe('Cash Payments', () => {
     });
 
     test('navigating directly to /cash should be re-routed to selected cashbox after a selection is made', async () => {
+
       // our target is cashbox B
       const target = `/#!/${path}/${cashboxB.id}`;
 
@@ -69,11 +70,11 @@ test.describe('Cash Payments', () => {
 
       expect(await TU.getCurrentPath()).toBe(target);
 
-      // Back to the root path (it should redirect)
+      // back to the root path (it should redirect)
       await TU.navigate(path);
 
-      // Force the redirect to complete
-      await TU.reloadPage();
+      // force the redirect to complete
+      await TU.reloadPage({ waitUntil : 'networkidle' });
 
       // the cashbox selection modal should not appear
       await TU.exists('[data-cashbox-modal]', false);
@@ -229,9 +230,6 @@ test.describe('Cash Payments', () => {
     test.beforeEach(async () => {
       await TU.navigate(path);
     });
-
-    const gridId = 'debtorInvoicesGrid';
-    // test.describe('Cash Transfer ', CashTransfer);
 
     // this transfer should succeed
     const mockTransfer = { amount : 100 };
