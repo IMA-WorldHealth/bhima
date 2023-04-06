@@ -44,10 +44,10 @@ test.describe('Login', () => {
     expect(defaultProject.length > 0);
   });
 
-  test('page refresh preserves the user session', async ({ page }) => {
+  test('page refresh preserves the user session', async () => {
     await TU.login();
     await TU.navigate(settings);
-    await page.reload();
+    await TU.reloadPage();
     const path = TU.getCurrentPath();
     expect(path.endsWith('/settings'));
   });
