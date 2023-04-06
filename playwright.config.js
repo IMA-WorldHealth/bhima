@@ -13,14 +13,14 @@ const { defineConfig, devices } = require('@playwright/test');
 module.exports = defineConfig({
   testDir: './test/end-to-end-playwright',
   /* Maximum time one test can run for. */
-  timeout: 10 * 1000, // JMC WAS 30, temporarily shortened for test development
+  timeout: 10 * 1000, // JMC WAS 30*1000, temporarily shortened for test development
 
   expect: {
     /**
      * Maximum time expect() should wait for the condition to be met.
      * For example in `await expect(locator).toHaveText();`
      */
-    timeout: 3000, // JMC WAS 5000, temporarily shortened for test development
+    timeout: 5000,
   },
 
   /* Run tests in files in parallel */

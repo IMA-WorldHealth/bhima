@@ -401,8 +401,12 @@ module.exports = {
    * @param {Array} [options] - the options to use (optional)
    * @returns {Promise} - promise for the request
    */
-  waitForSelector : async function waitForSelector(selector, options = {}) {
+  waitForSelector : async function waitForSelector(selector, options = undefined) {
     return page.waitForSelector(selector, options);
+  },
+
+  waitForLoadState : async function waitForLoadState(state, options) {
+    return page.waitForLoadState(state, options);
   },
 
   /**
@@ -415,7 +419,7 @@ module.exports = {
    * @param {Array} [options] - the options to use (optional)
    * @returns {Promise} for waiting for the url
    */
-  waitForURL : async function waitForURL(url, options = {}) {
+  waitForURL : async function waitForURL(url, options = undefined) {
     return page.waitForURL(url, options);
   },
 

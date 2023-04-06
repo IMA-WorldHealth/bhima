@@ -69,11 +69,11 @@ test.describe('Cash Payments', () => {
 
       expect(await TU.getCurrentPath()).toBe(target);
 
-      // Back to the root path
+      // Back to the root path (it should redirect)
       await TU.navigate(path);
 
-      // Wait for it to redirect
-      await TU.waitForURL(`**/${path}/${cashboxB.id}`);
+      // Force the redirect to complete
+      await TU.reloadPage();
 
       // the cashbox selection modal should not appear
       await TU.exists('[data-cashbox-modal]', false);

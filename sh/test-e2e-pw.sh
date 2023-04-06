@@ -36,4 +36,14 @@ echo "[test] Running end-to-end tests using playwright."
 cd ..
 npx playwright test
 
+# Clean up any left-over zombie node processes
+procs=`netstat -tulpn |& grep 8080`
+proc=`echo $procs | sed -r 's/.* ([0-9]+)\/node$/\1/g'`
+
+if [[ ! -z "$proc" ]]
+then
+    echo "Deleting zombie node Bhima process $proc"
+    kill -9 $proc
+fi
+
 echo "[/test]"
