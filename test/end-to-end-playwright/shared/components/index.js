@@ -29,7 +29,7 @@ module.exports = {
   dateEditor : require('./bhDateEditor'),
   dateInterval : require('./bhDateInterval'),
   // datePicker : require('./bhDatePicker'),
-  // debtorGroupSelect : require('./bhDebtorGroupSelect'),
+  debtorGroupSelect : require('./bhDebtorGroupSelect'),
   depotSelect : require('./bhDepotSelect'),
   // diagnosisSelect : require('./bhDiagnosisSelect'),
   // employeeConfigSelect : require('./bhEmployeeConfigSelect'),
