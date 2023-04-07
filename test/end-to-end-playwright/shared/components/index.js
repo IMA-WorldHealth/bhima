@@ -14,7 +14,7 @@
 module.exports = {
   // accountConfigSelect : require('./bhAccountConfigSelect'),
   // accountReferenceSelect : require('./bhAccountReferenceSelect'),
-  // accountReferenceTypeSelect : require('./bhAccountReferenceTypeSelect'),
+  accountReferenceTypeSelect : require('./bhAccountReferenceTypeSelect'),
   accountSelect : require('./bhAccountSelect'),
   // addItem : require('./bhAddItem'),
   // analysisToolTypeSelect : require('./bhAnalysisToolTypeSelect'),
