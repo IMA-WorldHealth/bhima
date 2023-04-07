@@ -57,6 +57,7 @@ const by = {
   id : (arg) => `#${arg}`,
   css : (arg) => arg,
   model : (arg) => `[ng-model="${arg}"]`,
+  repeater : (arg) => `[ng-repeat="${arg}"]`,
 };
 
 // convenience methods to check form element validation states
@@ -186,6 +187,18 @@ module.exports = {
     return expect(count > 0,
       `Expected locator ${selector} to ${bool ? '' : 'not '}exist.`,
     ).toBe(bool);
+  },
+
+  /**
+   * Return true if the selector is present on the current page
+   *
+   * @param {string} selector - the selector to check
+   * @returns {boolean} result
+   */
+  isPresent : async function isPresent(selector) {
+    const elt = await page.locator(selector);
+    const count = await elt.count();
+    return count > 0;
   },
 
   /**
@@ -386,12 +399,13 @@ module.exports = {
       break;
     }
 
-    // WARNING: tests using the regexes above will probably fail due to limitations of Playwright
-    // To get the regexes working, we may need to get the text of the title and check using the regex
-    // If it okay, click; otherwise complain?
-    // const selectorText = await select.locator('.dropdown-menu').locator(`//*[contains(text(), '${label}')]`);
+    // WARNING: tests using the regexes above need to be fixed
+    // @todo fix these regex cases with text-matches
+    // (see https://playwright.dev/docs/other-locators#css-matching-by-text)
 
     return select.locator('.dropdown-menu').locator(`//*[contains(text(), '${searchString}')]`).click();
+
+    // return select.locator('.dropdown-menu').locator(`li:has-text('${searchString}')`).click();
   },
 
   /**

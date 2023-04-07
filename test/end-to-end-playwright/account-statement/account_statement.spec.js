@@ -17,7 +17,9 @@ test.describe('Account Statement Core', () => {
 
   // this will be run before every single test - navigating the browser
   // to the correct page.
-  test.beforeEach(async () => TU.navigate(path));
+  test.beforeEach(async () => {
+    await TU.navigate(path);
+  });
 
   const sample = {
     account : '41111000',
