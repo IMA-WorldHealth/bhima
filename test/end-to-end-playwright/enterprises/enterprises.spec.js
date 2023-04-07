@@ -55,7 +55,9 @@ test.describe('Enterprises', () => {
   };
 
   // navigate to the enterprise module before running tests
-  test.beforeEach(async () => TU.navigate(location));
+  test.beforeEach(async () => {
+    await TU.navigate(location);
+  });
 
   /**
    * The actual enterprise module doesn't need to create a new one

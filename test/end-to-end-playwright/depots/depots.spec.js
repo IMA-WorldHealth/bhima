@@ -20,7 +20,8 @@ test.describe('Depots Management', () => {
 
   // navigate to the page
   test.beforeEach(async () => {
-    TU.navigate('#!/depots');
+    await TU.navigate('#!/depots');
+    await TU.waitForSelector('.ui-grid-header-cell-wrapper');
     page.init();
   });
 
