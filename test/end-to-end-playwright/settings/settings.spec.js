@@ -20,9 +20,9 @@ test.describe('Settings', () => {
 
   test('loads the page, and selects a language', async () => {
     // confirm that we can change the languages (to French)
-    await (await TU.locator('#select-language')).selectOption('string:fr');
-    const label = await TU.locator('label[for="select-language"]');
-    expect(await label.innerText()).toBe('Langue');
+    await TU.locator('#select-language').selectOption('string:fr');
+    const label = await TU.locator('label[for="select-language"]').innerText();
+    expect(label).toBe('Langue');
   });
 
   test('uses the back button to return to previous state', async () => {
@@ -36,8 +36,7 @@ test.describe('Settings', () => {
     // Ensure we can navigate back to the main page with the back button.
 
     // click the back button
-    const back = await TU.locator('[data-back-button]');
-    await back.click();
+    await TU.locator('[data-back-button]').click();
 
     // ensure we navigate back to the main page.
     expect(TU.getCurrentPath()).toBe(start);

@@ -2,6 +2,8 @@
  * Utilities for Playwright End-to-End testing
  */
 
+/* eslint-disable jsdoc/require-throws */
+
 const { expect } = require('@playwright/test');
 
 const PATH_REGEXP = /^[#!/]+/g;
@@ -110,7 +112,7 @@ async function input(model, value, anchor) {
  * @param {string} [anchor] - optional selector/locator for the anchor element (defaults to page)
  * @returns {Promise} promise for the desired model element
  */
-async function getModel(modelName, anchor) {
+function getModel(modelName, anchor) {
   if (typeof page === 'undefined') {
     throw new Error('Must call registerPage() first!');
   }
@@ -130,7 +132,7 @@ async function getModel(modelName, anchor) {
  * @param {*} value - the option to select (with value="<value>")
  * @returns {Promise} of the result of the selection action
  */
-async function selectOption(selector, value) {
+function selectOption(selector, value) {
   return page.locator(selector).selectOption(value);
 }
 
@@ -141,7 +143,7 @@ async function selectOption(selector, value) {
  * @param {object} [options] - associative array of options (optional)
  * @returns {Promise} of navigation to the desired path
  */
-async function navigate(browserPath, options) {
+function navigate(browserPath, options) {
   const destination = browserPath.replace(PATH_REGEXP, '');
   return page.goto(`/#!/${destination}`, options);
 }
@@ -152,7 +154,7 @@ module.exports = {
   /**
    * registerPage - Save the page object for the functions in this module
    *
-   * Note: NOT async
+   * Note: NOT async (not necessary to 'await' for this function)
    *
    * @param {object} newPage - Playwright test browser test page
    */
@@ -163,7 +165,7 @@ module.exports = {
   /**
    * get the browser path (after the baseUrl)
    *
-   * Note: NOT async
+   * Note: NOT async (not necessary to 'await' for this function)
    *
    * @returns {string} the normalized current path
    */
@@ -182,8 +184,7 @@ module.exports = {
    * @returns {Promise} for the result of the assertion
    */
   exists : async function exists(selector, bool = true) {
-    const elt = await page.locator(selector);
-    const count = await elt.count();
+    const count = await page.locator(selector).count();
     return expect(count > 0,
       `Expected locator ${selector} to ${bool ? '' : 'not '}exist.`,
     ).toBe(bool);
@@ -196,8 +197,7 @@ module.exports = {
    * @returns {boolean} result
    */
   isPresent : async function isPresent(selector) {
-    const elt = await page.locator(selector);
-    const count = await elt.count();
+    const count = await page.locator(selector).count();
     return count > 0;
   },
 
@@ -209,7 +209,7 @@ module.exports = {
    * @param {string} selector - selector for the desired element
    * @returns {Promise} for the locator
    */
-  locator : async function locator(selector) {
+  locator : function locator(selector) {
     if (typeof page === 'undefined') {
       throw new Error('Must call registerPage() first!');
     }
@@ -235,17 +235,14 @@ module.exports = {
     // First, switch to English
 
     // (expose the language drop-down menu)
-    const dropdown = await page.locator('div.panel-heading > div.dropdown > a');
-    await dropdown.click();
+    await page.locator('div.panel-heading > div.dropdown > a').click();
 
     // (click on the English option)
-    const english = await page.locator('div.panel-heading > div.dropdown a[lang="en"]');
-    await english.click();
+    await page.locator('div.panel-heading > div.dropdown a[lang="en"]').click();
 
     // (verify it is now English)
     await page.waitForSelector('.panel-heading');
-    const loginLabel = await page.locator('.panel-heading');
-    expect(await loginLabel.innerText()).toBe('Login');
+    expect(await page.locator('.panel-heading').innerText()).toBe('Login');
 
     // Log in
     await input('LoginCtrl.credentials.username', username || 'superuser');
@@ -287,7 +284,7 @@ module.exports = {
    * @param {object} options - Options for page.reload
    * @returns {Promise} for reloaded page
    */
-  reloadPage : async function reloadPage(options) {
+  reloadPage : function reloadPage(options) {
     if (typeof page === 'undefined') {
       throw new Error('Must call registerPage() first!');
     }
@@ -301,9 +298,8 @@ module.exports = {
    * @param {number} n - which one to click on
    * @returns {Promise} for clicking on nth radio button
    */
-  radio : async function radio(model, n) {
-    const radioBtn = await (await page.locator(`[ng-model="${model}"]`)).nth(n);
-    return radioBtn.click();
+  radio : function radio(model, n) {
+    return page.locator(`[ng-model="${model}"]`).nth(n).click();
   },
 
   /**
@@ -323,9 +319,7 @@ module.exports = {
     await this.input(model, label, anchor);
 
     // select the item of the dropdown menu matching the label
-    // ??? const option = anchor.element(by.cssContainingText('.dropdown-menu > [role="option"]', label));
-    const option = await anchor.locator(`.dropdown-menu > [role="option"] >> text="${label}"`);
-    await option.click();
+    return anchor.locator(`.dropdown-menu > [role="option"] >> text="${label}"`).click();
   },
 
   /**
@@ -415,11 +409,11 @@ module.exports = {
    * @param {Array} [options] - the options to use (optional)
    * @returns {Promise} - promise for the request
    */
-  waitForSelector : async function waitForSelector(selector, options = undefined) {
+  waitForSelector : function waitForSelector(selector, options = undefined) {
     return page.waitForSelector(selector, options);
   },
 
-  waitForLoadState : async function waitForLoadState(state, options) {
+  waitForLoadState : function waitForLoadState(state, options) {
     return page.waitForLoadState(state, options);
   },
 
@@ -433,7 +427,7 @@ module.exports = {
    * @param {Array} [options] - the options to use (optional)
    * @returns {Promise} for waiting for the url
    */
-  waitForURL : async function waitForURL(url, options = undefined) {
+  waitForURL : function waitForURL(url, options = undefined) {
     return page.waitForURL(url, options);
   },
 

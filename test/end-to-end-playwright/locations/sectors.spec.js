@@ -33,24 +33,24 @@ test.describe('Sectors Management', () => {
 
   test('Merge Sector', async () => {
     // Prevent mixing with no country selected
-    await (await TU.locator(`[data-method="merge"]`)).click();
+    await TU.locator(`[data-method="merge"]`).click();
     await components.notification.hasWarn();
 
     // Prevent mixing with less than two sectors
     await GU.selectRow(gridId, 0);
-    await (await TU.locator(`[data-method="merge"]`)).click();
+    await TU.locator(`[data-method="merge"]`).click();
     await components.notification.hasWarn();
 
     // Prevent mixing with more than two sectors
     await GU.selectRow(gridId, 1);
     await GU.selectRow(gridId, 2);
-    await (await TU.locator(`[data-method="merge"]`)).click();
+    await TU.locator(`[data-method="merge"]`).click();
     await components.notification.hasWarn();
 
     // Merging succes
     await GU.selectRow(gridId, 2);
-    await (await TU.locator(`[data-method="merge"]`)).click();
-    await (await TU.locator(`[data-reference="${referenceLocation}"]`)).click();
+    await TU.locator(`[data-method="merge"]`).click();
+    await TU.locator(`[data-reference="${referenceLocation}"]`).click();
 
     await TU.buttons.submit();
     await components.notification.hasSuccess();
@@ -58,8 +58,8 @@ test.describe('Sectors Management', () => {
     // Merging succes
     await GU.selectRow(gridId, 0);
     await GU.selectRow(gridId, 1);
-    await (await TU.locator(`[data-method="merge"]`)).click();
-    await (await TU.locator(`[data-reference="${referenceLocation}"]`)).click();
+    await TU.locator(`[data-method="merge"]`).click();
+    await TU.locator(`[data-reference="${referenceLocation}"]`).click();
 
     await TU.buttons.submit();
     await components.notification.hasSuccess();

@@ -32,11 +32,11 @@ class DepotPage {
     await TU.input('DepotModalCtrl.depot.default_purchase_interval', defaultPurchaseInterval);
 
     if (hasWarehouse) {
-      await (await TU.locator('[name="is_warehouse"]')).click();
+      await TU.locator('[name="is_warehouse"]').click();
     }
 
     if (hasLocation) {
-      await (await TU.locator('[name="has_location"]')).click();
+      await TU.locator('[name="has_location"]').click();
       await components.locationSelect.set(location);
     }
 
@@ -56,13 +56,13 @@ class DepotPage {
     await row.dropdown();
 
     const findul = `ul.dropdown-menu-right.dropdown-menu[data-row-menu="${item.parent}"]`;
-    await (await TU.locator(`${findul} a[data-method="add-dependant-depot"]`)).click();
+    await TU.locator(`${findul} a[data-method="add-dependant-depot"]`).click();
 
     await TU.input('DepotModalCtrl.depot.text', item.text);
     await TU.input('DepotModalCtrl.depot.default_purchase_interval', item.default_purchase_interval);
 
     if (hasLocation) {
-      await (await TU.locator('[name="has_location"]')).click();
+      await TU.locator('[name="has_location"]').click();
       await components.locationSelect.set(location);
     }
 
@@ -96,14 +96,14 @@ class DepotPage {
     await TU.input('DepotModalCtrl.depot.default_purchase_interval', defaultPurchaseInterval);
 
     // entry/exit permissions
-    await (await TU.locator('[name="allow_entry_purchase"]')).click();
-    await (await TU.locator('[name="allow_entry_integration"]')).click();
-    await (await TU.locator('[name="allow_entry_donation"]')).click();
-    await (await TU.locator('[name="allow_entry_transfer"]')).click();
-    await (await TU.locator('[name="allow_exit_debtor"]')).click();
-    await (await TU.locator('[name="allow_exit_service"]')).click();
-    await (await TU.locator('[name="allow_exit_transfer"]')).click();
-    await (await TU.locator('[name="allow_exit_loss"]')).click();
+    await TU.locator('[name="allow_entry_purchase"]').click();
+    await TU.locator('[name="allow_entry_integration"]').click();
+    await TU.locator('[name="allow_entry_donation"]').click();
+    await TU.locator('[name="allow_entry_transfer"]').click();
+    await TU.locator('[name="allow_exit_debtor"]').click();
+    await TU.locator('[name="allow_exit_service"]').click();
+    await TU.locator('[name="allow_exit_transfer"]').click();
+    await TU.locator('[name="allow_exit_loss"]').click();
 
     await TU.modal.submit();
     await components.notification.hasSuccess();
@@ -119,8 +119,7 @@ class DepotPage {
     await row.dropdown();
     await row.edit();
 
-    const elm = await TU.locator('[class="fa fa-eraser"]');
-    await elm.click();
+    await TU.locator('[class="fa fa-eraser"]').click();
 
     await TU.modal.submit();
     await components.notification.hasSuccess();
@@ -141,8 +140,7 @@ class DepotPage {
       await TU.input('DepotModalCtrl.depot.default_purchase_interval', 1);
     }
 
-    const elm = await TU.locator('[name="has_location"]');
-    await elm.click();
+    await TU.locator('[name="has_location"]').click();
 
     await components.locationSelect.set(locations);
 
@@ -172,8 +170,7 @@ class DepotPage {
     await row.dropdown();
     await row.edit();
 
-    const elm = await TU.locator('[name="has_location"]');
-    await elm.click();
+    await TU.locator('[name="has_location"]').click();
     // ??? expect(await elm.isSelected()).toBe(false);
 
     await TU.buttons.submit();

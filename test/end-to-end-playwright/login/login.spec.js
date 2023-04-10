@@ -16,15 +16,14 @@ test.describe('Login', () => {
     await TU.login();
 
     // Check the project title to verify that we are logged in
-    const title = await TU.locator('.title-content');
-    expect(await title.innerText()).toBe('Test Project A');
+    const title = await TU.locator('.title-content').innerText();
+    expect(title).toBe('Test Project A');
 
     await TU.logout();
 
     // Verify that we have logged out
-    const heading = await TU.locator('div.panel-heading');
-    // ??? expect(await page.innerText('div.panel-heading')).toBe('Login');
-    expect(await heading.innerText()).toBe('Login');
+    const heading = await TU.locator('div.panel-heading').innerText();
+    expect(heading).toBe('Login');
   });
 
   test('rejects an invalid username/password combo with (only) a growl notification', async () => {

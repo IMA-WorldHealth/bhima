@@ -34,8 +34,8 @@ test.describe('Payments Registry', async () => {
   test.beforeEach(async () => {
     await TU.navigate('/!#/payments');
     modal = new SearchModal('cash-payment-search');
-    modal.init();
-    modal.open();
+    await modal.init();
+    await modal.open();
     filters = new Filters();
   });
 
@@ -52,7 +52,7 @@ test.describe('Payments Registry', async () => {
     await GU.expectRowCount('payment-registry', DEFAULT_PAYMENTS_FOR_TODAY);
   });
 
-  test('finds 2 payments for this last year', async () => {
+  test('finds 2 payments for this year', async () => {
     const DEFAULT_PAYMENTS_FOR_LAST_YEAR = 2;
     await modal.switchToDefaultFilterTab();
     await modal.setPeriod('year');

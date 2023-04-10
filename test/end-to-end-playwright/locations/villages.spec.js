@@ -33,24 +33,24 @@ test.describe('Villages Management', () => {
 
   test('Merge village', async () => {
     // Prevent mixing with no village selected
-    await (await TU.locator(`[data-method="merge"]`)).click();
+    await TU.locator(`[data-method="merge"]`).click();
     await components.notification.hasWarn();
 
     // Prevent mixing with less than two villages
     await GU.selectRow(gridId, 0);
-    await (await TU.locator(`[data-method="merge"]`)).click();
+    await TU.locator(`[data-method="merge"]`).click();
     await components.notification.hasWarn();
 
     // Prevent mixing with more than two villages
     await GU.selectRow(gridId, 1);
     await GU.selectRow(gridId, 2);
-    await (await TU.locator(`[data-method="merge"]`)).click();
+    await TU.locator(`[data-method="merge"]`).click();
     await components.notification.hasWarn();
 
     // Merging succes
     await GU.selectRow(gridId, 2);
-    await (await TU.locator(`[data-method="merge"]`)).click();
-    await (await TU.locator(`[data-reference="${referenceLocation}"]`)).click();
+    await TU.locator(`[data-method="merge"]`).click();
+    await TU.locator(`[data-reference="${referenceLocation}"]`).click();
 
     await TU.buttons.submit();
     await components.notification.hasSuccess();
@@ -58,8 +58,8 @@ test.describe('Villages Management', () => {
     // Merging succes
     await GU.selectRow(gridId, 0);
     await GU.selectRow(gridId, 1);
-    await (await TU.locator(`[data-method="merge"]`)).click();
-    await (await TU.locator(`[data-reference="${referenceLocation}"]`)).click();
+    await TU.locator(`[data-method="merge"]`).click();
+    await TU.locator(`[data-reference="${referenceLocation}"]`).click();
 
     await TU.buttons.submit();
     await components.notification.hasSuccess();

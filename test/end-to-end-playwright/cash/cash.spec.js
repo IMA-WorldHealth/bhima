@@ -30,12 +30,10 @@ test.describe('Cash Payments', () => {
   // this is a shortcut function for clicking an action in the cash page
   async function selectDropdownAction(action) {
     // open the dropdown menu
-    const open = await TU.locator('[data-action="open-tools"]');
-    await open.click();
+    await TU.locator('[data-action="open-tools"]').click();
 
     // get the action and click it
-    const actionBtn = await TU.locator(`[data-action="${action}"]`);
-    return actionBtn.click();
+    return TU.locator(`[data-action="${action}"]`).click();
   }
 
   test.describe('Cashbox Select Interface', () => {
@@ -52,9 +50,9 @@ test.describe('Cash Payments', () => {
       await TU.waitForSelector('[data-cashbox-modal]');
 
       // select a cashbox
-      await (await TU.locator('#cashbox-2')).click();
+      await TU.locator('#cashbox-2').click();
 
-      await (await TU.locator('[data-cashbox-modal-submit]')).click();
+      await TU.locator('[data-cashbox-modal-submit]').click();
 
       // expect the 'cashbox selection' modal to disappear
       await TU.exists('[data-cashbox-modal]', false);
@@ -276,7 +274,6 @@ test.describe('Cash Payments', () => {
 
     test('deletes a cash payment from the database', async () => {
       const modal = new SearchModal('cash-payment-search');
-      modal.init();
       await modal.init();
       await modal.open();
       await modal.switchToDefaultFilterTab();

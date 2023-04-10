@@ -29,20 +29,19 @@ test.describe('Countries Management', () => {
 
   test('Merge country', async () => {
     // Prevent mixing with no country selected
-    const merge = await TU.locator(`[data-method="merge"]`);
-    await merge.click();
+    await TU.locator(`[data-method="merge"]`).click();
     await components.notification.hasWarn();
 
     // Prevent mixing with less than two countries
     await GU.selectRow(gridId, 0);
-    await (await TU.locator('[data-method="merge"]')).click();
+    await TU.locator('[data-method="merge"]').click();
     await components.notification.hasWarn();
 
     // Merging success
     await GU.selectRow(gridId, 1);
 
-    await (await TU.locator(`[data-method="merge"]`)).click();
-    await (await TU.locator(`[data-reference="${referenceLocation}"]`)).click();
+    await TU.locator(`[data-method="merge"]`).click();
+    await TU.locator(`[data-reference="${referenceLocation}"]`).click();
 
     await TU.buttons.submit();
     await components.notification.hasSuccess();

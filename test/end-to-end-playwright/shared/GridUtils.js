@@ -1,3 +1,5 @@
+/* eslint-disable jsdoc/require-throws */
+
 const { expect } = require('@playwright/test');
 const TU = require('./TestUtils');
 const { by } = require('./TestUtils');
@@ -8,7 +10,7 @@ const { by } = require('./TestUtils');
  * @param {string} gridId - the html ID for the desired element
  * @returns {Promise} of the locator for element with gridId
  */
-async function getGrid(gridId) {
+function getGrid(gridId) {
   return TU.locator(by.id(gridId));
 
   // ADAPTED FROM PROTRACTOR CODE:

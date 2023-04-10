@@ -31,9 +31,8 @@ test.describe('Locations (in create patient modal)', () => {
    *
    * @returns {Promise} of the button click
    */
-  async function open() {
-    const openBtn = await TU.locator(`${selector} [data-location-modal-open]`);
-    return openBtn.click();
+  function open() {
+    return TU.locator(`${selector} [data-location-modal-open]`).click();
   }
 
   /**
@@ -42,10 +41,9 @@ test.describe('Locations (in create patient modal)', () => {
    * @param {string} key - which view (tab) open
    * @returns {Promise} of the button click
    */
-  async function view(key) {
+  function view(key) {
     // Click on the correct tab button
-    const btn = await TU.locator(`[data-location-view-key=${key}]`);
-    return btn.click();
+    return TU.locator(`[data-location-view-key=${key}]`).click();
   }
 
   /**
@@ -53,9 +51,8 @@ test.describe('Locations (in create patient modal)', () => {
    *
    * @returns {Promise} of the button click
    */
-  async function submit() {
-    const submitBtn = await TU.locator(`form[name=LocationModalForm] [type=submit]`);
-    return submitBtn.click();
+  function submit() {
+    return TU.locator(`form[name=LocationModalForm] [type=submit]`).click();
   }
 
   test('registers a new country', async () => {

@@ -123,15 +123,14 @@ test.describe('Enterprises', () => {
     const fileToUpload = 'logo.ico';
     const absolutePath = path.resolve(fixtures, fileToUpload);
 
-    const upload = await TU.locator('input[type=file][name="logo"]');
-    await upload.setInputFiles(absolutePath);
+    await TU.locator('input[type=file][name="logo"]').setInputFiles(absolutePath);
     await TU.buttons.submit();
     await components.notification.hasSuccess();
 
     // Verify the reloaded page has a new logo image
     await TU.reloadPage();
     await TU.waitForSelector('div.logo');
-    const count = await (await TU.locator('div.logo img')).count();
+    const count = await TU.locator('div.logo img').count();
     expect(count, 'Logo image upload failed').toBe(1);
   });
 
@@ -147,8 +146,7 @@ test.describe('Enterprises', () => {
   });
 
   test('edit an existing project', async () => {
-    const editProj = await TU.locator(`[data-project="${abbr}"] a[data-method="update"]`);
-    await editProj.click();
+    await TU.locator(`[data-project="${abbr}"] a[data-method="update"]`).click();
     await TU.input('$ctrl.project.name', projectUpdate.name);
     await TU.input('$ctrl.project.abbr', projectUpdate.abbr);
 
@@ -159,8 +157,7 @@ test.describe('Enterprises', () => {
 
   test('delete an existing project', async () => {
     // Pop up the project deletion dialog
-    const deleteProj = await TU.locator(`[data-project="${projectUpdate.abbr}"] a[data-method="delete"]`);
-    await deleteProj.click();
+    await TU.locator(`[data-project="${projectUpdate.abbr}"] a[data-method="delete"]`).click();
     await TU.input('$ctrl.text', projectUpdate.name);
     await TU.modal.submit();
 
