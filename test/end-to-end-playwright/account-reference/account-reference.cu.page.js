@@ -26,11 +26,9 @@ class CreateUpdateAccountReferencePage {
     this.modal = (await TU.locator('[uib-modal-window] .modal-header'));
 
     this.buttons = {
-      submit: (await TU.locator('[uib-modal-window] [data-method="submit"]')),
-      cancel: (await TU.locator('[uib-modal-window] [data-method="cancel"]')),
+      submit : async () => (await TU.locator('[uib-modal-window] [data-method="submit"]')).click(),
+      cancel : async () => (await TU.locator('[uib-modal-window] [data-method="cancel"]')).click(),
     };
-
-    this.uiSelectCloseButtons = await (await TU.locator(by.css('[class="close ui-select-match-close"]'))).all();
   }
 
   /* set an accountReference abbr value */
@@ -51,16 +49,15 @@ class CreateUpdateAccountReferencePage {
   }
 
   async clearSelectedItems() {
-    return Promise.all(this.uiSelectCloseButtons.map(closeItem => closeItem.click()));
+    const closeButtons = await (await TU.locator(by.css('[class="close ui-select-match-close"]'))).all();
+    return Promise.all(closeButtons.map(closeItem => closeItem.click()));
   }
 
   /* set accounts */
   async setAccountValues(values) {
     await this.accounts.click();
     await Promise.all(values.map(
-      async v => TU.uiSelect('AccountReferenceModalCtrl.accountReference.accounts', v)));
-
-    // await TU.series(values, v => TU.uiSelect('AccountReferenceModalCtrl.accountReference.accounts', v));
+      v => TU.uiSelect('AccountReferenceModalCtrl.accountReference.accounts', v)));
     return this.modal.click();
   }
 
@@ -105,12 +102,12 @@ class CreateUpdateAccountReferencePage {
 
   /* submit */
   async submit() {
-    return this.buttons.submit.click();
+    return this.buttons.submit();
   }
 
   /* cancel creation */
   async close() {
-    return this.buttons.cancel.click();
+    return this.buttons.cancel();
   }
 
   /* check if the page is displayed */
