@@ -47,9 +47,10 @@ test.describe('AccountReference Management Page', () => {
   const mockSearch = {
     abbr : 'p_test_3',
     description : 'Test 3',
-    account : '603',
+    // account : '603',  // @TODO get fullWord working first
+    account : 'VARIATIONS DES STOCKS DE BIENS ACHETÉS',
     reference_type_id : 'Profit and loss', // 'Compte de Résultat'
-    accountNull : '1013',
+    accountNull : '1013',  // @TODO get fullWord working first
   };
 
   const numReferences = 13;
@@ -109,93 +110,105 @@ test.describe('AccountReference Management Page', () => {
     expect(await arPage.count()).toBe(numReferences + 2);
   });
 
-  // test('edits an accounts reference successfully', async () => {
-  //   await arPage.update(mockCreate2.abbr);
-  //   console.debug("1");
-  //   const modal = new AccountReferenceCreateUpdatePage();
-  //   console.debug("2");
-  //   await modal.init();
-  //   console.debug("3");
-  //   await modal.clearSelectedItems();
-  //   console.debug("4");
-  //   await modal.setAbbr(mockEdit.abbr);
-  //   console.debug("5");
-  //   await modal.setDescription(mockEdit.description);
-  //   console.debug("6");
-  //   await modal.setAccountValues(mockEdit.accounts, true);
-  //   console.debug("7");
-  //   await modal.setAccountExceptionValues(mockEdit.accountsException, true);
-  //   console.debug("8");
-  //   await modal.submit();
-  //   console.debug("9");
-  //   await components.notification.hasSuccess();
-  // });
+  test('edits an accounts reference successfully', async () => {
+    await arPage.update(mockCreate2.abbr);
+    const modal = new AccountReferenceCreateUpdatePage();
+    await modal.init();
 
-  // test('Search account references by Description', async () => {
-  //   await arPage.search();
-  //   const modal = new AccountReferenceCreateUpdatePage();
-  //   await modal.init();
-  //   await modal.searchDescription(mockSearch.description);
-  //   await modal.submit();
+    await modal.clearSelectedAccounts();
+    expect(await modal.numSelectedAccounts()).toBe(0);
+    await modal.setAccountValues(mockEdit.accounts);
 
-  //   // Force waiting for the grid to appear
-  //   await TU.waitForSelector('.ui-grid-header-cell-wrapper');
+    await modal.clearSelectedAccountExceptions();
+    expect(await modal.numSelectedAccountExceptions()).toBe(0);
+    await modal.setAccountExceptionValues(mockEdit.accountsException);
 
-  //   expect(await arPage.count()).toBe(2);
-  //   await modal.clearFilter();
-  // });
+    await modal.setAbbr(mockEdit.abbr);
+    await modal.setDescription(mockEdit.description);
+    await modal.clickIsAmoDep();
 
-  // test('Search account references by Account Number', async () => {
-  //   await arPage.search();
-  //   const modal = new AccountReferenceCreateUpdatePage();
-  //   await modal.init();
-  //   await modal.searchAccount(mockSearch.account);
+    await modal.submit();
+    await components.notification.hasSuccess();
+  });
 
-  //   await modal.submit();
-  //   expect(await arPage.count()).toBe(3);
-  //   await modal.clearFilter();
-  // });
+  test('Search account references by Description', async () => {
+    await arPage.search();
+    const modal = new AccountReferenceCreateUpdatePage();
+    await modal.init();
+    await modal.searchDescription(mockSearch.description);
+    await modal.submit();
 
+    // Force waiting for the grid to appear
+    await TU.waitForSelector('.ui-grid-header-cell-wrapper');
+
+    expect(await arPage.count()).toBe(2);
+    await modal.clearFilter();
+  });
+
+  test('Search account references by Account Number', async () => {
+    await arPage.search();
+    const modal = new AccountReferenceCreateUpdatePage();
+    await modal.init();
+    await modal.searchAccount(mockSearch.account);
+    await modal.submit();
+
+    // Force waiting for the grid to appear
+    await TU.waitForSelector('.ui-grid-header-cell-wrapper');
+
+    expect(await arPage.count()).toBe(3);
+    await modal.clearFilter();
+  });
+
+  // @TODO : Disabled until uiSelect fullWord option is fixed
   // test('Search account references by null Account Number', async () => {
   //   await arPage.search();
   //   const modal = new AccountReferenceCreateUpdatePage();
   //   await modal.init();
   //   await modal.searchAccount(mockSearch.accountNull);
-
   //   await modal.submit();
+
+  //   // Force waiting for the grid to appear
+  //   await TU.waitForSelector('.ui-grid-header-cell-wrapper');
+
   //   expect(await arPage.count()).toBe(0);
   //   await modal.clearFilter();
   // });
 
-  // test('Search account references by Reference Account Type', async () => {
-  //   await arPage.search();
-  //   const modal = new AccountReferenceCreateUpdatePage();
-  //   await modal.init();
-  //   await modal.searchReferenceType(mockSearch.reference_type_id);
+  test('Search account references by Reference Account Type', async () => {
+    await arPage.search();
+    const modal = new AccountReferenceCreateUpdatePage();
+    await modal.init();
+    await modal.searchReferenceType(mockSearch.reference_type_id);
+    await modal.submit();
 
-  //   await modal.submit();
-  //   expect(await arPage.count()).toBe(1);
-  //   await modal.clearFilter();
-  // });
+    // Force waiting for the grid to appear
+    await TU.waitForSelector('.ui-grid-header-cell-wrapper');
 
-  // test('delete an accounts reference successfully', async () => {
-  //   await arPage.remove(mockEdit.abbr);
-  //   await components.notification.hasSuccess();
-  //   expect(await arPage.count()).toBe(numReferences + 1);
-  // });
+    expect(await arPage.count()).toBe(1);
+    await modal.clearFilter();
+  });
 
-  // test(`should end with ${numReferences + 1} account references`, async () => {
-  //   expect(await arPage.count()).toBe(numReferences + 1);
-  // });
+  test('delete an accounts reference successfully', async () => {
+    await arPage.remove(mockEdit.abbr);
+    await components.notification.hasSuccess();
+    expect(await arPage.count()).toBe(numReferences + 1);
+  });
 
-  // test('Search account references by Reference', async () => {
-  //   await arPage.search();
-  //   const modal = new AccountReferenceCreateUpdatePage();
-  //   await modal.init();
-  //   await modal.searchAbbr(mockSearch.abbr);
+  test(`should end with ${numReferences + 1} account references`, async () => {
+    expect(await arPage.count()).toBe(numReferences + 1);
+  });
 
-  //   await modal.submit();
-  //   expect(await arPage.count()).toBe(1);
-  //   await modal.clearFilter();
-  // });
+  test('Search account references by Reference', async () => {
+    await arPage.search();
+    const modal = new AccountReferenceCreateUpdatePage();
+    await modal.init();
+    await modal.searchAbbr(mockSearch.abbr);
+    await modal.submit();
+
+    // Force waiting for the grid to appear
+    await TU.waitForSelector('.ui-grid-header-cell-wrapper');
+
+    expect(await arPage.count()).toBe(1);
+    await modal.clearFilter();
+  });
 });

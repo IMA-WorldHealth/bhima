@@ -23,11 +23,11 @@ class CreateUpdateAccountReferencePage {
 
     this.sameAccountReferencePanel = await TU.locator(by.id('account-reference-same'));
 
-    this.modal = (await TU.locator('[uib-modal-window] .modal-header'));
+    this.modal = await TU.locator('[uib-modal-window] .modal-header');
 
     this.buttons = {
-      submit : async () => (await TU.locator('[uib-modal-window] [data-method="submit"]')).click(),
-      cancel : async () => (await TU.locator('[uib-modal-window] [data-method="cancel"]')).click(),
+      submit : () => TU.locator('[uib-modal-window] [data-method="submit"]').click(),
+      cancel : () => TU.locator('[uib-modal-window] [data-method="cancel"]').click(),
     };
   }
 
@@ -44,20 +44,47 @@ class CreateUpdateAccountReferencePage {
   }
 
   /* set an accountReference is amortissement/depreciation value */
-  async clickIsAmoDep() {
+  clickIsAmoDep() {
     return this.isAmoDep.click();
   }
 
-  async clearSelectedItems() {
-    const closeButtons = await (await TU.locator(by.css('[class="close ui-select-match-close"]'))).all();
-    return Promise.all(closeButtons.map(closeItem => closeItem.click()));
+  // await okayButton.evaluate((button:HTMLElement)=>button.click())
+
+  async clearSelectedAccounts() {
+    const selector = 'div[name="accounts"] [class="close ui-select-match-close"]';
+    const closeButtons = await TU.locator(selector).all();
+    return Promise.all(closeButtons.reverse().map(
+      closeItem => closeItem.evaluate(node => node.click())));
+  }
+
+  // @todo : See if future versions of Playwright fix this problem
+  //     closeItem.evaluate() is a hack:
+  //        return closeItem.click();
+  //     should work but is erratic
+  // See https://github.com/microsoft/playwright/issues/13307
+
+  numSelectedAccounts() {
+    const selector = 'div[name="accounts"] [class="close ui-select-match-close"]:visible';
+    return TU.locator(selector).count();
+  }
+
+  async clearSelectedAccountExceptions() {
+    const selector = 'div[name="accountsException"] [class="close ui-select-match-close"]';
+    const closeButtons = await TU.locator(selector).all();
+    return Promise.all(closeButtons.reverse().map(
+      closeItem => closeItem.evaluate(node => node.click())));
+  }
+
+  numSelectedAccountExceptions() {
+    const selector = 'div[name="accountsException"] [class="close ui-select-match-close"]:visible';
+    return TU.locator(selector).count();
   }
 
   /* set accounts */
   async setAccountValues(values) {
     await this.accounts.click();
     await Promise.all(values.map(
-      v => TU.uiSelect('AccountReferenceModalCtrl.accountReference.accounts', v)));
+      async v => TU.uiSelect('AccountReferenceModalCtrl.accountReference.accounts', v)));
     return this.modal.click();
   }
 
@@ -76,47 +103,48 @@ class CreateUpdateAccountReferencePage {
   }
 
   /* search an accountReference abbr value */
-  async searchAbbr(abbrValue) {
+  searchAbbr(abbrValue) {
     return TU.input('$ctrl.searchQueries.abbr', abbrValue);
   }
 
   /* search an accountReference description value */
-  async searchDescription(descriptionValue) {
-
+  searchDescription(descriptionValue) {
     return TU.input('$ctrl.searchQueries.description', descriptionValue);
   }
 
   /* search an accountReference by account number value */
   async searchAccount(accountValue) {
-    return TU.uiSelect('$ctrl.select.account', accountValue, (await TU.locator('body')), false, 'fullWord');
+    // WAS: await FU.uiSelect('$ctrl.select.account', accountValue, $('body'), false, 'fullWord');
+    // @TODO : get this working with fullWord again
+    return TU.uiSelect('$ctrl.select.account', accountValue);
   }
 
   /* search an accountReference by Reference Type */
-  async searchReferenceType(typeValue) {
+  searchReferenceType(typeValue) {
     return components.accountReferenceTypeSelect.set(typeValue, 'reference_type_id');
   }
 
-  async clearFilter() {
+  clearFilter() {
     return this.filters.resetFilters();
   }
 
   /* submit */
-  async submit() {
+  submit() {
     return this.buttons.submit();
   }
 
   /* cancel creation */
-  async close() {
+  close() {
     return this.buttons.cancel();
   }
 
   /* check if the page is displayed */
-  async isDisplayed() {
+  isDisplayed() {
     return this.buttons.submit.isPresent();
   }
 
   /* check if the accountReference tried to edited the same accountReference */
-  async isSameAccountReference() {
+  isSameAccountReference() {
     return this.sameAccountReferencePanel.isVisible();
   }
 }

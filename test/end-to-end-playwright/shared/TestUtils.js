@@ -417,6 +417,10 @@ module.exports = {
     return page.waitForLoadState(state, options);
   },
 
+  waitForTimeout : function waitForTimeout(timeout) {
+    return page.waitForTimeout(timeout);
+  },
+
   /**
    * Wait for the page to navigate to the given URL
    *
