@@ -4810,10 +4810,10 @@ he@1.2.0:
   resolved "https://registry.npmjs.org/he/-/he-1.2.0.tgz"
   integrity sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==
 
-helmet@^6.1.4:
-  version "6.1.4"
-  resolved "https://registry.yarnpkg.com/helmet/-/helmet-6.1.4.tgz#a57dc478532e811f7dfd64b69f9023dad1c6e28e"
-  integrity sha512-nCJIriKjOYcRmHRpK+Z5DayEh6xwOKO0U0qzWL3MEIwsB8OSxxBu/mUE9U5PRH8ln/+WySlK2eYe5FOlo0v9aA==
+helmet@^6.1.5:
+  version "6.1.5"
+  resolved "https://registry.yarnpkg.com/helmet/-/helmet-6.1.5.tgz#2153387f6d73cce6efdfd85d3a65417cfb7db80c"
+  integrity sha512-UgAvdoG0BhF9vcCh/j0bWtElo2ZHHk6OzC98NLCM6zK03DEVSM0vUAtT7iR+oTo2Mi6sGelAH3tL6B/uUWxV4g==
 
 homedir-polyfill@^1.0.1:
   version "1.0.3"
