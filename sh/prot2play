@@ -26,9 +26,7 @@ test.beforeAll(async () => {
     s|^( )+it\(|\1 test(|g;
     s|\.to\.equal|.toBe|g;
     s|element\(|TU.locator(|g;
-    s|\$\(([^\)]+)\)|(await TU.locator(\1))|g;
     s|= \$\(([^\)]+)\);|= await TU.locator(\1);|g;
-    s|await TU\.locator\(([^\)]+)\)\.click\(\);|await (await TU.locator(\1)).click();|g;
     print;
 }
 
