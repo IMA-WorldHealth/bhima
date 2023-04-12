@@ -97,10 +97,10 @@ test.describe('Cash Payments', () => {
       await selectDropdownAction('change-cashbox');
 
       // select the auxiliary cashbox B displayed
-      await (await TU.locator(`#cashbox-${cashboxB.id}`)).click();
+      await TU.locator(`#cashbox-${cashboxB.id}`).click();
 
       // click on the ok button of the modal box
-      await (await TU.locator('[data-cashbox-modal-submit]')).click();
+      await TU.locator('[data-cashbox-modal-submit]').click();
 
       // verify that we get to the cashboxB page
       expect(await TU.getCurrentPath()).toBe(targetAuxiliary2);
@@ -153,7 +153,7 @@ test.describe('Cash Payments', () => {
       await TU.waitForSelector('#receipt-confirm-created');
 
       // dismiss the modal
-      await (await TU.locator('[data-action="close"]')).click();
+      await TU.locator('[data-action="close"]').click();
     });
 
     test('should block invoice payments without invoices', async () => {
@@ -178,7 +178,7 @@ test.describe('Cash Payments', () => {
       // expect a danger notification
       await components.notification.hasDanger();
 
-      await (await TU.locator('[data-method="clear"]')).click();
+      await TU.locator('[data-method="clear"]').click();
     });
 
     test('should make a payment against previous invoices', async () => {
@@ -196,7 +196,7 @@ test.describe('Cash Payments', () => {
 
       // open the invoices modal to select constious invoices
       await TU.exists('[data-open-invoices-btn]', true);
-      await (await TU.locator('[data-open-invoices-btn]')).click();
+      await TU.locator('[data-open-invoices-btn]').click();
 
       // be sure that the modal opened
       await TU.exists('[data-debtor-invoice-modal]', true);
@@ -220,7 +220,7 @@ test.describe('Cash Payments', () => {
       await TU.waitForSelector('#receipt-confirm-created');
 
       // dismiss the modal
-      await (await TU.locator('[data-action="close"]')).click();
+      await TU.locator('[data-action="close"]').click();
     });
   });
 
@@ -234,10 +234,10 @@ test.describe('Cash Payments', () => {
 
     test('should make a transfer between accounts', async () => {
       // open the dropdown menu
-      await (await TU.locator('[data-action="open-tools"]')).click();
+      await TU.locator('[data-action="open-tools"]').click();
 
       // get the transfer button and click it
-      await (await TU.locator('[data-action="transfer"]')).click();
+      await TU.locator('[data-action="transfer"]').click();
 
       // choose CDF as transfer currency
       await components.currencySelect.set(2, 'transfer-currency-select');
@@ -252,7 +252,7 @@ test.describe('Cash Payments', () => {
       await TU.waitForSelector('#receipt-confirm-created');
 
       // dismiss the modal
-      await (await TU.locator('[data-action="close"]')).click();
+      await TU.locator('[data-action="close"]').click();
     });
 
   });

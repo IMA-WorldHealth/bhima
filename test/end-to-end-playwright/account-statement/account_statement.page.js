@@ -43,7 +43,7 @@ class AccountStatementCorePage {
   }
 
   async comment(message) {
-    await (await TU.locator('[data-method="comment"]')).click();
+    await TU.locator('[data-method="comment"]').click();
     await TU.input('$ctrl.comment', message);
     await TU.modal.submit();
   }
