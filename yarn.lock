@@ -3569,10 +3569,10 @@ expand-tilde@^2.0.0, expand-tilde@^2.0.2:
   dependencies:
     homedir-polyfill "^1.0.1"
 
-express-handlebars@^7.0.5:
-  version "7.0.5"
-  resolved "https://registry.yarnpkg.com/express-handlebars/-/express-handlebars-7.0.5.tgz#a864fb2a672e8520955d7375e2218d8a85ae1dd6"
-  integrity sha512-9OuDkxrNq9fkbqwKmUr30TEobdlDyhawaod6+H6nz3rUXpzDjyoRt3LrSScscbPikQFs1zMy/52Ns+WosWVLhg==
+express-handlebars@^7.0.6:
+  version "7.0.6"
+  resolved "https://registry.yarnpkg.com/express-handlebars/-/express-handlebars-7.0.6.tgz#df4f09bb45387e50a61011860968f131f0940b14"
+  integrity sha512-f1azlphtOp3fp8+dfbcqebQ+tdq9VOXG4TmafJ756n9CjoItW7Mqn3KCZ0BjGdgZ7+ktYHZQWV4oCjiNhSuSeg==
   dependencies:
     glob "^10.0.0"
     graceful-fs "^4.2.11"
