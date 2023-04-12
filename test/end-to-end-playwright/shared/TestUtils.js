@@ -376,15 +376,17 @@ module.exports = {
 
     switch (searchType) {
     case 'exact':
-      console.debug(`WARNING: 'exact' search may not work with XPath`);
-      searchString = new RegExp(`^\\s*${labelForRegex}$`, 'm');
-      break;
+      // WARNING: Treating 'exact' as a 'fullWord' search.
+      // @TODO : Fix this and 'accountName' later when we can get playwright :text-matches()
+      // pseudo selector working with regexes
+      // See https://playwright.dev/docs/other-locators#css-matching-by-text
+      return select.locator('.dropdown-menu [role="option"]').locator(`//*[text()='${searchString}']`).click();
     case 'fullWord':
-      console.debug(`WARNING: 'fullWord' search may not work with XPath`);
-      searchString = new RegExp(`\\s+${labelForRegex}(\\s|$)`);
-      break;
+      // Search for whole string
+      return select.locator('.dropdown-menu [role="option"]').locator(`//*[text()='${searchString}']`).click();
     case 'accountName':
-      console.debug(`WARNING: 'accountName' search may not work with XPath`);
+      console.debug(`WARNING: 'accountName' regex search is broken`);
+      // Try to fix it with https://playwright.dev/docs/other-locators#css-matching-by-text
       searchString = new RegExp(`\\d+\\s+${labelForRegex}\\s+`);
       break;
     case 'contains':
@@ -393,13 +395,7 @@ module.exports = {
       break;
     }
 
-    // WARNING: tests using the regexes above need to be fixed
-    // @todo fix these regex cases with text-matches
-    // (see https://playwright.dev/docs/other-locators#css-matching-by-text)
-
-    return select.locator('.dropdown-menu').locator(`//*[contains(text(), '${searchString}')]`).click();
-
-    // return select.locator('.dropdown-menu').locator(`li:has-text('${searchString}')`).click();
+    return select.locator('.dropdown-menu [role="option"]').locator(`//*[contains(text(), '${searchString}')]`).click();
   },
 
   /**

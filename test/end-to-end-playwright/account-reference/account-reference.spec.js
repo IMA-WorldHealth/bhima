@@ -47,10 +47,9 @@ test.describe('AccountReference Management Page', () => {
   const mockSearch = {
     abbr : 'p_test_3',
     description : 'Test 3',
-    // account : '603',  // @TODO get fullWord working first
-    account : 'VARIATIONS DES STOCKS DE BIENS ACHETÉS',
+    account : '603',
     reference_type_id : 'Profit and loss', // 'Compte de Résultat'
-    accountNull : '1013',  // @TODO get fullWord working first
+    accountNull : '1013',
   };
 
   const numReferences = 13;
@@ -159,20 +158,19 @@ test.describe('AccountReference Management Page', () => {
     await modal.clearFilter();
   });
 
-  // @TODO : Disabled until uiSelect fullWord option is fixed
-  // test('Search account references by null Account Number', async () => {
-  //   await arPage.search();
-  //   const modal = new AccountReferenceCreateUpdatePage();
-  //   await modal.init();
-  //   await modal.searchAccount(mockSearch.accountNull);
-  //   await modal.submit();
+  test('Search account references by null Account Number', async () => {
+    await arPage.search();
+    const modal = new AccountReferenceCreateUpdatePage();
+    await modal.init();
+    await modal.searchAccount(mockSearch.accountNull);
+    await modal.submit();
 
-  //   // Force waiting for the grid to appear
-  //   await TU.waitForSelector('.ui-grid-header-cell-wrapper');
+    // Force waiting for the grid to appear
+    await TU.waitForSelector('.ui-grid-header-cell-wrapper');
 
-  //   expect(await arPage.count()).toBe(0);
-  //   await modal.clearFilter();
-  // });
+    expect(await arPage.count()).toBe(0);
+    await modal.clearFilter();
+  });
 
   test('Search account references by Reference Account Type', async () => {
     await arPage.search();

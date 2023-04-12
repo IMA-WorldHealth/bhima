@@ -113,10 +113,8 @@ class CreateUpdateAccountReferencePage {
   }
 
   /* search an accountReference by account number value */
-  async searchAccount(accountValue) {
-    // WAS: await FU.uiSelect('$ctrl.select.account', accountValue, $('body'), false, 'fullWord');
-    // @TODO : get this working with fullWord again
-    return TU.uiSelect('$ctrl.select.account', accountValue);
+  searchAccount(accountValue) {
+    return TU.uiSelect('$ctrl.select.account', accountValue, null, false, 'fullWord');
   }
 
   /* search an accountReference by Reference Type */
