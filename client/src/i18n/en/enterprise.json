@@ -30,6 +30,8 @@
       "ENABLE_INDEX_PAYMENT_SYSTEM" : "Enabling index payment system",
       "HELPDESK_TEXT" : "Helpdesk Contact Information",
       "HELPDESK_TEXT_HELP" : "If provided, show this information about how to contact the help desk on the bottom of the login page",
+      "ENABLE_PRF_DETAILS": "Enable additional information for purchases",
+      "ENABLE_PRF_DETAILS_HELP_TEXT": "By activating this option, PRF information will be added for purchases and general purchasing conditions",
       "SPECIAL_INSTRUCTIONS" : "Special instructions",
       "TERMS_OF_DELIVERY" : "Terms of delivery"
     }
