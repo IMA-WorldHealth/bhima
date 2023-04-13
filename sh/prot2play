@@ -20,12 +20,14 @@ test.beforeAll(async () => {
     next if /^[ ]*const { expect } = require\('chai'\);/;  # Omit
     next if /const FU = require.*/;  # Omit
     s|FU\.|TU.|g;
-    s|^( )+before\(\(\)|\1 test.beforeEach(async ()|g;
+    s|^(\s*)describe|\1test.describe|g;
+    s|^(\s*)before\(\(\)|\1test.beforeEach(async ()|g;
     s|helpers\.getCurrentPath|TU.getCurrentPath|g;
     s|helpers\.navigate\(|TU.navigate(|g;
-    s|^( )+it\(|\1 test(|g;
+    s|^(\s*)it\(|\1test(|g;
     s|\.to\.equal|.toBe|g;
     s|element\(|TU.locator(|g;
+    s|\.getText\(|.innerText(|g;
     s|= \$\(([^\)]+)\);|= await TU.locator(\1);|g;
     print;
 }
