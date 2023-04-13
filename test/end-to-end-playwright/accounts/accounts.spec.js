@@ -135,7 +135,11 @@ test.describe('Account Management', () => {
     await page.toggleBatchCreate();
     await createAccount({ number : '70611016', label : 'Laboratoire' });
 
-    // @TODO: Check that all 4 new accounts were created
+    // Make sure all the new accounts were created
+    accounts.forEach(async acct => {
+      TU.waitForSelector(`.ui-grid-contents-wrapper div:has-text("${acct.number}")`);
+    });
+    TU.waitForSelector('.ui-grid-contents-wrapper div:has-text("70611016")');
   });
 
   // generic function to create an account in the modal
