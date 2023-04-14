@@ -59,6 +59,7 @@ const by = {
   id : (arg) => `#${arg}`,
   css : (arg) => arg,
   model : (arg) => `[ng-model="${arg}"]`,
+  name : (arg) => `[name="${arg}"]`,
   repeater : (arg) => `[ng-repeat="${arg}"]`,
 };
 
