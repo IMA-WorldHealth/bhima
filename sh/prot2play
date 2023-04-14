@@ -28,6 +28,7 @@ test.beforeAll(async () => {
     s|\.to\.equal|.toBe|g;
     s|element\(|TU.locator(|g;
     s|\.getText\(|.innerText(|g;
+    s|by\.css\(([^)]+)\)|\1|g;
     s|= \$\(([^\)]+)\);|= await TU.locator(\1);|g;
     print;
 }
