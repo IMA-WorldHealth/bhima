@@ -136,8 +136,8 @@ test.describe('Account Management', () => {
     await createAccount({ number : '70611016', label : 'Laboratoire' });
 
     // Make sure all the new accounts were created
-    accounts.forEach(async acct => {
-      TU.waitForSelector(`.ui-grid-contents-wrapper div:has-text("${acct.number}")`);
+    await accounts.forEach(async acct => {
+      await TU.waitForSelector(`.ui-grid-contents-wrapper div:has-text("${acct.number}")`);
     });
     TU.waitForSelector('.ui-grid-contents-wrapper div:has-text("70611016")');
   });
