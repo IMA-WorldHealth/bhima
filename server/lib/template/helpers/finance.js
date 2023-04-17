@@ -23,6 +23,7 @@ const EUR_FMT = {
 const FORMATS = [null, FC_FMT, USD_FMT, EUR_FMT]; // NB: Indeces must match currency IDs in database
 
 /** @todo use the currency filter fork written for the client to perform the same behaviour here */
+// eslint-disable-next-line default-param-last
 function currency(value = 0, currencyId, digit) {
   let output;
   const DEFAULT_CURRENCY_PARAMETERS = 3;
@@ -37,7 +38,7 @@ function currency(value = 0, currencyId, digit) {
     // usage with custom digits for precision
     const format = JSON.parse(JSON.stringify(fmt));
 
-    if (digit !== undefined) { format.precision = digit; }
+    if (digit !== undefined && (value < 0.01)) { format.precision = digit; }
 
     output = new Handlebars.SafeString(accountingjs.formatMoney(value, format));
   }
