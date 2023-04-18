@@ -17,3 +17,7 @@ echo "Stock Integration Tests"
 echo "   " `grep passing ./test/integration-stock/report`
 echo "   " `egrep -e '(failing|pending)' ./test/integration-stock/report`
 echo
+echo "End-to-end Tests (Playwright)"
+echo "   " `grep passed ./test/end-to-end-playwright/report`
+echo "   " `egrep -e '(failing|pending)' ./test/end-to-end-playwright/report`
+echo
