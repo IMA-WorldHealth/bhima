@@ -1,0 +1,35 @@
+#!/usr/bin/perl -i
+#
+# PARTIALLY convert protractor tests to playwright tests
+
+while (<>) {
+    print 'const { chromium } = require(\'playwright\');
+const { test, expect } = require(\'@playwright/test\');
+const TU = require(\'../shared/TestUtils\');
+const { by } = require(\'../shared/TestUtils\');
+
+test.beforeAll(async () => {
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  TU.registerPage(page);
+  await TU.login();
+});
+
+' if $. == 1;  # Insert needed imports, etc
+    next if /\/\* global .* \*\//;  # Omit
+    next if /^[ ]*const { expect } = require\('chai'\);/;  # Omit
+    next if /const FU = require.*/;  # Omit
+    s|FU\.|TU.|g;
+    s|^(\s*)describe|\1test.describe|g;
+    s|^(\s*)before\(\(\)|\1test.beforeEach(async ()|g;
+    s|helpers\.getCurrentPath|TU.getCurrentPath|g;
+    s|helpers\.navigate\(|TU.navigate(|g;
+    s|^(\s*)it\(|\1test(|g;
+    s|\.to\.equal|.toBe|g;
+    s|element\(|TU.locator(|g;
+    s|\.getText\(|.innerText(|g;
+    s|by\.css\(([^)]+)\)|\1|g;
+    s|= \$\(([^\)]+)\);|= await TU.locator(\1);|g;
+    print;
+}
+
