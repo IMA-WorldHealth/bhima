@@ -106,11 +106,11 @@
             </td>
           {{/if}}
           <td class="text-right">{{quantity}}</td>
-          <td class="text-right">{{currency unit_cost_base ../details.p_currency_id}}</td>
+          <td class="text-right">{{currency unit_cost_base ../details.p_currency_id 4}}</td>
           {{#if ../details.p_shipping_handling}}
-          <td class="text-right">{{currency unit_cost_deliv ../details.p_currency_id}}</td>
+          <td class="text-right">{{currency unit_cost_deliv ../details.p_currency_id 4}}</td>
           {{/if}}
-          <td class="text-right">{{currency cost_deliv ../details.p_currency_id}}</td>
+          <td class="text-right">{{currency cost_deliv ../details.p_currency_id 4}}</td>
         </tr>
       {{else}}
         {{#if displayPackagingDetails}}
