@@ -159,7 +159,7 @@
   "devDependencies": {
     "@ima-worldhealth/rewire": "^4.1.0",
     "@playwright/test": "^1.32.1",
-    "@types/node": "^18.15.11",
+    "@types/node": "^18.15.12",
     "angular-mocks": "^1.8.3",
     "chai": "^4.3.7",
     "chai-as-promised": "^7.1.1",
@@ -195,7 +195,7 @@
     "karma-ng-html2js-preprocessor": "^1.0.0",
     "merge-stream": "^2.0.0",
     "mocha": "^10.2.0",
-    "postcss": "^8.4.22",
+    "postcss": "^8.4.23",
     "protractor": "^7.0.0",
     "protractor-console-plugin": "^0.1.1",
     "qs": "^6.11.1",
