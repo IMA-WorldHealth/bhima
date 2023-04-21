@@ -9,7 +9,6 @@ module.exports = {
     const locator = (uuid) ? by.id(uuid) : by.css(selector);
     const target = await TU.locator(locator);
 
-    // hack to make sure previous 'blur' event fires if we are using
     await target.click();
 
     return TU.uiSelect('$ctrl.debtorGroupUuid', debtorGroup, target);

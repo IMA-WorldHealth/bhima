@@ -23,10 +23,10 @@ module.exports = {
   set : async function set(date, id, elementClick) {
     const elementCloseComponent = elementClick || '.header-image';
 
-    // fail hard if the user did not pass into
-    /* if (!(date instanceof Date)) {
+    // fail hard if the user did not provide a Date object
+    if (!(date instanceof Date)) {
       throw new TypeError('You  must provide a date object to the set() method.');
-    } */
+    }
 
     // find the component in the DOM by its selector
     const root = await TU.locator((id) ? by.id(id) : by.css(selector));

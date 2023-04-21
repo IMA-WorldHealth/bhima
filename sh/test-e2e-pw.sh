@@ -36,6 +36,8 @@ echo "[test] Running end-to-end tests using playwright."
 cd ..
 npx playwright test 2>&1 | tee ./test/end-to-end-playwright/report
 
+# FYI: Use --workers=1  to limit number of workers
+
 # Clean up any left-over zombie node processes
 procs=`netstat -tulpn |& grep 8080`
 proc=`echo $procs | sed -r 's/.* ([0-9]+)\/node$/\1/g'`

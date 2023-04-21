@@ -13,7 +13,7 @@ module.exports = {
    * @returns {Promise} for selecting the service
    */
   set : async function set(service, id) {
-    const locator = (id) ? by.id(id) : by.css(this.selector);
+    const locator = (id) ? by.id(id) : by.css(selector);
     const target = await TU.locator(locator);
 
     // hack to make sure previous 'blur' event fires if we are using

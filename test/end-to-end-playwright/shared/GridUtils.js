@@ -110,12 +110,16 @@ async function getCellName(gridId, rowNum, colNum) {
  * Check to make sure that the grid has the specified number of rows
  *
  * @param {string} gridId - the id of the grid
- * @param {number} number - expected number of rows
+ * @param {number} number - expected number of rows (can be a list of numbers)
  * @param {string} message - error message
  */
 async function expectRowCount(gridId, number, message) {
   const rows = await getRows(gridId);
-  expect(rows.length, message).toBe(number);
+  if (Array.isArray(number)) {
+    expect(number.includes(rows.length), message);
+  } else {
+    expect(rows.length, message).toBe(number);
+  }
 
   // ADAPTED FROM PROTRACTOR CODE:
   // const rows = getRows(gridId);
@@ -211,7 +215,6 @@ async function expectHeaderColumns(gridId, expectedColumns) {
  * </pre>
  */
 async function selectRow(gridId, rowNum) {
-
   const grid = await getGrid(gridId);
   const ports = await grid.locator('[ui-grid-viewport]');
   const selPort = await ports.nth(0);

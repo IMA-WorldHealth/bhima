@@ -192,6 +192,18 @@ module.exports = {
   },
 
   /**
+   * See if the specified selector has the expected text
+   *
+   * @param {string} selector - selector for the element that should contain the text
+   * @param {string} expectedText - the expected text
+   * @returns {boolean} success/failure
+   */
+  hasText : async function hasText(selector, expectedText) {
+    const text = await page.locator(selector).innerText();
+    return expect(text).toBe(expectedText);
+  },
+
+  /**
    * Return true if the selector is present on the current page
    *
    * @param {string} selector - the selector to check
@@ -397,6 +409,17 @@ module.exports = {
     }
 
     return select.locator('.dropdown-menu [role="option"]').locator(`//*[contains(text(), '${searchString}')]`).click();
+  },
+
+  /**
+   * Upload a file using a specific file input field
+   *
+   * @param {string} filePath - the absolute path for the file to upload
+   * @param {string} selector - selector for the <input type="file"> field to use
+   * @returns {Promise} for the uploading
+   */
+  uploadFile : function uploadFile(filePath, selector) {
+    return page.locator(selector).setInputFiles(filePath);
   },
 
   /**

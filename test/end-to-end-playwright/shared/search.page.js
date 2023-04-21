@@ -25,7 +25,6 @@ const DEFAULT_FILTER_TAB = '[data-default-filter-tab]';
  * let modal;
  * beforeEach(() => {
  *   modal = new SearchModal('your-search-modal-attribute');
- *   await modal.init();
  *   await modal.open();
  * });
  *
@@ -35,25 +34,33 @@ const DEFAULT_FILTER_TAB = '[data-default-filter-tab]';
  * });
  */
 class SearchModal {
-  constructor(selector) {
+
+  /**
+   * Construct the Search modal
+   *
+   * @param {string} selector - the selector for the search modal
+   * @param {string} path - the url for the parent page to the search modal
+   * (only the part after '/#!/')
+   */
+  constructor(selector, path) {
     this.selector = `[data-modal="${selector}"]`;
+    this.path = path;
   }
 
-  async init() {
+  async open() {
+    await TU.buttons.search();
     this.element = await TU.locator(this.selector);
     return true;
-  }
-
-  open() {
-    return TU.buttons.search();
   }
 
   close() {
     return TU.buttons.submit();
   }
 
-  submit() {
-    return this.element.locator('[data-method="submit"]').click();
+  async submit() {
+    await this.element.locator('[data-method="submit"]').click();
+    // Give the search modal time to close and reload the parent page
+    return TU.waitForURL(`**/${this.path}`, { waitUntil : 'domcontentloaded' });
   }
 
   async switchToCustomFilterTab() {
@@ -187,6 +194,10 @@ class SearchModal {
 
   setRequestor(requestor, type) {
     return bhServiceOrDepotSelect.set(requestor, type);
+  }
+
+  setExcludeReversed() {
+    return TU.locator('input[name="exclude-reversed"]').check();
   }
 
   /**

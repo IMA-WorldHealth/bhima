@@ -1,7 +1,6 @@
 const { chromium } = require('playwright');
 const { test, expect } = require('@playwright/test');
 const TU = require('../shared/TestUtils');
-const { by } = require('../shared/TestUtils');
 
 test.beforeAll(async () => {
   const browser = await chromium.launch();
@@ -10,10 +9,7 @@ test.beforeAll(async () => {
   await TU.login();
 });
 
-// ??? const EC = protractor.ExpectedConditions;
-
 const components = require('../shared/components');
-const { promises } = require('dns');
 
 test.describe('Debtor Groups Management', () => {
   const INITIAL_GROUPS = 3;
@@ -77,13 +73,29 @@ test.describe('Debtor Groups Management', () => {
   test('updates a debtor group', async () => {
     const groups = await TU.locator('[data-group-entry]').all();
     await groups[0].locator('[data-method="update"]').click();
-    // await updateGroup.all('[data-method="update"]').first().click();
 
+    const newName = '[Updated]';
+
+    // Get the name of the old name (to restore later)
+    const input = 'input[ng-model="GroupUpdateCtrl.group.name"]';
+    const oldName = await TU.locator(input).inputValue();
+
+    // Change the name and max-credit
     await TU.input('GroupUpdateCtrl.group.max_credit', '500');
-    await TU.input('GroupUpdateCtrl.group.name', '[Updated]');
+    await TU.input('GroupUpdateCtrl.group.name', newName);
 
     await TU.buttons.submit();
+    await components.notification.hasSuccess();
 
+    // Verify the change happened
+    await TU.waitForSelector('[data-group-entry]');
+    const groups2 = await TU.locator('[data-group-entry]').all();
+    await groups2[0].locator('[data-method="update"]').click();
+    expect(await TU.locator(input).inputValue(), 'Debtor group rename failed').toBe(newName);
+
+    // Change the name of the debtor group back to its original name
+    await TU.input('GroupUpdateCtrl.group.name', oldName);
+    await TU.buttons.submit();
     await components.notification.hasSuccess();
   });
 
