@@ -2,7 +2,8 @@
   "extends" : "airbnb-base",
   "plugins" : [
     "jsdoc",
-    "import"
+    "import",
+    "eslint-plugin-jsdoc"
   ],
   "env" : {
     "browser" : true,
