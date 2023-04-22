@@ -171,7 +171,6 @@ class DepotPage {
     await row.edit();
 
     await TU.locator('[name="has_location"]').click();
-    // ??? expect(await elm.isSelected()).toBe(false);
 
     await TU.buttons.submit();
     await components.notification.hasSuccess();
