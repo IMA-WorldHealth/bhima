@@ -1,7 +1,6 @@
 {
   "extends" : "airbnb-base",
   "plugins" : [
-    "jsdoc",
     "import"
   ],
   "env" : {
