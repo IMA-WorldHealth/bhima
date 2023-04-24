@@ -27,7 +27,8 @@
       "DELETE_PURCHASE_ORDER" : "Delete Purchase Order",
       "DELETE_STOCK_MOVEMENT" : "Delete Stock Movement",
       "DELETE_VOUCHER" : "Delete Voucher",
-      "EDIT_LOT" : "Edit Stock Lot Information"
+      "EDIT_LOT" : "Edit Stock Lot Information",
+      "VALIDATE_REQUISITION": "Validate requisition requests"
     }
   }
 }
