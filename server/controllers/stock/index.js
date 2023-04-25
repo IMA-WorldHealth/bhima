@@ -1231,7 +1231,11 @@ async function listInventoryDepot(req, res, next) {
   const params = req.query;
 
   // expose connected user data
-  if (req.session.stock_settings.enable_strict_depot_permission) {
+  // In the case where a requisition request is made,
+  // the new parameters (params.checkAvailableInventoriesRequisition) have been added
+  // to allow the availability of stocks to be seen for the depots
+  // for which the user does not have the right of access
+  if (req.session.stock_settings.enable_strict_depot_permission && !params.checkAvailableInventoriesRequisition) {
     params.check_user_id = req.session.user.id;
   }
 

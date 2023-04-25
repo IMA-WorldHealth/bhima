@@ -6,6 +6,7 @@ StockRequisitionController.$inject = [
   'ModalService', 'ReceiptModal',
   'uiGridConstants', 'StockModalService',
   'GridStateService', 'GridColumnService',
+  'SessionService', 'bhConstants',
 ];
 
 /**
@@ -15,13 +16,16 @@ StockRequisitionController.$inject = [
 function StockRequisitionController(
   $state, Stock, Notify, Modal, Receipts,
   uiGridConstants, StockModal,
-  GridState, Columns,
+  GridState, Columns, Session, bhConstants,
 ) {
 
   const vm = this;
+
+  vm.bhConstants = bhConstants;
   const cacheKey = 'stock-requisition-grid';
   const stockRequisitionFilters = Stock.filter.requisition;
 
+  vm.enableRequisitionValidationStep = Session.stock_settings.enable_requisition_validation_step;
   vm.status = [];
 
   vm.editStatus = editStatus;
