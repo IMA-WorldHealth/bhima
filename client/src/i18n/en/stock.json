@@ -367,6 +367,8 @@
     "ENABLE_GLOBAL_DESCRIPTION_AND_EXPIRATION_DESCRIPTION": "Allow entry of a global description of lots and expiration",
     "ENABLE_FAST_INSERT": "Enable fast lots insertions",
     "ENABLE_FAST_INSERT_DESCRIPTION": "This option will automatically select the next blank row's serial/lot number in the entry table. If necessary, it adds a new row. Useful for quickly inserting with a barcode reader",
+    "ENABLE_REQUISITION_VALIDATION_STEP": "Enable requisition validation step",
+    "ENABLE_REQUISITION_VALIDATION_STEP_HELP_TEXT": "Activated the validation of requisition requests in order to assess the satisfaction rate",    
     "EXCLUDE_EXHAUSTED_LOTS": "Exclude exhausted lots",
     "DETAILS":"Lot Information",
     "FIND_DUPLICATE_LOTS" : "Find duplicate lots",

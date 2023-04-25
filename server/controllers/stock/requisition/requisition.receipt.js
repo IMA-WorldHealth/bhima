@@ -30,6 +30,18 @@ async function stockRequisitionReceipt(req, res, next) {
     data.barcode = barcode.generate(identifiers.REQUISITION.key, details.uuid);
     data.enterprise = req.session.enterprise;
     data.details = details;
+
+    // If the sum of old quantity is greater than Zero,
+    // this implies that the requisition has been validated.
+    let sumOldQuantity = 0;
+
+    let i;
+    for (i = 0; i < data.details.items.length; i++) {
+      sumOldQuantity += data.details.items[i].old_quantity;
+    }
+
+    data.displayValidationData = sumOldQuantity > 0;
+
     const result = await report.render(data);
     res.set(result.headers).send(result.report);
   } catch (e) {

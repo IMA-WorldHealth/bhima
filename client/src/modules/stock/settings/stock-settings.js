@@ -104,6 +104,7 @@ function StockSettingsController(
   vm.enableStrictDepotDistribution = proxy('enable_strict_depot_distribution');
   vm.enableExpiredStockOut = proxy('enable_expired_stock_out');
   vm.enablePackagingPharmaceuticalProducts = proxy('enable_packaging_pharmaceutical_products');
+  vm.enableRequisitionValidationStep = proxy('enable_requisition_validation_step');
 
   vm.setMonthAverage = function setMonthAverage() {
     $touched = true;
