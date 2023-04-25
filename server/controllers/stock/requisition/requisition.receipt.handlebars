@@ -33,9 +33,15 @@
         {{#if details.depot_requestor}}
           <span class="text-capitalize">{{translate 'FORM.LABELS.DEPOT'}}</span>: <span>{{details.depot_requestor}}</span><br>
         {{/if}}
-
+        
         <span class="text-capitalize">{{translate 'FORM.LABELS.DATE'}}</span>: <strong>{{date details.date}}</strong> <br>
         <span class="text-capitalize">{{translate 'FORM.LABELS.AUTHOR'}}</span>: <strong>{{details.user_display_name}}</strong> <br>
+
+        {{#if displayValidationData}}
+          <span class="text-capitalize">{{translate 'FORM.LABELS.VALIDATED_BY'}}</span>: <strong>{{details.validator_display_name}}</strong> <br>
+          <span class="text-capitalize">{{translate 'FORM.LABELS.VALIDATION_DATE'}}</span>: <strong>{{date details.validation_date}}</strong> <br>
+        {{/if}}
+
       </div>
     </div>
   </header>
@@ -46,7 +52,12 @@
       <tr>
         <th>{{translate "STOCK.CODE"}}</th>
         <th>{{translate "STOCK.INVENTORY"}}</th>
-        <th class="text-right">{{translate "STOCK.QUANTITY"}}</th>
+        {{#if displayValidationData}}
+          <th class="text-right">{{translate "STOCK.QUANTITY"}}</th>
+          <th class="text-right">{{translate "FORM.LABELS.QUANTITY_VALIDATED"}}</th>
+        {{else}}
+          <th class="text-right">{{translate "STOCK.QUANTITY"}} </th>
+        {{/if}}
         <th>{{translate "FORM.LABELS.TYPE" }}</th>
       </tr>
     </thead>
@@ -55,11 +66,20 @@
         <tr>
           <td>{{item.code}}</td>
           <td>{{item.text}}</td>
-          <td class="text-right">{{item.quantity}}</td>
+          {{#if ../displayValidationData}}
+            <td class="text-right">{{item.old_quantity}}</td>
+            <td class="text-right">{{item.quantity}}</td>
+          {{else}}
+            <td class="text-right">{{item.quantity}}</td>
+          {{/if}}
           <td>{{item.inventoryType}}</td>
         </tr>
       {{else}}
-        {{> emptyTable columns=4}}
+        {{#if displayValidationData}}
+          {{> emptyTable columns=5}}
+        {{else}}
+          {{> emptyTable columns=4}}
+        {{/if}}
       {{/each}}
     </tbody>
   </table>

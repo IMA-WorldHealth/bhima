@@ -328,6 +328,8 @@
     "ENABLE_SUPPLIER_CREDIT_ON_STOCK_ENTRY_HELP_TEXT" : "Ajoute automatiquement les transactions pour créditer le fournisseur de la valeur du stock reçu dans un dépôt lors de l'entrée du stock à partir d'une commande d'achat. Ceci n'est déclenché que si la comptabilité de stock automatique est également définie.",
     "ENABLE_CONSIDERATION_EXPIRED_STOCK_OUT": "Activer la considération des stocks expirés comme en rupture de stock",
     "ENABLE_CONSIDERATION_EXPIRED_STOCK_OUT_HELP_TEXT": "L'activation de cette option va considéré les stocks périmés comme en rupture de stock, et ne considérera que ceux qui sont disponibles et utilisables.",
+    "ENABLE_REQUISITION_VALIDATION_STEP": "Activer la validation des requisitions",
+    "ENABLE_REQUISITION_VALIDATION_STEP_HELP_TEXT": "Activer la validation des demandes des requisitions en vue d'évaluer le taux de satisfaction",
     "ORDER_BY_CREATED_AT" : "Ordonner les mouvements de lots par leurs dates de création",
     "ORDER_BY_CREATED_AT_HELP_TEXT" : "Cette option permet d'ordonner les movements de lots par leurs dates réelles de création dans le système",
     "ENABLE_PACKAGING_PHARMACEUTICAL_PRODUCTS": "Conditionnement des produits pharmaceutiques",

@@ -21,6 +21,15 @@
       </a>
     </li>
 
+    <li bh-has-permission="grid.appScope.bhConstants.actions.VALIDATE_REQUISITION" ng-if="grid.appScope.enableRequisitionValidationStep && row.entity.status_key === 'in_progress'">
+      <a
+        ui-sref="stockRequisition.validation({ uuid : row.entity.uuid })"
+        data-method="validation"
+        class="text-action">
+        <i class="fa fa-exclamation-circle"></i> <span translate>FORM.LABELS.VALIDATION</span>
+      </a>
+    </li>
+
     <li ng-if="row.entity.status_key !== 'completed' && row.entity.status_key !== 'done' && row.entity.status_key !== 'excessive'">
       <a
         href
@@ -28,13 +37,13 @@
         ng-click="grid.appScope.editStatus(row.entity)"
         data-edit-metadata="{{ row.entity.uuid }}"
         data-method="edit">
-        <i class="fa fa-edit"></i><span translate>FORM.LABELS.EDIT_STATUS</span>
+        <i class="fa fa-edit"></i> <span translate>FORM.LABELS.EDIT_STATUS</span>
       </a>
     </li>
 
     <li ng-if="row.entity.status_key === 'in_progress'">
       <a data-method="remove-record" href ng-click="grid.appScope.removeRequisition(row.entity.uuid)">
-        <span class="text-danger"><i class="fa fa-trash"></i> <span translate>FORM.BUTTONS.DELETE</span></span>
+        <span class="text-danger"> <i class="fa fa-trash"></i> <span translate>FORM.BUTTONS.DELETE</span></span>
       </a>
     </li>
     <li ng-if="row.entity.status_key === 'partially' || row.entity.status_key === 'done' ||  row.entity.status_key === 'completed' || row.entity.status_key === 'excessive'">
