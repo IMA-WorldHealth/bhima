@@ -19,6 +19,7 @@ function constantConfig() {
       DELETE_STOCK_MOVEMENT : 6,
       DELETE_VOUCHER : 7,
       EDIT_LOT : 8,
+      VALIDATE_REQUISITION : 9,
     },
     accounts : {
       ROOT  : 0,

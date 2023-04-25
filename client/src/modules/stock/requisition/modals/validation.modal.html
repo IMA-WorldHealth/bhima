@@ -1,15 +1,14 @@
 <form
   name="ModalForm"
   bh-submit="$ctrl.submit(ModalForm)"
-  data-modal="stock-requisition-create"
+  data-modal="stock-requisition-validation"
   novalidate>
 
   <div class="modal-header">
     <ol class="headercrumb">
       <li class="static" translate>REQUISITION.STOCK_REQUISITION</li>
-      <li ng-if="$ctrl.isCreateState" class="title" translate>FORM.LABELS.CREATE</li>
-      <li ng-if="!$ctrl.isCreateState" class="title" translate>FORM.LABELS.UPDATE</li>
-      <li ng-if="!$ctrl.isCreateState" class="title" translate>{{ $ctrl.model.reference }}</li>
+      <li class="title" translate>FORM.LABELS.VALIDATION</li>
+      <li class="title" translate>{{ $ctrl.model.reference }}</li>
     </ol>
   </div>
 
@@ -65,12 +64,6 @@
           empty-state="$ctrl.gridOptions.data.length === 0"
           error-state="$ctrl.hasError">
         </bh-grid-loading-indicator>
-      </div>
-
-      <div style="margin-top:5px;">
-        <span style="margin-right: 10px;" class="text-success"><i class="fa fa-thumbs-up"></i>&nbsp;<span translate>REQUISITION.INVENTORY_AVAILABLE</span></span>
-        <span style="margin-right: 10px;" class="text-warning"><i class="fa fa-warning"></i>&nbsp;<span translate>REQUISITION.INVENTORY_AVAILABLE_WITH_NOT_ENOUGH_QUANTITY</span></span>
-        <span class="text-danger"><i class="fa fa-thumbs-down"></i>&nbsp;<span translate>STOCK.INVENTORY_NOT_AVAILABLE</span></span>
       </div>
     </div>
 
