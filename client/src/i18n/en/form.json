@@ -712,6 +712,7 @@
             "QUANTITY_ENTRY": "Entry Quantity",
             "QUANTITY_ORDERED": "Quantity ordered",
             "QUANTITY": "Quantity",
+            "QUANTITY_VALIDATED": "Quantity validated",
             "RANK": "Rank",
             "RATE": "Rate",
             "RECEIPT_RENDERER_SETTING": "Receipt Format",
@@ -859,6 +860,9 @@
             "USE_SIMPLIFIED_CARD": "Use simple patient identity",
             "USE": "Use",
             "VALIDATED": "Validated",
+            "VALIDATED_BY": "Validated by",            
+            "VALIDATION": "Validation",
+            "VALIDATION_DATE": "Validation date",            
             "VALUE": "Value",
             "VALUE_IN_STOCK": "Value in stock",
             "VARIABLE_CHARGE": "Variable cost",
@@ -927,7 +931,9 @@
               "DRAFT":"Draft",
               "EXCESSIVE_RECEIVED_QUANTITY": "Received but with excessive quantity",
               "IN_PROGRESS":"In Progress",
-              "PARTIALLY":"Partially delivered"
+              "PARTIALLY":"Partially delivered",
+              "PARTIAL_SURPLUSES" : "Partial with surpluses",
+              "VALIDATED"     : "Validated"              
             }
         },
         "LEGENDS": {

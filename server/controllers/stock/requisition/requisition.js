@@ -9,13 +9,15 @@ const FilterParser = require('../../../lib/filter');
 const REQUISITION_STATUS_PARTIAL = 3;
 const REQUISITION_STATUS_COMPLETE = 6;
 const REQUISITION_STATUS_EXCESSIVE = 7;
+const REQUISITION_STATUS_PARTIAL_SURPLUSES = 8;
+const REQUISITION_STATUS_VALIDATED = 9;
 
 const SELECT_QUERY = `
   SELECT
     BUID(sr.uuid) uuid, BUID(sr.requestor_uuid) requestor_uuid, BUID(sr.depot_uuid) depot_uuid,
     sr.requestor_type_id, sr.description, sr.date, sr.user_id, sr.project_id, sr.status_id,
-    u.display_name AS user_display_name, d.text AS depot_text,
-    s.name service_requestor, dd.text depot_requestor,
+    u.display_name AS user_display_name, d.text AS depot_text, sr.validation_date,
+    s.name service_requestor, dd.text depot_requestor, uu.display_name AS validator_display_name,
     dm.text reference, stat.title_key, stat.status_key, stat.class_style, sr.created_at
   FROM stock_requisition sr
   JOIN user u ON u.id = sr.user_id
@@ -24,6 +26,7 @@ const SELECT_QUERY = `
   JOIN status stat ON stat.id = sr.status_id
   LEFT JOIN service s ON s.uuid = sr.requestor_uuid
   LEFT JOIN depot dd ON dd.uuid = sr.requestor_uuid
+  LEFT JOIN user uu ON uu.id = sr.validator_user_id
 `;
 
 /**
@@ -35,7 +38,8 @@ async function getDetails(identifier) {
   const uuid = identifier;
   const sqlRequisition = `${SELECT_QUERY} WHERE sr.uuid = ?;`;
   const sqlRequisitionItems = `
-    SELECT BUID(i.uuid) inventory_uuid, i.code, i.consumable, i.text, it.text as inventoryType, sri.quantity
+    SELECT BUID(i.uuid) inventory_uuid, i.code, i.consumable, i.text, it.text as inventoryType, sri.quantity,
+    sri.old_quantity
     FROM stock_requisition_item sri
     JOIN inventory i ON i.uuid = sri.inventory_uuid
     JOIN inventory_type it ON i.type_id = it.id
@@ -75,7 +79,6 @@ async function getDetailsBalance(identifier) {
       WHERE m.stock_requisition_uuid = ?
       GROUP BY inv.uuid
     ) AS mouv ON mouv.inventory_uuid = req.inventory_uuid
-    WHERE (req.quantity - IF(mouv.quantity, mouv.quantity, 0)) > 0;
   `;
 
   const [requisition, items] = await Promise.all([db.one(sqlRequisition, [uuid]), db.exec(sql, [uuid, uuid])]);
@@ -211,12 +214,23 @@ exports.update = async (req, res, next) => {
 
     const transaction = db.transaction();
     const uuid = db.bid(req.params.uuid);
+
+    const { isValidation } = req.body;
+    delete req.body.isValidation;
+
     const requisition = _.omit(req.body, 'items');
 
     const requisitionItems = _.pick(req.body, 'items').items;
 
     if (requisition.date) {
       requisition.date = new Date(requisition.date);
+    }
+
+    if (isValidation) {
+      requisition.validator_user_id = req.session.user.id;
+      requisition.validation_date = new Date();
+
+      delete requisition.date;
     }
 
     if (requisition.depot_uuid) {
@@ -310,6 +324,13 @@ exports.update = async (req, res, next) => {
       });
     }
 
+    if (isValidation) {
+      const statusAction = REQUISITION_STATUS_VALIDATED;
+
+      transaction
+        .addQuery('UPDATE stock_requisition SET status_id = ? WHERE uuid = ?;', [statusAction, db.bid(uuid)]);
+    }
+
     await transaction.execute();
     res.status(200).json({ uuid : req.params.uuid });
   } catch (error) {
@@ -341,10 +362,38 @@ exports.deleteRequisition = async (req, res, next) => {
 async function updateStatus(uuid) {
   // First get the requisition details
   const balance = await getDetailsBalance(db.bid(uuid));
-  if (balance.items.length === 0) {
-    await db.exec('UPDATE stock_requisition SET status_id = ? WHERE uuid = ?', [
-      REQUISITION_STATUS_COMPLETE, db.bid(uuid)]);
+
+  let checkComplete = true;
+  let checkPartial = false;
+  let checkExcessive = false;
+  let statusAction;
+
+  balance.items.forEach(item => {
+    if (item.quantity !== 0) {
+      checkComplete = false;
+    }
+
+    if (item.quantity > 0) {
+      checkPartial = true;
+    }
+
+    if (item.quantity < 0) {
+      checkExcessive = true;
+    }
+  });
+
+  if (checkComplete) {
+    statusAction = REQUISITION_STATUS_COMPLETE;
+  } else if (checkPartial && checkExcessive) {
+    statusAction = REQUISITION_STATUS_PARTIAL_SURPLUSES;
+  } else if (checkPartial && !checkExcessive) {
+    statusAction = REQUISITION_STATUS_PARTIAL;
+  } else if (!checkPartial && checkExcessive) {
+    statusAction = REQUISITION_STATUS_EXCESSIVE;
   }
+
+  await db.exec('UPDATE stock_requisition SET status_id = ? WHERE uuid = ?', [
+    statusAction, db.bid(uuid)]);
 }
 
 exports.getDetails = getDetails;
