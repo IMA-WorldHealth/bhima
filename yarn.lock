@@ -3443,10 +3443,10 @@ eventemitter3@^4.0.0:
   resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-4.0.7.tgz#2de9b68f6528d5644ef5c59526a1b4a07306169f"
   integrity sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw==
 
-excel4node@^1.8.1:
-  version "1.8.1"
-  resolved "https://registry.yarnpkg.com/excel4node/-/excel4node-1.8.1.tgz#84ceeaeef53a19730cec4f95b6dfe8fc01e94828"
-  integrity sha512-aWuz1v63U3zc9tkjAMpx1ZrYfrButTOFFj/OW8owlRHAe3BvRFoFWDzRukOH5tsK6xcnlB8YD7HX1H0aSJ/RAg==
+excel4node@^1.8.2:
+  version "1.8.2"
+  resolved "https://registry.yarnpkg.com/excel4node/-/excel4node-1.8.2.tgz#2d2f8b2ae56a3d3c7ae6a29bb2652b25807b021f"
+  integrity sha512-v5BZZy8y4cibFQ/xvztUleAoyYmIBol1qTKWuDWZZPpFGBAy4P7qkswdpBkTkQgLIQ/WkCpyV/P6liW4mIb/wQ==
   dependencies:
     deepmerge "^4.2.2"
     image-size "^1.0.2"
