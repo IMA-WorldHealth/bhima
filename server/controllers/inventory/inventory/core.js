@@ -305,12 +305,23 @@ async function getItemsMetadata(params) {
   // the tags via the GROUP_CONCAT above.
   filters.setGroup('GROUP BY inventory.uuid');
 
-  const query = filters.applyQuery(sql);
-  const parameters = filters.parameters();
-  const response = await db.exec(query, parameters);
+  let response;
+  let responsePaging;
+
+  if (params.paging) {
+    const FROM_INDEX = String(sql).lastIndexOf('FROM');
+    const select = String(sql).substring(0, FROM_INDEX - 1);
+    const tables = String(sql).substring(FROM_INDEX, sql.length);
+    responsePaging = await db.paginateQuery(select, params, tables, filters);
+  } else {
+    const query = filters.applyQuery(sql);
+    const parameters = filters.parameters();
+    response = await db.exec(query, parameters);
+  }
 
   // Decode the tags for each inventory item with tags
-  response.forEach(inv => {
+  const dataRows = params.paging ? responsePaging.rows : response;
+  dataRows.forEach(inv => {
     if (inv.tag_details) {
       inv.tags = [];
       const rawTags = inv.tag_details.split('|');
@@ -323,7 +334,7 @@ async function getItemsMetadata(params) {
     }
   });
 
-  return response;
+  return params.paging ? { rows : dataRows, pager : responsePaging.pager } : dataRows;
 }
 
 // This function helps to delete an inventory
