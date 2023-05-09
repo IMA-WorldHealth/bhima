@@ -4,7 +4,7 @@ const { expect } = require('chai');
 const helpers = require('../shared/helpers');
 
 const FU = require('../shared/FormUtils');
-const PurchaseOrderPage = require('./purchases.page.js');
+const PurchaseOrderPage = require('./purchases.page');
 const components = require('../shared/components');
 
 /*
