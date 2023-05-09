@@ -1,5 +1,8 @@
 /* global inject, expect, chai */
+
 describe('LotItemService', () => {
+
+  const expireInOneYear = (new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)).toISOString();
 
   let Lot;
 
@@ -10,7 +13,7 @@ describe('LotItemService', () => {
     code : '119-110',
     text : 'Acide   Folique 5 mg / Ces',
     group_uuid : '1410DFE0B47811E5B297023919D3D5B0',
-    expiration_date : '2023-04-29T23:00:00.000Z',
+    expiration_date : expireInOneYear,
     is_expired : 0,
     label : 'ME33',
     unit_type : 'Ces',
@@ -95,7 +98,7 @@ describe('LotItemService', () => {
     expect(lot.code).to.equal('119-110');
 
     expect(lot.group_uuid).to.equal('1410DFE0B47811E5B297023919D3D5B0');
-    const expDate = new Date('2023-04-29T23:00:00.000Z');
+    const expDate = new Date(expireInOneYear);
     expect(lot.expiration_date.toString()).to.equal(expDate.toString());
 
     // now, reconfigure the lot
