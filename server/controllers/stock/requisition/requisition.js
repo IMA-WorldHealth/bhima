@@ -113,7 +113,7 @@ function binarize(params) {
  * @param {object} params
  * @returns {object} { query:..., queryParameters:... }
  */
-function getStockRequisition(params) {
+async function getStockRequisition(params) {
   const filters = new FilterParser(params);
 
   filters.equals('depot_text', 'text', 'd');
@@ -142,9 +142,21 @@ function getStockRequisition(params) {
     [params.check_user_id, params.check_user_id],
   );
 
-  const query = filters.applyQuery(SELECT_QUERY);
-  const queryParameters = filters.parameters();
-  return { query, queryParameters };
+  let query;
+  let queryParameters;
+  let responsePaging;
+
+  if (params.paging) {
+    const sql = SELECT_QUERY;
+    const FROM_INDEX = String(sql).lastIndexOf('FROM');
+    const select = String(sql).substring(0, FROM_INDEX - 1);
+    const tables = String(sql).substring(FROM_INDEX, sql.length);
+    responsePaging = await db.paginateQuery(select, params, tables, filters);
+  } else {
+    query = filters.applyQuery(SELECT_QUERY);
+    queryParameters = filters.parameters();
+  }
+  return params.paging ? responsePaging : { query, queryParameters };
 }
 
 exports.details = async (req, res, next) => {
@@ -167,9 +179,15 @@ exports.list = async (req, res, next) => {
       params.check_user_id = req.session.user.id;
     }
 
-    const sr = getStockRequisition(params);
-    const result = await db.exec(sr.query, sr.queryParameters);
-    res.status(200).json(result);
+    const sr = await getStockRequisition(params);
+
+    if (params.paging) {
+      // { rows: [], pager: {} }
+      res.status(200).json(sr);
+    } else {
+      const result = await db.exec(sr.query, sr.queryParameters);
+      res.status(200).json(result);
+    }
   } catch (error) {
     next(error);
   }

@@ -213,7 +213,7 @@ async function getInventoryItems(req, res, next) {
   const params = req.query;
 
   try {
-    const data = await core.getItemsMetadata(params);
+    const itemsMetadata = await core.getItemsMetadata(params);
 
     const queryTags = `
       SELECT BUID(t.uuid) uuid, t.name, t.color, BUID(it.inventory_uuid) inventory_uuid
@@ -223,19 +223,24 @@ async function getInventoryItems(req, res, next) {
     `;
 
     // if we have an empty set, do not query tags.
-    if (data.length !== 0 && !params.skipTags) {
-      const inventoryUuids = data.map(row => db.bid(row.uuid));
+    const dataRows = params.paging ? itemsMetadata.rows : itemsMetadata;
+    if (dataRows.length !== 0 && !params.skipTags) {
+      const inventoryUuids = dataRows.map(row => db.bid(row.uuid));
       const tags = await db.exec(queryTags, [inventoryUuids]);
 
       // make a inventory_uuid -> tags map.
       const tagMap = _.groupBy(tags, 'inventory_uuid');
 
-      data.forEach(inventory => {
+      dataRows.forEach(inventory => {
         inventory.tags = tagMap[inventory.uuid] || [];
       });
     }
 
-    res.status(200).json(data);
+    if (params.paging) {
+      res.status(200).json({ rows : dataRows, pager : itemsMetadata.pager });
+    } else {
+      res.status(200).json(dataRows);
+    }
   } catch (error) {
     core.errorHandler(error, req, res, next);
   }
