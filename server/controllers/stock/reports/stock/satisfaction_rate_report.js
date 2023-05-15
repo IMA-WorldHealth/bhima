@@ -78,11 +78,11 @@ async function reporting(_options, session) {
   SELECT req.requisition_reference, mov.stock_movement_text,
     IF(mov.quantity_delivered, mov.quantity_delivered, 0) AS quantity_delivered, req.stock_requisition_uuid,
     req.inventory_uuid, req.inventory_text,
-    req.validator_user_id, BUID(req.depot_supplier_uuid) AS depot_supplier_uuid, req.depot_supplier_text, 
+    req.validator_user_id, BUID(req.depot_supplier_uuid) AS depot_supplier_uuid, req.depot_supplier_text,
     BUID(req.depot_requestor_uuid) AS depot_requestor_uuid, req.depot_requestor_text,
     req.quatity_requested, req.quatity_validated
     FROM (SELECT sr.uuid AS stock_requisition_uuid, it.inventory_uuid, inv.text AS inventory_text,
-    sr.validator_user_id, sr.depot_uuid AS depot_supplier_uuid, d.text AS depot_supplier_text, 
+    sr.validator_user_id, sr.depot_uuid AS depot_supplier_uuid, d.text AS depot_supplier_text,
     sr.requestor_uuid AS depot_requestor_uuid, dd.text AS depot_requestor_text,
     IF(sr.validator_user_id, it.old_quantity, it.quantity) AS quatity_requested,
     it.quantity AS quatity_validated, map1.text AS requisition_reference
@@ -95,8 +95,8 @@ async function reporting(_options, session) {
     WHERE sr.depot_uuid IN (?)
     AND DATE(sr.date) >= DATE(?) AND DATE(sr.date) <= DATE(?)
     ORDER BY d.text, dd.text, inv.text ASC
-  ) AS req 
-  LEFT JOIN ( 
+  ) AS req
+  LEFT JOIN (
     SELECT l.inventory_uuid, SUM(sm.quantity) AS quantity_delivered, sm.stock_requisition_uuid,
     map.text AS stock_movement_text
     FROM stock_movement AS sm
