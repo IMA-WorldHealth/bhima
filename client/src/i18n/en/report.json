@@ -220,6 +220,7 @@
       "TOTAL_DAYS" : "Total Days",
       "RATIO" : "Ratio"
     },
+    "SATISFACTION_RATE_REPORT" : "Satisfaction rate report",
     "STOCK_VALUE": {
       "TITLE": "Stock value report",
       "DESCRIPTION": "This report shows the current stock value for each inventory in a depot",
