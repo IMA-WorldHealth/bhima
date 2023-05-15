@@ -1926,6 +1926,7 @@ CREATE TABLE `stock_setting` (
   `min_delay` DECIMAL(19,4) NOT NULL DEFAULT 1, -- minimum number of months for inventory delay)
   `default_purchase_interval` DECIMAL(19,4) NOT NULL DEFAULT 0, -- default minimum purchase order intervall)
   `enable_expired_stock_out` TINYINT(1) NOT NULL DEFAULT 0,
+  `enable_requisition_validation_step` TINYINT(1) NOT NULL DEFAULT 0,
   `default_cost_center_for_loss` MEDIUMINT(8) NULL,
   `enable_packaging_pharmaceutical_products` TINYINT(1) NOT NULL DEFAULT 0,
   CONSTRAINT `stock_setting__enterprise` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`)
@@ -2058,6 +2059,8 @@ CREATE TABLE `stock_requisition` (
   `project_id`          SMALLINT(5) UNSIGNED NOT NULL,
   `reference`           INT(11) UNSIGNED NOT NULL DEFAULT 0,
   `status_id`           TINYINT(3) UNSIGNED NOT NULL DEFAULT 1,
+  `validator_user_id`   SMALLINT(5) UNSIGNED DEFAULT NULL,
+  `validation_date`     DATETIME NULL,
   `updated_at`          TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `created_at`          TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`uuid`),
@@ -2075,6 +2078,7 @@ CREATE TABLE `stock_requisition_item` (
   `requisition_uuid`  BINARY(16) NOT NULL,
   `inventory_uuid`    BINARY(16) NOT NULL,
   `quantity`          INT(11) NOT NULL DEFAULT 0,
+  `old_quantity`      INT(11) NOT NULL DEFAULT 0,
   KEY `requisition_uuid` (`requisition_uuid`),
   CONSTRAINT `stock_req_item__stock_req_item` FOREIGN KEY (`requisition_uuid`) REFERENCES `stock_requisition` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;

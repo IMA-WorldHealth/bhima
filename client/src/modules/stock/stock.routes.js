@@ -129,6 +129,14 @@ angular.module('bhima.routes')
         onEnter : ['$state', 'StockModalService', '$transition$', onEnterFactory('edit', 'stockRequisition')],
         onExit : ['$uibModalStack', closeModals],
       })
+      .state('stockRequisition.validation', {
+        url : '/:uuid/validation',
+        params : {
+          uuid : { value : null },
+        },
+        onEnter : ['$state', 'StockModalService', '$transition$', validationModals('stockRequisition')],
+        onExit : ['$uibModalStack', closeModals],
+      })
 
       .state('stockSetting', {
         url         : '/stock/setting',
@@ -171,6 +179,24 @@ function onEnterFactory(stateType, state) {
         } else {
           params.updated = true;
         }
+
+        $state.go(state, params, { reload : true });
+      })
+      .catch(() => {
+        $state.go(state, { uuid : $state.params.id }, { notify : false });
+      });
+  };
+}
+
+// Validation requisition
+function validationModals(state) {
+  return function onEnter($state, StockModal, $transition) {
+    const transitionParams = $transition.params('to');
+    const instance = StockModal.openActionValidationRequisition;
+
+    instance(transitionParams)
+      .then((_uuid) => {
+        const params = { uuid : _uuid, validation : true };
 
         $state.go(state, params, { reload : true });
       })
