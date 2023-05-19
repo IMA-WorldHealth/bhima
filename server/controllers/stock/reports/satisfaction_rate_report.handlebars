@@ -1,0 +1,89 @@
+{{> head }}
+
+<body class="container-fluid">
+  {{#> header }}
+    {{#each option.suppliersListe}}
+      <h4 class="text-right"><span class="text-capitalize"><strong><u>{{translate 'FORM.LABELS.DEPOT'}}</u></strong></span>: {{ depot_text }}</h4>
+    {{/each}}
+    <h4 class="text-right">{{date option.dateFrom}} - {{date option.dateTo}}</h4>
+  {{/header}}
+
+  <!-- body  -->
+  <div class="row">
+    <div class="col-xs-12">
+
+      {{#each depotsListSupplier}}
+        <table class="table table-condensed table-report">
+          <thead>
+            <tr style="background-color: #DEDEDE;">
+              <th colspan="9">{{ depot_text}}</th>
+            </tr>
+          </thead>
+          <tr style="background-color: #1F1F1F;">
+            <th colspan="9"> </th>
+          </tr>
+          <tr>
+            <td style="font-weight: bold; font-style: italic; text-align: right; background-color: #DEDEDE; text-transform: uppercase;" colspan="8"> {{translate 'FORM.LABELS.SATISFACTION_RATE_QUANTITY_GRANTED'}} </td>
+            <td style="font-weight: bold; font-style: italic; text-align: right; background-color: #DEDEDE; text-transform: uppercase;"><strong>{{percentage satisfaction_rate_quantity}} </strong></td>
+          </tr>
+          <tr>
+            <td style="font-weight: bold; font-style: italic; text-align: right; background-color: #DEDEDE; text-transform: uppercase;" colspan="8"> {{translate 'FORM.LABELS.SATISFACTION_RATE_BY_ITEMS_GRANTED'}} </td>
+            <td style="font-weight: bold; font-style: italic; text-align: right; background-color: #DEDEDE; text-transform: uppercase;"><strong>{{percentage satisfaction_rate_item }}</strong></td>
+          </tr>
+          <tr style="background-color: #000;">
+            <th colspan="9"> </th>
+          </tr>          
+          {{#each data}}
+            <thead>
+              <tr style="background-color: #EFEFEF;">
+                <th colspan="1" width="2%"> {{ add @index 1 }} </th>
+                <th colspan="8" width="98%"> {{ depot_requisition.beneficiary }} </th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr style="font-weight: bold; background-color: #FDFDFD; text-transform: uppercase;">
+                <td width="2%"></td>
+                <td width="3%"></td>
+                <td width="10%"> {{translate 'FORM.LABELS.REQUISITION' }} </td>
+                <td width="10%"> {{translate 'FORM.LABELS.MOVEMENT'}} </td>
+                <td width="25%"> {{translate 'FORM.LABELS.PRODUCT'}} </td>
+                <td width="10%"> {{translate 'FORM.LABELS.QUANTITY_ORDERED'}} </td>
+                <td width="10%"> {{translate 'FORM.LABELS.QUANTITY_VALIDATED'}} </td>
+                <td width="10%"> {{translate 'FORM.LABELS.QUANTITY_DELIVERED'}} </td>
+                <td width="10%"> {{translate 'FORM.LABELS.SATISFACTION_RATE'}} </td>
+              </tr>              
+              {{#each data_requisition_movement }}
+              <tr>
+                <td></td>
+                <td> {{ add @index 1 }} </td>
+                <td> {{ requisition_reference }} </td>
+                <td> {{ stock_movement_text }} </td>
+                <td> {{ inventory_text }} </td>
+                <td style="text-align: right;"> {{ quatity_requested }} </td>
+                <td style="text-align: right;"> {{ quatity_validated }} </td>
+                <td style="text-align: right;"> {{ quantity_delivered }} </td>
+                <td style="text-align: right;"><strong>{{percentage satisfaction_rate }}</strong></td>
+              </tr>
+              {{/each}}
+              <tr>
+                <td style="font-weight: bold; font-style: italic; text-align: right; background-color: #EBEBEB; text-transform: uppercase;" colspan="8"> {{translate 'FORM.LABELS.SATISFACTION_RATE_QUANTITY_GRANTED'}} </td>
+                <td style="font-weight: bold; font-style: italic; text-align: right; background-color: #EBEBEB; text-transform: uppercase;"><strong>{{percentage depot_requisition.satisfaction_rate_quantity }} </strong></td>
+              </tr>
+              <tr>
+                <td style="font-weight: bold; font-style: italic; text-align: right; background-color: #ECECEC; text-transform: uppercase;" colspan="8"> {{translate 'FORM.LABELS.SATISFACTION_RATE_BY_ITEMS_GRANTED'}} </td>
+                <td style="font-weight: bold; font-style: italic; text-align: right; background-color: #ECECEC; text-transform: uppercase;"><strong>{{percentage depot_requisition.satisfaction_rate_item }}</strong></td>
+              </tr>
+              <tr style="background-color: #000;">
+                <th colspan="9"> </th>
+              </tr>                                       
+            </tbody>
+          {{/each}}
+        </table>
+        <br/>
+      {{/each}}
+
+    </div>
+  </div>
+
+</body>
