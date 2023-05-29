@@ -9,7 +9,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 // NOTE: connect-redis now automatically imports the session data from
-//       express-session. See migration notes in
+//       express-session. See the migration notes in
 //       https://github.com/tj/connect-redis/releases/tag/v7.0.0
 const RedisStore = require('connect-redis').default;
 const Redis = require('ioredis');
