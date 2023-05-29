@@ -8,7 +8,10 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const session = require('express-session');
-const RedisStore = require('connect-redis')(session);
+// NOTE: connect-redis now automatically imports the session data from
+//       express-session. See migration notes in
+//       https://github.com/tj/connect-redis/releases/tag/v7.0.0
+const RedisStore = require('connect-redis').default;
 const Redis = require('ioredis');
 const morgan = require('morgan');
 const helmet = require('helmet');
