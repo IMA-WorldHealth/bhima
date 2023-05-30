@@ -75,7 +75,6 @@ function MultiplePayrollService(
     { key : 'conversion_rate', label : 'FORM.LABELS.CONVERSION_RATE' },
   ]);
 
-
   if (filterCache.filters) {
     multiplePayrollFilters.loadCache(filterCache.filters);
   }
