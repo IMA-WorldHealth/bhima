@@ -40,8 +40,10 @@ test.describe('Login', () => {
   });
 
   test('has a default project value', async () => {
-    const projectOptions = await TU.waitForSelector('select[name="project"]');
-    const defaultProject = (await projectOptions.$('option:checked')).innerText();
+    await TU.waitForSelector('select[name="project"]');
+    const projectOptions = await TU.locator('select[name="project"]');
+    await projectOptions.click(); // Expose the options
+    const defaultProject = await projectOptions.locator('option[selected]').innerText();
     expect(defaultProject.length > 0);
   });
 
