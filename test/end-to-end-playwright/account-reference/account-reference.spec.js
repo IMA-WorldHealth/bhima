@@ -1,4 +1,4 @@
-const { chromium } = require('playwright');
+const { chromium } = require('@playwright/test');
 const { test, expect } = require('@playwright/test');
 const TU = require('../shared/TestUtils');
 

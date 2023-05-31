@@ -1,5 +1,5 @@
 const { expect } = require('@playwright/test');
-const playwright = require('playwright');
+const playwright = require('@playwright/test');
 const TU = require('../TestUtils');
 
 module.exports = {
