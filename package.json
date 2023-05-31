@@ -143,7 +143,6 @@
     "nodemailer": "^6.9.3",
     "p-retry": "^4.6.1",
     "pako": "^2.0.4",
-    "playwright": "^1.34.3",
     "q": "^1.5.1",
     "qrcode": "^1.5.3",
     "stream-to-promise": "^3.0.0",
