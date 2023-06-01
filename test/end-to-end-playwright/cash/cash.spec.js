@@ -19,13 +19,13 @@ test.describe('Cash Payments', () => {
   const path = 'cash';
 
   const cashboxB = {
-    id : 2,
-    text : 'Test Aux Cashbox A',
+    id: 2,
+    text: 'Test Aux Cashbox A',
   };
 
   const cashboxC = {
-    id : 3,
-    text : 'Test Aux Cashbox B',
+    id: 3,
+    text: 'Test Aux Cashbox B',
   };
 
   // this is a shortcut function for clicking an action in the cash page
@@ -120,15 +120,15 @@ test.describe('Cash Payments', () => {
 
     // This caution payment should succeed
     const mockCautionPayment = {
-      patientName : 'Test 2',
-      amount : 150,
+      patientName: 'Test 2',
+      amount: 150,
     };
 
     // This payment against patient invoices should succeed
     const mockInvoicesPayment = {
-      patientId : '2', // we are using PA.TPA.X at patient invoice already
-      date : new Date('2016-03-01'),
-      amount : 5.12,
+      patientId: '2', // we are using PA.TPA.X at patient invoice already
+      date: new Date('2016-03-01'),
+      amount: 5.12,
     };
 
     test('should make a caution payment', async () => {
