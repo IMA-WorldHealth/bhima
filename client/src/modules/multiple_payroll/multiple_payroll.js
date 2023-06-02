@@ -53,19 +53,23 @@ function MultiplePayrollController(
     headerCellFilter : 'translate',
   }, {
     field : 'net_salary',
-    displayName : 'FORM.LABELS.NET_SALARY',
-    headerCellFilter : 'translate',
-    cellClass : 'text-right',
+    aggregationHideLabel : true,
     aggregationType  : uiGridConstants.aggregationTypes.sum,
+    cellClass : 'text-right',
     cellFilter : 'currency:row.entity.currency_id',
+    displayName : 'FORM.LABELS.NET_SALARY',
+    footerCellClass : 'text-right',
+    headerCellFilter : 'translate',
     type : 'number',
   }, {
     field : 'balance',
-    displayName : 'FORM.LABELS.BALANCE',
-    headerCellFilter : 'translate',
-    cellClass : 'text-right',
+    aggregationHideLabel : true,
     aggregationType  : uiGridConstants.aggregationTypes.sum,
+    cellClass : 'text-right',
     cellFilter : 'currency:row.entity.currency_id',
+    displayName : 'FORM.LABELS.BALANCE',
+    footerCellClass : 'text-right',
+    headerCellFilter : 'translate',
     type : 'number',
   }, {
     field : 'status_id',
@@ -135,7 +139,6 @@ function MultiplePayrollController(
   // remove a filter with from the filter object, save the filters and reload
   function onRemoveFilter(key) {
     MultiplePayroll.removeFilter(key);
-
     MultiplePayroll.cacheFilters();
     vm.latestViewFilters = MultiplePayroll.filters.formatView();
 
