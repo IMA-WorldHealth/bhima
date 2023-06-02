@@ -38,7 +38,7 @@
     "jsdoc/require-returns-check": 1, // Recommended
     "jsdoc/require-returns-description": 1, // Recommended
     "jsdoc/require-returns-type": 1, // Recommended
-    "jsdoc/require-throws": 1,
+    "jsdoc/require-throws": 0,
     "jsdoc/require-yields": 1, // Recommended
     "jsdoc/require-yields-check": 1, // Recommended
     "jsdoc/sort-tags": 1,
