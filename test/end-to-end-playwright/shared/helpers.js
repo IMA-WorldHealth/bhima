@@ -1,8 +1,4 @@
-
 /**
- * @overview helpers
- *
- * @description
  * This file contains utilities that are useful in tests, but not specifically
  * tied to forms or modules.
  */
