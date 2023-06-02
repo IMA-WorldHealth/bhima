@@ -61,11 +61,11 @@ module.exports = {
     const province = await TU.locator(`${target} select[ng-model="${models.province}"]`);
     await province.selectOption(`${array[1]}`);
 
-    // /** sector <select> */
+    /** sector <select> */
     const sector = await TU.locator(`${target} select[ng-model="${models.sector}"]`);
     await sector.selectOption(`${array[2]}`);
 
-    // /** village <select> */
+    /** village <select> */
     const village = await TU.locator(`${target} select[ng-model="${models.village}"]`);
     return village.selectOption(`${array[3]}`);
   },
@@ -89,16 +89,17 @@ module.exports = {
   get : async function get(id) {
 
     /** if an id was passed in, use it as a target */
-    const target = (id) ? element(by.id(id)) : element(by.css(this.selector));
+    const target = (id) ? TU.locator(by.id(id)) : TU.locator(by.css(this.selector));
 
     /** alias the models */
     const { models } = this;
 
     /** find each <select> by its model */
-    const country = target.element(by.model(models.country)).$('option:checked');
-    const province = target.element(by.model(models.province)).$('option:checked');
-    const sector = target.element(by.model(models.sector)).$('option:checked');
-    const village = target.element(by.model(models.village)).$('option:checked');
+    // TODO: WARNING : Needs fixing/testing!
+    const country = target.locator(by.model(models.country)).$('option:checked');
+    const province = target.locator(by.model(models.province)).$('option:checked');
+    const sector = target.locator(by.model(models.sector)).$('option:checked');
+    const village = target.locator(by.model(models.village)).$('option:checked');
 
     /** return the selected values */
     return Promise.all([

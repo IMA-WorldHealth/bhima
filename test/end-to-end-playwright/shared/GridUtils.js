@@ -1,4 +1,4 @@
-/* eslint-disable jsdoc/require-throws */
+/* eslint-disable no-unused-vars, max-len */
 
 const { expect } = require('@playwright/test');
 const TU = require('./TestUtils');
@@ -180,7 +180,6 @@ async function getGridIndexesMatchingText(gridId, text) {
   //       })))
   //   .then(() => ({ rowIndex : rowIdx, columnIndex : colIdx }));
 }
-
 
 // takes in an array of column texts and asserts they are the column headers
 // @todo - migrate this to GridUtils

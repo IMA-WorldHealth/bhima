@@ -2,8 +2,6 @@
  * Utilities for Playwright End-to-End testing
  */
 
-/* eslint-disable jsdoc/require-throws */
-
 const { expect } = require('@playwright/test');
 
 const PATH_REGEXP = /^[#!/]+/g;
@@ -398,7 +396,7 @@ module.exports = {
       // Search for whole string
       return select.locator('.dropdown-menu [role="option"]').locator(`//*[text()='${searchString}']`).click();
     case 'accountName':
-      console.debug(`WARNING: 'accountName' regex search is broken`);
+      console.debug(`WARNING: 'accountName' regex search is broken`); // eslint-disable-line
       // Try to fix it with https://playwright.dev/docs/other-locators#css-matching-by-text
       searchString = new RegExp(`\\d+\\s+${labelForRegex}\\s+`);
       break;

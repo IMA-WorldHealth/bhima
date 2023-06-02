@@ -1,4 +1,3 @@
-/* global browser */
 
 /**
  * @overview helpers
@@ -7,7 +6,8 @@
  * This file contains utilities that are useful in tests, but not specifically
  * tied to forms or modules.
  */
-const PATH_REGEXP = /^#!|^#|^!/g;
+
+// DISABLED: const PATH_REGEXP = /^#!|^#|^!/g;
 
 // gets a random number within the range(0, n)
 exports.random = function random(n) {

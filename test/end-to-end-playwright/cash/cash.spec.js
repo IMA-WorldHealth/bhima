@@ -73,7 +73,7 @@ test.describe('Cash Payments', () => {
       await TU.navigate(path);
 
       // force the redirect to complete
-      await TU.reloadPage({ waitUntil: 'networkidle' });
+      await TU.reloadPage({ waitUntil : 'networkidle' });
 
       // the cashbox selection modal should not appear
       await TU.exists('[data-cashbox-modal]', false);
@@ -231,7 +231,7 @@ test.describe('Cash Payments', () => {
     });
 
     // this transfer should succeed
-    const mockTransfer = { amount: 100 };
+    const mockTransfer = { amount : 100 };
 
     test('should make a transfer between accounts', async () => {
       // open the dropdown menu
