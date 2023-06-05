@@ -13,7 +13,7 @@ function NotifyService($translate) {
   const service = this;
 
   // default time to live of 3 seconds
-  const TTL = 3000;
+  const TTL = 5000;
 
   // this will be used to specify how long a major error will be displayed,
   // these errors are usually out of the control of the user, they will probably
