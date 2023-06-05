@@ -3,7 +3,7 @@
 # PARTIALLY convert protractor tests to playwright tests
 
 while (<>) {
-    print 'const { chromium } = require(\'playwright\');
+    print 'const { chromium } = require(\'@playwright/test\');
 const { test, expect } = require(\'@playwright/test\');
 const TU = require(\'../shared/TestUtils\');
 const { by } = require(\'../shared/TestUtils\');
