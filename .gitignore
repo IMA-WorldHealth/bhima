@@ -46,6 +46,11 @@ sh/build-database-test.sh
 # Ignore local temporary files
 temp/
 
+# Ignore local eslint soft-links
+client/.eslintrc.json
+server/.eslintrc.json
+test/.eslintrc.json
+
 # ignore documentation bad files
 docs/_site/
 docs/.sass-cache/
@@ -57,3 +62,8 @@ test/*/report
 migration-*.sql
 yarn-error.log
 *.log
+/test-results/
+/playwright-report/
+/playwright/.cache/
+/tests-examples
+/test-results
