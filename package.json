@@ -192,7 +192,7 @@
     "protractor": "^7.0.0",
     "protractor-console-plugin": "^0.1.1",
     "qs": "^6.11.2",
-    "release-it": "^15.10.5",
+    "release-it": "^15.11.0",
     "sinon": "^15.1.0",
     "standard-version": "^9.5.0",
     "typescript": "^5.1.3"
