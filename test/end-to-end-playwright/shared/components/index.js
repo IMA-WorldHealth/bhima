@@ -13,11 +13,11 @@
 
 module.exports = {
   // accountConfigSelect : require('./bhAccountConfigSelect'),
-  // accountReferenceSelect : require('./bhAccountReferenceSelect'),
+  accountReferenceSelect : require('./bhAccountReferenceSelect'),
   accountReferenceTypeSelect : require('./bhAccountReferenceTypeSelect'),
   accountSelect : require('./bhAccountSelect'),
   // addItem : require('./bhAddItem'),
-  // analysisToolTypeSelect : require('./bhAnalysisToolTypeSelect'),
+  analysisToolTypeSelect : require('./bhAnalysisToolTypeSelect'),
   // bhCheckboxTree : require('./bhCheckboxTree'),
   // bhMultipleDepotSearchSelect : require('./bhMultipleDepotSearchSelect'),
   // cashboxSelect : require('./bhCashBoxSelect'),
