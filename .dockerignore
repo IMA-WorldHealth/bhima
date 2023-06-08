@@ -2,16 +2,16 @@
 node_modules
 .git
 
-# ignore loggin utilities
-npm-debug.log
-yarn-error.log
+# ignore logging utilities
+*.log
 
 # ignore documentation
 *.md
+Dockerfile
 
 # ignore unnecessary folders
 docs
-temp
+#temp
 test
 sh
 bin
