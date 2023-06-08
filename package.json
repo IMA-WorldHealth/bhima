@@ -19,6 +19,7 @@
     "build:clean": "cross-env ./sh/build-init-database.sh",
     "build:stock": "cross-env ./sh/build-stock-database.sh",
     "build:docker": "cross-env ./sh/docker-init.sh",
+    "build:podman": "podman build --tag imaworldhealth/bhima:latest -f ./Dockerfile",
     "migrate": "cross-env ./sh/setup-migration-script.sh",
     "watch": "cross-env ./node_modules/.bin/gulp watch",
     "check:lang": "cross-env node ./utilities/translation/tfcomp.js client/src/i18n/en client/src/i18n/fr",

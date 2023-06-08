@@ -2,8 +2,8 @@ version: '3'
 
 services:
   bhima:
-    build: .
-    image: imaworldhealth/bhima
+    #build: .
+    image: imaworldhealth/bhima:latest
     restart: unless-stopped
     ports:
       - $PORT:$PORT
@@ -14,7 +14,7 @@ services:
       - mysql
       - redis
   mysql:
-    image: mysql:8
+    image: mysql:latest
     restart: always
     command:
       - --default-authentication-plugin=mysql_native_password
@@ -23,8 +23,9 @@ services:
       - --collation-server=utf8mb4_unicode_ci
     volumes:
       - mysqldata:/var/lib/mysql/
-      - "./temp/docker-build.sql:/docker-entrypoint-initdb.d/bhima.sql"
+      - "./temp:/docker-entrypoint-initdb.d"
     environment:
+      # - MYSQL_ROOT_PASSWORD=2fe88872-0598-11ee-b0cf-47268d06eac1
       - MYSQL_RANDOM_ROOT_PASSWORD=1
       - MYSQL_USER=$DB_USER
       - MYSQL_PASSWORD=$DB_PASS

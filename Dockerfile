@@ -1,5 +1,5 @@
 # define base image
-FROM node:lts-slim
+FROM node:lts-slim as build
 
 # download all the missing dependencies for chromium, plus chromium itself
 RUN apt-get update && apt-get install -y \
@@ -11,12 +11,13 @@ RUN apt-get update && apt-get install -y \
   libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 \
   libxss1 libxtst6 lsb-release libxshmfence1 chromium -y
 
-# ENV NODE_ENV=production
-ENV YARN_VERSION 1.22.17
-#ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD 1
+# set up environmental variables
+ENV YARN_VERSION=1.22.17 \
+    PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1 \
+    CHROME_BIN=/usr/bin/chromium \
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
+
 RUN yarn policies set-version $YARN_VERSION
-#ENV CHROME_BIN /usr/bin/chromium
-#ENV PUPPETEER_EXECUTABLE_PATH /usr/bin/chromium
 
 # define working directory inside the container
 WORKDIR /usr/src/app
@@ -38,6 +39,8 @@ RUN chown -R node:node *
 
 # ensure this container runs as the user "node"
 USER node
+
+ENV NODE_ENV production
 
 # define the start up command of the container to run the server
 CMD ["node", "server/app.js"]
