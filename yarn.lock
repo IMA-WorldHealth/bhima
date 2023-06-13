@@ -1582,7 +1582,7 @@ chai-dom@*:
   resolved "https://registry.npmjs.org/chai-dom/-/chai-dom-1.11.0.tgz"
   integrity sha512-ZzGlEfk1UhHH5+N0t9bDqstOxPEXmn3EyXvtsok5rfXVDOFDJbHVy12rED6ZwkJAUDs2w7/Da4Hlq2LB63kltg==
 
-chai-http@^4.3.0:
+chai-http@^4.4.0:
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/chai-http/-/chai-http-4.4.0.tgz#bb8c346caa25b3c76118c68f7a7cecc0493669b8"
   integrity sha512-uswN3rZpawlRaa5NiDUHcDZ3v2dw5QgLyAwnQ2tnVNuP7CwIsOFuYJ0xR1WiR7ymD4roBnJIzOUep7w9jQMFJA==
