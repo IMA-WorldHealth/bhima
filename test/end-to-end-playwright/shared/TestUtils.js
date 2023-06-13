@@ -82,6 +82,16 @@ const validation = {
 };
 
 /**
+ * Fill an input field
+ * @param {object} field - the field to fill
+ * @param {string} value - string or number value to fill the field with
+ * @returns {Promise} of completed fill operation
+ */
+async function fill(field, value) {
+  return field.fill(typeof value === 'number' ? value.toString() : value);
+}
+
+/**
  * Fill an <input> element for a model
  *
  * @param {string} model - name/selector of the ng-model for the input field
@@ -100,7 +110,7 @@ async function input(model, value, anchor) {
     ? await anchor.locator(selector)
     : await page.locator(selector);
 
-  // Playwright is having problems with input fields with type=number
+  // Playwright has problems with input fields with type=number
   return field.fill(typeof value === 'number' ? value.toString() : value);
 }
 
@@ -469,6 +479,7 @@ module.exports = {
 
   buttons,
   by,
+  fill,
   getModel,
   input,
   modal,
