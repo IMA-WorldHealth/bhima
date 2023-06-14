@@ -14,10 +14,6 @@ test.beforeAll(async () => {
   await TU.login();
 });
 
-// const protractor = require('protractor');
-
-// const EC = protractor.ExpectedConditions;
-
 test.describe('Edit Posting Journal', () => {
   const path = '/#!/journal';
   const gridId = 'journal-grid';

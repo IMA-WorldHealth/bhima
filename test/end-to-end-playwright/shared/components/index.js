@@ -18,7 +18,7 @@ module.exports = {
   accountSelect : require('./bhAccountSelect'),
   // addItem : require('./bhAddItem'),
   analysisToolTypeSelect : require('./bhAnalysisToolTypeSelect'),
-  // bhCheckboxTree : require('./bhCheckboxTree'),
+  bhCheckboxTree : require('./bhCheckboxTree'),
   // bhMultipleDepotSearchSelect : require('./bhMultipleDepotSearchSelect'),
   // cashboxSelect : require('./bhCashBoxSelect'),
   choiceListSelect : require('./bhChoiceListSelect'),
