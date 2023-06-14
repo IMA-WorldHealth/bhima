@@ -16,7 +16,7 @@
     "jsdoc/empty-tags": 1, // Recommended
     "jsdoc/implements-on-classes": 1, // Recommended
     "jsdoc/multiline-blocks": 1, // Recommended
-    "jsdoc/newline-after-description": 1, // Recommended
+    // "jsdoc/newline-after-description": 1, // Deprecated
     "jsdoc/no-bad-blocks": 1,
     "jsdoc/no-defaults": 1,
     "jsdoc/no-multi-asterisks": 1, // Recommended
