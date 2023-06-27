@@ -362,6 +362,23 @@ function list(req, res, next) {
     options.user_id = req.session.user.id;
   }
 
+  // For Depot managers and supervisors
+  if (req.query.only_management_supervision && req.session.stock_settings.enable_strict_depot_permission) {
+    options.user_management_id = req.session.user.id;
+  }
+
+  // When the enable_strict_depot_distribution option is activated, you can only make
+  // a requisition request if the supplier depot is configured to distribute to the beneficiary depot
+  if (req.query.only_distributor && req.session.stock_settings.enable_strict_depot_distribution) {
+    options.only_distributor_for = req.query.exception;
+  }
+
+  // When the enable_strict_depot_distribution option is activated,
+  // you could only distribute to depots configured for distribution
+  if (req.query.only_depot_allowed_distribution && req.session.stock_settings.enable_strict_depot_distribution) {
+    options.only_depot_allowed_distribution = req.query.exception;
+  }
+
   options.enterprise_id = req.session.enterprise.id;
 
   const filters = new FilterParser(options, { tableAlias : 'd' });
@@ -388,6 +405,21 @@ function list(req, res, next) {
   filters.custom(
     'user_id',
     'd.uuid IN (SELECT depot_permission.depot_uuid FROM depot_permission WHERE depot_permission.user_id = ?)',
+  );
+
+  filters.custom(
+    'user_management_id',
+    `d.uuid IN (
+      SELECT DISTINCT d.depot_uuid
+        FROM (
+          SELECT dp.depot_uuid, dp.user_id
+          FROM depot_permission AS dp
+          UNION
+          SELECT ds.depot_uuid, ds.user_id
+          FROM depot_supervision AS ds
+        ) AS d
+      WHERE d.user_id = ?
+    )`,
   );
 
   filters.custom('exception', 'd.uuid NOT IN (?)');

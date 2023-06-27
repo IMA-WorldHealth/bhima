@@ -42,6 +42,7 @@ const STOCK_SHEET_REPORT_TEMPLATE = mkPath('/stock_sheet.report');
 const STOCK_VALUE_REPORT_TEMPLATE = mkPath('/stock_value.report');
 const STOCK_EXPIRATION_REPORT_TEMPLATE = mkPath('/stock_expiration_report');
 const STOCK_AGGREGATED_CONSUMPTION_REPORT_TEMPLATE = mkPath('/stock_aggregated_consumption_report');
+const SATISFACTION_RATE_REPORT_TEMPLATE = mkPath('/satisfaction_rate_report');
 
 const ASSETS_REGISTRY_TEMPLATE = mkPath('/assets_registry.report');
 
@@ -255,4 +256,5 @@ module.exports = {
   STOCK_AGGREGATE_CONSUMPTION_TEMPLATE,
   STOCK_AGGREGATED_CONSUMPTION_REPORT_TEMPLATE,
   ASSETS_REGISTRY_TEMPLATE,
+  SATISFACTION_RATE_REPORT_TEMPLATE,
 };
