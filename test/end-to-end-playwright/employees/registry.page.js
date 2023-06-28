@@ -17,10 +17,6 @@ class EmployeeRegistryPage {
     return grid.expectRowCount(this.gridId, number, message);
   }
 
-  employeeCount() {
-    return
-  }
-
   search() {
     return TU.buttons.search();
   }
