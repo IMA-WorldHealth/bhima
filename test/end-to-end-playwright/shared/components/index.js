@@ -43,7 +43,7 @@ module.exports = {
   // fiscalYearPeriodSelect : require('./bhFiscalYearPeriodSelect'),
   // fiscalYearSelect : require('./bhFiscalYearSelect'),
   fluxSelect : require('./bhFluxSelect'),
-  // fonctionSelect : require('./bhFonctionSelect'),
+  functionSelect : require('./bhFunctionSelect'),
   genderSelect : require('./bhGenderSelect'),
   // gradeSelect : require('./bhGradeSelect'),
   inputText : require('./bhInputText'),
