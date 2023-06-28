@@ -53,7 +53,7 @@ test.describe('Employees Configuration Management', () => {
     await page.errorOnCreateEmployeeConfig();
   });
 
-  test('successfully delete a employee', async () => {
+  test('successfully delete a employee configuration', async () => {
     await page.remove(updateEmployeeConfig.label);
   });
 

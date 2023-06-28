@@ -126,7 +126,7 @@ test.describe('Debtor Groups Management', () => {
 
     // Open the subscriptions dialog again and verify that all options are selected
     await TU.locator('#subsidySubscription').click();
-    const newsubs = await TU.locator('[data-group-option]').all();
+    const newsubs = await (await TU.locator('[data-group-option]')).all();
     const checks = await Promise.all(newsubs.map(opt => opt.isChecked()));
     expect(checks.every(chk => chk === true), 'Setting all subsidy options failed');
   });

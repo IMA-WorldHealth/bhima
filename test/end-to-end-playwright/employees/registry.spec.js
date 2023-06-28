@@ -68,7 +68,7 @@ test.describe('Employees Registry', () => {
       `The number of filtered employee should be 0`);
   });
 
-  test(`should find One employee With reference "${parameters.reference}"`, async () => {
+  test(`should find one employee With reference "${parameters.reference}"`, async () => {
     await employeeRegistryPage.search();
     await searchModalPage.setReference(parameters.reference);
     await searchModalPage.submit();
@@ -82,12 +82,12 @@ test.describe('Employees Registry', () => {
     await searchModalPage.submit();
 
     await employeeRegistryPage.expectEmployeeCount(
-      [1, 2, 3], // Have to do this since registration.spec.js may or may not run first
+      [1, 2, 3], // @TODO : fix to eliminate problems with parallel execution of patient and employees tests
       `The number of filtered employee should be 1, 2, or 3`);
 
     await employeeRegistryPage.clearFilter();
     await employeeRegistryPage.expectEmployeeCount(
-      [4, 5, 6], // Have to do this since registration.spec.js may or may not run first
+      [4, 5, 6], // @TODO : fix to eliminate problems with parallel execution of patient and employees tests
       `The number of filtered employee should be 4, 5, or 6`);
   });
 
