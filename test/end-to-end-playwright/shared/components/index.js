@@ -45,7 +45,7 @@ module.exports = {
   fluxSelect : require('./bhFluxSelect'),
   functionSelect : require('./bhFunctionSelect'),
   genderSelect : require('./bhGenderSelect'),
-  // gradeSelect : require('./bhGradeSelect'),
+  gradeSelect : require('./bhGradeSelect'),
   inputText : require('./bhInputText'),
   // inventoryGroupSelect : require('./bhInventoryGroupSelect'),
   inventorySelect : require('./bhInventorySelect'),
