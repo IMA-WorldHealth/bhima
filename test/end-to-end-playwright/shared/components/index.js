@@ -73,7 +73,7 @@ module.exports = {
   // servicesMultipleSelect : require('./bhServicesMultipleSelect'),
   // stockEntryExitType : require('./bhStockEntryExitType'),
   supplierSelect : require('./bhSupplierSelect'),
-  // surveyFormSelect : require('./bhSurveyFormSelect'),
+  surveyFormSelect : require('./bhSurveyFormSelect'),
   // surveyFormTypeSelect : require('./bhSurveyFormTypeSelect'),
   // surveyListSelect : require('./bhSurveyListSelect'),
   // tagSelect : require('./bhTagSelect'),
