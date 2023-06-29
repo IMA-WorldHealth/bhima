@@ -27,9 +27,14 @@ test.beforeAll(async () => {
     s|^(\s*)it\(|\1test(|g;
     s|\.to\.equal|.toBe|g;
     s|element\(|TU.locator(|g;
+    s|browser\.findElement\(|TU.locator(|g;
     s|\.getText\(|.innerText(|g;
     s|by\.css\(([^)]+)\)|\1|g;
     s|= \$\(([^\)]+)\);|= await TU.locator(\1);|g;
+    s|\.sendKeys\(|.fill(|g;
+    s|row\.dropdown\(\)\.click\(\)|row.dropdown()|g;
+    s|row\.edit\(\)\.click\(\)|row.edit()|g;
+    s|row\.remove\(\)\.click\(\)|row.remove()|g;
     print;
 }
 
