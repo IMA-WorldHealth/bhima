@@ -177,8 +177,8 @@ INSERT INTO unit VALUES
   (313, 'Inventory Scans Management', 'TREE.REQUIRED_INVENTORY_SCANS', 'Inventory Scans Management', 307, '/required/inventory/scans'),
   (314, 'Asset Management Reports','TREE.REPORTS','asset management reports', 307,'/ASSET_MANAGEMENT_REPORTS_FOLDER'),
   (315, 'Needed Inventory Scans', 'TREE.INVENTORY_SCANS_NEEDED', 'report for needed inventory scans', 314, '/reports/needed_inventory_scans'),
-  (316, 'Detailed record of purchases','TREE.PURCHASE_REGISTRY_DETAILED','The purchase registry detailed',154,'/purchases/detailed');
-
+  (316, 'Detailed record of purchases','TREE.PURCHASE_REGISTRY_DETAILED','The purchase registry detailed',154,'/purchases/detailed'),
+  (317, 'Satisfaction Rate Report','TREE.SATISFACTION_RATE_REPORT','Satisfaction Rate Report',282,'/reports/satisfaction_rate_report');
 
 -- Reserved system account type
 INSERT IGNORE INTO `account_category` VALUES
@@ -241,6 +241,7 @@ INSERT IGNORE INTO `report` (`report_key`, `title_key`) VALUES
   ('realized_profit', 'REPORT.REALIZED_PROFIT.TITLE'),
   ('recovery_capacity', 'REPORT.RECOVERY_CAPACITY.TITLE'),
   ('rumer_report', 'REPORT.RUMER.TITLE'),
+  ('satisfaction_rate_report', 'TREE.SATISFACTION_RATE_REPORT'),
   ('stock_changes', 'REPORT.STOCK_CHANGES.TITLE'),
   ('stock_consumption_graph_report', 'REPORT.STOCK_CONSUMPTION_GRAPH_REPORT.TITLE'),
   ('stock_entry', 'REPORT.STOCK.ENTRY_REPORT'),

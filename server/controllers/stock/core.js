@@ -1286,7 +1286,7 @@ async function getInventoryMovements(params) {
       // exit
       movement.exit.quantity = line.quantity;
       movement.exit.unit_cost = stockUnitCost;
-      movement.exit.value = line.quantity * line.unit_cost;
+      movement.exit.value = line.quantity * stockUnitCost;
     } else {
       const newQuantity = line.quantity + stockQuantity;
       // fix negative value disorder

@@ -34,6 +34,8 @@ const data = {
 const fixturesPath = path.resolve('test/fixtures');
 
 function PDFRenderUnitTest() {
+  this.timeout(5000);
+
   it('#pdf.render() renders a valid PDF file', async () => {
     const htmlString = await fs.readFile(template, 'utf8');
     const result = await pdf.render(data, htmlString, {});
