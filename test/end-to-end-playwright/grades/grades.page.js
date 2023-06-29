@@ -1,5 +1,4 @@
 const TU = require('../shared/TestUtils');
-const { by } = require('../shared/TestUtils');
 
 const GridRow = require('../shared/GridRow');
 const { notification } = require('../shared/components');
