@@ -32,6 +32,7 @@ class AccountStatementCorePage {
     const period = await TU.locator(`[data-bh-period-select] a[data-link="${periodName}"]`);
     await period.click();
     await TU.modal.submit();
+
     // Wait for the grid to be refilled
     return TU.waitForSelector('[ui-grid-grid-footer]');
   }
