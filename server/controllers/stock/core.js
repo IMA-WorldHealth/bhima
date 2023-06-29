@@ -1216,7 +1216,7 @@ async function getInventoryMovements(params) {
       i.purchase_interval, i.delay,
       IF(ISNULL(iu.token), iu.text, CONCAT("INVENTORY.UNITS.",iu.token,".TEXT")) AS unit_type,
       dm.text AS documentReference, flux.label as flux, sv.wac,
-      COALESCE(em.text, dm2.text, '') as entityReference
+      IF(m.flux_id = 8 OR m.flux_id = 2, d2.text, COALESCE(em.text, dm2.text, '')) as entityReference
     FROM stock_movement m
       JOIN lot l ON l.uuid = m.lot_uuid
       JOIN inventory i ON i.uuid = l.inventory_uuid
@@ -1226,6 +1226,7 @@ async function getInventoryMovements(params) {
       JOIN document_map dm ON dm.uuid = m.document_uuid
       LEFT JOIN entity_map em ON em.uuid = m.entity_uuid
       LEFT JOIN document_map dm2 ON dm2.uuid = m.entity_uuid
+      LEFT JOIN depot d2 ON d2.uuid = m.entity_uuid
       JOIN stock_value sv ON sv.inventory_uuid = i.uuid
   `;
 
