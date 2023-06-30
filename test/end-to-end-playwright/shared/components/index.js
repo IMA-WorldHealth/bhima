@@ -33,7 +33,7 @@ module.exports = {
   depotSelect : require('./bhDepotSelect'),
   diagnosisSelect : require('./bhDiagnosisSelect'),
   // employeeConfigSelect : require('./bhEmployeeConfigSelect'),
-  // employeeSelect : require('./bhEmployeeSelect'),
+  employeeSelect : require('./bhEmployeeSelect'),
   // entityGroupSelect : require('./bhEntityGroupSelect'),
   entitySelect : require('./bhEntitySelect'),
   entityTypeSelect : require('./bhEntityTypeSelect'),
