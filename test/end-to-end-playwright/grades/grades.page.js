@@ -11,7 +11,7 @@ class GradePage {
   }
 
   /**
-   * Emulate a async constructor
+   * Emulate an async constructor
    *
    * @returns {GradePage} a new GradePage object
    */

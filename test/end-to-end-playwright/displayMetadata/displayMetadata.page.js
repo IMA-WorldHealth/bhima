@@ -18,7 +18,7 @@ class DisplayMetadataManagementPage {
   }
 
   /**
-   * Emulate a async constructor
+   * Emulate an async constructor
    *
    * @returns {DisplayMetadataManagementPage} a new DisplayMetadataManagementPage object
    */
