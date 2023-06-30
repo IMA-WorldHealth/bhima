@@ -1,7 +1,4 @@
-const { chromium } = require('@playwright/test');
-const { test, expect } = require('@playwright/test');
 const TU = require('../shared/TestUtils');
-const { by } = require('../shared/TestUtils');
 
 const GridRow = require('../shared/GridRow');
 const components = require('../shared/components');
