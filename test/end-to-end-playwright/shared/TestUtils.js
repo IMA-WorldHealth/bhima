@@ -200,6 +200,16 @@ module.exports = {
   },
 
   /**
+   * get an element by its role (eg, 'heading' for 'h*')
+   *
+   * @param {string} role - the role to get
+   * @returns {Promise} for the element
+   */
+  getByRole : function getByRole(role) {
+    return page.getByRole(role);
+  },
+
+  /**
    * See if the specified selector has the expected text
    *
    * @param {string} selector - selector for the element that should contain the text
