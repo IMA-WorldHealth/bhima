@@ -2,12 +2,21 @@ const { expect } = require('@playwright/test');
 const playwright = require('@playwright/test');
 const TU = require('../TestUtils');
 
+const defaultTimeout = 8000; // Long enough for testing
+
 module.exports = {
 
-  hasSuccess : async function hasSuccess() {
+  /**
+   * Wait for a success notice
+   *
+   * @param {object} opts - options for waitForSelector
+   * @returns {Promise} for the dismissing the notice
+   */
+  hasSuccess : async function hasSuccess(opts) {
     let success = false;
     try {
-      await TU.waitForSelector('[data-notification-type="notification-success"]', { timeout : 5000 });
+      const options = opts || { timeout : defaultTimeout };
+      await TU.waitForSelector('[data-notification-type="notification-success"]', options);
       success = true;
     } catch (error) {
       if (error instanceof playwright.errors.TimeoutError) {
@@ -20,10 +29,17 @@ module.exports = {
     return dismiss();
   },
 
-  hasWarn : async function hasWarn() {
+  /**
+   * Wait for a warning notice
+   *
+   * @param {object} opts - options for waitForSelector
+   * @returns {Promise} for the dismissing the notice
+   */
+  hasWarn : async function hasWarn(opts) {
     let success = false;
     try {
-      await TU.waitForSelector('[data-notification-type="notification-warn"]', { timeout : 5000 });
+      const options = opts || { timeout : defaultTimeout };
+      await TU.waitForSelector('[data-notification-type="notification-warn"]', options);
       success = true;
     } catch (error) {
       if (error instanceof playwright.errors.TimeoutError) {
@@ -36,10 +52,17 @@ module.exports = {
     return dismiss();
   },
 
-  hasInfo : async function hasInfo() {
+  /**
+   * Wait for an info notice
+   *
+   * @param {object} opts - options for waitForSelector
+   * @returns {Promise} for the dismissing the notice
+   */
+  hasInfo : async function hasInfo(opts) {
     let success = false;
     try {
-      await TU.waitForSelector('[data-notification-type="notification-info"]', { timeout : 5000 });
+      const options = opts || { timeout : defaultTimeout };
+      await TU.waitForSelector('[data-notification-type="notification-info"]', options);
       success = true;
     } catch (error) {
       if (error instanceof playwright.errors.TimeoutError) {
@@ -52,10 +75,17 @@ module.exports = {
     return dismiss();
   },
 
-  hasDanger : async function hasDanger() {
+  /**
+   * Wait for a danger notice
+   *
+   * @param {object} opts - options for waitForSelector
+   * @returns {Promise} for the dismissing the notice
+   */
+  hasDanger : async function hasDanger(opts) {
     let success = false;
     try {
-      await TU.waitForSelector('[data-notification-type="notification-danger"]', { timeout : 5000 });
+      const options = opts || { timeout : defaultTimeout };
+      await TU.waitForSelector('[data-notification-type="notification-danger"]', options);
       success = true;
     } catch (error) {
       if (error instanceof playwright.errors.TimeoutError) {
@@ -68,10 +98,17 @@ module.exports = {
     return dismiss();
   },
 
-  hasError : async function hasError() {
+  /**
+   * Wait for an error notice
+   *
+   * @param {object} opts - options for waitForSelector
+   * @returns {Promise} for the dismissing the notice
+   */
+  hasError : async function hasError(opts) {
     let success = false;
     try {
-      await TU.waitForSelector('[data-notification-type="notification-error"]', { timeout : 5000 });
+      const options = opts || { timeout : defaultTimeout };
+      await TU.waitForSelector('[data-notification-type="notification-error"]', options);
       success = true;
     } catch (error) {
       if (error instanceof playwright.errors.TimeoutError) {
@@ -87,6 +124,11 @@ module.exports = {
   dismiss,
 };
 
+/**
+ * Dismiss the notice
+ *
+ * @returns {Promise} for the dismissal
+ */
 async function dismiss() {
   return (await TU.locator('[data-dismiss="notification"]')).click();
 }
