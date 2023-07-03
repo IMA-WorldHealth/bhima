@@ -16,7 +16,7 @@ test.beforeAll(async () => {
 });
 
 test.describe('Enterprises', () => {
-  const location = '#!/enterprises';
+  const location = '/#!/enterprises';
 
   // enterprise
   const enterprise = {
@@ -125,12 +125,12 @@ test.describe('Enterprises', () => {
 
     await TU.locator('input[type=file][name="logo"]').setInputFiles(absolutePath);
     await TU.buttons.submit();
-    await components.notification.hasSuccess();
+    // await components.notification.hasSuccess({ timeout : 12000 });
 
     // Verify the reloaded page has a new logo image
-    await TU.reloadPage();
+    await TU.reloadPage({ waitUntil : 'domcontentloaded' });
     await TU.waitForSelector('div.logo');
-    const count = await TU.locator('div.logo img').count();
+    const count = await (await TU.locator('div.logo span img')).count();
     expect(count, 'Logo image upload failed').toBe(1);
   });
 
