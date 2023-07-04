@@ -29,7 +29,7 @@ exports.select = async (periodName) => {
 };
 
 /**
- * Set a custome period with start and end dates
+ * Set a custom period with start and end dates
  *
  * @param {string} start - start of the period
  * @param {string} end - end of the period

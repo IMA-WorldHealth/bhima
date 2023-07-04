@@ -28,7 +28,8 @@ module.exports = {
   set : async function set(id, value) {
     const input = await this.getInput(id);
     await input.clear();
-    await input.fill(value); // set the input value
+    // Convert numbers to string due to Playwright limitations
+    await input.fill(typeof value === 'number' ? value.toString() : value); // set the input value
   },
 
   validationError : async function validationError(id) {
