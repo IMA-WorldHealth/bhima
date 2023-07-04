@@ -30,6 +30,18 @@
       </a>
     </li>
 
+    <li bh-has-permission="grid.appScope.bhConstants.actions.CAN_EDIT_ROLES">
+      <a data-method="depot-management" ng-click="grid.appScope.managementDepot(row.entity.uuid)" href>
+        <i class="fa fa-user"></i> <span translate>DEPOT.ADD_MANAGER</span>
+      </a>
+    </li>
+
+    <li bh-has-permission="grid.appScope.bhConstants.actions.CAN_EDIT_ROLES">
+      <a data-method="depot-supervision" ng-click="grid.appScope.supervisionDepot(row.entity.uuid)" href>
+        <i class="fa fa-search"></i> <span translate>DEPOT.ADD_SUPERVISOR</span>
+      </a>
+    </li>
+
     <li class="divider"></li>
     <li>
       <a data-method="delete-record" ng-click="grid.appScope.deleteDepot(row.entity.uuid)" href>

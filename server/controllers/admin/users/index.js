@@ -34,6 +34,8 @@ exports.delete = remove;
 exports.password = password;
 exports.lookup = lookupUser;
 exports.isAdmin = isAdmin;
+exports.depotUsersManagment = depotUsersManagment;
+exports.depotUsersSupervision = depotUsersSupervision;
 
 /**
  * @function lookupUser
@@ -320,4 +322,70 @@ async function isAdmin(req, res, next) {
   } catch (error) {
     next(new Forbidden('ERRORS.ER_ACCESS_DENIED_ERROR'));
   }
+}
+
+/**
+ * POST '/users/:uuid/depotUsersManagment'
+ *
+ * Creates and updates a user's depots for Management.  This works by completely deleting
+ * the user's depots and then replacing them with the new depots set.
+ */
+function depotUsersManagment(req, res, next) {
+  const transaction = db.transaction();
+  const uid = db.bid(req.params.uuid);
+
+  transaction
+    .addQuery('DELETE FROM depot_permission WHERE depot_uuid = ?;', [uid]);
+
+  // if an array of permission has been sent, add them to an INSERT query
+  const users = req.body.users || [];
+
+  if (users.length) {
+    const data = [].concat(users).map((id) => {
+      return [uid, id];
+    });
+
+    transaction
+      .addQuery('INSERT INTO depot_permission (depot_uuid, user_id) VALUES ?', [data]);
+  }
+
+  transaction.execute()
+    .then(() => {
+      res.sendStatus(201);
+    })
+    .catch(next)
+    .done();
+}
+
+/**
+ * POST '/users/:uuid/depotUsersSupervision'
+ *
+ * Creates and updates a user's depots for supervision.  This works by completely deleting
+ * the user's depots and then replacing them with the new depots set.
+ */
+function depotUsersSupervision(req, res, next) {
+  const transaction = db.transaction();
+  const uid = db.bid(req.params.uuid);
+
+  transaction
+    .addQuery('DELETE FROM depot_supervision WHERE depot_uuid = ?;', [uid]);
+
+  // if an array of permission has been sent, add them to an INSERT query
+  const users = req.body.users || [];
+
+  if (users.length) {
+    const data = [].concat(users).map((id) => {
+      return [uid, id];
+    });
+
+    transaction
+      .addQuery('INSERT INTO depot_supervision (depot_uuid, user_id) VALUES ?', [data]);
+  }
+
+  transaction.execute()
+    .then(() => {
+      res.sendStatus(201);
+    })
+    .catch(next)
+    .done();
 }

@@ -579,6 +579,11 @@ exports.configure = function configure(app) {
   app.post('/users/:id/depots', users.depots.create);
   app.get('/users/:id/depotsSupervision', users.depotsSupervision.list);
   app.post('/users/:id/depotsSupervision', users.depotsSupervision.create);
+
+  // depotsSupervision
+  app.post('/users/:uuid/depotUsersManagment', users.depotUsersManagment);
+  app.post('/users/:uuid/depotUsersSupervision', users.depotUsersSupervision);
+
   app.put('/users/:id/password', users.isAdmin, users.password);
   app.get('/users/:id/cashboxes', users.cashboxes.list);
   app.post('/users/:id/cashboxes', users.cashboxes.create);
