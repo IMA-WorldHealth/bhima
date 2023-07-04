@@ -1,0 +1,66 @@
+<form name="UserForm" bh-submit="ModalCtrl.submit(UserForm)" novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li ng-if="ModalCtrl.isManagementState" class="title">
+        <label class="badge badge-info" translate>DEPOT.ADD_MANAGER</label>
+      </li>
+      <li ng-if="ModalCtrl.isSupervisionState" class="title">
+        <label class="badge badge-info" translate>DEPOT.ADD_SUPERVISOR</label>
+      </li>
+    </ol>
+  </div>
+
+  <div class="modal-body" style="overflow-y: scroll; max-height:600px; ">
+
+
+    <div class="form-group" ng-class="{ 'has-error' : UserForm.$submitted && UserForm.display_name.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.DEPOT</label>
+      <div>
+        <h4><i> {{ ModalCtrl.depot.text }} </i></h4>
+      </div>
+    </div>
+
+    <span translate> FORM.INFO.USERS_LISTE </span>
+    <div class="checkbox">
+      <label data-root-node>
+        <input type="checkbox" ng-model="ModalCtrl.all" ng-change="ModalCtrl.setAllNodeValue(ModalCtrl.usersData, ModalCtrl.all)" />
+        <strong class="text-capitalize" translate>FORM.LABELS.CHECK_ALL</strong>
+      </label>
+    </div>
+    
+    <div class="panel panel-default" style="margin-bottom : 0px;">
+      <div class="panel-heading">
+        <a href ng-click="ModalCtrl.toggleFilter()">
+          <span translate>TABLE.COLUMNS.FILTERING.LABEL</span> <span class="caret" ng-class="{'rotate' : ModalCtrl.filterActive}"></span>
+        </a>
+      </div>
+
+      <input ng-model="ModalCtrl.filter" ng-show="ModalCtrl.filterActive" class="form-control" placeholder="{{'FORM.PLACEHOLDERS.FILTER_NAME' | translate }}" style="border-radius: 0"/>
+    </div>
+
+    <div ng-if="!ModalCtrl.loading" ng-repeat="user in ModalCtrl.usersData | filter : { display_name : ModalCtrl.filter }">
+      <div style="margin-left: calc({{user.$$treeLevel}} * 15px)" class="list-unstyled">
+        <div class="checkbox">
+          <label data-label="{{child._label}}">
+            <input type="checkbox" id="{{user.user_id}}" ng-model="user._checked" />
+            <span translate>{{user.display_name}}</span>
+          </label>
+        </div>
+      </div>
+    </div>
+    <div ng-if="ModalCtrl.loading" class="row text-center">
+      <span class="fa fa-circle-o-notch fa-spin"></span>
+      <span translate>FORM.INFO.LOADING</span>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button id="user-cancel" type="button" class="btn btn-default" ng-click="ModalCtrl.closeModal()">
+      <span translate>FORM.BUTTONS.CANCEL</span>
+    </button>
+
+    <bh-loading-button loading-state="UserForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>
