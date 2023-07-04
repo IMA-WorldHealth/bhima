@@ -58,7 +58,7 @@ class SearchModal {
   }
 
   async submit() {
-    await this.element.locator('[data-method="submit"]').click();
+    await TU.modal.submit();
     // Give the search modal time to close and reload the parent page
     return TU.waitForURL(`**/${this.path}`, { waitUntil : 'domcontentloaded' });
   }
