@@ -33,6 +33,10 @@ describe('(/users) Users and Permissions', () => {
     'bd4b1452-4742-e4fa-a128-246814140877',
   ];
 
+  const depotManagementSupervision = 'F9CAEB16168443C5A6C447DBAC1DF296';
+  const usersManagement = [2];
+  const usersSupervision = [3, 4];
+
   const cashboxes = [1, 2];
 
   it('GET /users returns a list of users', () => {
@@ -196,6 +200,36 @@ describe('(/users) Users and Permissions', () => {
         helpers.api.listed(res, 1);
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
+      })
+      .catch(helpers.handler);
+  });
+
+  // Assign users management permissions for depot
+  it('POST /users/:uuid/depotUsersManagment : Assign users management permissions for depot', () => {
+    return agent.post(`/users/${depotManagementSupervision}/depotUsersManagment`)
+      .send({ users : usersManagement })
+      .then(res => {
+        expect(res).to.have.status(201);
+        return agent.get(`/depots/${depotManagementSupervision}/management`);
+      })
+      .then(res => {
+        helpers.api.listed(res, 1);
+        expect(res).to.have.status(200);
+      })
+      .catch(helpers.handler);
+  });
+
+  // Assign users supervision permissions for depot
+  it('POST /users/:uuid/depotUsersSupervision : Assign users supervision permissions for depot', () => {
+    return agent.post(`/users/${depotManagementSupervision}/depotUsersSupervision`)
+      .send({ users : usersSupervision })
+      .then(res => {
+        expect(res).to.have.status(201);
+        return agent.get(`/depots/${depotManagementSupervision}/supervision`);
+      })
+      .then(res => {
+        helpers.api.listed(res, 2);
+        expect(res).to.have.status(200);
       })
       .catch(helpers.handler);
   });

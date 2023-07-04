@@ -48,6 +48,9 @@ router.get('/:depotUuid/inventories', getQuantitiesInStock);
 router.get('/:depotUuid/stock', getLotsInStockForDateHttp);
 router.get('/:depotUuid/flags/stock_out', getStockOuts);
 
+router.get('/:depotUuid/management', getDepotManager);
+router.get('/:depotUuid/supervision', getDepotSupervisor);
+
 // special route for searching depot by name
 router.get('/search/name', searchByName);
 
@@ -600,4 +603,52 @@ async function detail(req, res, next) {
   } catch (error) {
     next(error);
   }
+}
+
+/**
+* GET /depots/:uuid/management
+* Fetches a user manager of depot by its uuid from the database
+*
+* @function getDepotManager
+*/
+async function getDepotManager(req, res, next) {
+  const uid = db.bid(req.params.depotUuid);
+
+  const sql = `
+    SELECT dp.user_id, u.username AS 'Utilisateur'
+    FROM depot_permission AS dp
+    JOIN user AS u ON u.id = dp.user_id
+    WHERE dp.depot_uuid = ?;
+  `;
+
+  db.exec(sql, [uid])
+    .then((rows) => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
+}
+
+/**
+* GET /depots/:uuid/supervision
+* Fetches a user manager of depot by its uuid from the database
+*
+* @function getDepotSupervisor
+*/
+async function getDepotSupervisor(req, res, next) {
+  const uid = db.bid(req.params.depotUuid);
+
+  const sql = `
+    SELECT ds.user_id, u.username AS 'Utilisateur'
+    FROM depot_supervision AS ds
+    JOIN user AS u ON u.id = ds.user_id
+    WHERE ds.depot_uuid = ?;
+  `;
+
+  db.exec(sql, [uid])
+    .then((rows) => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 }
