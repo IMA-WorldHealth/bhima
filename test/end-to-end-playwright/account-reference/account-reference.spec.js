@@ -141,7 +141,7 @@ test.describe('AccountReference Management Page', () => {
     await TU.waitForSelector('.ui-grid-header-cell-wrapper');
 
     expect(await arPage.count()).toBe(2);
-    await modal.clearFilter();
+    await modal.clearFilters();
   });
 
   test('Search account references by Account Number', async () => {
@@ -155,7 +155,7 @@ test.describe('AccountReference Management Page', () => {
     await TU.waitForSelector('.ui-grid-header-cell-wrapper');
 
     expect(await arPage.count()).toBe(3);
-    await modal.clearFilter();
+    await modal.clearFilters();
   });
 
   test('Search account references by null Account Number', async () => {
@@ -169,7 +169,7 @@ test.describe('AccountReference Management Page', () => {
     await TU.waitForSelector('.ui-grid-header-cell-wrapper');
 
     expect(await arPage.count()).toBe(0);
-    await modal.clearFilter();
+    await modal.clearFilters();
   });
 
   test('Search account references by Reference Account Type', async () => {
@@ -183,7 +183,7 @@ test.describe('AccountReference Management Page', () => {
     await TU.waitForSelector('.ui-grid-header-cell-wrapper');
 
     expect(await arPage.count()).toBe(1);
-    await modal.clearFilter();
+    await modal.clearFilters();
   });
 
   test('delete an accounts reference successfully', async () => {
@@ -207,6 +207,6 @@ test.describe('AccountReference Management Page', () => {
     await TU.waitForSelector('.ui-grid-header-cell-wrapper');
 
     expect(await arPage.count()).toBe(1);
-    await modal.clearFilter();
+    await modal.clearFilters();
   });
 });

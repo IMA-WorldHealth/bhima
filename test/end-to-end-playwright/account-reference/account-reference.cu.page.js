@@ -122,7 +122,7 @@ class CreateUpdateAccountReferencePage {
     return components.accountReferenceTypeSelect.set(typeValue, 'reference_type_id');
   }
 
-  clearFilter() {
+  clearFilters() {
     return this.filters.resetFilters();
   }
 
