@@ -1,5 +1,6 @@
 const TU = require('../shared/TestUtils');
 const grid = require('../shared/GridUtils');
+
 const Filters = require('../shared/components/bhFilters');
 
 /**
@@ -21,9 +22,9 @@ class EmployeeRegistryPage {
     return TU.buttons.search();
   }
 
-  async clearFilter() {
+  async clearFilters() {
     await this.filters.resetFilters();
-    return TU.waitForSelector('div.ui-grid-footer');
+    return TU.waitForSelector('div.ui-grid-footer', { waitUntil : 'domcontentloaded' });
   }
 }
 

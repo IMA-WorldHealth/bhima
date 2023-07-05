@@ -19,7 +19,7 @@ class SearchModalPage {
 
   async submit() {
     await TU.modal.submit();
-    return TU.waitForSelector('div.ui-grid-footer');
+    return TU.waitForSelector('div.ui-grid-footer', { waitUntil : 'domcontentloaded' });
   }
 
   selectSex(sex) {
@@ -41,6 +41,7 @@ class SearchModalPage {
   selectFunction(fonction) {
     return components.functionSelect.set(fonction);
   }
+
 }
 
 module.exports = SearchModalPage;

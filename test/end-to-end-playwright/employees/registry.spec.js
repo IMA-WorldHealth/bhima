@@ -31,9 +31,8 @@ test.describe('Employees Registry', () => {
 
   test.beforeEach(async () => {
     await TU.navigate(path);
-    await TU.waitForSelector('div.ui-grid-footer');
-    await employeeRegistryPage.clearFilter();
-    await TU.waitForSelector('div.ui-grid-footer');
+    await TU.waitForSelector('div.ui-grid-footer', { waitUntil : 'domcontentloaded' });
+    await employeeRegistryPage.clearFilters();
   });
 
   test('list all registered employees', async () => {
@@ -71,6 +70,8 @@ test.describe('Employees Registry', () => {
   test(`should find one employee With reference "${parameters.reference}"`, async () => {
     await employeeRegistryPage.search();
     await searchModalPage.setReference(parameters.reference);
+    // This hack seems to be necessary to prevent hiring date from being added
+    await TU.locator('bh-date-interval[date-id="embauche-date"] li a i.fa-eraser + span').click();
     await searchModalPage.submit();
     await employeeRegistryPage.expectEmployeeCount(ONE_EMPLOYEE,
       `The number of filtered employee should be ${ONE_EMPLOYEE}`);
@@ -85,7 +86,7 @@ test.describe('Employees Registry', () => {
       [1, 2, 3], // @TODO : fix to eliminate problems with parallel execution of patient and employees tests
       `The number of filtered employee should be 1, 2, or 3`);
 
-    await employeeRegistryPage.clearFilter();
+    await employeeRegistryPage.clearFilters();
     await employeeRegistryPage.expectEmployeeCount(
       [4, 5, 6], // @TODO : fix to eliminate problems with parallel execution of patient and employees tests
       `The number of filtered employee should be 4, 5, or 6`);
