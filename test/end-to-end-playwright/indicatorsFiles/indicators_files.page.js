@@ -7,7 +7,8 @@ const components = require('../shared/components');
 /**
  * This class is represents a indicators_files page in term of structure and
  * behaviour so it is a indicators_files page object
- * */
+ *
+ */
 
 class IndicatorsFilesPage {
 
@@ -33,8 +34,7 @@ class IndicatorsFilesPage {
   expectNumberOfGridRows(number) {
     return GU.expectRowCount(
       this.gridId, number,
-      `Expected IndicatorsFiles Registry's ui-grid row count to be ${number}.`
-    );
+      `Expected IndicatorsFiles Registry's ui-grid row count to be ${number}.`);
   }
 
   /**
