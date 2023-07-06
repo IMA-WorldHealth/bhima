@@ -130,7 +130,7 @@
     "jquery": "^3.7.0",
     "jsbarcode": "^3.11.5",
     "json-2-csv": "^3.20.0",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "9.0.1",
     "lodash": "^4.17.21",
     "luxon": "^3.3.0",
     "moment": "^2.29.4",
@@ -158,7 +158,7 @@
   "devDependencies": {
     "@ima-worldhealth/rewire": "^4.1.0",
     "@playwright/test": "^1.34.3",
-    "@types/node": "^20.3.2",
+    "@types/node": "20.4.0",
     "angular-mocks": "^1.8.3",
     "chai": "^4.3.7",
     "chai-as-promised": "^7.1.1",
@@ -197,7 +197,7 @@
     "protractor": "^7.0.0",
     "protractor-console-plugin": "^0.1.1",
     "qs": "^6.11.2",
-    "release-it": "^15.11.0",
+    "release-it": "16.0.0",
     "sinon": "^15.2.0",
     "standard-version": "^9.5.0",
     "typescript": "^5.1.3"
