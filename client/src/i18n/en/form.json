@@ -621,7 +621,7 @@
             "NB_CHILD": "Number of Dependents",
             "NB_CHILDREN": "Number of Children",
             "NB_MONTH": "Number of Months",
-            "NB_SPOUSE": "spouse count",
+            "NB_SPOUSE": "Spouse Count",
             "NET_SALARY": "Net Salary",
             "NEW_EXCHANGE_RATE": "New Exchange Rate",
             "NO_DEBTOR_GROUPS": "No debtor groups",
@@ -867,9 +867,9 @@
             "USE_SIMPLIFIED_CARD": "Use simple patient identity",
             "USE": "Use",
             "VALIDATED": "Validated",
-            "VALIDATED_BY": "Validated by",            
+            "VALIDATED_BY": "Validated by",
             "VALIDATION": "Validation",
-            "VALIDATION_DATE": "Validation date",            
+            "VALIDATION_DATE": "Validation date",
             "VALUE": "Value",
             "VALUE_IN_STOCK": "Value in stock",
             "VARIABLE_CHARGE": "Variable cost",
@@ -940,7 +940,7 @@
               "IN_PROGRESS":"In Progress",
               "PARTIALLY":"Partially delivered",
               "PARTIAL_SURPLUSES" : "Partial with surpluses",
-              "VALIDATED"     : "Validated"              
+              "VALIDATED"     : "Validated"
             }
         },
         "LEGENDS": {
