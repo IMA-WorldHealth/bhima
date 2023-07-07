@@ -16,8 +16,6 @@ module.exports = {
     const locator = (id) ? by.id(id) : by.css(selector);
     const target = await TU.locator(locator);
 
-    // hack to make sure previous 'blur' event fires if we are using
-    // ngModelOptions updateOn 'blur' for every input
     await target.click();
 
     return TU.uiSelect('$ctrl.supplierUuid', supplier, target);
