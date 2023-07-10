@@ -54,8 +54,10 @@ const modal = {
  * Convenience function for 'by' functions
  */
 const by = {
-  id : (arg) => `#${arg}`,
   css : (arg) => arg,
+  id : (arg) => `#${arg}`,
+  linkText : (arg) => `[text="${arg}"]`,
+  linkTextContains : (arg) => `//*[contains(text(), '${arg}')]`,
   model : (arg) => `[ng-model="${arg}"]`,
   name : (arg) => `[name="${arg}"]`,
   repeater : (arg) => `[ng-repeat="${arg}"]`,
@@ -203,10 +205,14 @@ module.exports = {
    * get an element by its role (eg, 'heading' for 'h*')
    *
    * @param {string} role - the role to get
+   * @param {string} name - name of object with that role (optional)
    * @returns {Promise} for the element
    */
-  getByRole : function getByRole(role) {
-    return page.getByRole(role);
+  getByRole : function getByRole(role, name) {
+    if (name) {
+      return page.getByRole(role, { name });
+    }
+    return page.getByRole(role, name);
   },
 
   /**
