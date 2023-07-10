@@ -48,6 +48,9 @@ router.get('/:depotUuid/inventories', getQuantitiesInStock);
 router.get('/:depotUuid/stock', getLotsInStockForDateHttp);
 router.get('/:depotUuid/flags/stock_out', getStockOuts);
 
+router.get('/:depotUuid/management', getDepotManager);
+router.get('/:depotUuid/supervision', getDepotSupervisor);
+
 // special route for searching depot by name
 router.get('/search/name', searchByName);
 
@@ -387,6 +390,7 @@ function list(req, res, next) {
     SELECT
       BUID(d.uuid) as uuid, d.text, d.description, d.is_warehouse,
       GROUP_CONCAT(DISTINCT u.display_name ORDER BY u.display_name DESC SEPARATOR ', ') AS users,
+      GROUP_CONCAT(DISTINCT uu.display_name ORDER BY uu.display_name DESC SEPARATOR ', ') AS supervisors,
       d.allow_entry_purchase, d.allow_entry_donation, d.allow_entry_integration,
       d.allow_entry_transfer, d.allow_exit_debtor, d.allow_exit_service,
       d.allow_exit_transfer, d.allow_exit_loss, BUID(d.location_uuid) AS location_uuid,
@@ -399,7 +403,9 @@ function list(req, res, next) {
       LEFT JOIN province p ON p.uuid = s.province_uuid
       LEFT JOIN country c ON c.uuid = p.country_uuid
       LEFT JOIN depot_permission dp  ON dp.depot_uuid = d.uuid
+      LEFT JOIN depot_supervision ds ON ds.depot_uuid = d.uuid
       LEFT JOIN user u ON u.id = dp.user_id
+      LEFT JOIN user uu ON uu.id = ds.user_id
   `;
 
   filters.custom(
@@ -600,4 +606,52 @@ async function detail(req, res, next) {
   } catch (error) {
     next(error);
   }
+}
+
+/**
+* GET /depots/:uuid/management
+* Fetches a user manager of depot by its uuid from the database
+*
+* @function getDepotManager
+*/
+async function getDepotManager(req, res, next) {
+  const uid = db.bid(req.params.depotUuid);
+
+  const sql = `
+    SELECT dp.user_id, u.username AS 'Utilisateur'
+    FROM depot_permission AS dp
+    JOIN user AS u ON u.id = dp.user_id
+    WHERE dp.depot_uuid = ?;
+  `;
+
+  db.exec(sql, [uid])
+    .then((rows) => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
+}
+
+/**
+* GET /depots/:uuid/supervision
+* Fetches a user manager of depot by its uuid from the database
+*
+* @function getDepotSupervisor
+*/
+async function getDepotSupervisor(req, res, next) {
+  const uid = db.bid(req.params.depotUuid);
+
+  const sql = `
+    SELECT ds.user_id, u.username AS 'Utilisateur'
+    FROM depot_supervision AS ds
+    JOIN user AS u ON u.id = ds.user_id
+    WHERE ds.depot_uuid = ?;
+  `;
+
+  db.exec(sql, [uid])
+    .then((rows) => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 }
