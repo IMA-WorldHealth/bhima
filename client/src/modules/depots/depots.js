@@ -79,6 +79,13 @@ function DepotManagementController(
         enableFiltering : false,
       },
       {
+        field : 'supervisors',
+        displayName : 'FORM.LABELS.SUPERVISOR',
+        headerCellFilter : 'translate',
+        enableSorting : false,
+        enableFiltering : false,
+      },
+      {
         field : 'action',
         width : 80,
         displayName : '',

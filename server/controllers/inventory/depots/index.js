@@ -390,6 +390,7 @@ function list(req, res, next) {
     SELECT
       BUID(d.uuid) as uuid, d.text, d.description, d.is_warehouse,
       GROUP_CONCAT(DISTINCT u.display_name ORDER BY u.display_name DESC SEPARATOR ', ') AS users,
+      GROUP_CONCAT(DISTINCT uu.display_name ORDER BY uu.display_name DESC SEPARATOR ', ') AS supervisors,
       d.allow_entry_purchase, d.allow_entry_donation, d.allow_entry_integration,
       d.allow_entry_transfer, d.allow_exit_debtor, d.allow_exit_service,
       d.allow_exit_transfer, d.allow_exit_loss, BUID(d.location_uuid) AS location_uuid,
@@ -402,7 +403,9 @@ function list(req, res, next) {
       LEFT JOIN province p ON p.uuid = s.province_uuid
       LEFT JOIN country c ON c.uuid = p.country_uuid
       LEFT JOIN depot_permission dp  ON dp.depot_uuid = d.uuid
+      LEFT JOIN depot_supervision ds ON ds.depot_uuid = d.uuid
       LEFT JOIN user u ON u.id = dp.user_id
+      LEFT JOIN user uu ON uu.id = ds.user_id
   `;
 
   filters.custom(
