@@ -1,7 +1,6 @@
 const { chromium } = require('@playwright/test');
 const { test, expect } = require('@playwright/test');
 const TU = require('../shared/TestUtils');
-const { by } = require('../shared/TestUtils');
 
 const IprTaxPage = require('./iprTaxes.page');
 
