@@ -51,7 +51,7 @@ module.exports = {
   inventorySelect : require('./bhInventorySelect'),
   inventoryTypeSelect : require('./bhInventoryTypeSelect'),
   // iprConfigSelect : require('./bhIprConfigSelect'),
-  // iprScale : require('./bhIprScale'),
+  iprScale : require('./bhIprScale'),
   locationSelect : require('./bhLocationSelect'),
   modalAction : require('./bhModalAction'),
   // multipleCashBoxSelect : require('./bhMultipleCashBoxSelect'),
