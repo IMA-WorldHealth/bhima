@@ -4,6 +4,8 @@
     "ADD_DEPOT" : "Ajouter un dépôt",
     "ADD_SUB_DEPOT": "Ajouter un sous-dépôt",
     "ADD_DEPENDENT_DEPOT": "Ajouter un dépôt dépendant",
+    "ADD_MANAGER": "Ajouter un gestionnaire",
+    "ADD_SUPERVISOR": "Ajouter un Superviseur",
     "ALL_DEPOTS" : "Tous les dépôts",
     "CREATED" : "Dépôt crée avec succès",
     "CHANGE" : "Changer Dépôt",
