@@ -2,20 +2,38 @@
 #
 # PARTIALLY convert protractor tests to playwright tests
 
-while (<>) {
-    print 'const { chromium } = require(\'@playwright/test\');
-const { test, expect } = require(\'@playwright/test\');
+my $is_spec_file = "$ARGV[0]" =~ /.*\.spec\.js\z/;
+
+my $header1 = 'const { chromium } = require(\'@playwright/test\');
+';
+
+my $header2 = 'const { test, expect } = require(\'@playwright/test\');
 const TU = require(\'../shared/TestUtils\');
 const { by } = require(\'../shared/TestUtils\');
 
-test.beforeAll(async () => {
+';
+
+my $header3 = 'test.beforeAll(async () => {
   const browser = await chromium.launch();
   const page = await browser.newPage();
   TU.registerPage(page);
   await TU.login();
 });
 
-' if $. == 1;  # Insert needed imports, etc
+';
+
+sub write_headers {
+    if ($is_spec_file) {
+      print $header1;
+    }
+    print $header2;
+    if ($is_spec_file) {
+      print $header3;
+    }
+}
+
+while (<>) {
+  write_headers() if $. == 1;  # Insert needed imports, etc
     next if /\/\* global .* \*\//;  # Omit
     next if /^[ ]*const { expect } = require\('chai'\);/;  # Omit
     next if /const FU = require.*/;  # Omit
