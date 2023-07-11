@@ -25,6 +25,26 @@ angular.module('bhima.routes')
         },
         onEnter : ['$uibModal', '$transition$', depotModal],
         onExit : ['$uibModalStack', closeModal],
+      })
+
+      .state('depots.management', {
+        url : '/:uuid/management',
+        params : {
+          parentUuid : { squash : true, value : null },
+          isManagementState : { value : true },
+        },
+        onEnter : ['$uibModal', '$transition$', managementSupervisionModal],
+        onExit : ['$uibModalStack', closeModal],
+      })
+
+      .state('depots.supervision', {
+        url : '/:uuid/supervision',
+        params : {
+          parentUuid : { squash : true, value : null },
+          isSupervisionState : { value : true },
+        },
+        onEnter : ['$uibModal', '$transition$', managementSupervisionModal],
+        onExit : ['$uibModalStack', closeModal],
       });
   }]);
 
@@ -32,6 +52,14 @@ function depotModal($modal, $transition) {
   $modal.open({
     templateUrl : 'modules/depots/modals/depot.modal.html',
     controller : 'DepotModalController as DepotModalCtrl',
+    resolve : { params : () => $transition.params('to') },
+  }).result.catch(angular.noop);
+}
+
+function managementSupervisionModal($modal, $transition) {
+  $modal.open({
+    templateUrl : 'modules/depots/modals/depotManagementSupervision.modal.html',
+    controller : 'DepotManagementSupervisionController as ModalCtrl',
     resolve : { params : () => $transition.params('to') },
   }).result.catch(angular.noop);
 }
