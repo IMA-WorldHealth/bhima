@@ -62,6 +62,47 @@ function DepotService(Api, Modal, HttpCache) {
       .then(service.util.unwrapHttpResponse);
   };
 
+  // management
+  /**
+   * @function management
+   *
+   * @description
+   * This function searches for all users configured for the management of depots
+   * table.
+   */
+  service.management = function management(depotUuid) {
+    const target = `/depots/${depotUuid}/management`;
+    return service.$http.get(target)
+      .then(service.util.unwrapHttpResponse);
+  };
+
+  // sets Depot's for users Depot Management using the public API
+  service.updateUsersManagement = function updateUsersManagement(uuid, data) {
+    return service.$http.post(`/users/${uuid}/depotUsersManagment`, { users : data })
+      .then(service.util.unwrapHttpResponse);
+  };
+
+  // supervision
+  /**
+   * @function supervision
+   *
+   * @description
+   * Looks up the quantites in stock for all inventory items for a depot.  This is more
+   * efficient than the more general Stock.inventories.* API since it uses the stock_movement_status
+   * table.
+   */
+  service.supervision = function supervision(depotUuid) {
+    const target = `/depots/${depotUuid}/supervision`;
+    return service.$http.get(target)
+      .then(service.util.unwrapHttpResponse);
+  };
+
+  // sets Depot's for users Depot Supervision using the public API
+  service.updateUsersSupervision = function updateUsersSupervision(uuid, data) {
+    return service.$http.post(`/users/${uuid}/depotUsersSupervision`, { users : data })
+      .then(service.util.unwrapHttpResponse);
+  };
+
   /**
    * @function getStockQuantityForDate
    *

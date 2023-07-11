@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 DepotManagementController.$inject = [
   'DepotService', 'ModalService', 'NotifyService', 'uiGridConstants', '$state',
-  'StockService', 'StockModalService', 'FormatTreeDataService',
+  'StockService', 'StockModalService', 'FormatTreeDataService', 'bhConstants',
 ];
 
 /**
@@ -14,7 +14,7 @@ DepotManagementController.$inject = [
  */
 function DepotManagementController(
   Depots, ModalService, Notify, uiGridConstants, $state, Stock, Modal,
-  FormatTreeData,
+  FormatTreeData, bhConstants,
 ) {
   const vm = this;
 
@@ -23,10 +23,13 @@ function DepotManagementController(
   // bind methods
   vm.deleteDepot = deleteDepot;
   vm.editDepot = editDepot;
+  vm.managementDepot = managementDepot;
+  vm.supervisionDepot = supervisionDepot;
   vm.createDepot = createDepot;
   vm.toggleFilter = toggleFilter;
   vm.onRemoveFilter = onRemoveFilter;
   vm.search = search;
+  vm.bhConstants = bhConstants;
 
   // depot parent indent value in pixels
   vm.indentTitleSpace = 20;
@@ -71,6 +74,13 @@ function DepotManagementController(
       {
         field : 'users',
         displayName : 'FORM.LABELS.USER',
+        headerCellFilter : 'translate',
+        enableSorting : false,
+        enableFiltering : false,
+      },
+      {
+        field : 'supervisors',
+        displayName : 'FORM.LABELS.SUPERVISOR',
         headerCellFilter : 'translate',
         enableSorting : false,
         enableFiltering : false,
@@ -180,6 +190,16 @@ function DepotManagementController(
   // update an existing depot
   function editDepot(uuid) {
     $state.go('depots.edit', { uuid });
+  }
+
+  // Add User for management
+  function managementDepot(uuid) {
+    $state.go('depots.management', { uuid });
+  }
+
+  // Add User for supervision
+  function supervisionDepot(uuid) {
+    $state.go('depots.supervision', { uuid });
   }
 
   // create a new depot
