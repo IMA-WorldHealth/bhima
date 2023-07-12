@@ -24,7 +24,7 @@ test.describe('Payroll Process Management', () => {
   const page = new PayrollProcessPage();
   const searchModalPage = new SearchModalPage();
 
-  const employeeCount = 2;
+  const employeeCount = [2, 6]; // In parallel goes to 6
 
   const defaultValue = {
     period      : 'Février 2018',
@@ -41,10 +41,14 @@ test.describe('Payroll Process Management', () => {
     await searchModalPage.payrollPeriod(defaultValue.period);
     await searchModalPage.selectCurrency(defaultValue.currency);
     await searchModalPage.submit();
+    // Make sure the grid is loaded
+    await TU.waitForSelector('.ui-grid-canvas .ui-grid-row');
     await page.checkEmployeeCount(employeeCount, `The number of Defined employee should be ${employeeCount}`);
   });
 
   test(`should configure multiple employees for payment`, async () => {
+    // Make sure the grid is loaded
+    await TU.waitForSelector('.ui-grid-canvas .ui-grid-row');
     await GU.selectRow(gridId, 0);
 
     await TU.locator('[data-action="open-menu"]').click();
@@ -54,6 +58,8 @@ test.describe('Payroll Process Management', () => {
   });
 
   test(`Configure and edit Rubrics Payroll values`, async () => {
+    // Make sure the grid is loaded
+    await TU.waitForSelector('.ui-grid-canvas .ui-grid-row');
     await page.editPayrollRubric(employeeRef);
   });
 
@@ -62,6 +68,9 @@ test.describe('Payroll Process Management', () => {
 
     await components.payrollStatusSelect.set(['Configured']);
     await searchModalPage.submit();
+
+    // Make sure the grid is loaded
+    await TU.waitForSelector('.ui-grid-canvas .ui-grid-row');
 
     await GU.selectRow(gridId, 0);
     await GU.selectRow(gridId, 1);

@@ -60,8 +60,8 @@ test.describe('Invoicing Fees', () => {
     // get the cell with the delete button and click it
     await GA.clickOnMethod(0, 5, 'delete', 'InvoicingFeesGrid');
 
-    // expect the modal to appear
-    await TU.exists('[data-confirm-modal]', true);
+    // Wait for the modal to appear
+    await TU.waitForSelector('[data-confirm-modal]');
 
     // Click on the confirm button
     await components.modalAction.confirm();
