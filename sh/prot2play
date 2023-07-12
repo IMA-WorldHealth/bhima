@@ -53,6 +53,8 @@ while (<>) {
     s|row\.dropdown\(\)\.click\(\)|row.dropdown()|g;
     s|row\.edit\(\)\.click\(\)|row.edit()|g;
     s|row\.remove\(\)\.click\(\)|row.remove()|g;
+    s| \$\(| TU.locator(|g;
+    s|\.\$\(|.locator(|g;
     print;
 }
 
