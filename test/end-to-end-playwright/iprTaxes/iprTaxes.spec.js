@@ -15,6 +15,8 @@ test.describe('Ipr Tax Management', () => {
 
   test.beforeEach(async () => {
     await TU.navigate('/#!/ipr_tax');
+    // Make sure the grid is loaded
+    await TU.waitForSelector('.ui-grid-canvas .ui-grid-row');
   });
 
   const page = new IprTaxPage();
@@ -43,8 +45,7 @@ test.describe('Ipr Tax Management', () => {
     currency_id   : 2,
   };
 
-  test.skip('should start with one IPR taxes', async () => {
-    // @TODO: Fix this. It brings up a blank page. Various waits,etc, do not help
+  test('should start with one IPR taxes', async () => {
     expect(await page.count()).toBe(1);
   });
 
@@ -73,8 +74,7 @@ test.describe('Ipr Tax Management', () => {
     await page.errorOnCreateIprTax();
   });
 
-  test.skip('should end with three IPR taxes', async () => {
-    // @TODO: Fix this. It brings up a blank page. Various waits,etc, do not help
+  test('should end with three IPR taxes', async () => {
     expect(await page.count()).toBe(3);
   });
 });
