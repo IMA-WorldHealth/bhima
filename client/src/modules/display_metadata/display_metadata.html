@@ -11,7 +11,7 @@
             <a class="btn btn-default" uib-dropdown-toggle>
               <span class="fa fa-bars"></span> <span class="hidden-xs" translate>FORM.LABELS.MENU</span> <span class="caret"></span>
             </a>
-  
+
             <ul uib-dropdown-menu role="menu" class="dropdown-menu-right">
               <li role="menuitem">
                 <a download="{{ 'TREE.DISPLAY_METADATA' | translate }}"
@@ -20,31 +20,31 @@
                 </a>
               </li>
 
-              <!-- FIX ME TO DOWMLOAD AS CSV and EXCEL 
+              <!-- FIX ME TO DOWMLOAD AS CSV and EXCEL
               <li role="menuitem">
                 <a>
                   <span class="fa fa-file-excel-o"></span> <span translate>DOWNLOADS.CSV</span>
                 </a>
               </li>
-  
+
               <li role="menuitem">
                 <a>
                   <span class="fa fa-file-excel-o"></span> <span translate>DOWNLOADS.EXCEL</span>
                 </a>
               </li> -->
-  
+
             </ul>
           </div>
       </div>
       <div ng-if="DisplayMetadataCtrl.hasPatientData">
         <div class="toolbar-item">
-          <button class="btn btn-default text-capitalize" id="create" ui-sref="display_metadata.patientfill({id : DisplayMetadataCtrl.collector.id, patient: DisplayMetadataCtrl.patient.uuid})" data-method="create">
+          <button class="btn btn-default text-capitalize" id="fill-form" ui-sref="display_metadata.patientfill({id : DisplayMetadataCtrl.collector.id, patient: DisplayMetadataCtrl.patient.uuid})" data-method="create">
             <span class="fa fa fa-file-text"></span> <span class="hidden-xs" translate>FORM.BUTTONS.FILL_FORM</span>
           </button>
         </div>
 
         <div class="toolbar-item">
-          <button class="btn btn-default text-capitalize" id="create" ui-sref="patientRecord({ patientUuid : DisplayMetadataCtrl.patient.uuid })" data-method="create">
+          <button class="btn btn-default text-capitalize" id="medical-sheets" ui-sref="patientRecord({ patientUuid : DisplayMetadataCtrl.patient.uuid })" data-method="create">
             <span class="fa fa-medkit"></span> <span class="hidden-xs" translate>FORM.LABELS.MEDICAL_SHEETS</span>
           </button>
         </div>
@@ -90,19 +90,19 @@
 </div>
 
 <div class="flex-content" ng-if="DisplayMetadataCtrl.collector">
-  <div class="container-fluid"> 
-    <div id="display-metadata-grid" 
+  <div class="container-fluid">
+    <div id="display-metadata-grid"
       ui-grid="DisplayMetadataCtrl.gridOptions"
       class="grid-full-height-with-filters"
       ui-grid-auto-resize
       ui-grid-move-columns
-      ui-grid-resize-columns> 
-      
-      <bh-grid-loading-indicator 
+      ui-grid-resize-columns>
+
+      <bh-grid-loading-indicator
         loading-state="DisplayMetadataCtrl.loading"
-        empty-state="DisplayMetadataCtrl.gridOptions.data.length === 0" 
-        error-state="DisplayMetadataCtrl.hasError"> 
-      </bh-grid-loading-indicator> 
-    </div> 
-  </div> 
+        empty-state="DisplayMetadataCtrl.gridOptions.data.length === 0"
+        error-state="DisplayMetadataCtrl.hasError">
+      </bh-grid-loading-indicator>
+    </div>
+  </div>
 </div>

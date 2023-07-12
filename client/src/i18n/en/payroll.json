@@ -1,6 +1,6 @@
 {
   "PAYROLL_STATUS": {
-    "CONFIGURED": "configured",
+    "CONFIGURED": "Configured",
     "PAID" : "Paid",
     "PARTIALLY_PAID" : "Partially paid",
     "WAITING_FOR_CONFIGURATION" : "Waiting for configuration",
