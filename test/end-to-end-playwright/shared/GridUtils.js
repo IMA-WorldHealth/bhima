@@ -85,7 +85,7 @@ async function getRow(gridId, rowNum) {
 async function getCell(gridId, rowNum, colNum) {
   const rows = await getRows(gridId);
   const row = rows[rowNum];
-  const repeater = '[ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.uid"]';
+  const repeater = by.repeater('(colRenderIndex, col) in colContainer.renderedColumns track by col.uid');
   const cols = await row.locator(repeater);
   return cols.nth(colNum);
 
@@ -157,15 +157,39 @@ async function expectColumnCount(gridId, number, message) {
   // expect(await columns.count()).to.equal(number);
 }
 
-// Provide a text in a cell and this will give the grid indexes for where to find that text
+/**
+ * Find the first grid cell containing the 'text'
+ *
+ * @param {string} gridId - id for the grid
+ * @param {string} text - string to search for
+ * @returns {object} - indexes of the match (nulls if not found): { rowIndex : <number>, columnIndex : <number> }
+ */
 async function getGridIndexesMatchingText(gridId, text) {
-  throw Error('GridUtils getGridIndexesMatchingText is not implemented');
-
-  // let rowIdx;
-  // let colIdx;
 
   // console.warn('Warning: You called GU.getGridIndexesMatchingText() which is extremely inefficient.');
+  const grid = await this.getGrid(gridId);
+  const gridBody = await grid.locator('.ui-grid-render-container-body');
+  const rowsRaw = await gridBody.locator(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'));
+  const rows = await rowsRaw.all();
 
+  if (rows) {
+    for (let j = 0; j < rows.length; j++) {
+      /* eslint-disable-next-line no-await-in-loop */
+      const cols = await rows[j].locator(by.repeater('(colRenderIndex, col) in colContainer.renderedColumns track by col.uid')).all();
+      for (let i = 0; i < cols.length; i++) {
+        const col = cols[i];
+        /* eslint-disable-next-line no-await-in-loop */
+        const count = await col.locator(`//*[contains(text(), '${text}')]`).count();
+        if (count > 0) {
+          return ({ rowIndex : j, columnIndex : i });
+        }
+      }
+    }
+  }
+
+  return ({ rowIndex : null, columnIndex : null });
+
+  // ADAPTED FROM PROTRACTOR CODE:
   // // loop through every single cell and check that the grid's value contains this provided value
   // return this.getGrid(gridId)
   //   .element(by.css('.ui-grid-render-container-body'))
