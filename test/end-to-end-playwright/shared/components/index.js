@@ -12,7 +12,7 @@
 /* eslint-disable global-require */
 
 module.exports = {
-  // accountConfigSelect : require('./bhAccountConfigSelect'),
+  accountConfigSelect : require('./bhAccountConfigSelect'),
   accountReferenceSelect : require('./bhAccountReferenceSelect'),
   accountReferenceTypeSelect : require('./bhAccountReferenceTypeSelect'),
   accountSelect : require('./bhAccountSelect'),
@@ -32,7 +32,7 @@ module.exports = {
   debtorGroupSelect : require('./bhDebtorGroupSelect'),
   depotSelect : require('./bhDepotSelect'),
   diagnosisSelect : require('./bhDiagnosisSelect'),
-  // employeeConfigSelect : require('./bhEmployeeConfigSelect'),
+  employeeConfigSelect : require('./bhEmployeeConfigSelect'),
   employeeSelect : require('./bhEmployeeSelect'),
   // entityGroupSelect : require('./bhEntityGroupSelect'),
   entitySelect : require('./bhEntitySelect'),
@@ -50,7 +50,7 @@ module.exports = {
   inventoryGroupSelect : require('./bhInventoryGroupSelect'),
   inventorySelect : require('./bhInventorySelect'),
   inventoryTypeSelect : require('./bhInventoryTypeSelect'),
-  // iprConfigSelect : require('./bhIprConfigSelect'),
+  iprConfigSelect : require('./bhIprConfigSelect'),
   iprScale : require('./bhIprScale'),
   locationSelect : require('./bhLocationSelect'),
   modalAction : require('./bhModalAction'),
@@ -67,7 +67,7 @@ module.exports = {
   // reportSource : require('./bhReportSource'),
   // requisitionSelect : require('./bhRequisitionSelect'),
   // roomSelect : require('./bhRoomSelect'),
-  // rubricConfigSelect : require('./bhRubricConfigSelect'),
+  rubricConfigSelect : require('./bhRubricConfigSelect'),
   serviceOrDepotSelect : require('./bhServiceOrDepot'),
   serviceSelect : require('./bhServiceSelect'),
   // servicesMultipleSelect : require('./bhServicesMultipleSelect'),
@@ -80,6 +80,6 @@ module.exports = {
   transactionTypeSelect : require('./bhTransactionTypeSelect'),
   userSelect : require('./bhUserSelect'),
   // wardSelect : require('./bhWardSelect'),
-  // weekConfigSelect : require('./bhWeekConfigSelect'),
+  weekConfigSelect : require('./bhWeekConfigSelect'),
   // yesNoRadios : require('./bhYesNoRadios'),
 };
