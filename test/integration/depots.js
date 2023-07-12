@@ -265,4 +265,21 @@ describe('(/depots) The depots API ', () => {
       })
       .catch(helpers.handler);
   });
+
+  it('GET /depots/:uuid/management : Search for managers of a depot', () => {
+    return agent.get(`/depots/${principalDepotUuid}/management`)
+      .then(res => {
+        helpers.api.listed(res, 1);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /depots/:uuid/management : Search for supervisors of a depot', () => {
+    return agent.get(`/depots/${principalDepotUuid}/supervision`)
+      .then(res => {
+        helpers.api.listed(res, 0);
+      })
+      .catch(helpers.handler);
+  });
+
 });
