@@ -55,9 +55,9 @@ const modal = {
  */
 const by = {
   css : (arg) => arg,
+  containsText : (arg) => `//*[contains(text(), '${arg}')]`,
+  hasText : (arg) => `[text="${arg}"]`,
   id : (arg) => `#${arg}`,
-  linkText : (arg) => `[text="${arg}"]`,
-  linkTextContains : (arg) => `//*[contains(text(), '${arg}')]`,
   model : (arg) => `[ng-model="${arg}"]`,
   name : (arg) => `[name="${arg}"]`,
   repeater : (arg) => `[ng-repeat="${arg}"]`,
