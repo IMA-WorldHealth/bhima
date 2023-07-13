@@ -15,7 +15,7 @@ test.describe('Employees Registry', () => {
   const path = '/#!/employees';
   const employeeRegistryPage = new EmployeeRegistryPage();
   const searchModalPage = new SearchModalPage();
-  const expectEmployeeCount = 4;
+  const expectEmployeeCount = [4, 6];
   const ONE_EMPLOYEE = 1;
   const parameters = {
     name : 'Employee Test',

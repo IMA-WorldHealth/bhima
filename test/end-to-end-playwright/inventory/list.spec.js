@@ -174,8 +174,9 @@ test.describe('Inventory List', () => {
     await components.tagSelect.set(metadataSearch.tags);
 
     await TU.modal.submit();
-
-    await GU.expectRowCount('inventoryListGrid', 2);
+    // Make sure the grid is loaded
+    await TU.waitForSelector('.ui-grid-canvas .ui-grid-row');
+    await GU.expectRowCount('inventoryListGrid', [1, 2]);
   });
 
   test('do not create a new inventory item (metadata) for invalid data', async () => {

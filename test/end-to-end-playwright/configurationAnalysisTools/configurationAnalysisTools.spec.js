@@ -45,6 +45,8 @@ test.describe('Configuration Analysis Tools', () => {
   });
 
   test('begins with 5 Configuration Analysis', async () => {
+    // Make sure the grid is loaded
+    await TU.waitForSelector('.ui-grid-canvas .ui-grid-row');
     expect(await page.count()).toBe(5);
   });
 
