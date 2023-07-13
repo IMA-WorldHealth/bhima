@@ -28,6 +28,6 @@ fi
 if test -f "./test/end-to-end-playwright/report"; then
   echo "End-to-end Tests (Playwright)"
   echo "   " `grep passed ./test/end-to-end-playwright/report`
-  echo "   " `egrep -e '(failing|failed|pending)' ./test/end-to-end-playwright/report`
+  echo "   " `egrep -e '([0-9]+ failing|[0-9]+ failed|[0-9]+ pending|[0-9]+ skipped)' ./test/end-to-end-playwright/report`
   echo
 fi
