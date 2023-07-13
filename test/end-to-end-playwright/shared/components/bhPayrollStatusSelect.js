@@ -8,7 +8,7 @@ module.exports = {
   set : async function set(payrollStatus = [], id = null) {
     const IS_MULTIPLE_SELECTION = true;
     const locator = (id) ? by.id(id) : selector;
-    const target = TU.locator(locator);
+    const target = await TU.locator(locator);
 
     await target.click();
 

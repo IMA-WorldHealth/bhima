@@ -7,7 +7,7 @@ module.exports = {
 
   set : async function set(group, uuid) {
     const locator = (uuid) ? by.id(uuid) : selector;
-    const target = TU.locator(locator);
+    const target = await TU.locator(locator);
 
     await target.click();
 

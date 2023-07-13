@@ -14,7 +14,7 @@ module.exports = {
    */
   set : async function set(grade, id) {
     const locator = (id) ? by.id(id) : selector;
-    const target = TU.locator(locator);
+    const target = await TU.locator(locator);
 
     await target.click();
 
