@@ -48,7 +48,6 @@ class RubricConfigPage {
     await row.method('configure');
 
     await TU.waitForSelector(by.id('social'));
-    // ??? await browser.wait(EC.elementToBeClickable(TU.locator(by.id('social'))), 1500);
 
     await TU.locator(by.id('social')).click();
     await TU.locator(by.id('tax')).click();
@@ -62,8 +61,6 @@ class RubricConfigPage {
     await row.dropdown();
     await row.method('configure');
 
-    // const checkbox = TU.locator(by.id('all'));
-    // await browser.wait(EC.elementToBeClickable(checkbox), 1500);
     await TU.waitForSelector(by.id('all'));
     const checkbox = TU.locator(by.id('all'));
 

@@ -1,5 +1,4 @@
 const TU = require('../shared/TestUtils');
-const { by } = require('../shared/TestUtils');
 
 const GridRow = require('../shared/GridRow');
 const components = require('../shared/components');
@@ -10,11 +9,6 @@ const components = require('../shared/components');
  * */
 
 class ServicePage {
-
-  // ???
-  // constructor() {
-  //   this.serviceGrid = TU.locator(by.id('service-grid'));
-  // }
 
   /**
    * simulate the create service button click to show the dialog of creation
