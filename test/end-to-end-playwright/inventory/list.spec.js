@@ -171,6 +171,7 @@ test.describe('Inventory List', () => {
     await components.tagSelect.set(metadataSearch.tags);
 
     await TU.modal.submit();
+
     // Make sure the grid is loaded
     await TU.waitForSelector('.ui-grid-canvas .ui-grid-row');
     await GU.expectRowCount('inventoryListGrid', [1, 2]);

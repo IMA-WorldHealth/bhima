@@ -40,8 +40,8 @@ class GridRow {
     return record.click();
   }
 
-  async goToInvoice() {
-    const record = await TU.locator(`[data-row-menu="${this.reference}"] [data-method="view-invoice"]`);
+  async goToInvoices() {
+    const record = await TU.locator(`[data-row-menu="${this.reference}"] [data-method="view-invoices"]`);
     return record.click();
   }
 

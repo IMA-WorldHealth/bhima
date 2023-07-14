@@ -15,6 +15,7 @@ test.describe('Payroll Configuration Management', () => {
 
   test.beforeEach(async () => {
     await TU.navigate('#!/payroll');
+
     // Make sure the grid is loaded
     await TU.waitForSelector('.ui-grid-canvas .ui-grid-row');
   });

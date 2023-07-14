@@ -15,6 +15,7 @@ test.describe('Ipr Tax Management', () => {
 
   test.beforeEach(async () => {
     await TU.navigate('/#!/ipr_tax');
+
     // Make sure the grid is loaded
     await TU.waitForSelector('.ui-grid-canvas .ui-grid-row');
   });

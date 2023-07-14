@@ -41,6 +41,7 @@ test.describe('Payroll Process Management', () => {
     await searchModalPage.payrollPeriod(defaultValue.period);
     await searchModalPage.selectCurrency(defaultValue.currency);
     await searchModalPage.submit();
+
     // Make sure the grid is loaded
     await TU.waitForSelector('.ui-grid-canvas .ui-grid-row');
     await page.checkEmployeeCount(employeeCount, `The number of Defined employee should be ${employeeCount}`);

@@ -2,7 +2,6 @@ const { chromium } = require('@playwright/test');
 const { test } = require('@playwright/test');
 const TU = require('../shared/TestUtils');
 
-// ??? const EC = require('protractor').ExpectedConditions;
 const GridRow = require('../shared/GridRow');
 const components = require('../shared/components');
 const Search = require('../payrollProcess/searchModal.page');
