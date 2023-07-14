@@ -84,7 +84,9 @@
           </span>
         </label>
       </div> -->
+
     </div>
+
     <!-- rank -->
     <div class="form-group" ng-class="{ 'has-error' : SurveyFormForm.$submitted && SurveyFormForm.rank.$invalid }">
       <label class="control-label" translate>FORM.LABELS.RANK</label>
@@ -100,7 +102,14 @@
     <div class="form-group" ng-class="{ 'has-error' : (SurveyFormForm.$submitted && SurveyFormForm.name.$invalid) || !SurveyFormModalCtrl.check }">
       <label class="control-label" translate>FORM.LABELS.VARIABLE_NAME</label>
       <div>
-        <input name="name" ng-model="SurveyFormModalCtrl.surveyForm.name" ng-keyup="SurveyFormModalCtrl.checkVariableName()" autocomplete="off" ng-maxlength="90" class="form-control" required>
+        <input name="name"
+          ng-model="SurveyFormModalCtrl.surveyForm.name"
+          ng-keyup="SurveyFormModalCtrl.checkVariableName()"
+          ng-blur="SurveyFormModalCtrl.checkVariableName()"
+          autocomplete="off"
+          ng-maxlength="90"
+          class="form-control"
+          required>
         <div class="help-block" ng-messages="SurveyFormForm.name.$error" ng-show="SurveyFormForm.$submitted">
           <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
         </div>
@@ -109,6 +118,7 @@
         </div>
       </div>
     </div>
+
     <!-- label -->
     <div class="form-group" ng-class="{ 'has-error' : SurveyFormForm.$submitted && SurveyFormForm.label.$invalid }">
       <label class="control-label" translate>FORM.LABELS.DESIGNATION</label>
@@ -184,7 +194,9 @@
       FORM.BUTTONS.CANCEL
     </button>
 
-    <bh-loading-button loading-state="SurveyFormForm.$loading">
+    <bh-loading-button
+      loading-state="SurveyFormForm.$loading"
+      disabled="SurveyFormForm.name.$invalid || !SurveyFormModalCtrl.check || !SurveyFormModalCtrl.surveyForm.type">
       <span translate>FORM.BUTTONS.SUBMIT</span>
     </bh-loading-button>
   </div>
