@@ -55,12 +55,15 @@ const modal = {
  */
 const by = {
   css : (arg) => arg,
-  containsText : (arg) => `//*[contains(text(), '${arg}')]`,
-  hasText : (arg) => `[text="${arg}"]`,
   id : (arg) => `#${arg}`,
   model : (arg) => `[ng-model="${arg}"]`,
   name : (arg) => `[name="${arg}"]`,
   repeater : (arg) => `[ng-repeat="${arg}"]`,
+
+  containsText : (arg) => `//*[contains(text(), '${arg}')]`,
+  hasText : (arg) => `[text="${arg}"]`,
+  linkText : (arg) => `a[text="${arg}"]`,
+  linkContainsText : (arg) => `//a[contains(text(), '${arg}')]`,
 };
 
 // convenience methods to check form element validation states
