@@ -20,15 +20,19 @@ test.describe('Inventory List', () => {
 
   let modal;
 
+  const filters = new Filters();
+  const currentDate = new Date();
+  const uniqueIdentifier = currentDate.getTime().toString();
+
   // navigate to the page
   test.beforeEach(async () => {
     await TU.navigate('/#/inventory');
     modal = new SearchModal('inventory-search', 'inventory');
   });
 
-  const filters = new Filters();
-  const currentDate = new Date();
-  const uniqueIdentifier = currentDate.getTime().toString();
+  test.afterEach(async () => {
+    await filters.resetFilters();
+  });
 
   // inventory list items
   const metadata = {
@@ -121,14 +125,10 @@ test.describe('Inventory List', () => {
     await components.tagSelect.set(metadataUpdate.tags);
     await TU.modal.submit();
     await components.notification.hasSuccess();
-
-    // finally, clear the filters
-    await filters.resetFilters();
   });
 
   // demonstrates that filtering works
   test(`should find 21 inventory items with the label "${metadataSearch.label}"`, async () => {
-    await filters.resetFilters();
     await modal.open();
     await modal.reset();
 
@@ -142,7 +142,6 @@ test.describe('Inventory List', () => {
   // demonstrates that filtering works
   // eslint-disable-next-line
   test(`should find 17 inventory items with group "${metadataSearch.group}" and type "${metadataSearch.type}"`, async () => {
-    await filters.resetFilters();
     await modal.open();
     await modal.reset();
 
@@ -155,7 +154,6 @@ test.describe('Inventory List', () => {
   });
 
   test(`should find 1 inventory item with tag string "${metadataSearch.tag}"`, async () => {
-    await filters.resetFilters();
     await modal.open();
     await modal.reset();
 
@@ -167,7 +165,6 @@ test.describe('Inventory List', () => {
   });
 
   test(`should find 2 inventory items within this tags array [${metadataSearch.tags}]`, async () => {
-    await filters.resetFilters();
     await modal.open();
     await modal.reset();
 
