@@ -55,7 +55,7 @@ while (<>) {
     s|row\.remove\(\)\.click\(\)|row.remove()|g;
     s|\.\$\(|.locator(|g;
     s| \$\(| TU.locator(|g;
-    s|inpuText\(|inputText(|g;
+    s|inpuText|inputText|g;
     print;
 }
 
