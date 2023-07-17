@@ -1,3 +1,4 @@
+const { expect } = require('@playwright/test');
 const TU = require('../TestUtils');
 const { by } = require('../TestUtils');
 
@@ -9,8 +10,11 @@ async function set(ward, id) {
   return TU.uiSelect('$ctrl.uuid', ward, target);
 }
 
-function validationError() {
-  return TU.validation.error('$ctrl.uuid');
+async function validationError() {
+  const modelElt = await TU.locator(by.name('ward_uuid'));
+  const eltClass = await modelElt.getAttribute('class');
+  expect(eltClass.includes('ng-invalid'),
+    `Expected ward selection to be invalid, but could not find the ng-invalid class.`);
 }
 
 module.exports = {
