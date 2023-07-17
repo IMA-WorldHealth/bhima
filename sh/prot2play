@@ -50,6 +50,7 @@ while (<>) {
     s|by\.css\(([^)]+)\)|\1|g;
     s|= \$\(([^\)]+)\);|= await TU.locator(\1);|g;
     s|\.sendKeys\(|.fill(|g;
+    s|\.clear\(\)\.fill\(|.fill(|g;
     s|row\.dropdown\(\)\.click\(\)|row.dropdown()|g;
     s|row\.edit\(\)\.click\(\)|row.edit()|g;
     s|row\.remove\(\)\.click\(\)|row.remove()|g;
