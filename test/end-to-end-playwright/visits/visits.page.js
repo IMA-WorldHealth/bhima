@@ -85,11 +85,11 @@ class VisitPage {
     }
 
     if (isPregnant) {
-      await TU.locator(by.model('AdmitCtrl.visit.is_pregnant')).click();
+      await TU.locator(by.model('AdmitCtrl.visit.is_pregnant')).check();
     }
 
     if (isRefered) {
-      await TU.locator(by.model('AdmitCtrl.visit.is_refered')).click();
+      await TU.locator(by.model('AdmitCtrl.visit.is_refered')).check();
     }
 
     if (notInsideHealthZone) {
