@@ -67,7 +67,7 @@ module.exports = {
   // reportPeriodSelect : require('./bhReportPeriodSelect'),
   // reportSource : require('./bhReportSource'),
   // requisitionSelect : require('./bhRequisitionSelect'),
-  // roomSelect : require('./bhRoomSelect'),
+  roomSelect : require('./bhRoomSelect'),
   rubricConfigSelect : require('./bhRubricConfigSelect'),
   serviceOrDepotSelect : require('./bhServiceOrDepot'),
   serviceSelect : require('./bhServiceSelect'),
@@ -80,7 +80,7 @@ module.exports = {
   tagSelect : require('./bhTagSelect'),
   transactionTypeSelect : require('./bhTransactionTypeSelect'),
   userSelect : require('./bhUserSelect'),
-  // wardSelect : require('./bhWardSelect'),
+  wardSelect : require('./bhWardSelect'),
   weekConfigSelect : require('./bhWeekConfigSelect'),
   // yesNoRadios : require('./bhYesNoRadios'),
 };
