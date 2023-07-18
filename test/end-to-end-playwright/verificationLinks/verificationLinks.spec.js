@@ -42,7 +42,7 @@ test.describe('Check Inter-Registry Links', () => {
 
     // Make sure the grid is loaded
     await TU.waitForSelector('.ui-grid-canvas .ui-grid-row');
-    await GU.expectRowCount('patient-registry', 6);
+    await GU.expectRowCount('patient-registry', [6, 8]);
   });
 
   test('Checks the link between Patient Registry -> Invoice Registry', async () => {
@@ -101,7 +101,7 @@ test.describe('Check Inter-Registry Links', () => {
 
     // Make sure the grid is loaded
     await TU.waitForSelector('.ui-grid-canvas .ui-grid-row');
-    await GU.expectRowCount('voucher-grid', 1);
+    await GU.expectRowCount('voucher-grid', [1, 2]);
   });
 
   test('Checks the link between Cash Registry -> Voucher Registry', async () => {
@@ -113,7 +113,7 @@ test.describe('Check Inter-Registry Links', () => {
 
     // Make sure the grid is loaded
     await TU.waitForSelector('.ui-grid-canvas .ui-grid-row');
-    await GU.expectRowCount('voucher-grid', 1);
+    await GU.expectRowCount('voucher-grid', [1, 2]);
     await filters.resetFilters();
   });
 

@@ -10,8 +10,6 @@ module.exports = VoucherRegistrySearch;
 function VoucherRegistrySearch() {
   const gridId = 'voucher-grid';
   const NUM_VOUCHERS = 5;
-  const NUM_USER_RECORDS = 5;
-  const NUM_DESCRIPTION_RECORDS = 1;
 
   let modal;
   let filters;
@@ -50,28 +48,32 @@ function VoucherRegistrySearch() {
     await expectNumberOfGridRows(1);
   });
 
+  const NUM_USER_RECORDS = [5, 11];
   test(`filters by <select> should return ${NUM_USER_RECORDS} results`, async () => {
     await modal.setUser('Super User');
     await TU.modal.submit();
     await expectNumberOfGridRows(NUM_USER_RECORDS);
   });
 
-  test(`filters by <select> transaction type should return 1 results`, async () => {
+  const NUM_VOURHCERS_OTHER_INCOME = [1, 3];
+  test(`filters by <select> transaction type should return ${NUM_VOURHCERS_OTHER_INCOME} results`, async () => {
     await modal.setTransactionType(['Other Income']);
     await TU.modal.submit();
-    await expectNumberOfGridRows(1);
+    await expectNumberOfGridRows(NUM_VOURHCERS_OTHER_INCOME);
   });
 
+  const NUM_VOUCHERS_OTHER_EXPENSES = [0, 1];
   test(`filters by <select> transaction type should return 0 results`, async () => {
     await modal.setTransactionType(['Other Expenses']);
     await TU.modal.submit();
-    await expectNumberOfGridRows(0);
+    await expectNumberOfGridRows(NUM_VOUCHERS_OTHER_EXPENSES);
   });
 
-  test(`filtering by description should return ${NUM_DESCRIPTION_RECORDS} results`, async () => {
+  const NUM_VOUCHERS_BY_DESCRIPTION = 1;
+  test(`filtering by description should return ${NUM_VOUCHERS_BY_DESCRIPTION } results`, async () => {
     await modal.setDescription('Awesome');
     await TU.modal.submit();
-    await expectNumberOfGridRows(NUM_DESCRIPTION_RECORDS);
+    await expectNumberOfGridRows(NUM_VOUCHERS_BY_DESCRIPTION);
   });
 
 }

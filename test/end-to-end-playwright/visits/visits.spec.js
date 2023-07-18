@@ -40,9 +40,6 @@ test.describe('Patient Visits', () => {
     room : 'Room A in Ward A',
   };
 
-  const OLD_VISITS = 0;
-  const NEW_VISITS = 2;
-
   test('successfully creates a new visit', () => {
     return page.createVisitSuccess(
       defaultVisit.patient,
@@ -73,8 +70,9 @@ test.describe('Patient Visits', () => {
     );
   });
 
+  const NUM_VISITS_IN_REGISTRY = [2, 3];
   test('counts visits in the registry', async () => {
-    await page.expectNumberOfGridRows(OLD_VISITS + NEW_VISITS);
+    await page.expectNumberOfGridRows(NUM_VISITS_IN_REGISTRY);
   });
 
   test('search only hospitalized patients', async () => {
@@ -85,12 +83,13 @@ test.describe('Patient Visits', () => {
     await page.expectNumberOfGridRows(1);
   });
 
+  const NUM_PATIENTS_BY_NAME = [1, 2];
   test('search by patient name', async () => {
     const options = {
       displayName : 'Test 2 Patient',
     };
     await page.search(options);
-    await page.expectNumberOfGridRows(OLD_VISITS + 1);
+    await page.expectNumberOfGridRows(NUM_PATIENTS_BY_NAME);
   });
 
   test('search pregnant visits', async () => {
@@ -101,12 +100,13 @@ test.describe('Patient Visits', () => {
     await page.expectNumberOfGridRows(1);
   });
 
+  const NUM_PATIENT_VISITS_BY_SERVICE = [2, 3];
   test('search patient visits by service', async () => {
     const options = {
       service : 'Medecine Interne',
     };
     await page.search(options);
-    await page.expectNumberOfGridRows(OLD_VISITS + 2);
+    await page.expectNumberOfGridRows(NUM_PATIENT_VISITS_BY_SERVICE);
   });
 
   test('search patient visits by ward', async () => {

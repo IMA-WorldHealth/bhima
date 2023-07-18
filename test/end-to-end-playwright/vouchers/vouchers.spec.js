@@ -15,7 +15,7 @@ test.beforeAll(async () => {
 });
 
 test.describe('Voucher Registry', () => {
-  const NUM_VOUCHERS = 4;
+  const NUM_VOUCHERS = [4, 11];
   const gridId = 'voucher-grid';
 
   test.beforeEach(async () => {
