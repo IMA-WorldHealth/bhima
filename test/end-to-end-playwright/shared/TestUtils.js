@@ -439,6 +439,28 @@ module.exports = {
   },
 
   /**
+   * Selects a dropdown option from a dropdown html element.  Accepts the target
+   * selector, the option text, and an optional anchor element to search within.
+   * If no anchor is provided, it defaults to the body.
+   *
+   * @param {string} selector - the css selector to select
+   * @param {string} label - the text of the option element to choose
+   * @param {object} anchor - an element to search within
+   * @returns {object} - an option element
+   */
+  dropdown : async function dropdown(selector, label, anchor) {
+    const node = anchor || page.locator('body');
+
+    // open the dropdown menu
+    await page.locator(selector).click();
+
+    // Select the desired option
+    const option = await node.locator('[uib-dropdown-menu] > li')
+      .locator(by.containsText(label));
+    return option.click();
+  },
+
+  /**
    * Upload a file using a specific file input field
    *
    * @param {string} filePath - the absolute path for the file to upload
