@@ -55,11 +55,11 @@ function VoucherRegistrySearch() {
     await expectNumberOfGridRows(NUM_USER_RECORDS);
   });
 
-  const NUM_VOURHCERS_OTHER_INCOME = [1, 3];
-  test(`filters by <select> transaction type should return ${NUM_VOURHCERS_OTHER_INCOME} results`, async () => {
+  const NUM_VOUCHERS_OTHER_INCOME = [1, 3];
+  test(`filters by <select> transaction type should return ${NUM_VOUCHERS_OTHER_INCOME} results`, async () => {
     await modal.setTransactionType(['Other Income']);
     await TU.modal.submit();
-    await expectNumberOfGridRows(NUM_VOURHCERS_OTHER_INCOME);
+    await expectNumberOfGridRows(NUM_VOUCHERS_OTHER_INCOME);
   });
 
   const NUM_VOUCHERS_OTHER_EXPENSES = [0, 1];
@@ -70,7 +70,7 @@ function VoucherRegistrySearch() {
   });
 
   const NUM_VOUCHERS_BY_DESCRIPTION = 1;
-  test(`filtering by description should return ${NUM_VOUCHERS_BY_DESCRIPTION } results`, async () => {
+  test(`filtering by description should return ${NUM_VOUCHERS_BY_DESCRIPTION} results`, async () => {
     await modal.setDescription('Awesome');
     await TU.modal.submit();
     await expectNumberOfGridRows(NUM_VOUCHERS_BY_DESCRIPTION);

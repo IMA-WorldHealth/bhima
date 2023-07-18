@@ -35,26 +35,26 @@ test.describe('Complex Vouchers', () => {
      * specify the transfer type
      */
     const voucher = {
-      date: new Date(),
-      description: 'Complex voucher test e2e',
-      rows: [
+      date : new Date(),
+      description : 'Complex voucher test e2e',
+      rows : [
         {
-          account: 'CASH PAYMENT CLIENT', debit: 18, credit: 0, entity: { type: 'Debtor', name: 'Test 2 Patient' },
+          account : 'CASH PAYMENT CLIENT', debit : 18, credit : 0, entity : { type : 'Debtor', name : 'Test 2 Patient' },
         },
         {
-          account: 'Caisse Principale USD', debit: 0, credit: 8, reference: { type: 'voucher', index: 0 },
+          account : 'Caisse Principale USD', debit : 0, credit : 8, reference : { type : 'voucher', index : 0 },
         },
         {
-          account: 'CASH PAYMENT CLIENT', debit: 0, credit: 5, reference: { type: 'voucher', index: 2 },
+          account : 'CASH PAYMENT CLIENT', debit : 0, credit : 5, reference : { type : 'voucher', index : 2 },
         },
         {
-          account: 'CASH PAYMENT CLIENT', debit: 0, credit: 5, reference: { type: 'voucher', index: 1 },
+          account : 'CASH PAYMENT CLIENT', debit : 0, credit : 5, reference : { type : 'voucher', index : 1 },
         },
         {
-          account: 'Caisse Principale USD', debit: 7, credit: 0, entity: { type: 'Creditor', name: 'SNEL' },
+          account : 'Caisse Principale USD', debit : 7, credit : 0, entity : { type : 'Creditor', name : 'SNEL' },
         },
         {
-          account: 'CASH PAYMENT CLIENT', debit: 0, credit: 7, reference: { type: 'patient-invoice', index: 1 },
+          account : 'CASH PAYMENT CLIENT', debit : 0, credit : 7, reference : { type : 'patient-invoice', index : 1 },
         },
       ],
     };

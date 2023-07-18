@@ -28,12 +28,10 @@ class VisitPage {
    */
   async createVisitSuccess(
     patientName, serviceName, diagnosis, note, isHospitalized, isOldCase,
-    isPregnant, notInsideHealthZone, isRefered, ward, room
-  ) {
+    isPregnant, notInsideHealthZone, isRefered, ward, room) {
     await this.createVisit(
       patientName, serviceName, diagnosis, note, isHospitalized, isOldCase,
-      isPregnant, notInsideHealthZone, isRefered, ward, room
-    );
+      isPregnant, notInsideHealthZone, isRefered, ward, room);
     await components.notification.hasSuccess();
   }
 
@@ -42,12 +40,10 @@ class VisitPage {
    */
   async createVisitFail(
     patientName, serviceName, diagnosis, note, isHospitalized, isOldCase,
-    isPregnant, notInsideHealthZone, isRefered, ward, room
-  ) {
+    isPregnant, notInsideHealthZone, isRefered, ward, room) {
     await this.createVisit(
       patientName, serviceName, diagnosis, note, isHospitalized, isOldCase,
-      isPregnant, notInsideHealthZone, isRefered, ward, room
-    );
+      isPregnant, notInsideHealthZone, isRefered, ward, room);
     const warningAdmittedTag = '[data-patient-already-admitted]';
     await TU.exists(warningAdmittedTag, true);
     await TU.buttons.cancel();
@@ -59,8 +55,7 @@ class VisitPage {
    */
   async createVisit(
     patientName, serviceName, diagnosis, note, isHospitalized, isOldCase,
-    isPregnant, notInsideHealthZone, isRefered, ward, room
-  ) {
+    isPregnant, notInsideHealthZone, isRefered, ward, room) {
     await TU.buttons.create();
     // choose the patient
     await components.findPatient.findByName(patientName);
