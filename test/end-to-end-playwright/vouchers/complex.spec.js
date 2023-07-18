@@ -1,4 +1,4 @@
-/* eslint-disable no-await-in-loop */
+/* eslint-disable no-await-in-loop, max-len */
 
 const { chromium } = require('@playwright/test');
 const { test } = require('@playwright/test');
