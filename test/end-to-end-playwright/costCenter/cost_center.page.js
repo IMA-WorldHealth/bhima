@@ -174,7 +174,6 @@ class CostCenterPage {
     await components.notification.hasError();
   }
 
-
   /**
    * simulate a click on the delete link of a function
    */
