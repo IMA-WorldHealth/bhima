@@ -1,20 +1,19 @@
 const TU = require('../TestUtils');
 const { by } = require('../TestUtils');
 
-const selector = '[data-bh-checkbox-tree]';
-
 module.exports = {
+
+  selector : '[data-bh-checkbox-tree]',
 
   /**
    * Toggle the row selector
    * @param {string} labels - label to toggle
    * @param {string} id - selector
    */
-  async toggle(labels, id) { // eslint-disable-line no-unused-vars
-    throw Error('bhCheckboxTree.toggle() is not implemented');
-    // const locator = (id) ? by.id(id) : selector;
-    // const tree = await TU.locator(locator);
-    // await await TU.series(labels, async (label) => tree.$(`[data-label="${label}"]`).click());
+  async toggle(labels, id) {
+    const locator = (id) ? by.id(id) : this.selector;
+    const tree = await TU.locator(locator);
+    return TU.series(labels, async (label) => tree.locator(`[data-label="${label}"]`).click());
   },
 
   /**
@@ -25,7 +24,7 @@ module.exports = {
    * @returns {Promise} of all items being toggled
    */
   async toggleAllCheckboxes(id) {
-    const locator = (id) ? by.id(id) : selector;
+    const locator = (id) ? by.id(id) : this.selector;
     return TU.locator(`${locator} [data-root-node]`).click();
   },
 
@@ -35,7 +34,7 @@ module.exports = {
    * @returns {Promise} of whether the checkbox is checked
    */
   async isChecked(id) {
-    const locator = (id) ? by.id(id) : selector;
+    const locator = (id) ? by.id(id) : this.selector;
     const tree = await TU.locator(`${locator} [data-root-node] input`);
     return tree.isChecked();
   },
