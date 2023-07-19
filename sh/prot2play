@@ -57,6 +57,7 @@ while (<>) {
     s|\.\$\(|.locator(|g;
     s| \$\(| TU.locator(|g;
     s|inpuText|inputText|g;
+    s|\.TU\.locator|.locator|g;
     print;
 }
 
