@@ -405,8 +405,7 @@ module.exports = {
     // type into the <input> element the searchable value
     // only for multiple selection
     if (isMultipleSelection) {
-      // WARNING: Not tested yet with Playwright
-      await this.input('$select.search', label, select);
+      return select.locator('a').locator(by.containsText(label)).click();
     }
 
     // select the item of the dropdown menu matching the label
