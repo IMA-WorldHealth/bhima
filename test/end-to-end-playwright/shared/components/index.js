@@ -56,7 +56,7 @@ module.exports = {
   iprScale : require('./bhIprScale'),
   locationSelect : require('./bhLocationSelect'),
   modalAction : require('./bhModalAction'),
-  // multipleCashBoxSelect : require('./bhMultipleCashBoxSelect'),
+  multipleCashBoxSelect : require('./bhMultipleCashBoxSelect'),
   notification : require('./notify'),
   patientGroupSelect : require('./bhPatientGroupSelect'),
   payrollPeriodSelect : require('./bhPayrollPeriodSelect'),
