@@ -53,8 +53,6 @@ class StockExitReportPage {
 
   // close preview
   async closeStockExitReportPreview() {
-    const btn = await TU.locator('[data-method="close"]');
-    console.debug('B: ', btn, await btn.count());
     return this.page.closePreview();
   }
 }
