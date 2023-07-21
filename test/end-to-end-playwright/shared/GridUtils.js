@@ -3,8 +3,6 @@
 const { expect } = require('@playwright/test');
 const TU = require('./TestUtils');
 const { by } = require('./TestUtils');
-const exp = require('constants');
-const { default: SubscriptionSet } = require('ioredis/built/SubscriptionSet');
 
 /**
  * Get the element with gridId

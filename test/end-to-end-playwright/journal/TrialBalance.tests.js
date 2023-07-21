@@ -19,7 +19,7 @@ function TrialBalanceTest() {
 
   test.beforeEach(async () => {
     await TU.navigate(path);
-    modal = new SearchModal(path)
+    modal = new SearchModal(path);
     filters = new Filters();
   });
 
