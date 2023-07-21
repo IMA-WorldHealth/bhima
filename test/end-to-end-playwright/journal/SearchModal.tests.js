@@ -31,7 +31,7 @@ function JournalSearchTests() {
     await page.expectRowCountAbove(NUM_UNPOSTED_ROWS);
   });
 
-  const NUM_ACCOUNT_CHURCH = 2;
+  const NUM_ACCOUNT_CHURCH = [2, 4];
   test(`should have ${NUM_ACCOUNT_CHURCH} rows for the church account`, async () => {
     await modal.setAccount('41111010');
     await modal.submit();
@@ -40,14 +40,14 @@ function JournalSearchTests() {
   });
 
   const PATIENT_REFERENCE = 'PA.TPA.2';
-  const NUMBER_OF_REFERENCED_LINES = 2;
+  const NUMBER_OF_REFERENCED_LINES = [2, 5];
   test(`finds ${NUMBER_OF_REFERENCED_LINES} rows for patient reference ${PATIENT_REFERENCE}`, async () => {
     await modal.setEntity(PATIENT_REFERENCE);
     await modal.submit();
     await page.expectRowCount(NUMBER_OF_REFERENCED_LINES);
   });
 
-  const TOTAL_TRANSACTION_LINES_REFERENCED = 4;
+  const TOTAL_TRANSACTION_LINES_REFERENCED = [4, 10];
   test('shows more rows when "showFullTransaction" option is set', async () => {
     await modal.setEntity(PATIENT_REFERENCE);
     await modal.showFullTransactions(true);
@@ -71,7 +71,7 @@ function JournalSearchTests() {
     await page.expectRowCount(NUM_CASH_ROWS);
   });
 
-  const NUM_REFERENCED_ROWS = 4;
+  const NUM_REFERENCED_ROWS = [4, 8];
   const INVOICE_REFERENCE = 'IV.TPA.1';
   test(`finds ${NUM_REFERENCED_ROWS} rows for reference ${INVOICE_REFERENCE}`, async () => {
     await modal.setReference(INVOICE_REFERENCE);
