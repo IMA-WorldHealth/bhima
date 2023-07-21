@@ -3,6 +3,8 @@
 const { expect } = require('@playwright/test');
 const TU = require('./TestUtils');
 const { by } = require('./TestUtils');
+const exp = require('constants');
+const { default: SubscriptionSet } = require('ioredis/built/SubscriptionSet');
 
 /**
  * Get the element with gridId
@@ -205,25 +207,33 @@ async function getGridIndexesMatchingText(gridId, text) {
   //   .then(() => ({ rowIndex : rowIdx, columnIndex : colIdx }));
 }
 
-// takes in an array of column texts and asserts they are the column headers
-// @todo - migrate this to GridUtils
+/**
+ * Makes sure the expected columns actually all appear in the grid
+ * @param {string} gridId - grid ID
+ * @param {Array} expectedColumns - array of expected columns
+ */
 async function expectHeaderColumns(gridId, expectedColumns) {
-  throw Error('GridUtils expectColumnCount is not implemented');
-  // const columns = getColumns(gridId);
-  // const headerColumns = columns
-  //   .all(by.css('.ui-grid-header-cell-label'));
+  throw Error('GridUtils expectHeaderColumns has not been tested');
 
-  // expect(
-  //   await headerColumns.count()
-  // ).to.equal(expectedColumns.length);
+  // The following test has been migrated but not tested
+  // const columns = await this.getColumnHeaders(gridId);
+  // const headerColumns = await Promise.all(columns.map(col => col.innerText()));
+  // const actualSet = new Set(headerColumns.sort());
+  // const expectedSet = new Set(expectedColumns.sort());
+  // expect(headerColumns.length).toBe(expectedColumns.length);
+  // expect(actualSet).toEqual(expectedColumns);
+}
 
-  // const colTexts = await headerColumns.getText();
-
-  // const columnTexts = Promise.all(colTexts.map((text) => {
-  //   return text.replace(/^\s+/, '').replace(/\s+$/, '');
-  // }));
-
-  // expect(await columnTexts).to.deep.equal(expectedColumns);
+/**
+ * Return true if all the expected column headers are present in the grid
+ * @param {string} gridId - grid ID
+ * @param {Array} expectedColumns - array of expected column headers
+ * @returns {boolean} success
+ */
+async function expectHeaderColumnsContained(gridId, expectedColumns) {
+  const columns = await this.getColumnHeaders(gridId);
+  const headerColumns = await Promise.all(columns.map(col => col.innerText()));
+  return expectedColumns.every(col => headerColumns.includes(col));
 }
 
 /**
@@ -301,6 +311,7 @@ exports.expectRowCount = expectRowCount;
 exports.expectRowCountAbove = expectRowCountAbove;
 exports.expectColumnCount = expectColumnCount;
 exports.expectHeaderColumns = expectHeaderColumns;
+exports.expectHeaderColumnsContained = expectHeaderColumnsContained;
 exports.selectRow = selectRow;
 exports.selectAll = selectAll;
 exports.expectCellValueMatch = expectCellValueMatch;
