@@ -81,6 +81,12 @@
             <bh-clear on-clear="ModalCtrl.clear('fonction_id')"></bh-clear>
           </bh-fonction-select>
 
+          <bh-fonction-select
+            fonction-id="ModalCtrl.searchQueries.title_employee_id"
+            on-select-callback="ModalCtrl.onSelectTitle(title)">
+            <bh-clear on-clear="ModalCtrl.clear('title_employee_id')"></bh-clear>
+          </bh-fonction-select>
+
           <bh-service-select
             service-uuid="ModalCtrl.searchQueries.service_uuid"
             on-select-callback="ModalCtrl.onSelectService(service)">

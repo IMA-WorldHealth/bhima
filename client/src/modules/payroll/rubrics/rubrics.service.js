@@ -31,8 +31,14 @@ function RubricService(Api) {
     { id : 'is_extra_day', label : 'PAYROLL_RUBRIC.IS_EXTRA_DAY' },
     { id : 'is_total_days', label : 'PAYROLL_RUBRIC.IS_TOTAL_DAYS' },
     { id : 'is_pay_rate', label : 'PAYROLL_RUBRIC.IS_PAY_RATE' },
+    { id : 'is_performance_rate', label : 'PAYROLL_RUBRIC.IS_PERFORMANCE_RATE' },
     { id : 'is_gross_salary', label : 'PAYROLL_RUBRIC.IS_GROSS_SALARY' },
     { id : 'is_number_of_days', label : 'PAYROLL_RUBRIC.IS_NUMBER_OF_DAYS' },
+    { id : 'is_seniority_index', label : 'PAYROLL_RUBRIC.SENIORITY_INDEX' },
+    { id : 'is_relative_point', label : 'PAYROLL_RUBRIC.RELATIVE_POINT' },
+    { id : 'is_fixed_bonus', label : 'PAYROLL_RUBRIC.FIXED_BONUS' },
+    { id : 'is_performance_bonus', label : 'PAYROLL_RUBRIC.PERFORMANCE_BONUS' },
+    { id : 'is_individual_performance', label : 'PAYROLL_RUBRIC.INDIVIDUAL_PERFORMANCE' },
   ];
   return service;
 }
