@@ -5,6 +5,7 @@
  * This method will apply filters from the options object passed in to
  * filter.
  */
+const moment = require('moment');
 const db = require('../../../lib/db');
 const util = require('../../../lib/util');
 
@@ -30,7 +31,12 @@ async function create(req, res, next) {
 
   const transaction = db.transaction();
   const minMonentaryUnit = req.session.enterprise.min_monentary_unit;
-  const payEnvelope = req.body.pay_envelope;
+  const percentageFixedBonus = req.session.enterprise.settings.percentage_fixed_bonus;
+  const percentagePerformanceBonus = 100 - percentageFixedBonus;
+
+  const payEnvelope = req.body.pay_envelope * (percentageFixedBonus / 100);
+  const bonusPerformance = req.body.pay_envelope * (percentagePerformanceBonus / 100);
+
   const workingDays = req.body.working_days;
   const requestsUpdateIndices = await stagePaymentIndice(id);
 
@@ -38,11 +44,17 @@ async function create(req, res, next) {
   const employeesGradeIndice = requestsUpdateIndices[1];
   const aggregateOtherProfits = requestsUpdateIndices[2];
   const rubricMonetaryValue = requestsUpdateIndices[3];
+  const payrollPeriod = requestsUpdateIndices[4];
+  const payrollPeriodDate = payrollPeriod[0].dateTo;
 
   let totalCode = 0;
   let rubricPayRateId;
   let rubricGrossSallaryId;
   let rubricNumberOfDaysId;
+  let rubricFixedBonusId;
+  let totalRelatifPoint = 0;
+  let rubricPerformanceRateId;
+  let rubricPerformanceBonusId;
 
   transaction.addQuery('DELETE FROM staffing_indice_parameters WHERE payroll_configuration_id =?', id);
   transaction.addQuery('INSERT INTO staffing_indice_parameters SET ?', data);
@@ -62,6 +74,10 @@ async function create(req, res, next) {
     let rubricReagisteredIndexId;
     let rubricTotalCodeId;
     let rubricDayIndexId;
+
+    const diff = moment(payrollPeriodDate).diff(moment(emp.date_embauche));
+    const duration = moment.duration(diff, 'milliseconds');
+    const yearOfSeniority = parseInt(duration.asYears(), 10);
 
     emp.totalBase = 0;
 
@@ -94,17 +110,38 @@ async function create(req, res, next) {
       if (ind.indice_type === 'is_base_index') {
         ind.rubric_value = emp.grade_indice;
         emp.totalBase += emp.grade_indice;
-        transaction.addQuery(updateStaffingIndice, [emp.grade_indice, id, emp.employee_buid, ind.rubric_id]);
+        if (ind.rubric_id) {
+          transaction.addQuery(updateStaffingIndice, [emp.grade_indice, id, emp.employee_buid, ind.rubric_id]);
+        }
       }
 
       // Get is responsability
       if (ind.indice_type === 'is_responsability') {
         ind.rubric_value = emp.function_indice;
         emp.totalBase += emp.function_indice;
-        transaction.addQuery(
-          updateStaffingIndice,
-          [emp.function_indice, id, emp.employee_buid, ind.rubric_id],
-        );
+        if (ind.rubric_id) {
+          transaction.addQuery(
+            updateStaffingIndice,
+            [emp.function_indice, id, emp.employee_buid, ind.rubric_id],
+          );
+        }
+      }
+
+      // Get is seniority Bonus
+      if (ind.indice_type === 'is_seniority_index') {
+        ind.rubric_value = yearOfSeniority;
+        emp.totalBase += yearOfSeniority;
+        if (ind.rubric_id) {
+          transaction.addQuery(
+            updateStaffingIndice,
+            [yearOfSeniority, id, emp.employee_buid, ind.rubric_id],
+          );
+        }
+      }
+
+      //  get Relative point
+      if (ind.indice_type === 'is_individual_performance') {
+        emp.performance = ind.rubric_value / 100;
       }
 
       // Get Pay Rate Id
@@ -117,9 +154,24 @@ async function create(req, res, next) {
         rubricGrossSallaryId = ind.rubric_id;
       }
 
+      // Get Fixed Bonus Id
+      if (ind.indice_type === 'is_fixed_bonus') {
+        rubricFixedBonusId = ind.rubric_id;
+      }
+
+      // Get Performance Bonus Id
+      if (ind.indice_type === 'is_performance_bonus') {
+        rubricPerformanceBonusId = ind.rubric_id;
+      }
+
       // Get Number of days ID
       if (ind.indice_type === 'is_number_of_days') {
         rubricNumberOfDaysId = ind.rubric_id;
+      }
+
+      // Get Performance Bonus ID
+      if (ind.indice_type === 'is_performance_rate') {
+        rubricPerformanceRateId = ind.rubric_id;
       }
 
       // Get is other responsability
@@ -130,6 +182,20 @@ async function create(req, res, next) {
       // Get Day Index Id
       if (ind.indice_type === 'is_day_index') {
         rubricDayIndexId = ind.rubric_id;
+      }
+    });
+
+    employeePaymentIndice.forEach(ind => {
+      // Save relative point
+      if (ind.indice_type === 'is_relative_point') {
+        if (ind.rubric_id) {
+          transaction.addQuery(
+            updateStaffingIndice,
+            [(emp.totalBase * emp.performance), id, emp.employee_buid, ind.rubric_id],
+          );
+          emp.relatifPoint = emp.totalBase * emp.performance;
+          totalRelatifPoint += emp.totalBase * emp.performance;
+        }
       }
     });
 
@@ -149,47 +215,94 @@ async function create(req, res, next) {
       }
     });
 
-    emp.dayIndex = (emp.totalBase / workingDays) || 0;
-    emp.numberOfDays = workingDays;
-    emp.totalDays = totalDays;
-    emp.indiceReajust = util.roundDecimal((emp.dayIndex * totalDays), 5);
-    emp.totalCode = emp.indiceReajust + emp.otherProfits;
+    emp.otherProfits = emp.otherProfits || 0;
+
+    if (workingDays && totalDays) {
+      emp.dayIndex = (emp.totalBase / workingDays) || 0;
+      emp.numberOfDays = workingDays;
+      emp.totalDays = totalDays;
+      emp.indiceReajust = util.roundDecimal((emp.dayIndex * totalDays), 5);
+      emp.totalCode = emp.indiceReajust + emp.otherProfits;
+    } else {
+      emp.totalCode = emp.totalBase + emp.otherProfits;
+    }
 
     // Set Total days
     transaction.addQuery(updateStaffingIndice, [totalDays, id, emp.employee_buid, rubricTotalDaysId]);
 
     // Set Reagistered Index
-    transaction.addQuery(
-      updateStaffingIndice,
-      [emp.indiceReajust, id, emp.employee_buid, rubricReagisteredIndexId],
-    );
+    if (rubricReagisteredIndexId) {
+      transaction.addQuery(
+        updateStaffingIndice,
+        [emp.indiceReajust, id, emp.employee_buid, rubricReagisteredIndexId],
+      );
+    }
 
     // Set Total Code
-    transaction.addQuery(
-      updateStaffingIndice,
-      [emp.totalCode, id, emp.employee_buid, rubricTotalCodeId],
-    );
+    if (rubricTotalCodeId) {
+      transaction.addQuery(
+        updateStaffingIndice,
+        [emp.totalCode, id, emp.employee_buid, rubricTotalCodeId],
+      );
+    }
 
     // Set Day index
-    transaction.addQuery(
-      updateStaffingIndice,
-      [emp.dayIndex, id, emp.employee_buid, rubricDayIndexId],
-    );
+    if (rubricDayIndexId) {
+      transaction.addQuery(
+        updateStaffingIndice,
+        [emp.dayIndex, id, emp.employee_buid, rubricDayIndexId],
+      );
+    }
 
     totalCode += emp.totalCode;
   });
 
   const payRate = payEnvelope / totalCode;
+  const performanceBonusRate = bonusPerformance / totalRelatifPoint;
 
   employeesGradeIndice.forEach(emp => {
+    emp.performanceBonus = 0;
+
     emp.payRate = payRate;
-    emp.grossSalary = util.roundDecimal(((payRate * emp.totalCode) / minMonentaryUnit), 0) * minMonentaryUnit;
+    emp.fixedBonus = util.roundDecimal(((payRate * emp.totalCode) / minMonentaryUnit), 0) * minMonentaryUnit;
+
+    if (emp.relatifPoint) {
+      emp.performanceBonus = performanceBonusRate * emp.relatifPoint;
+    }
+
+    emp.grossSalary = emp.fixedBonus + emp.performanceBonus;
 
     // Set Pay Rate
-    transaction.addQuery(
-      updateStaffingIndice,
-      [payRate, id, emp.employee_buid, rubricPayRateId],
-    );
+    if (rubricPayRateId) {
+      transaction.addQuery(
+        updateStaffingIndice,
+        [payRate, id, emp.employee_buid, rubricPayRateId],
+      );
+    }
+
+    // Set Employee Fixed Bonus
+    if (rubricFixedBonusId) {
+      transaction.addQuery(
+        updateStaffingIndice,
+        [emp.grossSalary, id, emp.employee_buid, rubricFixedBonusId],
+      );
+    }
+
+    // Set Employee Performance Bonus
+    if (rubricPerformanceBonusId) {
+      transaction.addQuery(
+        updateStaffingIndice,
+        [emp.performanceBonus, id, emp.employee_buid, rubricPerformanceBonusId],
+      );
+    }
+
+    // Set Employee Performance Bonus Rate
+    if (rubricPerformanceRateId) {
+      transaction.addQuery(
+        updateStaffingIndice,
+        [performanceBonusRate, id, emp.employee_buid, rubricPerformanceRateId],
+      );
+    }
 
     // Set Gross Sallary
     transaction.addQuery(
@@ -204,10 +317,12 @@ async function create(req, res, next) {
     );
 
     // Set working days
-    transaction.addQuery(
-      updateStaffingIndice,
-      [workingDays, id, emp.employee_buid, rubricNumberOfDaysId],
-    );
+    if (rubricNumberOfDaysId) {
+      transaction.addQuery(
+        updateStaffingIndice,
+        [workingDays, id, emp.employee_buid, rubricNumberOfDaysId],
+      );
+    }
   });
 
   transaction.execute().then(() => {
@@ -227,7 +342,7 @@ async function stagePaymentIndice(payrollConfigurationId) {
 
   const sqlGetEmployees = `
      SELECT BUID(emp.uuid) AS employee_uuid, emp.uuid AS employee_buid, ind.grade_indice,
-     ind.function_indice, ind.created_at
+     ind.function_indice, ind.created_at, emp.date_embauche
      FROM payroll_configuration AS pc
      JOIN config_employee AS ce ON ce.id = pc.config_employee_id
      JOIN config_employee_item AS cei ON cei.config_employee_id = ce.id
@@ -259,11 +374,15 @@ async function stagePaymentIndice(payrollConfigurationId) {
     WHERE spi.payroll_configuration_id = ? AND rub.is_indice = 1 AND rub.is_monetary_value = 1;
   `;
 
+  const sqlGetEndOfPeriod = `
+    SELECT pc.dateTo FROM payroll_configuration AS pc WHERE pc.id = ?;`;
+
   return Promise.all([
     db.exec(sqlGetStagePaymentIndice, [payrollConfigurationId]),
     db.exec(sqlGetEmployees, [payrollConfigurationId]),
     db.exec(sqlGetAggregateOtherProfits, [payrollConfigurationId]),
     db.exec(sqlGetRubricMonetaryValue, [payrollConfigurationId]),
+    db.exec(sqlGetEndOfPeriod, [payrollConfigurationId]),
   ]);
 
 }
