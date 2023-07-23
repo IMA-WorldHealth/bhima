@@ -28,7 +28,7 @@ exports.list = function list(req, res, next) {
         enable_auto_email_report, enable_index_payment_system, base_index_growth_rate,
         posting_payroll_cost_center_mode, enable_require_cost_center_for_posting,
         enable_prf_details, purchase_general_condition, terms_of_delivery, special_instructions,
-		percentage_fixed_bonus
+        percentage_fixed_bonus
       FROM enterprise LEFT JOIN enterprise_setting
         ON enterprise.id = enterprise_setting.enterprise_id
       ;`;
