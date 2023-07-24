@@ -13,7 +13,7 @@ function tagsManagementTests() {
   it('should add a new tags', async () => {
     await page.openCreateModal();
     await page.setName('Tag1');
-    await page.setColor('Aqua');
+    await page.setColor('aqua');
     await page.submit();
     await components.notification.hasSuccess();
   });
@@ -21,7 +21,7 @@ function tagsManagementTests() {
   it('should add another tags', async () => {
     await page.openCreateModal();
     await page.setName('Broken');
-    await page.setColor('Gris');
+    await page.setColor('gris');
     await page.submit();
     await components.notification.hasSuccess();
   });
@@ -29,7 +29,7 @@ function tagsManagementTests() {
   it('should add a third tags', async () => {
     await page.openCreateModal();
     await page.setName('Test tag');
-    await page.setColor('Vert');
+    await page.setColor('vert');
     await page.submit();
     await components.notification.hasSuccess();
   });
@@ -37,7 +37,7 @@ function tagsManagementTests() {
   it('should edit tags', async () => {
     await page.editTags('Tag1');
     await page.setName('Repaired');
-    await page.setColor('Jaune');
+    await page.setColor('jaune');
     await page.submit();
     await components.notification.hasSuccess();
   });
