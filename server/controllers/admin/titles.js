@@ -9,7 +9,7 @@ const db = require('../../lib/db');
 // GET /title
 function lookupTitle(id) {
   const sql = `SELECT id, title_txt FROM title_employee
-    WHERE title_txt.id = ?`;
+    WHERE title_employee.id = ?`;
 
   return db.one(sql, [id]);
 }

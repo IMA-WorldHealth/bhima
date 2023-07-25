@@ -16,7 +16,7 @@ describe('(/titles) The job titles  API endpoint', () => {
   };
 
   const TITLE_KEY = ['id', 'title_txt'];
-  const NUM_TITLES = 2;
+  const NUM_TITLES = 3;
 
   it('GET /TITLES returns a list of job title ', () => {
     return agent.get('/titles')
@@ -58,7 +58,7 @@ describe('(/titles) The job titles  API endpoint', () => {
       .then((res) => {
         expect(res).to.have.status(200);
         expect(res.body).to.have.keys(TITLE_KEY);
-        expect(res.body.fonction_txt).to.equal('Technicien imagerie');
+        expect(res.body.title_txt).to.equal('Technicien imagerie');
       })
       .catch(helpers.handler);
   });
