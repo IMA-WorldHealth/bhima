@@ -1,0 +1,36 @@
+<form name="TitleForm" bh-submit="TitleModalCtrl.submit(TitleForm)" novalidate>
+
+<div class="modal-header">
+  <ol class="headercrumb">
+    <li class="static" translate>TREE.TITLE</li>
+    <li ng-if="TitleModalCtrl.isCreateState" class="title">
+      <span translate>FORM.BUTTONS.ADD_TITLE</span>
+      <label class="badge badge-success" translate>FORM.LABELS.CREATE</label>
+    </li>
+    <li ng-if="!TitleModalCtrl.isCreateState" class="title">
+      <span translate>FORM.BUTTONS.EDIT_TITLE</span>
+      <label class="badge badge-success" translate>FORM.LABELS.UPDATE</label>
+    </li>
+  </ol>
+</div>
+
+<div class="modal-body">
+  <div class="form-group" ng-class="{ 'has-error' : TitleForm.$submitted && TitleForm.title_txt.$invalid }">
+    <label class="control-label" translate>FORM.LABELS.DESIGNATION</label>
+    <input name="title_txt" ng-model="TitleModalCtrl.title.title_txt" autocomplete="off" class="form-control" required>
+    <div class="help-block" ng-messages="TitleForm.title_txt.$error" ng-show="TitleForm.$submitted">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+</div>
+
+  <div class="modal-footer">
+    <button data-method="cancel" type="button" class="btn btn-default" ng-click="TitleModalCtrl.closeModal()">
+      <span translate>FORM.BUTTONS.CANCEL</span>
+    </button>
+
+    <bh-loading-button loading-state="FunctionForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>
