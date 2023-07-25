@@ -25,12 +25,12 @@ const StockInventoryAdjustement = require('./stock.z1.inventory-adjustment');
 const StockSetting = require('./stock.setting');
 const StockAggregateConsumptionTests = require('./stock.aggregate_consumption');
 
-test.describe('Stock end-to-end test', () => {
-  test.describe('Stock Aggregate ConsumptionTests', StockAggregateConsumptionTests);
-  // test.describe('Stock Adjustment Test', StockAdjustmentTests);
-  // test.describe('Stock Assign Module', StockAssignTests);
-  // test.describe('Stock Entry Test', StockEntryTests);
-  // test.describe('Stock Exit Test', StockExitTests);
+test.describe('Stock E2E', () => {
+  test.describe('Stock Aggregate Consumption', StockAggregateConsumptionTests);
+  // test.describe('Stock Adjustment', StockAdjustmentTests);
+  // test.describe('Stock Assign', StockAssignTests);
+  // test.describe('Stock Entry', StockEntryTests);
+  // test.describe('Stock Exit', StockExitTests);
   // test.describe('Stock Import', StockImportTests);
   // test.describe('Stock Inventory Registry', StockInventoriesRegistryTests);
   // test.describe('Stock Lots Registry', StockLotsRegistryTests);
