@@ -175,6 +175,13 @@ function EmployeeRegistryController(
     },
     {
       field            : 'fonction_txt',
+      displayName      : 'FORM.LABELS.FUNCTION',
+      headerCellFilter : 'translate',
+      visible          : false,
+      cellClass        : muteDisabledCells,
+    },
+    {
+      field            : 'title_txt',
       displayName      : 'FORM.LABELS.PROFESSION',
       headerCellFilter : 'translate',
       visible          : false,
