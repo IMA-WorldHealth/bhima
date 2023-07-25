@@ -51,7 +51,7 @@ exports.list = function list(req, res, next) {
             'enable_barcodes',
             'enable_auto_email_report',
             'enable_index_payment_system',
-			'percentage_fixed_bonus',
+            'percentage_fixed_bonus',
             'base_index_growth_rate',
             'posting_payroll_cost_center_mode',
             'enable_require_cost_center_for_posting',
