@@ -64,7 +64,7 @@ class ComplexVoucherPage {
     const link = await select.locator('[role="option"]')
       .locator(`//a[span[contains(text(), "${name}")]]`)
       .locator(by.containsText(currency));
-      // Note the special xpath above: It selects 'a' elements with child 'spans' that
+      // Note: the special xpath above: It selects 'a' elements with child 'spans' that
       // contain the desired text.  Which can then be used in the following locator.
 
     return link.click();
