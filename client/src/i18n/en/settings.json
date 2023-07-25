@@ -7,6 +7,8 @@
     "DEFAULT_COST_CENTER_FOR_STOCK_LOSS_HELP_TEXT": "This option allows you to configure the default cost center for stock losses.",
     "HAVING_DATE_INTERVAL": "Use a date interval",
     "HAVING_DATE_INTERVAL_HELP_TEXT": "This option allows you to define a starting and ending date",    
+    "PERCENTAGE_ATTRIBUTED_FIXED_BONUS": "Percentage to be attributed to the fixed premium",
+    "PERCENTAGE_ATTRIBUTED_FIXED_BONUS_HELP_TEXT": "Definition of the percentage to be attributed to the fixed bonus in relation to the performance bonus on the payroll?",
     "POS_RECEIPT_INFO": "Enabling POS receipts will configure all supported system receipts to the POS (80mm) format",    
     "TITLE": "Settings",
     "SIMPLIFIED_CARD_INFO": "Simple patient identifiers have a width of 75mm, height of 125mm are in 'Landscape' orientation. Standard identities are 'A6'."
