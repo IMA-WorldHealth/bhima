@@ -3,6 +3,8 @@ const moment = require('moment');
 const { test } = require('@playwright/test');
 const TU = require('../shared/TestUtils');
 
+const components = require('../shared/components');
+
 const Page = require('./stock.aggregate_consumption.page');
 
 function StockAggregateConsumptionTests() {
@@ -81,14 +83,14 @@ function StockAggregateConsumptionTests() {
     const getLastDays = new Date(getMovementYear, getMovementMonth + 1, 0);
 
     const fiscalYearLabel = `Fiscal Year ${getMovementYear}`;
-    console.debug('1');
+
     await page.setFiscalPeriod(fiscalYearLabel, `${month[getMovementMonth]} ${getMovementYear}`);
     await page.setDescription(`Aggregate consumption from current depot ${DEPOT_TERTIAIRE}`);
-    console.debug('2');
+
     await page.setHeaderValue(0, 9, 5);
     await page.setQuantityConsumed(1, 7, 500);
     await page.setQuantityLost(1, 8, 250);
-    console.debug('3');
+
     const lots = [{
       start_date : moment(new Date(getLastDays), 'YYYY-MM-DD').subtract(27, 'days'),
       end_date : moment(new Date(getLastDays), 'YYYY-MM-DD').subtract(25, 'days'),
@@ -115,13 +117,14 @@ function StockAggregateConsumptionTests() {
       quantity_consumed :  150,
       quantity_lost :  0,
     }];
-    console.debug('4');
+
     await page.setDetailed(1, 10);
-    await page.setLotsDetailed(lots);
-    console.debug('5');
+    await page.setLots(lots);
+    // await page.setLotsDetailed(lots);
+
     await page.setQuantityConsumed(2, 7, 500);
     await page.setQuantityLost(2, 8, 250);
-    console.debug('6');
+
     const lots2 = [{
       start_date : moment(new Date(getLastDays), 'YYYY-MM-DD').subtract(20, 'days'),
       end_date : moment(new Date(getLastDays), 'YYYY-MM-DD').subtract(18, 'days'),
@@ -133,167 +136,158 @@ function StockAggregateConsumptionTests() {
       quantity_consumed :  375,
       quantity_lost :  250,
     }];
-    console.debug('7');
+
     await page.setDetailed(2, 10);
-    console.debug('7b');
-    await page.setLots2Detailed(lots2);
-    console.debug('8');
+    await page.setLots(lots2);
+    // await page.setLots2Detailed(lots2);
+
     await page.setHeaderValue(3, 9, 20);
     await page.setQuantityConsumed(4, 7, 550);
     await page.setQuantityLost(4, 8, 50);
-    console.debug('9');
+
     await page.submit();
   });
 
-  // test(`Should select the ${DEPOT_PRINCIPAL}`, async () => {
-  //   await page.changeDepot(DEPOT_PRINCIPAL);
-  // });
+  test(`Should select the ${DEPOT_PRINCIPAL}`, async () => {
+    await page.changeDepot(DEPOT_PRINCIPAL);
+  });
 
-  // test(`Prevent that for an aggregated consume the start date is greater than the end date
-  //   ${DEPOT_PRINCIPAL}`, async () => {
-  //   const getMovementDate = moment(new Date(), 'YYYY-MM-DD').subtract(60, 'days');
-  //   const getMovementMonth = moment(getMovementDate).month();
-  //   const getMovementYear = moment(getMovementDate).year();
+  test(`Prevent that for an aggregated consume the start date is greater than the end date
+    ${DEPOT_PRINCIPAL}`, async () => {
+    const getMovementDate = moment(new Date(), 'YYYY-MM-DD').subtract(60, 'days');
+    const getMovementMonth = moment(getMovementDate).month();
+    const getMovementYear = moment(getMovementDate).year();
 
-  //   const getLastDays = new Date(getMovementYear, getMovementMonth + 1, 0);
+    const getLastDays = new Date(getMovementYear, getMovementMonth + 1, 0);
 
-  //   const fiscalYearLabel = `Fiscal Year ${getMovementYear}`;
+    const fiscalYearLabel = `Fiscal Year ${getMovementYear}`;
 
-  //   await page.setFiscalPeriod(fiscalYearLabel, month[getMovementMonth]);
-  //   await page.setDescription(`Aggregate consumption from current depot ${DEPOT_PRINCIPAL}`);
+    await page.setFiscalPeriod(fiscalYearLabel, `${month[getMovementMonth]} ${getMovementYear}`);
+    await page.setDescription(`Aggregate consumption from current depot ${DEPOT_PRINCIPAL}`);
 
-  //   await page.setHeaderValue(0, 9, 5);
-  //   await page.setQuantityConsumed(1, 7, 15);
-  //   await page.setQuantityLost(1, 8, 5);
+    await page.setHeaderValue(0, 9, 5);
+    await page.setQuantityConsumed(1, 7, 15);
+    await page.setQuantityLost(1, 8, 5);
 
-  //   const lots = [{
-  //     start_date : moment(new Date(getLastDays), 'YYYY-MM-DD').subtract(3, 'days'),
-  //     end_date : moment(new Date(getLastDays), 'YYYY-MM-DD').subtract(10, 'days'),
-  //     quantity_consumed :  15,
-  //     quantity_lost : 5,
-  //   }];
+    const lots = [{
+      start_date : moment(new Date(getLastDays), 'YYYY-MM-DD').subtract(3, 'days'),
+      end_date : moment(new Date(getLastDays), 'YYYY-MM-DD').subtract(10, 'days'),
+      quantity_consumed :  15,
+      quantity_lost : 5,
+    }];
 
-  //   await page.setDetailed(1, 10);
-  //   await page.setLots3Detailed(lots);
-  // });
+    await page.setDetailed(1, 10);
+    await page.setLotsError(lots);
+  });
 
-  // test(`Should select the ${DEPOT_PRINCIPAL}`, async () => {
-  //   await page.changeDepot(DEPOT_PRINCIPAL);
-  // });
+  test(`Prevent dates from being in bad period ${DEPOT_PRINCIPAL}`, async () => {
+    const getMovementDate = moment(new Date(), 'YYYY-MM-DD').subtract(60, 'days');
+    const getMovementMonth = moment(getMovementDate).month();
+    const getMovementYear = moment(getMovementDate).year();
 
-  // test(`Prevent dates from being in bad period ${DEPOT_PRINCIPAL}`, async () => {
-  //   const getMovementDate = moment(new Date(), 'YYYY-MM-DD').subtract(60, 'days');
-  //   const getMovementMonth = moment(getMovementDate).month();
-  //   const getMovementYear = moment(getMovementDate).year();
+    const getLastDays = new Date(getMovementYear, getMovementMonth + 1, 0);
 
-  //   const getLastDays = new Date(getMovementYear, getMovementMonth + 1, 0);
+    const fiscalYearLabel = `Fiscal Year ${getMovementYear}`;
 
-  //   const fiscalYearLabel = `Fiscal Year ${getMovementYear}`;
+    await page.changeDepot(DEPOT_PRINCIPAL);
 
-  //   await page.setFiscalPeriod(fiscalYearLabel, month[getMovementMonth]);
-  //   await page.setDescription(`Aggregate consumption from current depot ${DEPOT_PRINCIPAL}`);
+    await page.setFiscalPeriod(fiscalYearLabel, `${month[getMovementMonth]} ${getMovementYear}`);
+    await page.setDescription(`Aggregate consumption from current depot ${DEPOT_PRINCIPAL}`);
 
-  //   await page.setHeaderValue(0, 9, 5);
-  //   await page.setQuantityConsumed(1, 7, 15);
-  //   await page.setQuantityLost(1, 8, 5);
+    await page.setHeaderValue(0, 9, 5);
+    await page.setQuantityConsumed(1, 7, 15);
+    await page.setQuantityLost(1, 8, 5);
 
-  //   const lots = [{
-  //     start_date : moment(new Date(getLastDays), 'YYYY-MM-DD').subtract(25, 'days'),
-  //     end_date : moment(new Date(getLastDays), 'YYYY-MM-DD').subtract(12, 'days'),
-  //     quantity_consumed :  10,
-  //     quantity_lost : 3,
-  //   }, {
-  //     start_date : moment(new Date(getLastDays), 'YYYY-MM-DD').subtract(10, 'days'),
-  //     end_date : moment(new Date(getLastDays), 'YYYY-MM-DD').subtract(35, 'days'),
-  //     quantity_consumed :  5,
-  //     quantity_lost : 2,
-  //   }];
+    const lots = [{
+      start_date : moment(new Date(getLastDays), 'YYYY-MM-DD').subtract(25, 'days'),
+      end_date : moment(new Date(getLastDays), 'YYYY-MM-DD').subtract(12, 'days'),
+      quantity_consumed :  10,
+      quantity_lost : 3,
+    }, {
+      start_date : moment(new Date(getLastDays), 'YYYY-MM-DD').subtract(10, 'days'),
+      end_date : moment(new Date(getLastDays), 'YYYY-MM-DD').subtract(35, 'days'),
+      quantity_consumed :  5,
+      quantity_lost : 2,
+    }];
 
-  //   await page.setDetailed(1, 10);
-  //   await page.setLots4Detailed(lots);
-  // });
+    await page.setDetailed(1, 10);
+    await page.setLotsError(lots);
+  });
 
-  // test(`Should select the ${DEPOT_PRINCIPAL}`, async () => {
-  //   await page.changeDepot(DEPOT_PRINCIPAL);
-  // });
 
-  // test(`Prevent that it may have aggregate consumption with incorrect date ranges ${DEPOT_PRINCIPAL}`, async () => {
-  //   const getMovementDate = moment(new Date(), 'YYYY-MM-DD').subtract(60, 'days');
-  //   const getMovementMonth = moment(getMovementDate).month();
-  //   const getMovementYear = moment(getMovementDate).year();
+  test(`Prevent that it may have aggregate consumption with incorrect date ranges ${DEPOT_PRINCIPAL}`, async () => {
+    const getMovementDate = moment(new Date(), 'YYYY-MM-DD').subtract(60, 'days');
+    const getMovementMonth = moment(getMovementDate).month();
+    const getMovementYear = moment(getMovementDate).year();
 
-  //   const getLastDays = new Date(getMovementYear, getMovementMonth + 1, 0);
+    const getLastDays = new Date(getMovementYear, getMovementMonth + 1, 0);
 
-  //   const fiscalYearLabel = `Fiscal Year ${getMovementYear}`;
+    const fiscalYearLabel = `Fiscal Year ${getMovementYear}`;
 
-  //   await page.setFiscalPeriod(fiscalYearLabel, month[getMovementMonth]);
-  //   await page.setDescription(`Aggregate consumption from current depot ${DEPOT_PRINCIPAL}`);
+    await page.changeDepot(DEPOT_PRINCIPAL);
 
-  //   await page.setHeaderValue(0, 9, 5);
-  //   await page.setQuantityConsumed(1, 7, 15);
-  //   await page.setQuantityLost(1, 8, 5);
+    await page.setFiscalPeriod(fiscalYearLabel, `${month[getMovementMonth]} ${getMovementYear}`);
+    await page.setDescription(`Aggregate consumption from current depot ${DEPOT_PRINCIPAL}`);
 
-  //   const lots = [{
-  //     start_date : moment(new Date(getLastDays), 'YYYY-MM-DD').subtract(15, 'days'),
-  //     end_date : moment(new Date(getLastDays), 'YYYY-MM-DD').subtract(10, 'days'),
-  //     quantity_consumed :  10,
-  //     quantity_lost : 3,
-  //   }, {
-  //     start_date : moment(new Date(getLastDays), 'YYYY-MM-DD').subtract(17, 'days'),
-  //     end_date : moment(new Date(getLastDays), 'YYYY-MM-DD').subtract(8, 'days'),
-  //     quantity_consumed :  5,
-  //     quantity_lost : 2,
-  //   }];
+    await page.setHeaderValue(0, 9, 5);
+    await page.setQuantityConsumed(1, 7, 15);
+    await page.setQuantityLost(1, 8, 5);
 
-  //   await page.setDetailed(1, 10);
-  //   await page.setLots4Detailed(lots);
-  // });
+    const lots = [{
+      start_date : moment(new Date(getLastDays), 'YYYY-MM-DD').subtract(15, 'days'),
+      end_date : moment(new Date(getLastDays), 'YYYY-MM-DD').subtract(10, 'days'),
+      quantity_consumed :  10,
+      quantity_lost : 3,
+    }, {
+      start_date : moment(new Date(getLastDays), 'YYYY-MM-DD').subtract(17, 'days'),
+      end_date : moment(new Date(getLastDays), 'YYYY-MM-DD').subtract(8, 'days'),
+      quantity_consumed :  5,
+      quantity_lost : 2,
+    }];
 
-  // test(`Should select the ${DEPOT_PRINCIPAL}`, async () => {
-  //   await page.changeDepot(DEPOT_PRINCIPAL);
-  // });
+    await page.setDetailed(1, 10);
+    await page.setLotsError(lots);
+  });
 
-  // test(`Prevent that we consume quantities greater than those defined ${DEPOT_PRINCIPAL}`, async () => {
-  //   const getMovementDate = moment(new Date(), 'YYYY-MM-DD').subtract(60, 'days');
-  //   const getMovementMonth = moment(getMovementDate).month();
-  //   const getMovementYear = moment(getMovementDate).year();
+  test(`Prevent that we consume quantities greater than those defined ${DEPOT_PRINCIPAL}`, async () => {
+    const getMovementDate = moment(new Date(), 'YYYY-MM-DD').subtract(60, 'days');
+    const getMovementMonth = moment(getMovementDate).month();
+    const getMovementYear = moment(getMovementDate).year();
 
-  //   const getLastDays = new Date(getMovementYear, getMovementMonth + 1, 0);
+    const getLastDays = new Date(getMovementYear, getMovementMonth + 1, 0);
 
-  //   const fiscalYearLabel = `Fiscal Year ${getMovementYear}`;
+    const fiscalYearLabel = `Fiscal Year ${getMovementYear}`;
 
-  //   await page.setFiscalPeriod(fiscalYearLabel, month[getMovementMonth]);
-  //   await page.setDescription(`Aggregate consumption from current depot ${DEPOT_PRINCIPAL}`);
+    await page.changeDepot(DEPOT_PRINCIPAL);
 
-  //   await page.setHeaderValue(0, 9, 5);
-  //   await page.setQuantityConsumed(1, 7, 15);
-  //   await page.setQuantityLost(1, 8, 5);
+    await page.setFiscalPeriod(fiscalYearLabel, `${month[getMovementMonth]} ${getMovementYear}`);
+    await page.setDescription(`Aggregate consumption from current depot ${DEPOT_PRINCIPAL}`);
 
-  //   const lots = [{
-  //     start_date : moment(new Date(getLastDays), 'YYYY-MM-DD').subtract(15, 'days'),
-  //     end_date : moment(new Date(getLastDays), 'YYYY-MM-DD').subtract(10, 'days'),
-  //     quantity_consumed :  10,
-  //     quantity_lost : 33,
-  //   }, {
-  //     start_date : moment(new Date(getLastDays), 'YYYY-MM-DD').subtract(10, 'days'),
-  //     end_date : moment(new Date(getLastDays), 'YYYY-MM-DD').subtract(8, 'days'),
-  //     quantity_consumed :  15,
-  //     quantity_lost : 2,
-  //   }];
+    await page.setHeaderValue(0, 9, 5);
+    await page.setQuantityConsumed(1, 7, 15);
+    await page.setQuantityLost(1, 8, 5);
 
-  //   await page.setDetailed(1, 10);
-  //   await page.setLots4Detailed(lots);
-  // });
+    const lots = [{
+      start_date : moment(new Date(getLastDays), 'YYYY-MM-DD').subtract(15, 'days'),
+      end_date : moment(new Date(getLastDays), 'YYYY-MM-DD').subtract(10, 'days'),
+      quantity_consumed :  10,
+      quantity_lost : 33,
+    }, {
+      start_date : moment(new Date(getLastDays), 'YYYY-MM-DD').subtract(10, 'days'),
+      end_date : moment(new Date(getLastDays), 'YYYY-MM-DD').subtract(8, 'days'),
+      quantity_consumed :  15,
+      quantity_lost : 2,
+    }];
 
-  // Fixe Me : lomamech 2021-05-24
+    await page.setDetailed(1, 10);
+    await page.setLotsError(lots);
+  });
+
+  // @TODO : fix this test - lomamech 2021-05-24
   // You will need to provide data in the test database to be able
   // to perform this test with the current data the repositories are empty
 
-  // it(`Should select the ${DEPOT_TERTIAIRE}`, async () => {
-  //   await page.changeDepot(DEPOT_TERTIAIRE);
-  // });
-
-  // it(`Prevent negative stock quantities when Aggregate Consumption greater than the
+  // test(`Prevent negative stock quantities when Aggregate Consumption greater than the
   //     quantity available on current depot ${DEPOT_TERTIAIRE}`, async () => {
   //   const getMovementDate = moment(new Date(), 'YYYY-MM-DD').subtract(80, 'days');
   //   const getMovementMonth = moment(getMovementDate).month();
@@ -301,7 +295,9 @@ function StockAggregateConsumptionTests() {
 
   //   const fiscalYearLabel = `Fiscal Year ${getMovementYear}`;
 
-  //   await page.setFiscalPeriod(fiscalYearLabel, month[getMovementMonth]);
+  //   await page.changeDepot(DEPOT_TERTIAIRE);
+
+  //   await page.setFiscalPeriod(fiscalYearLabel, `${month[getMovementMonth]} ${getMovementYear}`);
   //   await page.setDescription(`Aggregate consumption from current depot ${DEPOT_TERTIAIRE}`);
 
   //   await page.setHeaderValue(0, 9, 0);
@@ -315,7 +311,9 @@ function StockAggregateConsumptionTests() {
   //   await page.setQuantityConsumed(4, 7, 400);
   //   await page.setQuantityLost(4, 8, 300);
 
-  //   await page.submitErrorQuantity();
+  //   await TU.buttons.submit();
+
+  //   return components.notification.hasDanger();
   // });
 
 }
