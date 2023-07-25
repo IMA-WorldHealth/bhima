@@ -106,7 +106,7 @@
     "chart.js": "^3.9.1",
     "chartjs-plugin-datalabels": "^2.1.0",
     "connect-redis": "^7.1.0",
-    "cron": "^2.3.1",
+    "cron": "^2.4.0",
     "cropper": "^4.0.0",
     "cross-env": "^7.0.3",
     "csvtojson": "^2.0.8",
