@@ -5,7 +5,7 @@ const { by } = require('../TestUtils');
 
 module.exports = {
 
-  set      : async function set(increment, anchor) {
+  set : async function set(increment, anchor) {
     // get the input and enter the increment provided
     await TU.input('$ctrl.itemIncrement', increment, anchor);
 
