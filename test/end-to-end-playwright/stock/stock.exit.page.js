@@ -15,32 +15,39 @@ function StockExitPage() {
   page.gridId = gridId;
   page.setDepot = SharedStockPage.setDepot;
 
+  page.selectInvoice = async function selectInvoice(invoice) {
+    console.debug('SI1');
+    const invoices = await TU.locator('input[name="invoice"]');
+    console.debug('SI2: ', invoices, await invoices.count());
+  };
+
   /**
    * @method setPatient
    * @param {string} reference - the patient reference
    */
   page.setPatient = async function setPatient(reference, invoice, patientAlreadyCached = false) {
-    await components.stockEntryExitType.set('patient');
+    console.debug('SP1');
+    await TU.locator(by.id('exit-type-patient')).click();
+    console.debug('SP2');
+    // ??? await components.stockEntryExitType.set('patient');
 
     if (!patientAlreadyCached) {
       await components.findPatient.findById(reference);
     }
-
-    if (invoice) {
-      await clickJoinInvoice();
-      await components.findInvoice.set(invoice);
-    }
-
+    console.debug('SP3');
+    // await components.findInvoice.set(invoice);
+    await this.selectInvoice(invoice);
+    console.debug('SP4');
     await TU.modal.submit();
   };
 
-  /**
-   * @method unset invoice
-   */
-  function clickJoinInvoice() {
-    const elm = TU.locator(by.model('$ctrl.joinInvoice'));
-    return elm.click();
-  }
+  // ??? /**
+  //  * @method unset invoice
+  //  */
+  // function clickJoinInvoice() {
+  //   const elm = TU.locator(by.model('$ctrl.joinInvoice'));
+  //   return elm.click();
+  // }
 
   /**
    * @method setService

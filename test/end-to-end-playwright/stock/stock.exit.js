@@ -1,4 +1,5 @@
 const moment = require('moment');
+
 const { test } = require('@playwright/test');
 const TU = require('../shared/TestUtils');
 
@@ -44,29 +45,36 @@ function StockExitTests() {
   const page = new ExitPage();
 
   // navigate to the page
-  test.beforeEach(async () => TU.navigate('#/stock/exit'));
+  test.beforeEach(async () => {
+    await TU.navigate('/#/stock/exit');
+  });
 
   test(`should select the ${DEPOT_PRINCIPAL}`, async () => {
+    // Give the page a chance to load
+    await TU.waitForSelector('form[name="StockExitForm"]');
     await page.setDepot(DEPOT_PRINCIPAL);
   });
 
-  // test(`should distribute the stock to the patient ${PATIENT} `, async () => {
-  //   // select the patient
-  //   await page.setPatient(PATIENT);
-
-  //   await page.setDate(new Date());
-  //   await page.setDescription(DESCRIPTION.concat(' - Patient'));
-  //   await page.addRows(2);
-
-  //   // first item
-  //   await page.setItem(0, 'Quinine', 'QUININE-C', 20);
-
-  //   // second item
-  //   await page.setItem(1, 'Vitamines', 'VITAMINE-A', 10);
-
-  //   // submit
-  //   await page.submit();
-  // });
+  test(`should distribute the stock to the patient ${PATIENT} `, async () => {
+    // select the patient
+    console.debug('1');
+    await page.setPatient(PATIENT, INVOICE);
+    console.debug('2');
+    await page.setDate(new Date());
+    console.debug('3');
+    await page.setDescription(DESCRIPTION.concat(' - Patient'));
+    console.debug('4');
+    await page.addRows(2);
+    console.debug('5');
+    // first item
+    await page.setItem(0, 'Quinine', 'QUININE-C', 20);
+    console.debug('6');
+    // second item
+    await page.setItem(1, 'Vitamines', 'VITAMINE-A', 10);
+    console.debug('7');
+    // submit
+    await page.submit();
+  });
 
   // test(`should distribute the stock to the patient ${PATIENT} linked with the invoice ${INVOICE} `, async () => {
   //   await page.setDate(new Date());
