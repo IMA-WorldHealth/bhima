@@ -24,6 +24,7 @@ function StockAggregateConsumptionTests() {
     'July', 'August', 'September', 'October', 'November', 'December'];
 
   test(`Should select the ${DEPOT_TERTIAIRE}`, async () => {
+    await TU.waitForSelector('form[name="StockForm"]');
     await page.changeDepot(DEPOT_TERTIAIRE);
   });
 
@@ -213,7 +214,6 @@ function StockAggregateConsumptionTests() {
     await page.setDetailed(1, 10);
     await page.setLotsError(lots);
   });
-
 
   test(`Prevent that it may have aggregate consumption with incorrect date ranges ${DEPOT_PRINCIPAL}`, async () => {
     const getMovementDate = moment(new Date(), 'YYYY-MM-DD').subtract(60, 'days');

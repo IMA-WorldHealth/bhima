@@ -92,9 +92,7 @@ function StockAggregateConsumptionPage() {
     return TU.modal.submit();
   };
 
-
   page.setLotsError = async function setLotsError(lots) {
-
     const numLots = lots.length;
 
     /* eslint-disable no-await-in-loop */
@@ -138,6 +136,7 @@ function StockAggregateConsumptionPage() {
    */
   page.submitErrorQuantity = async function submitErrorQuantity() {
     TU.buttons.submit();
+
     return components.notification.hasDanger();
   };
 

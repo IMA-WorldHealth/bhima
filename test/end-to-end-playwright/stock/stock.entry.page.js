@@ -79,7 +79,6 @@ function StockEntryPage() {
     await TU.input('row.entity.inventory_uuid', code, itemCell);
 
     const externalAnchor = await TU.locator('body > ul.dropdown-menu.ng-isolate-scope:not(.ng-hide)');
-    // ??? const option = externalAnchor.locator(by.cssContainingText('[role="option"]', code));
     const option = await externalAnchor.locator('[role="option"]').locator(by.containsText(code));
     await option.click();
   };
@@ -100,41 +99,40 @@ function StockEntryPage() {
     // lots column
     await this.openLotsModal(inventoryRowNumber);
 
-    let lotCell;
-    let quantityCell;
-    let expirationDateCell;
-
     if (inventoryQuantity) {
       await TU.input('$ctrl.stockLine.quantity', inventoryQuantity);
     }
 
     if (inventoryUnitCost) {
       await TU.input('$ctrl.stockLine.unit_cost', inventoryUnitCost);
+      await TU.locator(by.model('$ctrl.stockLine.unit_cost')).press('Enter');
+
+      // Handle the price confirmation dialog if it comes up
+      if (await TU.isPresent('form[name="ConfirmModalForm"]')) {
+        await TU.locator('form[name="ConfirmModalForm"] [data-method="submit"]').click();
+      }
     }
 
     let index = 0;
     // eslint-disable-next-line
     for (const lot of lotsArray) {
-      lotCell = await GU.getCell(lotGridId, index, 1);
-      quantityCell = await GU.getCell(lotGridId, index, 2);
-      expirationDateCell = await GU.getCell(lotGridId, index, 3);
-
+      const row = await GU.getRow(lotGridId, index);
       // enter lot label
       if (!isTransferReception) {
-        await TU.input('row.entity.lot', lot.label, lotCell);
+        await TU.input('row.entity.lot', lot.label, row);
       }
 
       // enter lot quantity
-      await TU.input('row.entity.quantity', lot.quantity, quantityCell);
+      await TU.input('row.entity.quantity', lot.quantity, row);
 
       // enter lot expiration date
       if (lot.expiration_date) {
-        await components.datePicker.set(lot.expiration_date, expirationDateCell);
+        await components.datePicker.set(lot.expiration_date, row);
       }
 
       if (index < lotsArray.length - 1) {
         // Add another lot line
-        await components.addItem.set(1, TU.locator('[uib-modal-transclude]'));
+        await components.addItem.set(1, TU.locator('.modal-dialog'));
       }
 
       index += 1;
@@ -154,8 +152,16 @@ function StockEntryPage() {
   /**
    * enable fast lots insertion
    */
-  page.enableFastLotsInsert = () => {
-    return TU.locator('#enableFastInsert').click();
+  page.enableFastLotsInsert = async () => {
+    await TU.locator('ul.nav-tabs li[heading="Options"]').click();
+    await TU.waitForSelector(by.id('enableFastInsert'));
+    const checkBox = await TU.locator(by.id('enableFastInsert'));
+    const isChecked = await checkBox.isChecked();
+    if (!isChecked) {
+      await checkBox.check();
+    }
+    await TU.locator('ul.nav-tabs li[heading="Lots"]').click();
+    return TU.waitForSelector('label:has-text("Global Quantity")');
   };
 
   /**
@@ -163,18 +169,22 @@ function StockEntryPage() {
    * @param {array} lots an array of strings
    */
   page.fastLotsInsert = async (lots) => {
+    await TU.input('$ctrl.stockLine.quantity', 10);
+
     let index = 0;
 
     // eslint-disable-next-line
     for (const lot of lots) {
-      const lotCell = await GU.getCell(lotGridId, index, 1);
-      const input = await TU.input('row.entity.lot', lot, lotCell);
-      await input.fill(protractor.Key.TAB);
+      const row = await GU.getRow(lotGridId, index);
+      const cell = await row.locator(by.model('row.entity.lot'));
+      await TU.fill(cell, lot);
+      await cell.press('Tab');
       index += 1;
     }
 
     // when we insert the last lot and leave with tab there will be
     // a supplementary row added
+    await TU.waitForSelector('.ui-grid-canvas .ui-grid-row');
     await GU.expectRowCount(lotGridId, lots.length + 1);
   };
 
@@ -184,8 +194,8 @@ function StockEntryPage() {
   page.submit = async function submit() {
     await TU.buttons.submit();
 
-    // the receipt modal is displayed
-    await TU.exists(by.id('receipt-confirm-created'), true);
+    // wait until the receipt modal is displayed
+    await TU.waitForSelector(by.id('receipt-confirm-created'));
 
     // close the modal
     await TU.locator('[data-action="close"]').click();

@@ -28,9 +28,6 @@ async function selectDropdownAction(action) {
  * if tests should have conditionals like this.
  */
 async function ensureModalIsOpen() {
-  // Give the form (and possibly Depot selection modal) time to appear
-  await TU.waitForSelector('form[name="StockForm"]');
-
   if (await TU.isPresent('[data-depot-selection-modal]')) {
     return true;
   }

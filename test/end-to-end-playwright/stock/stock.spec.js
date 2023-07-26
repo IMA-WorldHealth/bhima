@@ -1,7 +1,6 @@
 const { chromium } = require('@playwright/test');
-const { test, expect } = require('@playwright/test');
+const { test } = require('@playwright/test');
 const TU = require('../shared/TestUtils');
-const { by } = require('../shared/TestUtils');
 
 test.beforeAll(async () => {
   const browser = await chromium.launch();
@@ -10,10 +9,7 @@ test.beforeAll(async () => {
   await TU.login();
 });
 
-/* global */
-
 const StockExitTests = require('./stock.exit');
-const StockAdjustmentTests = require('./stock.adjustment');
 const StockAssignTests = require('./stock.assign');
 const StockEntryTests = require('./stock.entry');
 const StockImportTests = require('./stock.import');
@@ -26,10 +22,9 @@ const StockSetting = require('./stock.setting');
 const StockAggregateConsumptionTests = require('./stock.aggregate_consumption');
 
 test.describe('Stock E2E', () => {
-  test.describe('Stock Aggregate Consumption', StockAggregateConsumptionTests);
-  // test.describe('Stock Adjustment', StockAdjustmentTests);
+  // test.describe('Stock Aggregate Consumption', StockAggregateConsumptionTests);
   // test.describe('Stock Assign', StockAssignTests);
-  // test.describe('Stock Entry', StockEntryTests);
+  test.describe('Stock Entry', StockEntryTests);
   // test.describe('Stock Exit', StockExitTests);
   // test.describe('Stock Import', StockImportTests);
   // test.describe('Stock Inventory Registry', StockInventoriesRegistryTests);
