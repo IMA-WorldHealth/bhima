@@ -39,7 +39,7 @@ module.exports = {
   entityGroupSelect : require('./bhEntityGroupSelect'),
   entitySelect : require('./bhEntitySelect'),
   entityTypeSelect : require('./bhEntityTypeSelect'),
-  // findInvoice : require('./bhFindInvoice'),
+  findInvoice : require('./bhFindInvoice'),
   findPatient : require('./bhFindPatient'),
   fiscalPeriodSelect : require('./bhFiscalPeriodSelect'),
   fiscalYearPeriodSelect : require('./bhFiscalYearPeriodSelect'),
