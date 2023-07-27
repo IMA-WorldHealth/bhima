@@ -284,7 +284,7 @@ async function create(req, res, next) {
     if (rubricFixedBonusId) {
       transaction.addQuery(
         updateStaffingIndice,
-        [emp.grossSalary, id, emp.employee_buid, rubricFixedBonusId],
+        [emp.fixedBonus, id, emp.employee_buid, rubricFixedBonusId],
       );
     }
 
