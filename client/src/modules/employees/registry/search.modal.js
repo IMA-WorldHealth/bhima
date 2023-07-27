@@ -30,7 +30,7 @@ function EmployeeRegistryModalController(ModalInstance, SearchModal, Store, util
   const searchQueryOptions = [
     'display_name', 'sex', 'code', 'dateBirthFrom', 'dateBirthTo',
     'dateEmbaucheFrom', 'dateEmbaucheTo', 'grade_uuid', 'fonction_id',
-    'service_uuid', 'cost_center_id', 'is_medical', 'reference',
+    'service_uuid', 'cost_center_id', 'is_medical', 'reference', 'title_employee_id',
   ];
 
   // assign already defined custom filters to searchQueries object
@@ -68,6 +68,12 @@ function EmployeeRegistryModalController(ModalInstance, SearchModal, Store, util
   vm.onSelectFonction = function onSelectFonction(fonction) {
     displayValues.fonction_id = fonction.fonction_txt;
     vm.searchQueries.fonction_id = fonction.id;
+  };
+
+  // custom filter title_employee_id - assign the value to the searchQueries object
+  vm.onSelectTitle = function onSelectTitle(title) {
+    displayValues.title_employee_id = title.title_txt;
+    vm.searchQueries.title_employee_id = title.id;
   };
 
   // clears search parameters.  Custom logic if a date is used so that we can

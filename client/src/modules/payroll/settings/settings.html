@@ -58,6 +58,22 @@
             on-change-callback="PayrollSettingsCtrl.enableIndexPaymentSetting(value)">
           </bh-yes-no-radios>
 
+          <div class="form-group" ng-class="{ 'has-error' : PayrollSettingsForm.$submitted && PayrollSettingsForm.base_index_growth_rate.$invalid }">
+            <label class="control-label" translate>
+              SETTINGS.PERCENTAGE_ATTRIBUTED_FIXED_BONUS
+            </label>
+            <div class="input-group">
+              <input class="form-control" value="100" min="0" max="100" type="number" name="percentage_fixed_bonus" ng-model="PayrollSettingsCtrl.enterprise.settings.percentage_fixed_bonus" required>
+              <span class="input-group-addon"> % </span>
+            </div>
+            <span class="help-block" translate>
+              SETTINGS.PERCENTAGE_ATTRIBUTED_FIXED_BONUS_HELP_TEXT
+            </span>
+            <div class="help-block" ng-messages="PayrollSettingsForm.percentage_fixed_bonus.$error" ng-show="PayrollSettingsForm.$submitted">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+
         </div>
 
         <div class="panel-footer" id="submission">
