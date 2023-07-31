@@ -21,6 +21,7 @@ const buttons = {
   search    : () => page.locator('[data-method="search"]').click(),
   submit    : () => page.locator('[data-method="submit"]').click(),
   cancel    : () => page.locator('[data-method="cancel"]').click(),
+  close     : () => page.locator('[data-method="close"]').click(),
   edit      : () => page.locator('[data-method="edit"]').click(),
   clear     : () => page.locator('[data-method="clear"]').click(),
   print     : () => page.locator('[data-method="print"]').click(),
@@ -56,6 +57,7 @@ const modal = {
 const by = {
   css : (arg) => arg,
   id : (arg) => `#${arg}`,
+  className : (arg) => `.${arg}`,
   model : (arg) => `[ng-model="${arg}"]`,
   name : (arg) => `[name="${arg}"]`,
   repeater : (arg) => `[ng-repeat="${arg}"]`,
