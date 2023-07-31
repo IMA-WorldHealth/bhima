@@ -1,3 +1,5 @@
+const { expect } = require('@playwright/test');
+
 const TU = require('../shared/TestUtils');
 const { by } = require('../shared/TestUtils');
 
@@ -15,30 +17,21 @@ function StockExitPage() {
   page.gridId = gridId;
   page.setDepot = SharedStockPage.setDepot;
 
-  page.selectInvoice = async function selectInvoice(invoice) {
-    console.debug('SI1');
-    const invoices = await TU.locator('input[name="invoice"]');
-    console.debug('SI2: ', invoices, await invoices.count());
-  };
-
   /**
    * @method setPatient
    * @param {string} reference - the patient reference
    */
   page.setPatient = async function setPatient(reference, invoice, patientAlreadyCached = false) {
-    console.debug('SP1');
-    await TU.locator(by.id('exit-type-patient')).click();
-    console.debug('SP2');
-    // ??? await components.stockEntryExitType.set('patient');
+    await components.stockEntryExitType.set('patient');
 
     if (!patientAlreadyCached) {
       await components.findPatient.findById(reference);
     }
-    console.debug('SP3');
-    // await components.findInvoice.set(invoice);
-    await this.selectInvoice(invoice);
-    console.debug('SP4');
-    await TU.modal.submit();
+
+    await TU.waitForSelector(by.model('$ctrl.invoiceReference')); // Wait for the prompt for invoices to appear
+    await components.findInvoice.set(invoice);
+
+    return TU.modal.submit();
   };
 
   // ??? /**
@@ -57,7 +50,7 @@ function StockExitPage() {
     await components.stockEntryExitType.set('service');
     const modalContent = TU.locator('[class="modal-content"]');
     await TU.uiSelect('$ctrl.selected', service, modalContent);
-    await TU.modal.submit();
+    return TU.modal.submit();
   };
 
   /**
@@ -70,7 +63,7 @@ function StockExitPage() {
     await TU.uiSelect('$ctrl.selected', requisition.service, modalContent);
     await components.yesNoRadios.set('yes', 'requisitionVoucherExist');
     await components.requisitionSelect.set(requisition.reference);
-    await TU.modal.submit();
+    return TU.modal.submit();
   };
 
   /**
@@ -83,7 +76,7 @@ function StockExitPage() {
     await TU.uiSelect('$ctrl.selected', requisition.depot, modalContent);
     await components.yesNoRadios.set('yes', 'requisitionVoucherExist');
     await components.requisitionSelect.set(requisition.reference);
-    await TU.modal.submit();
+    return TU.modal.submit();
   };
 
   /**
@@ -97,8 +90,12 @@ function StockExitPage() {
     await components.yesNoRadios.set('yes', 'requisitionVoucherExist');
     await components.requisitionSelect.set(requisition.reference);
     await TU.modal.submit();
-    await TU.exists(by.className(requisition.className), true);
-    await TU.modal.cancel();
+
+    // Verify that we get an error message
+    await TU.waitForSelector(by.className(requisition.className));
+    expect(await TU.isPresent(`[class="${requisition.className}"]`));
+
+    return TU.modal.cancel();
   };
 
   /**
@@ -109,14 +106,14 @@ function StockExitPage() {
     await components.stockEntryExitType.set('depot');
     const modalContent = TU.locator('[class="modal-content"]');
     await TU.uiSelect('$ctrl.selected', depot, modalContent);
-    await TU.modal.submit();
+    return TU.modal.submit();
   };
 
   /**
    * @method setLoss
    */
   page.setLoss = async function setLoss() {
-    await components.stockEntryExitType.set('loss');
+    return components.stockEntryExitType.set('loss');
   };
 
   /**
@@ -124,7 +121,7 @@ function StockExitPage() {
    * @param {string} descrition - the exit description
    */
   page.setDescription = function setDescription(description) {
-    return TU.input('StockCtrl.movement.description', description);
+    return TU.input('StockCtrl.stockForm.details.description', description);
   };
 
   /**
@@ -146,42 +143,40 @@ function StockExitPage() {
    * @method setItem
    */
   page.setItem = async function setItem(rowNumber, code, lot, quantity) {
-    // inventory code column
-    const itemCell = await GU.getCell(gridId, rowNumber, 1);
+    const row = await GU.getRow(gridId, rowNumber);
 
-    // inventory lot column
-    const lotCell = await GU.getCell(gridId, rowNumber, 3);
+    // Select the inventory item
+    const itemCell = await row.locator(by.model('row.entity.inventory_uuid'));
+    await TU.fill(itemCell, code);
+    await itemCell.press('Enter');
 
-    // inventory quantity column
-    const quantityCell = await GU.getCell(gridId, rowNumber, 4);
-
-    // enter data into the typeahead input.
-    await TU.input('row.entity.inventory', code, itemCell);
-
-    const externalAnchor = TU.locator('body > ul.dropdown-menu.ng-isolate-scope:not(.ng-hide)');
-    // ??? const option = externalAnchor.locator(by.cssContainingText('[role="option"]', code));
-    const option = externalAnchor.locator('[role="option"]').locator(by.containsText(code));
-    await option.click();
-
-    // select the inventory lot
-    await TU.uiSelectAppended('row.entity.lot', lot, lotCell);
+    // Choose the desired lot
+    const lotCell = await row.locator(by.model('row.entity.lot_uuid'));
+    await lotCell.click();
+    await TU.waitForSelector('.ui-select-choices-row-inner');
+    const sel = await TU.locator(`a:has-text("${lot}")`);
+    await sel.click();
 
     // set the quantity
-    await TU.input('row.entity.quantity', quantity, quantityCell);
+    const quantityCell = await row.locator(by.model('row.entity.quantity'));
+    return TU.fill(quantityCell, quantity);
   };
 
   /**
    * @method setLot
    */
   page.setLot = async (rowNumber, lot, quantity) => {
-    const lotCell = await GU.getCell(gridId, rowNumber, 3);
-    await TU.uiSelectAppended('row.entity.lot', lot, lotCell);
+    const row = await GU.getRow(gridId, rowNumber);
+
+    const lotCell = await row.locator(by.model('row.entity.lot_uuid'));
+    await lotCell.click();
+    await TU.waitForSelector('.ui-select-choices-row-inner');
+    const sel = await TU.locator(`a:has-text("${lot}")`);
+    await sel.click();
 
     if (quantity) {
-      // inventory quantity column
-      const quantityCell = await GU.getCell(gridId, rowNumber, 4);
-      // set the quantity
-      await TU.input('row.entity.quantity', quantity, quantityCell);
+      const quantityCell = await row.locator(by.model('row.entity.quantity'));
+      await TU.fill(quantityCell, quantity);
     }
   };
 
@@ -192,10 +187,11 @@ function StockExitPage() {
     await TU.buttons.submit();
 
     // the receipt modal is displayed
+    await TU.waitForSelector(by.id('receipt-confirm-created'));
     await TU.exists(by.id('receipt-confirm-created'), true);
 
     // close the modal
-    await TU.locator('[data-action="close"]').click();
+    return TU.buttons.close();
   };
 
   /**
@@ -204,7 +200,7 @@ function StockExitPage() {
   page.submitError = async function submitError() {
     TU.buttons.submit();
 
-    await components.notification.hasDanger();
+    return components.notification.hasDanger();
   };
 
 }

@@ -46,7 +46,6 @@ async function setDepot(label) {
 
   // Make sure the menu of depots is fully loaded and showing
   await TU.waitForSelector('li.list-group-item');
-
   const depot = await TU.locator(`li.list-group-item:has-text("${label}")`);
   await depot.click();
 

@@ -62,7 +62,6 @@ function StockAdjustmentPage() {
     await TU.input('row.entity.inventory', code, itemCell);
 
     const externalAnchor = TU.locator('body > ul.dropdown-menu.ng-isolate-scope:not(.ng-hide)');
-    // ??? const option = externalAnchor.locator(by.cssContainingText('[role="option"]', code));
     const option = externalAnchor.locator('[role="option"]').locator(by.containsText(code));
     await option.click();
 

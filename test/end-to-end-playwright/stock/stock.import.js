@@ -11,12 +11,12 @@ function StockImportTests() {
 
   // navigate to the page
   test.beforeEach(async () => {
-    await TU.navigate('#/stock/import');
+    await TU.navigate('/#/stock/import');
   });
 
   test('importing stock from a csv file', async () => {
+    await TU.waitForSelector('[data-depot-selection-modal]'); // wait for display
     await shared.setDepot(depot);
-
     await components.dateEditor.set(new Date());
 
     await shared.uploadFile(STOCK_CSV_FILE);
@@ -25,9 +25,8 @@ function StockImportTests() {
     await components.notification.hasSuccess();
   });
 
-  test('importing stock from a csv file which have inventory_code and inventory_cmm missing', async () => {
+  test('importing stock from a csv file which have inventory_code missing', async () => {
     await shared.setDepot(depot);
-
     await components.dateEditor.set(new Date());
 
     await shared.uploadFile(STOCK_CSV_FILE_NO_CODE_NO_CMM);
