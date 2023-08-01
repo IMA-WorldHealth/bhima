@@ -44,7 +44,7 @@ class SearchModal {
    */
   constructor(selector, path) {
     this.selector = `[data-modal="${selector}"]`;
-    this.path = path;
+    this.path = TU.cleanPath(path);
   }
 
   async open() {

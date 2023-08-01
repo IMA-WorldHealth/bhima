@@ -11,7 +11,8 @@ const { by } = require('../TestUtils');
 async function set(depot, id) {
   const anchor = (id) ? await TU.locator(by.id(id)) : await TU.locator('body');
   const elt = await anchor.locator(by.model('$ctrl.depotText'));
-  return elt.type(depot);
+  await elt.type(depot);
+  return elt.press('Enter');
 }
 
 module.exports = {

@@ -114,6 +114,7 @@ async function getCellName(gridId, rowNum, colNum) {
  * @param {string} message - error message
  */
 async function expectRowCount(gridId, number, message) {
+  await TU.waitForSelector('.ui-grid-render-container-body');
   const rows = await getRows(gridId);
   if (Array.isArray(number)) {
     expect(number.includes(rows.length), message);

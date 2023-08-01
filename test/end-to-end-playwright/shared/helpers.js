@@ -3,7 +3,7 @@
  * tied to forms or modules.
  */
 
-// DISABLED: const PATH_REGEXP = /^#!|^#|^!/g;
+// DISABLED: const PATH_CLEAN_REGEXP = /^#!|^#|^!/g;
 
 // gets a random number within the range(0, n)
 exports.random = function random(n) {
@@ -12,7 +12,7 @@ exports.random = function random(n) {
 
 // // wrapper for browser navigation without reloading the page
 // exports.navigate = async function navigate(browserPath) {
-//   const destination = browserPath.replace(PATH_REGEXP, '');
+//   const destination = browserPath.replace(PATH_CLEAN_REGEXP, '');
 //   await browser.setLocation(destination);
 // };
 
@@ -21,7 +21,7 @@ exports.random = function random(n) {
 //   const url = await browser.getCurrentUrl();
 
 //   const partial = url.split('#!')[1];
-//   partial.replace(PATH_REGEXP, '');
+//   partial.replace(PATH_CLEAN_REGEXP, '');
 
 //   return `#!${partial}`;
 // };

@@ -23,7 +23,6 @@ test.describe('Voucher Registry', () => {
   });
 
   test(`displays ${NUM_VOUCHERS} vouchers on the page`, async () => {
-    await TU.waitForSelector('.ui-grid-canvas .ui-grid-row');
     await GU.expectRowCount(gridId, NUM_VOUCHERS);
   });
 

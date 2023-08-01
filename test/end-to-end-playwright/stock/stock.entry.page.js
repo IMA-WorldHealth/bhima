@@ -184,7 +184,6 @@ function StockEntryPage() {
 
     // when we insert the last lot and leave with tab there will be
     // a supplementary row added
-    await TU.waitForSelector('.ui-grid-canvas .ui-grid-row');
     await GU.expectRowCount(lotGridId, lots.length + 1);
   };
 

@@ -35,7 +35,6 @@ function JournalSearchTests() {
   test(`should have ${NUM_ACCOUNT_CHURCH} rows for the church account`, async () => {
     await modal.setAccount('41111010');
     await modal.submit();
-    await TU.waitForSelector('.ui-grid-canvas .ui-grid-row');
     await page.expectRowCount(NUM_ACCOUNT_CHURCH);
   });
 

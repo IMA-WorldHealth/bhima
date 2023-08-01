@@ -30,8 +30,6 @@ test.describe('Check Inter-Registry Links', () => {
     const menu = await openDropdownMenu('Test Patient Group 2');
     await menu.goToPatient();
 
-    // Make sure the grid is loaded
-    await TU.waitForSelector('.ui-grid-canvas .ui-grid-row');
     await GU.expectRowCount('patient-registry', 2);
   });
 
@@ -40,8 +38,6 @@ test.describe('Check Inter-Registry Links', () => {
     await TU.navigate('/#!/debtors/groups');
     await TU.locator('a [class="fa fa-bars"]').nth(1).click();
 
-    // Make sure the grid is loaded
-    await TU.waitForSelector('.ui-grid-canvas .ui-grid-row');
     await GU.expectRowCount('patient-registry', [6, 8]);
   });
 
@@ -53,8 +49,6 @@ test.describe('Check Inter-Registry Links', () => {
     await row.dropdown();
     await row.goToInvoices();
 
-    // Make sure the grid is loaded
-    await TU.waitForSelector('.ui-grid-canvas .ui-grid-row');
     await GU.expectRowCount('invoice-registry', 5);
   });
 
@@ -66,8 +60,6 @@ test.describe('Check Inter-Registry Links', () => {
     await row.dropdown();
     await row.goToPayment();
 
-    // Make sure the grid is loaded
-    await TU.waitForSelector('.ui-grid-canvas .ui-grid-row');
     await GU.expectRowCount('payment-registry', 1);
   });
 
@@ -86,9 +78,6 @@ test.describe('Check Inter-Registry Links', () => {
     await TU.locator('[data-method="action"]').click();
     await TU.locator('[data-method="invoice"]').click();
 
-    // Make sure the grid is loaded
-    await TU.waitForSelector('.ui-grid-canvas .ui-grid-row');
-
     await GU.expectRowCount('invoice-registry', 1);
   });
 
@@ -99,8 +88,6 @@ test.describe('Check Inter-Registry Links', () => {
     await row.dropdown();
     await row.goToVoucher();
 
-    // Make sure the grid is loaded
-    await TU.waitForSelector('.ui-grid-canvas .ui-grid-row');
     await GU.expectRowCount('voucher-grid', [1, 2]);
   });
 
@@ -111,8 +98,6 @@ test.describe('Check Inter-Registry Links', () => {
     await row.dropdown();
     await row.goToVoucher();
 
-    // Make sure the grid is loaded
-    await TU.waitForSelector('.ui-grid-canvas .ui-grid-row');
     await GU.expectRowCount('voucher-grid', [1, 2]);
     await filters.resetFilters();
   });

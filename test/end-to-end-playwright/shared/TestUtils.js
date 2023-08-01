@@ -4,7 +4,7 @@
 
 const { expect } = require('@playwright/test');
 
-const PATH_REGEXP = /^[#!/]+/g;
+const PATH_CLEAN_REGEXP = /^[#!/]+/g;
 
 /**
  * Remember the page being used to simplify function calls
@@ -160,7 +160,7 @@ function selectOption(selector, value) {
  * @returns {Promise} of navigation to the desired path
  */
 function navigate(browserPath, options) {
-  const destination = browserPath.replace(PATH_REGEXP, '');
+  const destination = browserPath.replace(PATH_CLEAN_REGEXP, '');
   return page.goto(`/#!/${destination}`, options);
 }
 
@@ -188,8 +188,17 @@ module.exports = {
   getCurrentPath : function getCurrentPath() {
     const url = page.url();
     const partial = url.split('#!/')[1];
-    partial.replace(PATH_REGEXP, '');
+    partial.replace(PATH_CLEAN_REGEXP, '');
     return `/#!/${partial}`;
+  },
+
+  /**
+   * Clean up the prefix from the path
+   * @param {string} oldPath
+   * @returns {string} path withough leading '/#!/' prefix
+   */
+  cleanPath : function cleanPath(oldPath) {
+    return oldPath.replace(PATH_CLEAN_REGEXP, '');
   },
 
   /**
