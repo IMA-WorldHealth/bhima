@@ -14,6 +14,7 @@ module.exports = {
    * @param {string} requestor - the requester
    * @param {string} type - the type (service or depot)
    * @param {string} [id] - id of selection field (optional)
+   * @returns {Promise} of the completed operation
    */
   set : async function set(requestor, type = 'service', id = undefined) {
     const map = {
@@ -21,11 +22,16 @@ module.exports = {
       depot : bhDepot,
     };
 
-    const locator = (id) ? by.id(id) : by.css(selector);
-    const target = await TU.locator(locator);
+    // Make sure the form is displayed
+    await TU.waitForSelector('form[name="ModalForm"]');
 
-    const option = await target.locator(by.css(`[data-requestor-option="${type}"]`));
+    // Select the desired target
+    const locator = (id) ? by.id(id) : selector;
+    const target = await TU.locator(locator);
+    const option = await target.locator(`[data-requestor-option="${type}"]`);
     await option.click();
-    await map[type].set(requestor, id);
+
+    // Set it
+    return map[type].set(requestor, id, selector);
   },
 };

@@ -49,16 +49,9 @@ function StockAdjustmentPage() {
    * @method setItem
    */
   page.setItem = async function setInventory(rowNumber, code, lot, quantity) {
-    // inventory code column
+
+    // enter inventory code into the typeahead input.
     const itemCell = await GU.getCell(gridId, rowNumber, 1);
-
-    // inventory lot column
-    const lotCell = await GU.getCell(gridId, rowNumber, 3);
-
-    // inventory quantity column
-    const quantityCell = await GU.getCell(gridId, rowNumber, 4);
-
-    // enter data into the typeahead input.
     await TU.input('row.entity.inventory', code, itemCell);
 
     const externalAnchor = TU.locator('body > ul.dropdown-menu.ng-isolate-scope:not(.ng-hide)');
@@ -66,9 +59,11 @@ function StockAdjustmentPage() {
     await option.click();
 
     // select the inventory lot
+    const lotCell = await GU.getCell(gridId, rowNumber, 3);
     await TU.uiSelectAppended('row.entity.lot', lot, lotCell);
 
     // set the quantity
+    const quantityCell = await GU.getCell(gridId, rowNumber, 4);
     await TU.input('row.entity.quantity', quantity, quantityCell);
   };
 

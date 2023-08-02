@@ -32,28 +32,28 @@ function StockInventoriesRegistryTests() {
   test('find 5 inventory in Depot Principal plus one line for the Grouping', async () => {
     await modal.setDepot('Depot Principal');
     await modal.submit();
-    await GU.expectRowCount(gridId, 5 + GROUPING_ROW);
+    await GU.expectRowCount(gridId, 2 + GROUPING_ROW);
     await filters.resetFilters();
   });
 
-  // test('find only inventories setted during the adjustment process', async () => {
-  //   const quinine = {
-  //     label : 'Quinine Bichlorhydrate, sirop, 100mg base/5ml, 100ml, flacon, Unité',
-  //     quantity : '30',
-  //   };
-  //   const acide = {
-  //     label : 'Acide Acetylsalicylique, 500mg, Tab, 1000, Vrac',
-  //     quantity : '360600',
-  //   };
+  test('find only inventories set during the adjustment process', async () => {
+    const moto = {
+      label : 'Honda CRF250RX',
+      quantity : '18',
+    };
+    const quinine = {
+      label : 'Quinine Bichlorhydrate, sirop, 100mg base/5ml, 100ml, flacon, Unité',
+      quantity : '23',
+    };
 
-  //   await modal.setDepot('Depot Principal');
-  //   await modal.submit();
-  //   await GU.expectCellValueMatch(gridId, 1, 2, quinine.label);
-  //   await GU.expectCellValueMatch(gridId, 1, 4, quinine.quantity);
-  //   await GU.expectCellValueMatch(gridId, 2, 2, acide.label);
-  //   await GU.expectCellValueMatch(gridId, 2, 4, acide.quantity);
-  //   await filters.resetFilters();
-  // });
+    await modal.setDepot('Depot Principal');
+    await modal.submit();
+    await GU.expectCellValueMatch(gridId, 1, 2, moto.label);
+    await GU.expectCellValueMatch(gridId, 1, 4, moto.quantity);
+    await GU.expectCellValueMatch(gridId, 2, 2, quinine.label);
+    await GU.expectCellValueMatch(gridId, 2, 4, quinine.quantity);
+    await filters.resetFilters();
+  });
 }
 
 module.exports = StockInventoriesRegistryTests;

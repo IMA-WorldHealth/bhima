@@ -30,7 +30,7 @@ test.describe('Stock E2E', () => {
   // test.describe('Stock Inventory Registry', StockInventoriesRegistryTests);
   // test.describe('Stock Lots Registry', StockLotsRegistryTests);
   // test.describe('Stock Movement Registry', StockMovementsRegistryTests);
-  test.describe('Stock Requisition Module', StockRequisitionTests);
-  // test.describe('Stock Inventory Adjustment', StockInventoryAdjustement);
+  // test.describe('Stock Requisition Module', StockRequisitionTests);
+  test.describe('Stock Inventory Adjustment', StockInventoryAdjustement);
   // test.describe('Stock Setting', StockSetting);
 });

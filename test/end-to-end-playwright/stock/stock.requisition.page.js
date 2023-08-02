@@ -34,6 +34,10 @@ function StockRequisitionPage() {
   };
 
   // depot select
+  page.changeDepot = depot => {
+    return SharedStockPage.setDepot(depot);
+  };
+
   page.setDepot = depot => {
     return components.depotSelect.set(depot, 'depot-supplier');
   };
@@ -45,17 +49,17 @@ function StockRequisitionPage() {
   // add item
   page.addItem = async function setInventory(rowNumber, code, quantity) {
     // inventory code column
-    const itemCell = await GU.getCell(modalGridId, rowNumber, 0);
-
-    // inventory quantity column
-    const quantityCell = await GU.getCell(modalGridId, rowNumber, 2);
+    const itemCell = await GU.getCell(modalGridId, rowNumber, 1);
 
     // enter data into the typeahead input.
     await TU.input('row.entity.inventory', code, itemCell);
 
-    const externalAnchor = await TU.locator('body > ul.dropdown-menu.ng-isolate-scope:not(.ng-hide');
+    const externalAnchor = await TU.locator('body > ul.dropdown-menu.ng-isolate-scope:not(.ng-hide)');
     const option = await externalAnchor.locator('[role="option"]').locator(by.containsText(code)).first();
     await option.click();
+
+    // inventory quantity column
+    const quantityCell = await GU.getCell(modalGridId, rowNumber, 3);
 
     // set the quantity
     await TU.input('row.entity.quantity', quantity, quantityCell);
@@ -104,8 +108,11 @@ function StockRequisitionPage() {
    */
   page.submit = async function submit() {
     await TU.buttons.submit();
+
     // the receipt modal is displayed
+    await TU.waitForSelector(by.id('receipt-confirm-created'));
     await TU.exists(by.id('receipt-confirm-created'), true);
+
     // close the modal
     await TU.locator('[data-action="close"]').click();
   };

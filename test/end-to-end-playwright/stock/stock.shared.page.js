@@ -42,14 +42,11 @@ async function ensureModalIsOpen() {
  * Uses the helper methods to set the depot on all pages.
  */
 async function setDepot(label) {
-  console.debug("Check");
   await ensureModalIsOpen();
-  console.debug("Open");
 
   // Make sure the menu of depots is fully loaded and showing
   await TU.waitForSelector('li.list-group-item');
   const depot = await TU.locator(`li.list-group-item:has-text("${label}")`);
-  console.debug("Depot: ", depot, await depot.count());
   await depot.click();
 
   return TU.modal.submit();

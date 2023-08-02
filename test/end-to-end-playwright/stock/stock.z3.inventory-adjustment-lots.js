@@ -31,7 +31,7 @@ function StockLotsRegistryTests() {
   });
 
   const gridId = 'stock-lots-grid';
-  const LOT_FOR_ALLTIME = 16;
+  const LOT_FOR_ALLTIME = 3;
   const GROUPING_ROW = 1;
 
   test(`finds ${LOT_FOR_ALLTIME} lots for all time`, async () => {
@@ -42,38 +42,55 @@ function StockLotsRegistryTests() {
     await GU.expectRowCount(gridId, GROUPING_ROW + LOT_FOR_ALLTIME);
   });
 
-  // test.skip('find only lots set during the adjustment process', async () => {
-  //   const acide = {
-  //     label : 'Acide Acetylsalicylique, 500mg, Tab, 1000, Vrac',
-  //     lot : 'ASB17001',
-  //     quantity : '17',
-  //   };
+  test('find only lots set during the adjustment process', async () => {
 
-  //   const vitamine = {
-  //     label : 'Vitamines B1+B6+B12, 100+50+0.5mg/2ml, Amp, Unité',
-  //     lot : 'VITAMINE-B',
-  //     quantity : '23',
-  //   };
+    const quinine = {
+      label : 'Quinine Bichlorhydrate, sirop, 100mg base/5ml, 100ml, flacon, Unité',
+      code : 'DORA_QUIN1S-_0',
+      lot : 'QUININE-A',
+      quantity : '23',
+      row : 1,
+    };
+    const moto1 = {
+      label : 'Honda CRF250RX',
+      code : 'MOT.HCRF250RX',
+      lot : 'MOT2',
+      quantity : '1',
+      row : 2,
+    };
+    const moto2 = {
+      label : 'Honda CRF250RX',
+      code : 'MOT.HCRF250RX',
+      lot : 'MOT1',
+      quantity : '17',
+      row : 3,
+    };
 
-  //   await modal.setDepot('Depot Principal');
+    await modal.setDepot('Depot Principal');
 
-  //   // set the default value for include/exclude exhausted lots.
-  //   await modal.switchToDefaultFilterTab();
-  //   await TU.locator('[data-exclude-exhausted-lots]').click();
+    // set the default value for include/exclude exhausted lots.
+    await modal.switchToDefaultFilterTab();
+    await TU.locator('[data-exclude-exhausted-lots]').click();
 
-  //   await modal.submit();
+    await modal.submit();
 
-  //   const offset = 2;
+    await GU.expectCellValueMatch(gridId, quinine.row, 1, quinine.code);
+    await GU.expectCellValueMatch(gridId, quinine.row, 2, quinine.label);
+    await GU.expectCellValueMatch(gridId, quinine.row, 4, quinine.lot);
+    await GU.expectCellValueMatch(gridId, quinine.row, 5, quinine.quantity);
 
-  //   await GU.expectCellValueMatch(gridId, offset + 1, 2, vitamine.label);
-  //   await GU.expectCellValueMatch(gridId, offset + 1, 4, vitamine.lot);
-  //   await GU.expectCellValueMatch(gridId, offset + 1, 5, vitamine.quantity);
-  //   await GU.expectCellValueMatch(gridId, offset + 2, 2, acide.label);
-  //   await GU.expectCellValueMatch(gridId, offset + 2, 4, acide.lot);
-  //   await GU.expectCellValueMatch(gridId, offset + 2, 5, acide.quantity);
+    await GU.expectCellValueMatch(gridId, moto1.row, 1, moto1.code);
+    await GU.expectCellValueMatch(gridId, moto1.row, 2, moto1.label);
+    await GU.expectCellValueMatch(gridId, moto1.row, 4, moto1.lot);
+    await GU.expectCellValueMatch(gridId, moto1.row, 5, moto1.quantity);
 
-  //   await filters.resetFilters();
-  // });
+    await GU.expectCellValueMatch(gridId, moto2.row, 1, moto2.code);
+    await GU.expectCellValueMatch(gridId, moto2.row, 2, moto2.label);
+    await GU.expectCellValueMatch(gridId, moto2.row, 4, moto2.lot);
+    await GU.expectCellValueMatch(gridId, moto2.row, 5, moto2.quantity);
+
+    await filters.resetFilters();
+  });
 
 }
 
