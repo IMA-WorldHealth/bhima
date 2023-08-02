@@ -134,7 +134,13 @@ async function expectRowCount(gridId, number, message) {
  * @param {number} number - expect the number of columns to be greater than this
  */
 async function expectRowCountAbove(gridId, number) {
+  await TU.waitForSelector('.ui-grid-render-container-body');
   const rows = await getRows(gridId);
+
+  if (Array.isArray(number)) {
+    throw Error('GridUtils.expectRowCountAbove cannot take an array');
+  }
+
   expect(rows.length).toBeGreaterThan(number);
 
   // ADAPTED FROM PROTRACTOR CODE:

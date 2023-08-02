@@ -25,7 +25,7 @@ function StockRequisitionTests() {
   const NOT_REFERENCE = 'SREQ.ZERO';
 
   test(`Should select the ${DEPOT_PRINCIPAL}`, async () => {
-    await page.changeDepot(DEPOT_PRINCIPAL);
+    await page.setDepot(DEPOT_PRINCIPAL);
   });
 
   // // FIXME(@jniles) - impossible to automatically allocate stock given the CMM calculation changes

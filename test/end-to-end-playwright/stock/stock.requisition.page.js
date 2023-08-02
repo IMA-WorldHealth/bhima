@@ -12,7 +12,7 @@ function StockRequisitionPage() {
   const modalGridId = 'stock-requisition-grid-articles';
 
   // change current depot
-  page.changeDepot = SharedStockPage.setDepot;
+  page.setDepot = SharedStockPage.setDepot;
 
   // the grid id
   page.gridId = gridId;

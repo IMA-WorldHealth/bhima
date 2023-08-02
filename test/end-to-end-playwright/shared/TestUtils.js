@@ -194,7 +194,7 @@ module.exports = {
 
   /**
    * Clean up the prefix from the path
-   * @param {string} oldPath
+   * @param {string} oldPath - the unfiltered path
    * @returns {string} path withough leading '/#!/' prefix
    */
   cleanPath : function cleanPath(oldPath) {
@@ -445,7 +445,7 @@ module.exports = {
       break;
     }
 
-    return select.locator('.dropdown-menu [role="option"]').locator(`//*[contains(text(), '${searchString}')]`).click();
+    return select.locator('.dropdown-menu [role="option"]').locator(`//*[contains(text(), "${searchString}")]`).click();
   },
 
   /**
