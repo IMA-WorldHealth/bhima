@@ -4,11 +4,11 @@ const TU = require('../shared/TestUtils');
 const SearchModal = require('../shared/search.page');
 const Page = require('./stock.assign.page');
 
-const { notification } = require('../shared/components');
+// const { notification } = require('../shared/components');
 
 function StockAssignTests() {
-  const path = '/#/stock/assign';
-  let modal;
+  const path = '/#!/stock/assign';
+  // let modal;
   let page;
 
   test.beforeEach(async () => {
@@ -26,12 +26,12 @@ function StockAssignTests() {
     quantity : 1,
   };
 
-  const record2 = {
-    depot : 'Depot Secondaire',
-    inventory : 'Quinine',
-    lot : 'VITAMINE-B',
-    entity : 'Wayne Enterprise',
-  };
+  // const record2 = {
+  //   depot : 'Depot Secondaire',
+  //   inventory : 'Quinine',
+  //   lot : 'VITAMINE-B',
+  //   entity : 'Wayne Enterprise',
+  // };
 
   test('Create a new stock assignment', async () => {
     await page.showCreateModal();

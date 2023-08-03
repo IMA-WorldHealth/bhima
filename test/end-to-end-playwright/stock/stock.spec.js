@@ -10,7 +10,7 @@ test.beforeAll(async () => {
 });
 
 const StockExitTests = require('./stock.exit');
-const StockAssignTests = require('./stock.assign');
+// const StockAssignTests = require('./stock.assign');
 const StockEntryTests = require('./stock.entry');
 const StockImportTests = require('./stock.import');
 const StockInventoriesRegistryTests = require('./stock.inventories');

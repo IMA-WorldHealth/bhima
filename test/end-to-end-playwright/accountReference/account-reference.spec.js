@@ -16,7 +16,7 @@ test.beforeAll(async () => {
 });
 
 test.describe('AccountReference Management Page', () => {
-  const path = '/!#/account_reference';
+  const path = '/#!/account_reference';
 
   const mockCreate = {
     abbr : 'AO',

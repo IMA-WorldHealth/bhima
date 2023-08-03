@@ -19,7 +19,7 @@ test.describe('Room Management Tests', () => {
 
   // navigate to the page
   test.beforeEach(async () => {
-    await TU.navigate('/#/ward/configuration');
+    await TU.navigate('/#!/ward/configuration');
   });
 
   const room = 'CH.A.001';

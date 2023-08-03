@@ -14,7 +14,7 @@ const AccountsPage = require('./accounts.page');
 const components = require('../shared/components');
 
 test.describe('Account Management', () => {
-  const path = '#/accounts';
+  const path = '/#!/accounts';
   test.beforeEach(async () => {
     await TU.navigate(path);
     await TU.waitForSelector('.ui-grid-contents-wrapper');

@@ -14,10 +14,10 @@ function StockExitTests() {
   const SERVICE = 'Medecine Interne';
   const DESCRIPTION = 'Sortie de stock';
 
-  const requisitionService = {
-    service : 'Test Service',
-    reference : 'SREQ.TPA.1',
-  };
+  // const requisitionService = {
+  //   service : 'Test Service',
+  //   reference : 'SREQ.TPA.1',
+  // };
 
   const requisitionDepot = {
     depot : 'Depot Secondaire',
@@ -47,7 +47,7 @@ function StockExitTests() {
 
   // navigate to the page
   test.beforeEach(async () => {
-    await TU.navigate('/#/stock/exit');
+    await TU.navigate('/#!/stock/exit');
   });
 
   test(`should select the ${DEPOT_PRINCIPAL}`, async () => {
@@ -187,7 +187,8 @@ function StockExitTests() {
   });
 
   // @TODO : This test needs fixing: Not enough vitamins in Secondaire Depot for this (transfer first?)
-  // test.skip(`should distribute the stock to the service ${requisitionService.service} From Requisition `, async () => {
+  // test.skip(`should distribute the stock to the service ${requisitionService.service} From Requisition `,
+  //   async () => {
 
   //   await page.setDate(new Date());
   //   await page.setDescription(DESCRIPTION.concat(' - Service'));

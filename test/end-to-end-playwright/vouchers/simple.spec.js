@@ -15,7 +15,7 @@ test.beforeAll(async () => {
 test.describe('Simple Vouchers', () => {
 
   test.beforeEach(async () => {
-    await TU.navigate('/#/vouchers/simple');
+    await TU.navigate('/#!/vouchers/simple');
   });
 
   /*

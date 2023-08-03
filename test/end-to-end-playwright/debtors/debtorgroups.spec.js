@@ -15,7 +15,7 @@ test.describe('Debtor Groups Management', () => {
   const INITIAL_GROUPS = 3;
   const DELETEABLE_DEBTOR_GROUP = 'A11E6B7FFBBB432EAC2A5312A66DCCF4';
 
-  const root = '/#/debtors/groups/';
+  const root = '/#!/debtors/groups/';
 
   test.beforeEach(async () => {
     await TU.navigate(root);

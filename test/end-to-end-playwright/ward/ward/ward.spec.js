@@ -18,7 +18,7 @@ test.describe('Ward Management Tests', () => {
 
   // navigate to the page
   test.beforeEach(async () => {
-    await TU.navigate('/#/ward/configuration');
+    await TU.navigate('/#!/ward/configuration');
   });
 
   test('should add a new Ward', async () => {

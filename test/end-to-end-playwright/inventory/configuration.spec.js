@@ -13,7 +13,7 @@ test.beforeAll(async () => {
 
 test.describe('Inventory Configuration', () => {
 
-  const url = '/#/inventory/configuration';
+  const url = '/#!/inventory/configuration';
 
   const group = {
     name : 'Médicaments en Sirop Comprimes',

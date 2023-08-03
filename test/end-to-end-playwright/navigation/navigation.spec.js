@@ -26,7 +26,7 @@ test.describe('Tree Navigation', () => {
   });
 
   test('remembers the currently selected node', async () => {
-    await TU.navigate('/#/fiscal');
+    await TU.navigate('/#!/fiscal');
 
     // Verify that the fiscal year navigation entry is selected
     let selected = await TU.locator('.flex-tree .selected a');

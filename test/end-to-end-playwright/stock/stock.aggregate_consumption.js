@@ -3,7 +3,7 @@ const moment = require('moment');
 const { test } = require('@playwright/test');
 const TU = require('../shared/TestUtils');
 
-const components = require('../shared/components');
+// const components = require('../shared/components');
 
 const Page = require('./stock.aggregate_consumption.page');
 
@@ -14,7 +14,7 @@ function StockAggregateConsumptionTests() {
   // actions before each tests
   test.beforeEach(async () => {
     page = new Page();
-    await TU.navigate('/#/stock/aggregated_consumption');
+    await TU.navigate('/#!/stock/aggregated_consumption');
   });
 
   const DEPOT_TERTIAIRE = 'Depot Tertiaire';

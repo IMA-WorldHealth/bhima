@@ -5,14 +5,14 @@ const ExitAdjustment = require('./stock.adjustment.page');
 
 function StockAdjustmentTests() {
   const DEPOT_PRINCIPAL = 'Depot Principal';
-  const DESCRIPTION = 'Ajustement de stock';
+  // const DESCRIPTION = 'Ajustement de stock';
 
   // the page object
   const page = new ExitAdjustment();
 
   // navigate to the page
   test.beforeEach(async () => {
-    await TU.navigate('/#/stock/adjustment');
+    await TU.navigate('/#!/stock/adjustment');
   });
 
   test(`Should select the ${DEPOT_PRINCIPAL}`, () => {

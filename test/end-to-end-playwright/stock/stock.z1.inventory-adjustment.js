@@ -14,7 +14,7 @@ function StockInventoryAdjustmentTests() {
 
   // navigate to the page
   test.beforeEach(async () => {
-    await TU.navigate('/#/stock/inventory-adjustment');
+    await TU.navigate('/#!/stock/inventory-adjustment');
   });
 
   test(`Should select the ${DEPOT_PRINCIPAL}`, async () => {

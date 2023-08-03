@@ -21,7 +21,7 @@ test.beforeAll(async () => {
 test.describe('Complex Vouchers', () => {
 
   test.beforeEach(async () => {
-    await TU.navigate('/#/vouchers/complex');
+    await TU.navigate('/#!/vouchers/complex');
   });
 
   test('creates a complex voucher', async () => {

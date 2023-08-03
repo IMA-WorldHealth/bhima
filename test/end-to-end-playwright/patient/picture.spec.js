@@ -16,7 +16,7 @@ const components = require('../shared/components');
 const fixtures = path.resolve(__dirname, '../../fixtures/');
 
 test.describe('Patient Record', () => {
-  const root = '/#/patients/';
+  const root = '/#!/patients/';
   const id = '274c51ae-efcc-4238-98c6-f402bfb39866';
 
   test.beforeEach(async () => {

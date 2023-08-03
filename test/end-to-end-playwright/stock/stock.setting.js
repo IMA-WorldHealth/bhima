@@ -10,7 +10,7 @@ function StockSettingTests() {
 
   // navigate to the page
   test.beforeEach(async () => {
-    await TU.navigate('/#/stock/setting');
+    await TU.navigate('/#!/stock/setting');
   });
 
   test('Should Update Stock Setting', async () => {

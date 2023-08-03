@@ -18,7 +18,7 @@ test.describe('tags Management Tests', () => {
   const page = new TagPage();
 
   test.beforeEach(async () => {
-    await TU.navigate('#/tags');
+    await TU.navigate('/#!/tags');
   });
 
   test('should add a new tags', async () => {

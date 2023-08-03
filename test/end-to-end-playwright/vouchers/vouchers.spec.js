@@ -19,7 +19,7 @@ test.describe('Voucher Registry', () => {
   const gridId = 'voucher-grid';
 
   test.beforeEach(async () => {
-    await TU.navigate('/#/vouchers');
+    await TU.navigate('/#!/vouchers');
   });
 
   test(`displays ${NUM_VOUCHERS} vouchers on the page`, async () => {

@@ -16,7 +16,7 @@ test.beforeAll(async () => {
 });
 
 test.describe('Cash Payments', () => {
-  const path = 'cash';
+  const path = '/#!/cash';
 
   const cashboxB = {
     id : 2,
@@ -62,7 +62,7 @@ test.describe('Cash Payments', () => {
     test('navigating directly to /cash should be re-routed to selected cashbox after a selection is made', async () => {
 
       // our target is cashbox B
-      const target = `/#!/${path}/${cashboxB.id}`;
+      const target = `${path}/${cashboxB.id}`;
 
       // implicitly choose cashbox B by navigating to it directly
       await TU.navigate(target);
@@ -84,7 +84,7 @@ test.describe('Cash Payments', () => {
 
     test('should allow a user to select and deselect a cashbox', async () => {
       // the auxiliary cashbox is the target
-      const targetAuxiliary1 = `/#!/${path}/${cashboxC.id}`;
+      const targetAuxiliary1 = `${path}/${cashboxC.id}`;
 
       await TU.navigate(targetAuxiliary1);
 
@@ -92,7 +92,7 @@ test.describe('Cash Payments', () => {
       expect(await TU.getCurrentPath()).toBe(targetAuxiliary1);
 
       // the auxiliary cashbox is the target
-      const targetAuxiliary2 = `/#!/${path}/${cashboxB.id}`;
+      const targetAuxiliary2 = `${path}/${cashboxB.id}`;
 
       // use the button to navigate back to the cashbox select module
       await selectDropdownAction('change-cashbox');
@@ -299,13 +299,13 @@ test.describe('Cash Payments', () => {
     const PAYMENT_PRIMARY_CASHBOX = 0;
     const DEBTOR_GROUP = 'Church Employees';
 
-    const path = '/!#/payments';
+    const path2 = '/#!/payments';
     let modal;
     let filters;
 
     test.beforeEach(async () => {
-      await TU.navigate(path);
-      modal = new SearchModal('cash-payment-search', path);
+      await TU.navigate(path2);
+      modal = new SearchModal('cash-payment-search', path2);
       await modal.open();
       filters = new Filters();
     });

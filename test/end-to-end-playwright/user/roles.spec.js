@@ -20,7 +20,7 @@ test.describe('Role Management Tests', () => {
 
   test.describe('Role Management', () => {
     test.beforeEach(async () => {
-      await TU.navigate('/#/roles');
+      await TU.navigate('/#!/roles');
     });
 
     test('should add a new role', async () => {
@@ -68,7 +68,7 @@ test.describe('Role Management Tests', () => {
   test.describe('Role Assignment', () => {
 
     test.beforeEach(async () => {
-      await TU.navigate('#/users');
+      await TU.navigate('/#!/users');
     });
 
     test('should assign a role to a user', async () => {

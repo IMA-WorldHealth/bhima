@@ -15,7 +15,7 @@ function VoucherRegistrySearch() {
   let filters;
 
   test.beforeEach(async () => {
-    const path = '/#/vouchers';
+    const path = '/#!/vouchers';
     await TU.navigate(path);
     modal = new SearchModal('voucher-search', path);
     await modal.open();

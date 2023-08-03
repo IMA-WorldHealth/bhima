@@ -7,7 +7,7 @@ const SearchModal = require('../shared/search.page');
 const components = require('../shared/components');
 
 function PurchaseOrderSearch() {
-  const path = '/#/purchases';
+  const path = '/#!/purchases';
   let modal;
   let filters;
   let grid;

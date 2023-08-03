@@ -17,7 +17,7 @@ test.beforeAll(async () => {
 });
 
 test.describe('User Management Page', () => {
-  const path = '/#/users';
+  const path = '/#!/users';
   const userPage = new UserPage();
 
   const userCreateUpdatePage = new UserCreateUpdatePage();

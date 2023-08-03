@@ -18,7 +18,7 @@ function StockEntryTests() {
 
   // navigate to the page
   test.beforeEach(async () => {
-    await TU.navigate('/#/stock/entry');
+    await TU.navigate('/#!/stock/entry');
   });
 
   test(`Should select the ${DEPOT_PRINCIPAL}`, async () => {

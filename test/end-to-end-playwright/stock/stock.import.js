@@ -11,7 +11,7 @@ function StockImportTests() {
 
   // navigate to the page
   test.beforeEach(async () => {
-    await TU.navigate('/#/stock/import');
+    await TU.navigate('/#!/stock/import');
   });
 
   test('importing stock from a csv file', async () => {

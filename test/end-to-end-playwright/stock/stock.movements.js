@@ -7,7 +7,7 @@ const SearchModal = require('../shared/search.page');
 const Filters = require('../shared/components/bhFilters');
 
 function StockMovementsRegistryTests() {
-  const path = '/#/stock/movements';
+  const path = '/#!/stock/movements';
   let modal;
   let filters;
 

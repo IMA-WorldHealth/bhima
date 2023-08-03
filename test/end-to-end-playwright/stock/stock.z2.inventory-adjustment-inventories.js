@@ -14,7 +14,7 @@ test.beforeAll(async () => {
 });
 
 function StockInventoriesRegistryTests() {
-  const path = '/#/stock/inventories';
+  const path = '/#!/stock/inventories';
   let modal;
   let filters;
 

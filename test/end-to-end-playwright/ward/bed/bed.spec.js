@@ -17,7 +17,7 @@ test.describe('Bed Management Tests', () => {
   const page = new BedPage();
 
   test.beforeEach(async () => {
-    await TU.navigate('/#/ward/configuration');
+    await TU.navigate('/#!/ward/configuration');
   });
 
   const bed = 'PA.RA.001';

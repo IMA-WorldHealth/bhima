@@ -18,7 +18,7 @@ test.beforeAll(async () => {
 
 test.describe('Inventory List', () => {
 
-  const path = '/#/inventory';
+  const path = '/#!/inventory';
   let modal;
 
   const filters = new Filters();
