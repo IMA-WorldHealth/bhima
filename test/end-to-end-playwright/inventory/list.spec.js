@@ -18,6 +18,7 @@ test.beforeAll(async () => {
 
 test.describe('Inventory List', () => {
 
+  const path = '/#/inventory';
   let modal;
 
   const filters = new Filters();
@@ -26,8 +27,8 @@ test.describe('Inventory List', () => {
 
   // navigate to the page
   test.beforeEach(async () => {
-    await TU.navigate('/#/inventory');
-    modal = new SearchModal('inventory-search', 'inventory');
+    await TU.navigate(path);
+    modal = new SearchModal('inventory-search', path);
   });
 
   test.afterEach(async () => {

@@ -55,21 +55,21 @@ function StockLotsRegistryTests() {
       code : 'DINJ_TRIB1A2_0',
       lot : 'VITAMINE-B',
       quantity : '23',
-      row : 2,
+      row : 1,
     };
     const moto1 = {
       label : 'Honda CRF250RX',
       code : 'MOT.HCRF250RX',
       lot : 'MOT2',
       quantity : '1',
-      row : 3,
+      row : 2,
     };
     const moto2 = {
       label : 'Honda CRF250RX',
       code : 'MOT.HCRF250RX',
       lot : 'MOT1',
       quantity : '17',
-      row : 4,
+      row : 3,
     };
 
     await modal.setDepot('Depot Principal');

@@ -7,6 +7,7 @@ const SearchModal = require('../shared/search.page');
 const components = require('../shared/components');
 
 function PurchaseOrderSearch() {
+  const path = '/#/purchases';
   let modal;
   let filters;
   let grid;
@@ -21,8 +22,9 @@ function PurchaseOrderSearch() {
   };
 
   test.beforeEach(async () => {
+    await TU.navigate(path);
     grid = await TU.locator(by.id('purchase-registry'));
-    modal = new SearchModal('purchase-search');
+    modal = new SearchModal('purchase-search', path);
     await modal.open();
     filters = new Filters();
   });

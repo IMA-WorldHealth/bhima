@@ -299,12 +299,13 @@ test.describe('Cash Payments', () => {
     const PAYMENT_PRIMARY_CASHBOX = 0;
     const DEBTOR_GROUP = 'Church Employees';
 
+    const path = '/!#/payments';
     let modal;
     let filters;
 
     test.beforeEach(async () => {
-      await TU.navigate('/!#/payments');
-      modal = new SearchModal('cash-payment-search', 'payments');
+      await TU.navigate(path);
+      modal = new SearchModal('cash-payment-search', path);
       await modal.open();
       filters = new Filters();
     });

@@ -14,10 +14,6 @@ const PurchaseOrderSearch = require('./registry.search');
 // purchase order registry tests
 test.describe('Purchase Order Registry', () => {
 
-  test.beforeEach(async () => {
-    await TU.navigate('/#/purchases');
-  });
-
   // Purchase Order search modal queries
   test.describe('Search', PurchaseOrderSearch);
 

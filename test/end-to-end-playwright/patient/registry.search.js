@@ -42,8 +42,9 @@ function PatientRegistrySearch() {
   });
 
   test.beforeEach(async () => {
-    await TU.navigate('patients');
-    modal = new SearchModal('patient-search', 'patients');
+    const path = '/#/patients';
+    await TU.navigate(path);
+    modal = new SearchModal('patient-search', path);
     await modal.open();
     filters = new Filters();
   });

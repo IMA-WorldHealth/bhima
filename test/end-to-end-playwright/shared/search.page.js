@@ -40,7 +40,6 @@ class SearchModal {
    *
    * @param {string} selector - the selector for the search modal
    * @param {string} path - the url for the parent page to the search modal
-   * (only the part after '/#!/')
    */
   constructor(selector, path) {
     this.selector = `[data-modal="${selector}"]`;
