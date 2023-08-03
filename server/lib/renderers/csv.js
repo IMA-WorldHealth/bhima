@@ -13,7 +13,6 @@
  * @requires debug
  */
 
-const q = require('q');
 const _ = require('lodash');
 const converter = require('json-2-csv');
 const moment = require('moment');
@@ -48,8 +47,6 @@ exports.headers = headers;
  * @returns {Promise}       Promise resolving in a rendered dataset (CSV)
  */
 function renderCSV(data, template, options = {}) {
-  // this will be returned to the promise chain with the rendered csv results
-  const dfd = q.defer();
 
   // allow different server routes to pass in csvOptions
   const csvOptions = _.defaults(options.csvOptions, defaults);
@@ -73,13 +70,7 @@ function renderCSV(data, template, options = {}) {
   }
 
   // render the data array csv as needed
-  converter.json2csv(csvData, (error, csv) => {
-    if (error) { return dfd.reject(error); }
-    return dfd.resolve(csv);
-  }, csvOptions);
-
-  // return the promise
-  return dfd.promise;
+  return converter.json2csv(csvData, csvOptions);
 }
 
 // converts a value to a date string if it is a date
