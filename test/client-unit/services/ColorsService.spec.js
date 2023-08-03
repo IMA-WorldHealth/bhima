@@ -16,5 +16,4 @@ describe('ColorService', () => {
     expect(colorList).to.be.a('array');
   });
 
-
 });
