@@ -48,21 +48,21 @@ function StockLotsRegistryTests() {
       code : 'DORA_QUIN1S-_0',
       lot : 'QUININE-C',
       quantity : '17',
-      row : 5,
+      row : 2,
     };
     const moto1 = {
       label : 'Honda CRF250RX',
       code : 'MOT.HCRF250RX',
       lot : 'MOT1',
       quantity : '1',
-      row : 6,
+      row : 3,
     };
     const moto2 = {
       label : 'Honda CRF250RX',
       code : 'MOT.HCRF250RX',
       lot : 'MOT2',
       quantity : '1',
-      row : 7,
+      row : 4,
     };
 
     await modal.setDepot('Depot Principal');
