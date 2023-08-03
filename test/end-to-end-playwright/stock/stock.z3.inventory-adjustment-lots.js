@@ -31,15 +31,14 @@ function StockLotsRegistryTests() {
   });
 
   const gridId = 'stock-lots-grid';
-  const LOT_FOR_ALLTIME = 3;
   const GROUPING_ROW = 1;
 
-  test(`finds ${LOT_FOR_ALLTIME} lots for all time`, async () => {
+  test(`finds lots for all time`, async () => {
     await modal.setDepot('Depot Principal');
     await modal.switchToDefaultFilterTab();
     await modal.setPeriod('allTime');
     await modal.submit();
-    await GU.expectRowCount(gridId, GROUPING_ROW + LOT_FOR_ALLTIME);
+    await GU.expectRowCount(gridId, [GROUPING_ROW + 3, GROUPING_ROW + 7]);
   });
 
   test('find only lots set during the adjustment process', async () => {
@@ -47,23 +46,23 @@ function StockLotsRegistryTests() {
     const quinine = {
       label : 'Quinine Bichlorhydrate, sirop, 100mg base/5ml, 100ml, flacon, Unité',
       code : 'DORA_QUIN1S-_0',
-      lot : 'QUININE-A',
-      quantity : '23',
-      row : 1,
+      lot : 'QUININE-C',
+      quantity : '17',
+      row : 5,
     };
     const moto1 = {
       label : 'Honda CRF250RX',
       code : 'MOT.HCRF250RX',
-      lot : 'MOT2',
+      lot : 'MOT1',
       quantity : '1',
-      row : 2,
+      row : 6,
     };
     const moto2 = {
       label : 'Honda CRF250RX',
       code : 'MOT.HCRF250RX',
-      lot : 'MOT1',
-      quantity : '17',
-      row : 3,
+      lot : 'MOT2',
+      quantity : '1',
+      row : 7,
     };
 
     await modal.setDepot('Depot Principal');

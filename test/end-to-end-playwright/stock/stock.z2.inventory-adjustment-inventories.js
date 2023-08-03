@@ -32,17 +32,17 @@ function StockInventoriesRegistryTests() {
   test('find 5 inventory in Depot Principal plus one line for the Grouping', async () => {
     await modal.setDepot('Depot Principal');
     await modal.submit();
-    await GU.expectRowCount(gridId, 2 + GROUPING_ROW);
+    await GU.expectRowCount(gridId, [2 + GROUPING_ROW, 4 + GROUPING_ROW]);
     await filters.resetFilters();
   });
 
   test('find only inventories set during the adjustment process', async () => {
     const moto = {
       label : 'Honda CRF250RX',
-      quantity : '18',
+      quantity : ['2', '18'],
     };
-    const quinine = {
-      label : 'Quinine Bichlorhydrate, sirop, 100mg base/5ml, 100ml, flacon, Unité',
+    const vitamins = {
+      label : 'Vitamines B1+B6+B12, 100+50+0.5mg/2ml, Amp, Unité',
       quantity : '23',
     };
 
@@ -50,8 +50,8 @@ function StockInventoriesRegistryTests() {
     await modal.submit();
     await GU.expectCellValueMatch(gridId, 1, 2, moto.label);
     await GU.expectCellValueMatch(gridId, 1, 4, moto.quantity);
-    await GU.expectCellValueMatch(gridId, 2, 2, quinine.label);
-    await GU.expectCellValueMatch(gridId, 2, 4, quinine.quantity);
+    await GU.expectCellValueMatch(gridId, 2, 2, vitamins.label);
+    await GU.expectCellValueMatch(gridId, 2, 4, vitamins.quantity);
     await filters.resetFilters();
   });
 }

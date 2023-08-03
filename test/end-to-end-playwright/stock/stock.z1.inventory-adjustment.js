@@ -18,7 +18,7 @@ function StockInventoryAdjustmentTests() {
   });
 
   test(`Should select the ${DEPOT_PRINCIPAL}`, async () => {
-    await TU.waitForSelector('[data-depot-selection-modal]');
+    await TU.waitForSelector('h3:has-text("Stock Inventory Adjustment"), li.title:has-text("Depot Selection")');
     return page.setDepot(DEPOT_PRINCIPAL);
   });
 
