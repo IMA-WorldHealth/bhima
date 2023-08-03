@@ -1,7 +1,7 @@
 const { test } = require('@playwright/test');
 const TU = require('../shared/TestUtils');
 
-const SearchModal = require('../shared/search.page');
+// const SearchModal = require('../shared/search.page');
 const Page = require('./stock.assign.page');
 
 // const { notification } = require('../shared/components');
@@ -14,7 +14,7 @@ function StockAssignTests() {
   test.beforeEach(async () => {
     await TU.navigate(path);
     page = new Page();
-    modal = new SearchModal('stock-assign-search', path);
+    // modal = new SearchModal('stock-assign-search', path);
   });
 
   const record = {
