@@ -1,6 +1,4 @@
-const { test, expect } = require('@playwright/test');
 const TU = require('../shared/TestUtils');
-const { by } = require('../shared/TestUtils');
 
 /* eslint no-await-in-loop:off */
 
@@ -10,32 +8,44 @@ function StockSettingPage() {
   const page = this;
 
   /**
-   * @method defineMonthAverageConsumption
+   * defineMonthAverageConsumption
    * @param {string} value - Month average consumption
+   * @returns {Promise} of setting
    */
   page.defineMonthAverageConsumption = async function defineMonthAverageConsumption(value) {
-    await TU.input('StockSettingsCtrl.settings.month_average_consumption', value);
+    return TU.input('StockSettingsCtrl.settings.month_average_consumption', value);
   };
 
   /**
-   * @method defaultMinMonthsSecurityStock
+   * define default purchase interval
+   * @param {string} value - purchase interval
+   * @returns {Promise} of setting
+   */
+  page.defineDefaultPurchaseInterval = async function defineDefaultPurchaseInterval(value) {
+    return TU.input('StockSettingsCtrl.settings.default_purchase_interval', value);
+  };
+
+  /**
+   * defaultMinMonthsSecurityStock
    * @param {string} value - Min Months security stock
+   * @returns {Promise} of setting
    */
   page.defaultMinMonthsSecurityStock = async function defaultMinMonthsSecurityStock(value) {
-    await TU.input('StockSettingsCtrl.settings.default_min_months_security_stock', value);
+    return TU.input('StockSettingsCtrl.settings.default_min_months_security_stock', value);
   };
 
   /**
-   * @method setRadio
+   * setRadio
    * @param {string} value - Click Yes or No
    * @param {string} name  - Variable name to click
+   * @returns {Promise} of setting
    */
   page.setRadio = async function setRadio(value, name) {
-    await components.yesNoRadios.set(value, name);
+    return components.yesNoRadios.set(value, name);
   };
 
   page.checkSuccess = async function checkSuccess() {
-    await components.notification.hasSuccess();
+    return components.notification.hasSuccess();
   };
 }
 

@@ -43,25 +43,32 @@ function StockLotsRegistryTests() {
 
   test('find only lots set during the adjustment process', async () => {
 
-    const quinine = {
-      label : 'Quinine Bichlorhydrate, sirop, 100mg base/5ml, 100ml, flacon, Unité',
-      code : 'DORA_QUIN1S-_0',
-      lot : 'QUININE-C',
-      quantity : '17',
+    // const quinine = {
+    //   label : 'Quinine Bichlorhydrate, sirop, 100mg base/5ml, 100ml, flacon, Unité',
+    //   code : 'DORA_QUIN1S-_0',
+    //   lot : 'QUININE-C',
+    //   quantity : '17',
+    //   row : 2,
+    // };
+    const vitamins = {
+      label : 'Vitamines B1+B6+B12, 100+50+0.5mg/2ml, Amp, Unité',
+      code : 'DINJ_TRIB1A2_0',
+      lot : 'VITAMINE-B',
+      quantity : '23',
       row : 2,
     };
     const moto1 = {
       label : 'Honda CRF250RX',
       code : 'MOT.HCRF250RX',
-      lot : 'MOT1',
+      lot : 'MOT2',
       quantity : '1',
       row : 3,
     };
     const moto2 = {
       label : 'Honda CRF250RX',
       code : 'MOT.HCRF250RX',
-      lot : 'MOT2',
-      quantity : '1',
+      lot : 'MOT1',
+      quantity : '17',
       row : 4,
     };
 
@@ -73,10 +80,10 @@ function StockLotsRegistryTests() {
 
     await modal.submit();
 
-    await GU.expectCellValueMatch(gridId, quinine.row, 1, quinine.code);
-    await GU.expectCellValueMatch(gridId, quinine.row, 2, quinine.label);
-    await GU.expectCellValueMatch(gridId, quinine.row, 4, quinine.lot);
-    await GU.expectCellValueMatch(gridId, quinine.row, 5, quinine.quantity);
+    await GU.expectCellValueMatch(gridId, vitamins.row, 1, vitamins.code);
+    await GU.expectCellValueMatch(gridId, vitamins.row, 2, vitamins.label);
+    await GU.expectCellValueMatch(gridId, vitamins.row, 4, vitamins.lot);
+    await GU.expectCellValueMatch(gridId, vitamins.row, 5, vitamins.quantity);
 
     await GU.expectCellValueMatch(gridId, moto1.row, 1, moto1.code);
     await GU.expectCellValueMatch(gridId, moto1.row, 2, moto1.label);

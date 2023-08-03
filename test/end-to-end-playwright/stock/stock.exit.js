@@ -36,11 +36,11 @@ function StockExitTests() {
     className : 'label-warning',
   };
 
-  const preventRequisitionDepot3 = {
-    depot : 'Depot Secondaire',
-    reference : 'SREQ.TPA.2',
-    className : 'label-success',
-  };
+  // const preventRequisitionDepot3 = {
+  //   depot : 'Depot Secondaire',
+  //   reference : 'SREQ.TPA.2',
+  //   className : 'label-success',
+  // };
 
   // the page object
   const page = new ExitPage();
