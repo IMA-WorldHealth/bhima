@@ -290,7 +290,7 @@ function selectAll(gridId) {
  * that you want to check the value of
  * @param {number} col - the number of the column (within the visible columns)
  * that you want to check the value of
- * @param {string} value - a regex or string of the value you expect in that cell
+ * @param {string} value - a regex or string (or list) of the value(s) you expect in that cell
  * @example
  * <pre>
  *   gridTestUtils.expectCellValueMatch('myGrid', 0, 2, 'CellValue');
@@ -298,7 +298,12 @@ function selectAll(gridId) {
  */
 async function expectCellValueMatch(gridId, row, col, value) {
   const dataCell = await getCell(gridId, row, col);
-  expect(await dataCell.innerText()).toBe(value);
+  const text = await dataCell.innerText();
+  if (Array.isArray(value)) {
+    expect(value.includes(text));
+  } else {
+    expect(text).toBe(value);
+  }
 
   // ADAPTED FROM PROTRACTOR CODE:
   // const dataCell = getCell(gridId, row, col);
