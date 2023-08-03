@@ -500,10 +500,10 @@
   resolved "https://registry.yarnpkg.com/@types/minimist/-/minimist-1.2.2.tgz#ee771e2ba4b3dc5b372935d549fd9617bf345b8c"
   integrity sha512-jhuKLIRrhvCPLqwPcx6INqmKeiA5EWrsCOPhrlFSrbrmU4ZMPjj5Ul/oLCMDO98XRUIwVm78xICz4EPCektzeQ==
 
-"@types/node@*", "@types/node@>=10.0.0", "@types/node@^20.4.5":
-  version "20.4.5"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.4.5.tgz#9dc0a5cb1ccce4f7a731660935ab70b9c00a5d69"
-  integrity sha512-rt40Nk13II9JwQBdeYqmbn2Q6IVTA5uPhvSO+JVqdXw/6/4glI6oR9ezty/A9Hg5u7JH4OmYmuQ+XvjKm0Datg==
+"@types/node@*", "@types/node@>=10.0.0", "@types/node@^20.4.6":
+  version "20.4.6"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.4.6.tgz#b66b66c9bb5d49b199f03399e341c9d6036e9e88"
+  integrity sha512-q0RkvNgMweWWIvSMDiXhflGUKMdIxBo2M2tYM/0kEGDueQByFzK4KZAgu5YHGFNxziTlppNpTIBcqHQAxlfHdA==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.1"
@@ -3669,14 +3669,14 @@ expand-tilde@^2.0.0, expand-tilde@^2.0.2:
   dependencies:
     homedir-polyfill "^1.0.1"
 
-express-handlebars@^7.1.0:
-  version "7.1.0"
-  resolved "https://registry.yarnpkg.com/express-handlebars/-/express-handlebars-7.1.0.tgz#00bb4d8ed757578944c8e93154532cc889081342"
-  integrity sha512-3pJw6FIzJXdIxicRd4yucdSZ/okuTyk5/wkqwnH1hNhSB75NRpEud36GKSactpLE8OA0pIbMKbzvbqUvgwI7PQ==
+express-handlebars@^7.1.1:
+  version "7.1.1"
+  resolved "https://registry.yarnpkg.com/express-handlebars/-/express-handlebars-7.1.1.tgz#1f2c225c0cbdc9ad5ccef2c4d49fa895e3c3cd61"
+  integrity sha512-qdODITPVBGmPShpBsc0xUy9Qau/pF8nyu/j8MYePBT2UNwaVvT/0Z9GpXqd37PZOw0MiLFW6l7xbkSISkTsrbg==
   dependencies:
     glob "^10.3.3"
     graceful-fs "^4.2.11"
-    handlebars "^4.7.7"
+    handlebars "^4.7.8"
 
 express-session@^1.17.3:
   version "1.17.3"
