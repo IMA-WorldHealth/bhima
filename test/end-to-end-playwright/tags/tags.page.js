@@ -52,8 +52,11 @@ function TagsPage() {
     await row.remove();
   }
 
-  function openCreateModal() {
-    return TU.buttons.create();
+  async function openCreateModal() {
+    await TU.buttons.create();
+
+    // Wait for the create modal to actually come up
+    return TU.waitForSelector('form[name="tagsForm"] .modal-footer');
   }
 }
 

@@ -24,7 +24,7 @@ test.describe('tags Management Tests', () => {
   test('should add a new tags', async () => {
     await page.openCreateModal();
     await page.setName('Tag1');
-    await page.setColor('Aqua');
+    await page.setColor('aqua');
     await page.submit();
     await components.notification.hasSuccess();
   });
@@ -32,7 +32,7 @@ test.describe('tags Management Tests', () => {
   test('should add another tags', async () => {
     await page.openCreateModal();
     await page.setName('Broken');
-    await page.setColor('Gray');
+    await page.setColor('gray');
     await page.submit();
     await components.notification.hasSuccess();
   });
@@ -48,7 +48,7 @@ test.describe('tags Management Tests', () => {
   test('should edit tags', async () => {
     await page.editTags('Tag1');
     await page.setName('Repaired');
-    await page.setColor('Yellow');
+    await page.setColor('yellow');
     await page.submit();
     await components.notification.hasSuccess();
   });
