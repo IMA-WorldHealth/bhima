@@ -115,7 +115,7 @@
     "debug": "^4.3.4",
     "delay": "^5.0.0",
     "dotenv": "^16.3.1",
-    "eslint-plugin-jsdoc": "^46.4.5",
+    "eslint-plugin-jsdoc": "^46.4.6",
     "excel4node": "^1.8.2",
     "express": "^4.18.2",
     "express-handlebars": "^7.1.1",
@@ -157,7 +157,7 @@
   "devDependencies": {
     "@ima-worldhealth/rewire": "^4.1.0",
     "@playwright/test": "1.34.3",
-    "@types/node": "^20.4.7",
+    "@types/node": "^20.4.8",
     "angular-mocks": "^1.8.3",
     "chai": "^4.3.7",
     "chai-as-promised": "^7.1.1",
