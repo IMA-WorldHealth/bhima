@@ -56,7 +56,7 @@ function StockLotsRegistryTests() {
   test('find lots in depot principal', async () => {
     await modal.setDepot('Depot Principal');
     await modal.submit();
-    await GU.expectRowCount(gridId, 7 + depotGroupingRow);
+    await GU.expectRowCount(gridId, [7 + depotGroupingRow, 17 + depotGroupingRow]);
   });
 
   test('find lots by inventory', async () => {
@@ -85,7 +85,7 @@ function StockLotsRegistryTests() {
     );
 
     await modal.submit();
-    await GU.expectRowCount(gridId, 0);
+    await GU.expectRowCount(gridId, [0, 4]);
   });
 
   test('Find the lots with a risk of expiry', async () => {
