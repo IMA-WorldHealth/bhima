@@ -830,7 +830,7 @@ CREATE TABLE `inventory_group` (
   `unique_item`  TINYINT(1) DEFAULT 0,
   `tracking_consumption` TINYINT(1) DEFAULT 1,
   `tracking_expiration` TINYINT(1) DEFAULT 1,
-  `depreciation_rate` FLOAT DEFAULT 0, 
+  `depreciation_rate` FLOAT DEFAULT 0,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `inventory_group_1` (`name`),
   UNIQUE KEY `inventory_group_2` (`code`),
@@ -2149,13 +2149,13 @@ CREATE TABLE `stock_movement_status` (
 
 DROP TABLE IF EXISTS `stock_value`;
 CREATE TABLE  `stock_value` (
-    `inventory_uuid` BINARY(16) NOT NULL,
-    `date` DATE NOT NULL,
-    `quantity` INT(11) NOT NULL,
-    `wac` DECIMAL(19,4) NOT NULL,
-    KEY `inventory_uuid` (`inventory_uuid`),
-    INDEX `date` (`date`),
-    CONSTRAINT `stock_value__inventory` FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`)
+  `inventory_uuid` BINARY(16) NOT NULL,
+  `date` DATE NOT NULL,
+  `quantity` INT(11) NOT NULL,
+  `wac` DECIMAL(19,4) NOT NULL,
+  KEY `inventory_uuid` (`inventory_uuid`),
+  INDEX `date` (`date`),
+  CONSTRAINT `stock_value__inventory` FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 -- donor
@@ -2574,7 +2574,7 @@ CREATE TABLE `staffing_indice_parameters` (
   `payroll_configuration_id` INT(10) UNSIGNED NOT NULL,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `payroll_config_id`(`payroll_configuration_id`),
-  CONSTRAINT `staffing_indice_param__payrall_config` FOREIGN KEY (`payroll_configuration_id`) REFERENCES `payroll_configuration` (`id`)
+  CONSTRAINT `staffing_indice_param__payroll_config` FOREIGN KEY (`payroll_configuration_id`) REFERENCES `payroll_configuration` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `data_collector_management`;
