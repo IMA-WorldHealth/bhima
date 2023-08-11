@@ -63,7 +63,7 @@
             ng-repeat="month in $ctrl.months"
             class="month {{month.reorder}}"
             uib-tooltip="{{month.reorder_tooltip}}" tooltip-append-to-body="true"
-            style="width: {{$ctrl.monthWidthInner}}px !important;">
+            style="width: (calc ((100% - {{$ctrl.labelWidth}}px)/{{$ctrl.numMonths}}) !important;">
             <div style="padding: 0; margin: 0; text-align: center;">{{month.month}}</div>
           </th>
         </tr>
