@@ -6,7 +6,6 @@
  */
 
 const express = require('express');
-const bodyParser = require('body-parser');
 const session = require('express-session');
 // NOTE: connect-redis now automatically imports the session data from
 //       express-session. See the migration notes in
@@ -42,8 +41,8 @@ exports.configure = function configure(app) {
     },
   }));
 
-  app.use(bodyParser.json({ limit : '8mb' }));
-  app.use(bodyParser.urlencoded({ extended : false }));
+  app.use(express.json({ limit : '8mb' }));
+  app.use(express.urlencoded({ extended : false }));
 
   // this will disable the session from expiring on the server (redis-session)
   // during development
