@@ -167,7 +167,6 @@ INSERT INTO unit VALUES
   (303, 'Cost Centers Balance Report','TREE.COST_CENTER_INCOME_EXPENSE_REPORT','Report of cc balance', 286,'/reports/cost_center_income_and_expense'),
   (304, '[SETTINGS] Settings', 'TREE.PAYROLL_SETTINGS', 'Payroll Settings', 57, '/payroll/setting'),
   (305, 'Avg Medical Costs Per Patient', 'TREE.AVERAGE_MED_COST_REPORT', 'Report of avg med costs', 282, '/reports/avg_med_costs_per_patient'),
-  (306, 'ODK Settings', 'TREE.ODK_SETTINGS', 'ODK Settings', 1, '/admin/odk-settings'),
   (307, 'Asset Management', 'TREE.ASSET_MANAGEMENT.TITLE', 'Asset Management', 0, '/ASSET_MANAGEMENT_FOLDER'),
   (308, 'Assets Registry', 'TREE.ASSETS_REGISTRY', 'Assets Registry', 307, '/assets'),
   (309, 'Asset Shipment', 'SHIPMENT.SHIPMENTS', 'Asset Shipment', 0, '/SHIPMENT_FOLDER'),
