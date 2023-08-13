@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# bash script mode
+# bash strict mode
 set -o pipefail
 
 # This script is for building the initial database of bhima application
