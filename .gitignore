@@ -57,3 +57,5 @@ test/*/report
 migration-*.sql
 yarn-error.log
 *.log
+
+.sqlfluff

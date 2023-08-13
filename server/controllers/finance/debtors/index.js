@@ -141,9 +141,6 @@ function lookupDebtor(uid) {
  * over the dataset queried only the debtor
  *
  * @method invoices
- *
- * @todo - this function should be replaced by an SQL function stored in
- * procedures.sql for easy lookup
  */
 function invoices(req, res, next) {
   const options = req.query;
