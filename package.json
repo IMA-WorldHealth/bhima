@@ -11,6 +11,8 @@
     "test:install": "cross-env ./sh/install-tests.sh",
     "test:integration:stock": "cross-env SUITE=\"integration-stock\" ./sh/test.sh",
     "test:ends": "cross-env SUITE=\"end-to-end\" ./sh/test.sh",
+    "test:e2e": "cross-env SUITE=\"end-to-end\" ./sh/test-e2e-pw.sh",
+    "test:e2e-trace": "cross-env SUITE=\"end-to-end\" ./sh/test-e2e-pw-trace.sh",
     "test:client-unit": "cross-env SUITE=\"client-unit\" ./sh/test.sh",
     "test:server-unit": "cross-env SUITE=\"server-unit\" ./sh/test.sh",
     "test:show-results": "./sh/show-test-results.sh",
@@ -153,6 +155,7 @@
   },
   "devDependencies": {
     "@ima-worldhealth/rewire": "^4.1.0",
+    "@playwright/test": "1.34.3",
     "@types/node": "^20.5.0",
     "angular-mocks": "^1.8.3",
     "chai": "^4.3.7",
