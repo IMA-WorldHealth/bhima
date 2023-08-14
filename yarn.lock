@@ -497,10 +497,10 @@
   resolved "https://registry.yarnpkg.com/@types/minimist/-/minimist-1.2.2.tgz#ee771e2ba4b3dc5b372935d549fd9617bf345b8c"
   integrity sha512-jhuKLIRrhvCPLqwPcx6INqmKeiA5EWrsCOPhrlFSrbrmU4ZMPjj5Ul/oLCMDO98XRUIwVm78xICz4EPCektzeQ==
 
-"@types/node@*", "@types/node@>=10.0.0", "@types/node@^20.4.9":
-  version "20.4.10"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.4.10.tgz#73c9480791e3ddeb4887a660fc93a7f59353ad45"
-  integrity sha512-vwzFiiy8Rn6E0MtA13/Cxxgpan/N6UeNYR9oUu6kuJWxu6zCk98trcDp8CBhbtaeuq9SykCmXkFr2lWLoPcvLg==
+"@types/node@*", "@types/node@>=10.0.0", "@types/node@^20.5.0":
+  version "20.5.0"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.5.0.tgz#7fc8636d5f1aaa3b21e6245e97d56b7f56702313"
+  integrity sha512-Mgq7eCtoTjT89FqNoTzzXg2XvCi5VMhRV6+I2aYanc6kQCBImeNaAYRs/DyoVqk1YEUJK5gN9VO7HRIdz4Wo3Q==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.1"
@@ -3412,7 +3412,7 @@ eslint@^6.1.0:
     text-table "^0.2.0"
     v8-compile-cache "^2.0.3"
 
-eslint@^8.46.0:
+eslint@^8.47.0:
   version "8.47.0"
   resolved "https://registry.yarnpkg.com/eslint/-/eslint-8.47.0.tgz#c95f9b935463fb4fad7005e626c7621052e90806"
   integrity sha512-spUQWrdPt+pRVP1TTJLmfRNJJHHZryFmptzcafwSvHsceV81djHOdnEeDmkdotZyLNjDhrOasNK8nikkoG1O8Q==
@@ -8244,7 +8244,7 @@ registry-url@^6.0.0:
   dependencies:
     rc "1.2.8"
 
-release-it@^16.1.4:
+release-it@^16.1.5:
   version "16.1.5"
   resolved "https://registry.yarnpkg.com/release-it/-/release-it-16.1.5.tgz#a846c2728994ff4b9aa630e2581868eda3b73978"
   integrity sha512-w/zCljPZBSYcCwR9fjDB1zaYwie1CAQganUrwNqjtXacXhrrsS5E6dDUNLcxm2ypu8GWAgZNMJfuBJqIO2E7fA==
