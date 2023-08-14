@@ -47,8 +47,11 @@ function MultiplePayrollIndiceController(
     width : 100,
     aggregationType  : uiGridConstants.aggregationTypes.count,
     aggregationHideLabel : true,
-  },
-  {
+  }, {
+    field : 'service_name',
+    displayName : 'FORM.LABELS.SERVICE',
+    headerCellFilter : 'translate',
+  }, {
     field : 'action',
     width : 100,
     displayName : '',
@@ -108,7 +111,7 @@ function MultiplePayrollIndiceController(
 
   function renameGridHeaders(rubrics) {
     const actions = angular.copy(columnDefs[columnDefs.length - 1]);
-    const newColumns = columnDefs.slice(0, 1);
+    const newColumns = columnDefs.slice(0, 2);
 
     const header = {
       type : 'number',
@@ -136,19 +139,19 @@ function MultiplePayrollIndiceController(
   }
 
   function setGridData(employees) {
-    const data = [];
-    employees.forEach(employee => {
+    return employees.map(employee => {
       const row = {
         employee_uuid : employee.uuid,
         display_name : employee.display_name,
+        service_name : employee.service_name,
       };
 
       employee.rubrics.forEach(r => {
         row[r.rubric_id] = r.rubric_value;
       });
-      data.push(row);
+
+      return row;
     });
-    return data;
   }
   // remove a filter with from the filter object, save the filters and reload
   function onRemoveFilter(key) {
