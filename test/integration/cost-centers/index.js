@@ -1,5 +1,3 @@
-/* global expect, agent */
-
 const helpers = require('../helpers');
 
 /*
