@@ -47,7 +47,7 @@ function create(req, res, next) {
 
   rubrics.forEach(r => {
     transaction.addQuery(`
-      DELETE FROM stage_payment_indice 
+      DELETE FROM stage_payment_indice
       WHERE employee_uuid = ? AND payroll_configuration_id=? AND rubric_id = ?`, [
       db.bid(employeeUuid), payrollConfigurationId, r.id]);
 
@@ -73,14 +73,15 @@ async function lookUp(options) {
   const employeeUuid = options.employee_uuid;
 
   const employeSql = `
-    SELECT BUID(emp.uuid) as uuid,UPPER(pt.display_name) AS display_name, pt.sex
+    SELECT BUID(emp.uuid) as uuid,UPPER(pt.display_name) AS display_name, pt.sex, service.name as service_name
     FROM payroll_configuration pc
-    JOIN config_employee ce ON ce.id = pc.config_employee_id
-    JOIN config_employee_item cei ON cei.config_employee_id = ce.id
-    JOIN employee emp ON emp.uuid = cei.employee_uuid
-    JOIN patient pt ON pt.uuid = emp.patient_uuid
-    WHERE pc.id = ? 
-    ${employeeUuid ? ` AND emp.uuid = ?` : ''}
+      JOIN config_employee ce ON ce.id = pc.config_employee_id
+      JOIN config_employee_item cei ON cei.config_employee_id = ce.id
+      JOIN employee emp ON emp.uuid = cei.employee_uuid
+      LEFT JOIN service ON emp.service_uuid = service.uuid
+      JOIN patient pt ON pt.uuid = emp.patient_uuid
+    WHERE pc.id = ?
+      ${employeeUuid ? ' AND emp.uuid = ?' : ''}
     ORDER BY pt.display_name ASC
   `;
 
@@ -89,19 +90,18 @@ async function lookUp(options) {
     FROM stage_payment_indice sti
     JOIN employee emp ON emp.uuid = sti.employee_uuid
     JOIN rubric_payroll rb ON rb.id = sti.rubric_id
-    WHERE sti.payroll_configuration_id = ? 
-    ${employeeUuid ? ` AND emp.uuid = ?` : ''}
+    WHERE sti.payroll_configuration_id = ?
+    ${employeeUuid ? ' AND emp.uuid = ?' : ''}
   `;
 
   const rubricSql = `
-    SELECT rb.* 
+    SELECT rb.*
     FROM rubric_payroll rb
     JOIN config_rubric_item cti ON cti.rubric_payroll_id = rb.id
     JOIN config_rubric cr On cr.id = cti.config_rubric_id
     WHERE
       cr.id IN ( SELECT config_rubric_id FROM payroll_configuration WHERE id = ?)
       AND rb.is_indice = 1
-    
     ORDER BY rb.position
   `;
 
