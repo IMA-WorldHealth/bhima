@@ -52,10 +52,11 @@ blocks:
             - mysql -h 127.0.0.1 -P 3306 -u root -e "FLUSH PRIVILEGES;"
             - mysql -h 127.0.0.1 -P 3306 -u root -e "SET @@global.sql_mode='STRICT_ALL_TABLES,NO_UNSIGNED_SUBTRACTION';"
             - nvm install $NODEJS_VERSION
-            - npx playwright install
             - checkout
             - 'echo "Testing node:$NODEJS_VERSION on mysql:$MYSQL_VERSION"'
             - yarn --ignore-engines
+            - npm install -g npx
+            - npx playwright install
             - 'yarn build:db'
             - yarn build
             - 'yarn test:server-unit'
