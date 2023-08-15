@@ -2313,10 +2313,10 @@ cosmiconfig@8.2.0:
     parse-json "^5.0.0"
     path-type "^4.0.0"
 
-cron@^2.4.0:
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/cron/-/cron-2.4.0.tgz#bdb2fcf896c072ba9dbc2f932ccd6daf3ad243b5"
-  integrity sha512-Cx77ic1TyIAtUggr0oAhtS8MLzPBUqGNIvdDM7jE3oFIxfe8LXWI9q3iQN/H2CebAiMir53LQKWOhEKnzkJTAQ==
+cron@^2.4.1:
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/cron/-/cron-2.4.1.tgz#90000398576beb3787339a1b3131f336aed10771"
+  integrity sha512-ty0hUSPuENwDtIShDFxUxWEIsqiu2vhoFtt6Vwrbg4lHGtJX2/cV2p0hH6/qaEM9Pj+i6mQoau48BO5wBpkP4w==
   dependencies:
     luxon "^3.2.1"
 
