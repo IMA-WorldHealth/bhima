@@ -39,7 +39,6 @@ describe('Login Page', () => {
     await FU.exists(by.css('[data-bh-growl-notification]'), false);
   });
 
-
   it('rejects user missing a password with (only) a help block', async () => {
     await FU.input('LoginCtrl.credentials.password', 'password');
     await element(by.model('LoginCtrl.credentials.username')).clear();
@@ -49,7 +48,6 @@ describe('Login Page', () => {
     await FU.exists(by.css('[data-bh-growl-notification]'), false);
   });
 
-
   it('rejects a deactivated user to login with a growl notification', async () => {
     await FU.input('LoginCtrl.credentials.username', 'admin');
     await FU.input('LoginCtrl.credentials.password', '1');
@@ -58,7 +56,6 @@ describe('Login Page', () => {
     await FU.exists(by.css('.help-block'), false);
     await components.notification.hasDanger();
   });
-
 
   it('has a default project value', async () => {
     const defaultProject = await element(by.model('LoginCtrl.credentials.project'))

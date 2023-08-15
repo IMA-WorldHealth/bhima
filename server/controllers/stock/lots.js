@@ -498,7 +498,7 @@ async function generateBarcodes(req, res, next) {
     }
 
     // create the csv file of tag numbers
-    const data = await converter.json2csvAsync(barcodeList, { trimHeaderFields : true, trimFieldValues : true });
+    const data = await converter.json2csv(barcodeList, { trimHeaderFields : true, trimFieldValues : true });
     const tmpCsvFile = tempy.file({ name : 'barcodes.csv' });
     await fs.promises.writeFile(tmpCsvFile, data);
 
