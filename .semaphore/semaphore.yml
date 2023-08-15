@@ -55,7 +55,6 @@ blocks:
             - checkout
             - 'echo "Testing node:$NODEJS_VERSION on mysql:$MYSQL_VERSION"'
             - yarn --ignore-engines
-            - npm install -g npx
             - npx playwright install
             - 'yarn build:db'
             - yarn build
