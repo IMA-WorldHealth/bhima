@@ -16,9 +16,7 @@ function LotsScheduleModalController(data, Instance, Stock, Lots,
   // The following numbers are sensitive!
   // If you change them, make sure you test with many inventory articles!
   vm.labelWidth = 100; // Inventory name (text) - pixels
-  vm.monthWidth = 21;
-  vm.monthWidthPads = 3; // Left-right padding + left border width
-  vm.monthWidthInner = vm.monthWidth - vm.monthWidthPads;
+  vm.monthWidth = 21.4; // Approximation!
   vm.numMonths = 36; // Number of table columns for months
 
   const chartWidth = vm.monthWidth * vm.numMonths;
