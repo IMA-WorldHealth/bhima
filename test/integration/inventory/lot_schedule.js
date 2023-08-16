@@ -34,7 +34,7 @@ describe('Inventory lots schedule HTML REST API', () => {
         const endB = new Date(B.end_date);
         expect(B.label).to.equal('QUININE-B');
         compareDate(startB, today, 'Lot QUININE-B start date error');
-        compareDate(endB, moment(today).add(30.5, 'days').toDate(), 'Lot QUININE-B end date error')
+        compareDate(endB, moment(today).add(30.5, 'days').toDate(), 'Lot QUININE-B end date error');
         expect(B.quantity_used).to.equal(0);
         expect(B.quantity_wasted).to.equal(15);
         expect(B.value_wasted).to.equal(12);
