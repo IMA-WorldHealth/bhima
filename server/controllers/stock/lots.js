@@ -193,13 +193,13 @@ async function getLotsUsageSchedule(req, res, next) {
     depot_uuid : req.params.depotUuid,
     month_average_consumption : req.query.month_average_consumption,
     average_consumption_algo : req.query.average_consumption_algo,
-  }
-  const num_months = req.query.interval_num_months || 6;
+  };
+  const numMonths = req.query.interval_num_months || 6;
 
   let lots;
 
   try {
-    const rawLots = await core.getLotsDepot(null, params)
+    const rawLots = await core.getLotsDepot(null, params);
     if (rawLots.length > 0) {
       const today = new Date();
 
@@ -224,9 +224,9 @@ async function getLotsUsageSchedule(req, res, next) {
           // Calculate in days since moment.add does not handle fractional months
           // NB: Since moment.diff silently truncates its arguments, even this
           //     calculation will include some round-off errors.
-          lot.exhausted_date = moment(lot.start_date).add(30.5 * lot.quantity / avgConsumption, 'days').toDate();
+          lot.exhausted_date = moment(lot.start_date).add(30.5 * (lot.quantity / avgConsumption), 'days').toDate();
         } else {
-          lot.exhausted_date = moment(lot.start_date).add(num_months, 'months').toDate();
+          lot.exhausted_date = moment(lot.start_date).add(numMonths, 'months').toDate();
         }
 
         // Compute the end date for this lot
