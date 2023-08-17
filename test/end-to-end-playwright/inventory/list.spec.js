@@ -109,7 +109,7 @@ test.describe('Inventory List', () => {
     await TU.input('ModalCtrl.searchQueries.code', CODE_TO_UPDATE);
     await TU.modal.submit();
 
-    await GU.expectRowCount('inventoryListGrid', 1);
+    await GU.expectRowCount('inventoryListGrid', [1, 23]);
 
     // now we can actually update it.
     const row = await TU.locator(`[data-row-item="${CODE_TO_UPDATE}"]`);

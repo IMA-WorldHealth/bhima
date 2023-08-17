@@ -1,9 +1,9 @@
 #!/bin/bash
 
 echo ""
-echo "==============================================="
-echo "Running the end-to-end tests using playwright"
-echo "==============================================="
+echo "==================================================="
+echo "Running the end-to-end stock tests using playwright"
+echo "==================================================="
 echo ""
 
 # bash script mode
@@ -22,7 +22,6 @@ echo "[test]"
 TIMEOUT=${BUILD_TIMEOUT:-5}
 
 echo "[test] Spawning BHIMA server process..."
-
 # build and start the server
 ./node_modules/.bin/gulp build
 cd bin
@@ -33,9 +32,9 @@ echo "[test] Spawned node process."
 echo "[test] Sleeping for $TIMEOUT seconds."
 sleep "$TIMEOUT"
 
-echo "[test] Running end-to-end tests using playwright (without stock tests)."
+echo "[test] Running end-to-end stock tests using playwright."
 cd ..
-npx playwright test 2>&1 | tee ./test/end-to-end-playwright/report
+TEST_STOCK=1 npx playwright test 2>&1 | tee ./test/end-to-end-playwright/report-stock
 
 # FYI: Use --workers=1  to limit number of workers
 

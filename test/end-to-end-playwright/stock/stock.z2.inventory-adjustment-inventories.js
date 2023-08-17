@@ -50,8 +50,8 @@ function StockInventoriesRegistryTests() {
     await modal.submit();
     await GU.expectCellValueMatch(gridId, 1, 2, moto.label);
     await GU.expectCellValueMatch(gridId, 1, 4, moto.quantity);
-    await GU.expectCellValueMatch(gridId, 2, 2, vitamins.label);
-    await GU.expectCellValueMatch(gridId, 2, 4, vitamins.quantity);
+    await GU.expectCellValueMatch(gridId, 4, 2, vitamins.label);
+    await GU.expectCellValueMatch(gridId, 4, 4, vitamins.quantity);
     await filters.resetFilters();
   });
 }

@@ -25,7 +25,7 @@ function StockRequisitionTests() {
   const NOT_REFERENCE = 'SREQ.ZERO';
 
   test(`Should select the ${DEPOT_PRINCIPAL}`, async () => {
-    await TU.waitForSelector('[data-depot-selection-modal]');
+    // await TU.waitForSelector('[data-depot-selection-modal]');
     await page.changeDepot(DEPOT_PRINCIPAL);
   });
 

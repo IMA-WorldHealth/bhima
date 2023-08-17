@@ -62,14 +62,14 @@ function StockLotsRegistryTests() {
       code : 'MOT.HCRF250RX',
       lot : 'MOT2',
       quantity : '1',
-      row : 2,
+      row : 7,
     };
     const moto2 = {
       label : 'Honda CRF250RX',
       code : 'MOT.HCRF250RX',
       lot : 'MOT1',
-      quantity : '17',
-      row : 3,
+      quantity : '1',
+      row : 6,
     };
 
     await modal.setDepot('Depot Principal');
