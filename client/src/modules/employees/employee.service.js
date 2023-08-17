@@ -47,10 +47,11 @@ function EmployeeService(Filters, $uibModal, Api, AppCache, Languages, $httpPara
     },
     { key : 'grade_uuid', label : 'FORM.LABELS.GRADE' },
     { key : 'reference', label : 'FORM.LABELS.REFERENCE' },
-    { key : 'fonction_id', label : 'FORM.LABELS.PROFESSION' },
+    { key : 'fonction_id', label : 'FORM.LABELS.FUNCTION' },
     { key : 'service_uuid', label : 'FORM.LABELS.SERVICE' },
     { key : 'cost_center_id', label : 'FORM.LABELS.COST_CENTER' },
     { key : 'is_medical', label : 'FORM.LABELS.MEDICAL_STAFF', valueFilter : 'boolean' },
+    { key : 'title_employee_id', label : 'FORM.LABELS.PROFESSION' },
   ]);
 
   if (filterCache.filters) {
