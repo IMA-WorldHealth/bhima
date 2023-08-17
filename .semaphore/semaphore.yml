@@ -55,12 +55,14 @@ blocks:
             - checkout
             - 'echo "Testing node:$NODEJS_VERSION on mysql:$MYSQL_VERSION"'
             - yarn --ignore-engines
+            - npx playwright install
             - 'yarn build:db'
             - yarn build
             - 'yarn test:server-unit'
             - 'yarn test:client-unit'
             - 'yarn test:integration'
             - 'yarn test:integration:stock'
+            - "yarn test:e2e"
           matrix:
             - env_var: MYSQL_VERSION
               values:
