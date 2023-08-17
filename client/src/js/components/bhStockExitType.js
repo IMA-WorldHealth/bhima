@@ -2,7 +2,7 @@ const stockExitTypeTmpl = `
 <div class="col-md-3 col-xs-6" ng-repeat="type in $ctrl.types track by type.label">
   <button
     type="button"
-    id="exit-type-{{type.label}}"
+    id="entry-exit-type-{{type.label}}"
     class="btn-block panel panel-default segment ima-stat-card"
     ng-class="{ 'ima-stat-card-reversed' : $ctrl.isTypeSelected(type) }"
     ng-click="$ctrl.selectExitType(type)">
