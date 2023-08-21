@@ -53,7 +53,7 @@ test.describe('Employees Configuration Management', () => {
     await page.errorOnCreateEmployeeConfig();
   });
 
-  // @TODO: Fix.  Works alone but fails with other tests
+  // @TODO: Fix; works okay alone, fails when run with other tests
   test.skip('successfully delete an employee configuration', async () => {
     await page.remove(updateEmployeeConfig.label);
   });
