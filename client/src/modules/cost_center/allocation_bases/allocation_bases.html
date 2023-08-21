@@ -11,20 +11,22 @@
           ui-sref="cost_center_allocation_bases.create"
           uib-tooltip="{{'COST_CENTER.SET_ALLOCATION_QUANTITIES_TOOLTIP' | translate}}"
           tooltip-append-to-body="true" tooltip-placement="left"
-          data-method="create">
+          data-method="edit">
           <span class="fa fa-edit"></span> <span translate>FORM.LABELS.EDIT</span>
         </button>
         <button
           ng-click="CostCenterAllocationBasesCtrl.showAllocationBasesTable()"
           class="btn btn-default text-capitalize"
           uib-tooltip="{{'COST_CENTER.ALLOCATION_BASIS_TABLE' | translate}}"
-          tooltip-append-to-body="true" tooltip-placement="left">
+          tooltip-append-to-body="true" tooltip-placement="left"
+          data-method="allocation-bases">
           <span class="fa fa-table"></span> <span translate>ALLOCATION_BASES</span>
         </button>
         <button class="btn btn-default text-capitalize"
           uib-tooltip="{{'COST_CENTER.UPDATE_ALLOCATION_QUANTITIES_TOOLTIP' | translate}}"
           tooltip-append-to-body="true" tooltip-placement="left"
-          ng-click="CostCenterAllocationBasesCtrl.updateComputableQuantities()">
+          ng-click="CostCenterAllocationBasesCtrl.updateComputableQuantities()"
+          data-method="update">
           <span class="fa fa-refresh"></span> <span translate>COST_CENTER.UPDATE_ALLOCATION_QUANTITIES</span>
         </button>
       </div>
