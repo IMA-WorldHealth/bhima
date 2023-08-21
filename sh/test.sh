@@ -55,16 +55,16 @@ fi
 
 # run end to end tests with Playwright
 if [ $SUITE = "end-to-end" ] || [ $SUITE = "ALL" ] ; then
-  startfold "Running Client End to End Tests (except stock tests)..." "test-end-to-end";
+  startfold "Running End to End Tests (except stock tests)..." "test-end-to-end";
   ./sh/test-e2e-pw.sh
   endfold "test-end-to-end" ;
 fi
 
 # run end to end stock tests with Playwright
 if [ $SUITE = "end-to-end" ] || [ $SUITE = "ALL" ] ; then
-  startfold "Running Client End to End Tests..." "test-end-to-end";
+  startfold "Running Stock End to End Tests..." "test-end-to-end-stock";
   ./sh/test-e2e-pw-stock.sh
-  endfold "test-end-to-end" ;
+  endfold "test-end-to-end-stock" ;
 fi
 
 # Show summary of results
