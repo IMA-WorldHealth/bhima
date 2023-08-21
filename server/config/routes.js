@@ -897,7 +897,6 @@ exports.configure = function configure(app) {
   app.get('/reports/stock/lost', stockReports.lostStockReport);
   app.get('/reports/stock/movement_report', stockReports.movementReport);
   app.get('/reports/stock/expiration_report', stockReports.expirationReport);
-  app.get('/reports/stock/changes', stockReports.stockChangesReport);
 
   app.get('/reports/stock/lots', stockReports.stockLotsReport);
   app.get('/reports/stock/movements', stockReports.stockMovementsReport);

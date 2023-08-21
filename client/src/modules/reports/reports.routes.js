@@ -45,7 +45,6 @@ angular.module('bhima.routes')
       'recovery_capacity',
       'rumer_report',
       'satisfaction_rate_report',
-      'stock_changes',
       'stock_consumption_graph_report',
       'stock_entry',
       'stock_exit',
