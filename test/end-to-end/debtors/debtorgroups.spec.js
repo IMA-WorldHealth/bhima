@@ -26,7 +26,7 @@ describe('Debtor Groups Management', () => {
 
     await FU.input('GroupUpdateCtrl.group.name', 'E2E Debtor Group');
 
-    await FU.uiSelect('GroupUpdateCtrl.group.color', 'Jaune');
+    await FU.uiSelect('GroupUpdateCtrl.group.color', 'jaune');
 
     await components.accountSelect.set('41111010'); // CHURCH
     await FU.input('GroupUpdateCtrl.group.max_credit', '1200');
