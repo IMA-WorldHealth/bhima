@@ -17,7 +17,7 @@ describe('Entity Management', () => {
 
   const updateEntity = {
     display_name : 'IMA DEVELOPPERS',
-    type : 'Entreprise',
+    type : 'Enterprise',
     gender : 'Autre',
     phone : '+243811838662',
     email : 'info@ima.org',
