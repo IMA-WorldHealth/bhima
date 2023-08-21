@@ -54,7 +54,7 @@ if [ $SUITE = "integration-stock" ] || [ $SUITE = "ALL" ] ; then
 fi
 
 # run end to end stock tests with Playwright
-if [ $SUITE = "end-to-end" ] || [ $SUITE = "ALL" ] ; then
+if [ $SUITE = "end-to-end-stock" ] || [ $SUITE = "ALL" ] ; then
   startfold "Running Stock End to End Tests..." "test-end-to-end-stock";
   ./sh/test-e2e-pw-stock.sh
   endfold "test-end-to-end-stock" ;
