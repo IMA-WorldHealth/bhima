@@ -153,7 +153,6 @@ INSERT INTO unit VALUES
   (289, 'Stock Expiration report','TREE.STOCK_EXPIRATION_REPORT','Stock expiration report', 282,'/reports/stock_expiration_report'),
   (290, '[SETTINGS] Settings', 'TREE.STOCK_SETTINGS', 'Stock Settings', 160, '/stock/setting'),
   (291, 'Stock Dashboard', 'TREE.STOCK_DASHBOARD','Stock Dashboard', 160,'/stock/dashboard'),
-  (292, 'Stock Changes Report', 'REPORT.STOCK_CHANGES.TITLE', 'Stock Changes Report', 282, '/reports/stock_changes'),
   (293, 'Aggregated consumption','TREE.AGGREGATED_STOCK_CONSUMPTION','Aggregated consumption', 160,'/stock/aggregated_consumption'),
   (294, 'Duplicate Lots','TREE.DUPLICATE_LOTS','The stock lots duplicates list', 160,'/stock/lots/duplicates'),
   (295, 'Rumer report','TREE.RUMER_REPORT','The rumer reports', 282,'/reports/rumer_report'),
@@ -243,7 +242,6 @@ INSERT IGNORE INTO `report` (`report_key`, `title_key`) VALUES
   ('recovery_capacity', 'REPORT.RECOVERY_CAPACITY.TITLE'),
   ('rumer_report', 'REPORT.RUMER.TITLE'),
   ('satisfaction_rate_report', 'TREE.SATISFACTION_RATE_REPORT'),
-  ('stock_changes', 'REPORT.STOCK_CHANGES.TITLE'),
   ('stock_consumption_graph_report', 'REPORT.STOCK_CONSUMPTION_GRAPH_REPORT.TITLE'),
   ('stock_entry', 'REPORT.STOCK.ENTRY_REPORT'),
   ('stock_exit', 'REPORT.STOCK.EXIT_REPORT'),
@@ -585,4 +583,3 @@ VALUES
     (15, 'REAM', 1),
     (16, 'SACK', 1),
     (17, 'SET', 1);
-
