@@ -65,6 +65,7 @@ if [ $SUITE = "end-to-end" ] || [ $SUITE = "ALL" ] ; then
   startfold "Running End to End Tests (except stock tests)..." "test-end-to-end";
   ./sh/test-e2e-pw.sh
   endfold "test-end-to-end" ;
+fi
 
 # Show summary of results
 ./sh/test-show-results.sh
