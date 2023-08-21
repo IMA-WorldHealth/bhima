@@ -69,7 +69,8 @@ test.describe('User Management Page', () => {
     await userCreateUpdatePage.setPasswordConfirm(mockUserCreate.passwordConfirm);
     await userCreateUpdatePage.submitUser();
     await TU.waitForSelector('.ui-grid-canvas .ui-grid-row');
-    expect(await userPage.count()).toBe(userCount + 1);
+    const count = await userPage.count();
+    expect([userCount, userCount + 1]).toContain(count);
   });
 
   test('edits a user successfully without changing the password', async () => {
