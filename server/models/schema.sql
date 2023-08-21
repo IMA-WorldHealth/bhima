@@ -524,6 +524,7 @@ CREATE TABLE `employee` (
   `patient_uuid`  BINARY(16) DEFAULT NULL,
   `is_medical`    TINYINT(1) DEFAULT 0,
   `reference`     SMALLINT(5) UNSIGNED DEFAULT NULL,
+  `title_employee_id`   TINYINT(3) UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `employee_1` (`code`),
   UNIQUE KEY `employee_2` (`patient_uuid`),
@@ -536,7 +537,8 @@ CREATE TABLE `employee` (
   CONSTRAINT `employee__service` FOREIGN KEY (`service_uuid`) REFERENCES `service` (`uuid`),
   CONSTRAINT `employee__creditor` FOREIGN KEY (`creditor_uuid`) REFERENCES `creditor` (`uuid`),
   CONSTRAINT `employee__grade` FOREIGN KEY (`grade_uuid`) REFERENCES `grade` (`uuid`),
-  CONSTRAINT `employee__patient` FOREIGN KEY (`patient_uuid`) REFERENCES `patient` (`uuid`)
+  CONSTRAINT `employee__patient` FOREIGN KEY (`patient_uuid`) REFERENCES `patient` (`uuid`),
+  CONSTRAINT `employee__title_employee` FOREIGN KEY (`title_employee_id`) REFERENCES `title_employee` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `employee_advantage`;
@@ -597,6 +599,7 @@ CREATE TABLE `enterprise_setting` (
   `purchase_general_condition` TEXT NULL,
   `terms_of_delivery` TEXT NULL,
   `special_instructions` TEXT NULL,
+  `percentage_fixed_bonus` TINYINT(3) UNSIGNED NOT NULL DEFAULT 100,
   PRIMARY KEY (`enterprise_id`),
   CONSTRAINT `enterprise_setting__enterprise` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
@@ -655,6 +658,14 @@ CREATE TABLE `fonction` (
   `fonction_txt` VARCHAR(50) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `fonction_1` (`fonction_txt`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `title_employee`;
+CREATE TABLE `title_employee` (
+  `id` TINYINT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `title_txt` VARCHAR(100) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `title_1` (`title_txt`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `general_ledger`;

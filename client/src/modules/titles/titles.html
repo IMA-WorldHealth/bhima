@@ -2,19 +2,19 @@
   <div class="bhima-title">
     <ol class="headercrumb">
       <li class="static" translate>TREE.ADMIN</li>
-      <li class="title" translate>TREE.PROFESSION</li>
+      <li class="title" translate>TREE.TITLE</li>
     </ol>
 
     <div class="toolbar">
       <div class="toolbar-item">
-        <button class="btn btn-default text-capitalize" ui-sref="functions.create" data-method="create">
+        <button class="btn btn-default text-capitalize" ui-sref="titles.create" data-method="create">
           <span class="fa fa-plus"></span>
-          <span translate class="hidden-xs">FORM.BUTTONS.ADD</span>
+          <span translate class="hidden-xs">FORM.BUTTONS.ADD_TITLE</span>
         </button>
       </div>
 
       <bh-filter-toggle
-        on-toggle="FunctionCtrl.toggleFilter()">
+        on-toggle="TitleCtrl.toggleFilter()">
       </bh-filter-toggle>
     </div>
   </div>
@@ -24,15 +24,15 @@
 <div class="flex-content">
   <div class="container-fluid">
     <div
-      id="function-grid"
+      id="title-grid"
       class="grid-full-height"
-      ui-grid="FunctionCtrl.gridOptions"
+      ui-grid="TitleCtrl.gridOptions"
       ui-grid-auto-resize>
 
       <bh-grid-loading-indicator
-        loading-state="FunctionCtrl.loading"
-        empty-state="FunctionCtrl.gridOptions.data.length === 0"
-        error-state="FunctionCtrl.hasError">
+        loading-state="TitleCtrl.loading"
+        empty-state="TitleCtrl.gridOptions.data.length === 0"
+        error-state="TitleCtrl.hasError">
       </bh-grid-loading-indicator>
     </div>
   </div>

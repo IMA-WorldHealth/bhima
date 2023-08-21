@@ -31,6 +31,7 @@ const helpdesk = require('../controllers/admin/helpdesk');
 const services = require('../controllers/admin/services');
 const suppliers = require('../controllers/admin/suppliers');
 const functions = require('../controllers/admin/functions');
+const titles = require('../controllers/admin/titles');
 const grades = require('../controllers/admin/grades');
 const holidays = require('../controllers/admin/holidays');
 const offdays = require('../controllers/admin/offdays');
@@ -709,6 +710,13 @@ exports.configure = function configure(app) {
   app.put('/functions/:id', functions.update);
   app.delete('/functions/:id', functions.delete);
 
+  // titles api
+  app.get('/titles', titles.list);
+  app.get('/titles/:id', titles.detail);
+  app.post('/titles', titles.create);
+  app.put('/titles/:id', titles.update);
+  app.delete('/titles/:id', titles.delete);
+
   // rubrics payroll api
   app.get('/rubrics', rubrics.list);
   app.get('/rubrics/:id', rubrics.detail);
@@ -888,7 +896,6 @@ exports.configure = function configure(app) {
   app.get('/reports/stock/lost', stockReports.lostStockReport);
   app.get('/reports/stock/movement_report', stockReports.movementReport);
   app.get('/reports/stock/expiration_report', stockReports.expirationReport);
-  app.get('/reports/stock/changes', stockReports.stockChangesReport);
 
   app.get('/reports/stock/lots', stockReports.stockLotsReport);
   app.get('/reports/stock/movements', stockReports.stockMovementsReport);
