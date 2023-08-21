@@ -574,6 +574,7 @@
             "IS_TURNOVER": "Is turnover?",
             "IS_WAREHOUSE": "Is warehouse?",
             "ITEMS" : "Items",
+            "JOB_FUNCTION" : "Job Function",
             "LABEL": "Label",
             "LANGUAGE": "Language",
             "LAST_ENTRY_DATE": "Last Entry Date",
