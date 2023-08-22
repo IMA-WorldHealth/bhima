@@ -8,7 +8,7 @@
 const router = require('express').Router();
 const debug = require('debug')('bhima:plugins:odk-central');
 const _ = require('lodash');
-const { json2csvAsync } = require('json-2-csv');
+const { json2csv } = require('json-2-csv');
 const tempy = require('tempy');
 const path = require('path');
 const fs = require('fs/promises');
@@ -254,7 +254,7 @@ async function syncFormsWithCentral() {
   }
 
   // generate a CSV and store it in a temporary file so we can upload to ODK Central later
-  const lotsCsv = await json2csvAsync(data, { trimHeaderFields : true, trimFieldValues : true });
+  const lotsCsv = await json2csv(data, { trimHeaderFields : true, trimFieldValues : true });
   const tmpLotsFile = tempy.file({ name : 'lots.csv' });
   await fs.writeFile(tmpLotsFile, lotsCsv);
 
@@ -282,7 +282,7 @@ async function syncFormsWithCentral() {
     GROUP BY document_uuid;
   `);
 
-  const documentsCsv = await json2csvAsync(allStockExitDocuments, { trimHeaderFields : true, trimFieldValues : true });
+  const documentsCsv = await json2csv(allStockExitDocuments, { trimHeaderFields : true, trimFieldValues : true });
   const tmpDocumentsFile = tempy.file({ name : 'transfers.csv' });
   await fs.writeFile(tmpDocumentsFile, documentsCsv);
   debug(`Wrote ${allStockExitDocuments.length} transfer documents to temporary file: ${tmpDocumentsFile}`);
