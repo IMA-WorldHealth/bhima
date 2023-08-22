@@ -15,7 +15,7 @@ module.exports = defineConfig({
   testIgnore : process.env.TEST_STOCK ? '' : '*/stock/*',
 
   /* Maximum time one test can run for. */
-  timeout : 20 * 1000, // JMC WAS 30*1000, temporarily shortened for test development
+  timeout : 30 * 1000, // JMC WAS 30*1000, temporarily shortened for test development
 
   expect : {
     /**
