@@ -34,7 +34,7 @@ test.describe('Employees Configuration Management', () => {
   });
 
   // @TODO : Fix; works alone and locally but not in CI
-  test.skip('successfully edits a Employee Configuration', async () => {
+  test.skip('successfully edits Employee Configuration', async () => {
     await page.update(employeeConfig.label, updateEmployeeConfig);
   });
 
