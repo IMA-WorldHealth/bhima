@@ -37,7 +37,8 @@ test.describe('Payroll Process Management', () => {
 
   test(`should find Default Employee In Default Payroll Period`, async () => {
     // Wait for modal dialog to appear (or open it)
-    if (! TU.isPresent('.modal-dialog')) {
+    const modalUp = await TU.isPresent('.modal-dialog');
+    if ( !modalUp ) {
       await TU.buttons.search();
       await TU.waitForSelector('.modal-dialog');
     }
