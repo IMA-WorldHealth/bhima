@@ -1,5 +1,8 @@
 /* v1.28.x */
 
+DELETE FROM unit WHERE `path` = '/admin/odk-settings';
+DROP TABLE IF EXISTS `odk_central_integration`;
+
 -- remove references to stock_changes report
 DELETE FROM unit WHERE `path` = '/reports/stock_changes';
 DELETE FROM report where `report_key` = 'stock_changes';
