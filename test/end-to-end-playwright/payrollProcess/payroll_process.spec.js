@@ -36,8 +36,11 @@ test.describe('Payroll Process Management', () => {
   const gridId = 'multipayroll-grid';
 
   test(`should find Default Employee In Default Payroll Period`, async () => {
-    // Wait for modal dialog to appear
-    await TU.waitForSelector('.modal-dialog');
+    // Wait for modal dialog to appear (or open it)
+    if (! TU.isPresent('.modal-dialog')) {
+      await TU.buttons.search();
+      await TU.waitForSelector('.modal-dialog');
+    }
     await searchModalPage.payrollPeriod(defaultValue.period);
     await searchModalPage.selectCurrency(defaultValue.currency);
     await searchModalPage.submit();
