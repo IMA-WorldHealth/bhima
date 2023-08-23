@@ -49,7 +49,7 @@
               </a>
               <ul role="menu" uib-dropdown-menu>
                 <li role="menuitem" ng-repeat="(key, lang) in LoginCtrl.languages">
-                  <a ng-click="LoginCtrl.languageService.set(key)" href>
+                  <a ng-click="LoginCtrl.languageService.set(key)" lang="{{key}}" href>
                     {{ lang.name }}
                   </a>
                 </li>
