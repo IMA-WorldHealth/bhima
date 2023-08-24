@@ -37,12 +37,6 @@
       </a>
     </li>
     <li class="divider"></li>
-    <li>
-      <a data-method="qrcode" ng-click="grid.appScope.showQRCode(row.entity.id)" href>
-        <i class="fa fa-qrcode"></i> <span translate>ODK.QRCODE</span>
-      </a>
-    </li>
-    <li class="divider"></li>
 
     <li ng-if="!row.entity.deactivated">
       <a data-method="deactivate" ng-click="grid.appScope.activatePermissions(row.entity, 1, 'FORM.DIALOGS.CONFIRM_DEACTIVATION')" href>
