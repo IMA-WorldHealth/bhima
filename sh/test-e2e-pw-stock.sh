@@ -9,8 +9,11 @@ echo ""
 # bash script mode
 set -euo pipefail
 
-# Kill the BHIMA server when the test is finished
-trap 'jobs -p | xargs -r kill' EXIT
+# # Kill the BHIMA server when the test is finished
+if [[ -z "${CI:-}" ]]
+then
+  trap 'jobs -p | xargs -r kill' EXIT
+fi
 
 echo "Building Test Databases"
 
@@ -38,18 +41,18 @@ TEST_STOCK=1 npx playwright test 2>&1 | tee ./test/end-to-end-playwright/report-
 
 # FYI: Use --workers=1  to limit number of workers
 
-# Clean up any left-over zombie node processes
-# set -o nounset
-# if [[ -z "${CI:-}" ]]
-# then
-#     procs=`netstat -tulpn |& grep 8080`
-#     proc=`echo $procs | sed -r 's/.* ([0-9]+)\/node$/\1/g'`
+# Clean up any left-over zombie node processes (if not CI)
+set -o nounset
+if [[ -z "${CI:-}" ]]
+then
+    procs=`netstat -tulpn |& grep 8080`
+    proc=`echo $procs | sed -r 's/.* ([0-9]+)\/node$/\1/g'`
 
-#     if [[ ! -z "$proc" ]]
-#     then
-#         echo "Deleting zombie node Bhima process $proc"
-#         kill -9 $proc
-#     fi
-# fi
+    if [[ ! -z "$proc" ]]
+    then
+        echo "Deleting zombie node Bhima process $proc"
+        kill -9 $proc
+    fi
+fi
 
 echo "[/test]"
