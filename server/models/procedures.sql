@@ -11,9 +11,9 @@ DELIMITER $$
 OVERVIEW
 --------
 
-This procedures file contains all the procedures related to paying cash
-payments.  Please be sure to read the SCENARIOS section in detail to understand
-the multiple scenarios that can occur and how the application handles them. They
+This section contains all the procedures related to paying cash payments.
+Please be sure to read the SCENARIOS section in detail to understand the
+multiple scenarios that can occur and how the application handles them. They
 should clarify the "why" questions while the code itself documents "how".
 
 ---------
@@ -686,23 +686,31 @@ BEGIN
     SELECT * FROM stage_cash WHERE stage_cash.uuid = cashUuid;
 END $$
 
+
+----------------------------------------------------------------------------
+
 /*
-  This file contains code for creating and posting invoices made to patients.
+--------
+OVERVIEW
+--------
 
-  NOTE
-  The rationale behind the Stage* procedures is to interface between JS and SQL.  Every stage method sets up a temporary table that can be used by other
-  methods.  As temporary tables, they are scoped to the current connection,
-  meaning that all other methods _must_ be called in the same database
-  transaction.  Once the connection terminates, the tables are cleaned up.
+This section contains code for creating and posting invoices made to patients.
+
+NOTE
+The rationale behind the Stage* procedures is to interface between JS and SQL.
+Every stage method sets up a temporary table that can be used by other
+methods.  As temporary tables, they are scoped to the current connection,
+meaning that all other methods _must_ be called in the same database
+transaction.  Once the connection terminates, the tables are cleaned up.
 
 
-  NOTE
-  The CopyInvoiceToPostingJournal procedure also handles cost center allocation by the following logic:
-    a) If a cost center exists for that account, use the account's cost center.
-    b) If no cost center exists for the account, use the cost center of the service selected in the invoice.
+NOTE
+The CopyInvoiceToPostingJournal procedure also handles cost center allocation by the following logic:
+  a) If a cost center exists for that account, use the account's cost center.
+  b) If no cost center exists for the account, use the cost center of the service selected in the invoice.
 
-  This logic applies to invoice_items, invoicing_fees, and subsidies.  As long as each service is assigned a cost center,
-  every income/expense line in the invoice transaction will have
+This logic applies to invoice_items, invoicing_fees, and subsidies.  As long as each service is assigned a cost center,
+every income/expense line in the invoice transaction will have
 */
 
 
@@ -1587,8 +1595,9 @@ CREATE PROCEDURE UnbalancedInvoicePayments(
 END$$
 
 
--- this Procedure help to make quick analyse about unbalanced invoice
--- it create a table name 'unbalancedInvoices' that can be used by the analyser
+-- this procedure speeds up the unbalanced invoices report by putting
+-- the queries in SQL.  It creates a temporary table 'unbalanced_invoices'
+-- that can be queried to return all invoices that are not balanced.
 DROP PROCEDURE IF EXISTS UnbalancedInvoicePaymentsTable$$
 CREATE PROCEDURE UnbalancedInvoicePaymentsTable(
   IN dateFrom DATE,
@@ -1695,8 +1704,13 @@ CREATE PROCEDURE UnbalancedInvoicePaymentsTable(
   );
 END$$
 
+-------------------------------------------------------------------------------
+
 /*
- Create Fiscal Year and Periods
+
+This section is responsible for procedures for fiscal years and periods.
+
+Create Fiscal Year and Periods
 
 This procedure help to create fiscal year and fiscal year's periods
 periods include period `0` and period `13`
@@ -1803,7 +1817,6 @@ BEGIN
     CALL UpdatePeriodLabels();
   END WHILE;
 END $$
-
 
 
 DROP PROCEDURE IF EXISTS `UpdatePeriodLabels`$$
@@ -1951,13 +1964,16 @@ BEGIN
   UPDATE period SET locked = 1 WHERE fiscal_year_id = fiscalYearId;
 END $$
 
+
+----------------------------------------------------------------
+
 /*
 
 --------
 OVERVIEW
 --------
 
-This procedures file contains all procedures for creating vouchers.  A "voucher"
+This procedures section contains all procedures for creating vouchers.  A "voucher"
 is a generic accounting document that can model essentially any transaction.
 Given their flexibility, they are expected to be a user's main method of
 creating non-standard transactions, such as recording generic payments or
@@ -2189,13 +2205,15 @@ BEGIN
   END IF;
 END $$
 
+----------------------------------
+
 /*
 
 --------
 OVERVIEW
 --------
 
-This procedures file contains procedures to ensure data integrity.  It allows an
+This procedures section contains procedures to ensure data integrity.  It allows an
 administrator to merge two locations if they have database access. No clientside
 scripts currently access these procedures, but we may write a client interface
 in the future.
@@ -2229,13 +2247,16 @@ CREATE PROCEDURE MergeLocations(
   DELETE FROM village WHERE village.uuid = beforeUuid;
 END $$
 
+
+----------------------------------------------------------------------------
+
 /*
 
 --------
 OVERVIEW
 --------
 
-This file contains the logic for safeguarding the general_ledger from invalid
+This section contains the logic for safeguarding the general_ledger from invalid
 transaction by enforcing a series of checks, known as the Trial Balance.  The
 end result is 0 or more errors returned to the client as well as a preview of
 how the account balances will change once the data is transferred from the
@@ -2831,10 +2852,16 @@ BEGIN
   CALL PostVoucher(voucher_uuid);
 END $$
 
+---------------------------------------------------
+
 /*
-  ---------------------------------------------------
-  Import Stock Procedure
-  ---------------------------------------------------
+
+This section contains procedures for stock management in BHIMA.
+
+---------------------------------------------------
+Import Stock Procedure
+---------------------------------------------------
+
 */
 DROP PROCEDURE IF EXISTS ImportStock$$
 CREATE PROCEDURE ImportStock (
@@ -3515,13 +3542,13 @@ END$$
 
 
 /*
-  ---------------------------------------------------
-  Import Inventory Procedure
-  ---------------------------------------------------
+---------------------------------------------------
+Import Inventory Procedure
+---------------------------------------------------
 
-  This procedure import a new inventory into the system
-  by creating one and performing a stock integration
-  if necessary.
+This procedure import a new inventory into the system
+by creating one and performing a stock integration
+if necessary.
 */
 DROP PROCEDURE IF EXISTS ImportInventory$$
 CREATE PROCEDURE ImportInventory (
@@ -3603,12 +3630,19 @@ BEGIN
   END IF;
 END $$
 
-/*
-  ---------------------------------------------------
-  Import Account Procedure
-  ---------------------------------------------------
 
-  This procedure import a new account into the system
+-------------------------------------
+
+/*
+
+This section contains procedures related to setting up a
+new server.
+
+---------------------------------------------------
+Import Account Procedure
+---------------------------------------------------
+
+This procedure import a new account into the system.
 */
 
 DROP PROCEDURE IF EXISTS ImportAccount$$
@@ -3689,8 +3723,13 @@ BEGIN
   UPDATE user SET is_admin = 1 WHERE id = user_id;
 END $$
 
+
+-----------------------------------------
+
 /*
-  payroll procedures
+
+This section contains procedures for the payroll in BHIMA.
+
 */
 DROP PROCEDURE IF EXISTS `UpdateStaffingIndices`$$
 CREATE PROCEDURE `UpdateStaffingIndices`(IN _dateFrom DATE, IN _dateTo DATE, IN _payroll_conf_id INT)
@@ -3779,7 +3818,6 @@ BEGIN
     CLOSE curs1;
 END$$
 
-
 -- sum of a column of indexes (index for each employee)
 DROP FUNCTION IF EXISTS `sumTotalIndex`$$
 CREATE FUNCTION `sumTotalIndex`(_payroll_configuration_id INT, _indice_type VARCHAR(50)) RETURNS DECIMAL(19, 4) DETERMINISTIC
@@ -3841,6 +3879,13 @@ BEGIN
     (HUID(uuid()), _employee_uuid, _payroll_configuration_id, _rubric_id, _value);
   END IF;
 END $$
+
+------------------------------------------------------------
+
+/*
+This section conaints miscellaneous procedures for analysis tools.
+
+*/
 
 -- Use this Procedure below posted at http://mysql.rjweb.org/doc.php/pivot.
 -- You want to "pivot" the data so that a linear list of values with 2 keys becomes a spreadsheet-like array.
@@ -4041,8 +4086,11 @@ BEGIN
  END IF;
 END $$
 
+
+------------------------------------------------------------------------
+
 /*
-  This section contains code for linking cost centers to various activities throughout the app.
+This section contains code for linking cost centers to various activities throughout the app.
 
 @function GetCostCenterByAccountId()
 
