@@ -43,6 +43,8 @@ blocks:
           value: client/upload
         - name: BUILD_TIMEOUT
           value: '30'
+        - name: CI
+          value: 1
       jobs:
         - name: Run Test Matrix
           commands:
