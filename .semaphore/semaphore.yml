@@ -43,6 +43,8 @@ blocks:
           value: client/upload
         - name: BUILD_TIMEOUT
           value: '30'
+        - name: CI
+          value: '1'
       jobs:
         - name: Run Test Matrix
           commands:
@@ -55,6 +57,7 @@ blocks:
             - checkout
             - 'echo "Testing node:$NODEJS_VERSION on mysql:$MYSQL_VERSION"'
             - yarn --ignore-engines
+            - npx playwright install
             - 'yarn build:db'
             - yarn build
             - 'yarn test:server-unit'
