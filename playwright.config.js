@@ -16,14 +16,14 @@ module.exports = defineConfig({
   testIgnore : process.env.TEST_STOCK ? '' : '*/stock/*',
 
   /* Maximum time one test can run for. */
-  timeout : 30 * 1000, // JMC WAS 30*1000, temporarily shortened for test development
+  timeout : 40 * 1000, // Need longer value for CI
 
   expect : {
     /**
      * Maximum time expect() should wait for the condition to be met.
      * For example in `await expect(locator).toHaveText();`
      */
-    timeout : 5000, // JMC WAS 5000 (shortened for test development)
+    timeout : 5000,
   },
 
   /* Run tests in files in parallel */
