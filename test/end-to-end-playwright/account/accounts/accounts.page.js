@@ -1,13 +1,13 @@
 const path = require('path');
 
-const TU = require('../shared/TestUtils');
-const { by } = require('../shared/TestUtils');
+const TU = require('../../shared/TestUtils');
+const { by } = require('../../shared/TestUtils');
 
-const GU = require('../shared/GridUtils');
-const components = require('../shared/components');
-const GridRow = require('../shared/GridRow');
+const GU = require('../../shared/GridUtils');
+const components = require('../../shared/components');
+const GridRow = require('../../shared/GridRow');
 
-const fixtures = path.resolve(__dirname, '../../fixtures/');
+const fixtures = path.resolve(__dirname, '../../../fixtures/');
 
 class AccountsPage {
   constructor() {

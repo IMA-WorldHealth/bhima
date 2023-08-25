@@ -53,6 +53,13 @@ if [ $SUITE = "integration-stock" ] || [ $SUITE = "ALL" ] ; then
   endfold "test-stock-integration" ;
 fi
 
+# # run end to end account tests with Playwright
+# if [ $SUITE = "end-to-end-account" ] || [ $SUITE = "ALL" ] ; then
+#   startfold "Running account End to End Tests..." "test-end-to-end-account";
+#   ./sh/test-e2e-pw-account.sh
+#   endfold "test-end-to-end-account" ;
+# fi
+
 # # run end to end stock tests with Playwright
 # if [ $SUITE = "end-to-end-stock" ] || [ $SUITE = "ALL" ] ; then
 #   startfold "Running Stock End to End Tests..." "test-end-to-end-stock";

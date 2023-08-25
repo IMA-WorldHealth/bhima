@@ -1,7 +1,7 @@
-const TU = require('../shared/TestUtils');
+const TU = require('../../shared/TestUtils');
 
-const GU = require('../shared/GridUtils');
-const components = require('../shared/components');
+const GU = require('../../shared/GridUtils');
+const components = require('../../shared/components');
 
 class AccountStatementCorePage {
   constructor() {
