@@ -13,7 +13,7 @@ Before you begin the installation process, please make sure you have all the bhi
 1. [MySQL 8](http://dev.mysql.com/downloads/)
 2. [Redis](https://redis.io)
 3. [curl](https://curl.haxx.se/)
-4. [NodeJS](https://nodejs.org/en/) \(we recommend using [node version manager](https://github.com/creationix/nvm) on linux. Note that we only test on stable and edge\).
+4. [NodeJS](https://nodejs.org/en/) \(Note that we only test on stable and edge\).
 5. [yarn](https://yarnpkg.com/)
 6. [git](https://git-scm.com/downloads)
 
@@ -37,10 +37,9 @@ sudo apt-get install redis-server
 # Run the following commands to install curl:
 sudo apt-get install curl
 
-# Find the latest LTS version of nodejs, visit https://nodejs.  Then
-# visit https://github.com/nodesource/distributions to find the setup for the
-# desired version of nodejs and OS.
-# In this example, we want 18.17.1 LTS on Ubuntu 22.04 jammy
+# To find the latest LTS version of nodejs, visit https://nodejs.
+# Then visit https://github.com/nodesource/distributions to find the
+# setup/installer for your OS and the desired version of nodejs.
 curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash
 sudo apt-get install -y nodejs
 
@@ -52,33 +51,25 @@ node --version
 curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
 echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
 sudo apt-get update && sudo apt-get install yarn --no-install-recommends
-
 ```
 
-### Installing Puppeteer
+### Install chromium browser ('chrome' on Debian)
 
 ```bash
-sudo npm install -g puppeteer
-sudo apt install chomium-browser
+sudo apt install chromium-browser
 
 # Install extra needed dependencies
 sudo apt-get install libx11-xcb1 libxcomposite1 libasound2 libatk1.0-0 libatk-bridge2.0-0 libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 libgbm1 libgcc1 libglib2.0-0 libgtk-3-0 libnspr4 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6
 ```
 
-For more information on other operating systems, [see the puppeteer troubleshooting documentation](https://github.com/puppeteer/puppeteer/blob/master/docs/troubleshooting.md#chrome-headless-doesnt-launch-on-unix).
-
-### Install chromedriver
-
-Some of the tests require chromederiver.
+We suggest putting the follwing line into your .bashrc file and restarting your shell session (this could also be done in the .env file):
 
 ```bash
-# First install the current google-chrome
-wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-sudo apt install ./google-chrome-stable_current_amd64.deb
+export CHROME_BIN=`which google-chrome`
+export CHROME_OPTIONS="--headless"
+```
 
-# Now install chromedriver
-sudo apt install chromium-chromedriver
-
+```bash
 # Verify that chrome and chromedriver have the same version
 chrome --version
 chromedriver --version
@@ -133,6 +124,11 @@ GRANT ALL PRIVILEGES ON * . * TO 'bhima'@'localhost';
 # Use ctrl + z to get back to the main terminal prompt
 ```
 
+NOTE: Debian installs MariaDB by default and the `CREATE USER` statement should look like this:
+```bash
+CREATE USER 'bhima'@'localhost' IDENTIFIED BY 'password';
+```
+
 Then, build the app with
 
 ```bash
@@ -153,7 +149,7 @@ sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf
 sql-mode = "STRICT_ALL_TABLES,NO_UNSIGNED_SUBTRACTION"
 
 # Save and quit, then restart mysql with the following command:
-sudo service mysql restart
+sudo systemctl restart mysql
 ```
 
 To start a MySQL server using docker you can use:
@@ -196,6 +192,13 @@ You can run all this by using the following command: `yarn build:db` Alternative
 # Install the database
 DB_USER='me' DB_PASS='MyPassword' DB_NAME='bhima' ./sh/build-database.sh
 ```
+
+If you are creating a fresh build for a new production site, you should probably start with:
+
+```bash
+yarn build:clean
+```
+And the databases to be loaded will need to be customized for that site.
 
 ### Running the Application
 
