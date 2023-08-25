@@ -3,12 +3,11 @@ const moment = require('moment');
 const { test } = require('@playwright/test');
 const TU = require('../shared/TestUtils');
 
-// const components = require('../shared/components');
+const components = require('../shared/components');
 
 const Page = require('./stock.aggregate_consumption.page');
 
 function StockAggregateConsumptionTests() {
-  // let modal;
   let page;
 
   // actions before each tests

@@ -1,6 +1,6 @@
 const { chromium } = require('@playwright/test');
 const { test } = require('@playwright/test');
-const TU = require('../shared/TestUtils');
+const TU = require('../../shared/TestUtils');
 
 test.beforeAll(async () => {
   const browser = await chromium.launch();

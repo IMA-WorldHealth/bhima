@@ -1,8 +1,8 @@
-const TU = require('../shared/TestUtils');
-const { by } = require('../shared/TestUtils');
+const TU = require('../../shared/TestUtils');
+const { by } = require('../../shared/TestUtils');
 
-const GridRow = require('../shared/GridRow');
-const { notification } = require('../shared/components');
+const GridRow = require('../../shared/GridRow');
+const { notification } = require('../../shared/components');
 
 class AccountReferenceTypePage {
   constructor() {

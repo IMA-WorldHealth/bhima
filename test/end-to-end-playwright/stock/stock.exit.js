@@ -36,11 +36,11 @@ function StockExitTests() {
     className : 'label-warning',
   };
 
-  // const preventRequisitionDepot3 = {
-  //   depot : 'Depot Secondaire',
-  //   reference : 'SREQ.TPA.2',
-  //   className : 'label-success',
-  // };
+  const preventRequisitionDepot3 = {
+    depot : 'Depot Secondaire',
+    reference : 'SREQ.TPA.2',
+    className : 'label-success',
+  };
 
   // the page object
   const page = new ExitPage();
@@ -190,20 +190,20 @@ function StockExitTests() {
   test.skip(`should distribute the stock to the service ${requisitionService.service} From Requisition `,
     async () => {
 
-    await page.setDate(new Date());
-    await page.setDescription(DESCRIPTION.concat(' - Service'));
+      await page.setDate(new Date());
+      await page.setDescription(DESCRIPTION.concat(' - Service'));
 
-    // select the service
-    await page.setServiceRequisition(requisitionService);
+      // select the service
+      await page.setServiceRequisition(requisitionService);
 
-    // Wait for the grid to display
-    await TU.waitForSelector('.ui-grid-canvas .ui-grid-row');
+      // Wait for the grid to display
+      await TU.waitForSelector('.ui-grid-canvas .ui-grid-row');
 
-    await page.setLot(0, 'VITAMINE-B');
+      await page.setLot(0, 'VITAMINE-B');
 
-    // submit
-    await page.submit();
-  });
+      // submit
+      await page.submit();
+    });
 
   test(`Prevent out of stock for a cancelled requisition`, async () => {
     await page.setDate(new Date());

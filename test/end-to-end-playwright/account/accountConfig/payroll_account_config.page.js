@@ -1,4 +1,4 @@
-const TU = require('../shared/TestUtils');
+const TU = require('../../shared/TestUtils');
 
 /**
  * This class is represents an account configuration page in term of structure and
@@ -6,9 +6,9 @@ const TU = require('../shared/TestUtils');
  */
 
 /* loading grid actions */
-const { notification, accountSelect, modalAction } = require('../shared/components');
+const { notification, accountSelect, modalAction } = require('../../shared/components');
 
-const GridRow = require('../shared/GridRow');
+const GridRow = require('../../shared/GridRow');
 
 class AccountConfigPage {
   constructor() {

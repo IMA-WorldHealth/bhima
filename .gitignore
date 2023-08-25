@@ -59,6 +59,7 @@ client/upload/
 
 test/*/report
 test/*/report-stock
+test/*/report-account
 
 migration-*.sql
 yarn-error.log
