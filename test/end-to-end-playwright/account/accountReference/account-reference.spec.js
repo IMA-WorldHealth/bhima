@@ -1,8 +1,8 @@
 const { chromium } = require('@playwright/test');
 const { test, expect } = require('@playwright/test');
-const TU = require('../shared/TestUtils');
+const TU = require('../../shared/TestUtils');
 
-const components = require('../shared/components');
+const components = require('../../shared/components');
 
 /* loading pages */
 const AccountReferencePage = require('./account-reference.page');

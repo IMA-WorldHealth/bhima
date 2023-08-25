@@ -76,8 +76,7 @@ function StockAggregateConsumptionTests() {
     await page.submit();
   });
 
-  // @TODO : Fix; works alone and locally, fails in CI
-  test.skip(`Create a complexe aggregate consumption on current depot ${DEPOT_TERTIAIRE}`, async () => {
+  test(`Create a complexe aggregate consumption on current depot ${DEPOT_TERTIAIRE}`, async () => {
     const getMovementDate = moment(new Date(), 'YYYY-MM-DD').subtract(60, 'days');
     const getMovementMonth = moment(getMovementDate).month();
     const getMovementYear = moment(getMovementDate).year();
@@ -155,8 +154,7 @@ function StockAggregateConsumptionTests() {
     await page.changeDepot(DEPOT_PRINCIPAL);
   });
 
-  // @TODO : Fix; works alone and locally, fails on CI
-  test.skip(`Prevent an aggregated consumumption with start date is greater than the end date
+  test(`Prevent an aggregated consumumption with start date is greater than the end date
     ${DEPOT_PRINCIPAL}`, async () => {
     const getMovementDate = moment(new Date(), 'YYYY-MM-DD').subtract(60, 'days');
     const getMovementMonth = moment(getMovementDate).month();
@@ -290,34 +288,34 @@ function StockAggregateConsumptionTests() {
   // You will need to provide data in the test database to be able
   // to perform this test with the current data the repositories are empty
 
-  // test(`Prevent negative stock quantities when Aggregate Consumption greater than the
-  //     quantity available on current depot ${DEPOT_TERTIAIRE}`, async () => {
-  //   const getMovementDate = moment(new Date(), 'YYYY-MM-DD').subtract(80, 'days');
-  //   const getMovementMonth = moment(getMovementDate).month();
-  //   const getMovementYear = moment(getMovementDate).year();
+  test.skip(`Prevent negative stock quantities when Aggregate Consumption greater than the
+      quantity available on current depot ${DEPOT_TERTIAIRE}`, async () => {
+    const getMovementDate = moment(new Date(), 'YYYY-MM-DD').subtract(80, 'days');
+    const getMovementMonth = moment(getMovementDate).month();
+    const getMovementYear = moment(getMovementDate).year();
 
-  //   const fiscalYearLabel = `Fiscal Year ${getMovementYear}`;
+    const fiscalYearLabel = `Fiscal Year ${getMovementYear}`;
 
-  //   await page.changeDepot(DEPOT_TERTIAIRE);
+    await page.changeDepot(DEPOT_TERTIAIRE);
 
-  //   await page.setFiscalPeriod(fiscalYearLabel, `${month[getMovementMonth]} ${getMovementYear}`);
-  //   await page.setDescription(`Aggregate consumption from current depot ${DEPOT_TERTIAIRE}`);
+    await page.setFiscalPeriod(fiscalYearLabel, `${month[getMovementMonth]} ${getMovementYear}`);
+    await page.setDescription(`Aggregate consumption from current depot ${DEPOT_TERTIAIRE}`);
 
-  //   await page.setHeaderValue(0, 9, 0);
-  //   await page.setQuantityConsumed(1, 7, 300);
-  //   await page.setQuantityLost(1, 8, 200);
+    await page.setHeaderValue(0, 9, 0);
+    await page.setQuantityConsumed(1, 7, 300);
+    await page.setQuantityLost(1, 8, 200);
 
-  //   await page.setQuantityConsumed(2, 7, 100);
-  //   await page.setQuantityLost(2, 8, 200);
+    await page.setQuantityConsumed(2, 7, 100);
+    await page.setQuantityLost(2, 8, 200);
 
-  //   await page.setHeaderValue(3, 9, 20);
-  //   await page.setQuantityConsumed(4, 7, 400);
-  //   await page.setQuantityLost(4, 8, 300);
+    await page.setHeaderValue(3, 9, 20);
+    await page.setQuantityConsumed(4, 7, 400);
+    await page.setQuantityLost(4, 8, 300);
 
-  //   await TU.buttons.submit();
+    await TU.buttons.submit();
 
-  //   return components.notification.hasDanger();
-  // });
+    return components.notification.hasDanger();
+  });
 
 }
 

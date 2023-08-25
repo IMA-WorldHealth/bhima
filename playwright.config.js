@@ -11,9 +11,9 @@ const { defineConfig, devices } = require('@playwright/test');
  */
 module.exports = defineConfig({
 
-  testDir : process.env.TEST_STOCK ? './test/end-to-end-playwright/stock' : './test/end-to-end-playwright',
+  testDir : process.env.E2E_DIR ? `./test/end-to-end-playwright/${process.env.E2E_DIR}` : './test/end-to-end-playwright',
 
-  testIgnore : process.env.TEST_STOCK ? '' : '*/stock/*',
+  testIgnore : process.env.E2E_DIR ? '' : /\/stock\/|\/account\//,
 
   /* Maximum time one test can run for. */
   timeout : 40 * 1000, // Need longer value for CI

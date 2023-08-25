@@ -1,12 +1,12 @@
-const TU = require('../shared/TestUtils');
-const { by } = require('../shared/TestUtils');
+const TU = require('../../shared/TestUtils');
+const { by } = require('../../shared/TestUtils');
 
 /**
  * This class is represents an accountReference creation page in terms of structure and
  * behaviour so it is an accountReference creation page object
  */
-const Filters = require('../shared/components/bhFilters');
-const components = require('../shared/components');
+const Filters = require('../../shared/components/bhFilters');
+const components = require('../../shared/components');
 
 class CreateUpdateAccountReferencePage {
   constructor() {

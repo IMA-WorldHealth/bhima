@@ -1,12 +1,12 @@
-const TU = require('../shared/TestUtils');
-const { by } = require('../shared/TestUtils');
+const TU = require('../../shared/TestUtils');
+const { by } = require('../../shared/TestUtils');
 
 /**
  * This class is represents an accountReference page in term of structure and
  * behaviour so it is a accountReference page object
  */
 
-const GridRow = require('../shared/GridRow');
+const GridRow = require('../../shared/GridRow');
 
 class AccountReferencePage {
   constructor(grid, createBtn, searchBtn) {
