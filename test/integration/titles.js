@@ -13,9 +13,10 @@ describe('(/titles) The job titles  API endpoint', () => {
   // Job titles we will add during this test suite.
   const jobTitle = {
     title_txt : 'Data scientist',
+    is_medical : 1,
   };
 
-  const TITLE_KEY = ['id', 'title_txt'];
+  const TITLE_KEY = ['id', 'title_txt', 'is_medical'];
   const NUM_TITLES = 3;
 
   it('GET /TITLES returns a list of job title ', () => {
