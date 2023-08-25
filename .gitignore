@@ -53,6 +53,7 @@ docs/.sass-cache/
 client/upload/
 
 test/*/report
+test/*/report-stock
 
 migration-*.sql
 yarn-error.log
