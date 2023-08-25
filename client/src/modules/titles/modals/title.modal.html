@@ -22,7 +22,19 @@
       <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
     </div>
   </div>
+
+  <!-- Employee Medical Or Non-Medical -->
+  <div class="form-group">
+    <div class="checkbox">
+      <label>
+      <input type="checkbox" name="is_medical" ng-true-value="1" ng-false-value="0"
+          ng-model="TitleModalCtrl.title.is_medical">
+        <span class="control-label" translate>FORM.LABELS.IS_MEDICAL_STAFF</span>
+      </label>
+    </div>
+  </div>
 </div>
+
 
   <div class="modal-footer">
     <button data-method="cancel" type="button" class="btn btn-default" ng-click="TitleModalCtrl.closeModal()">

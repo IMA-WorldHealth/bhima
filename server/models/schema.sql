@@ -522,7 +522,6 @@ CREATE TABLE `employee` (
   `creditor_uuid` BINARY(16) DEFAULT NULL,
   `locked`        TINYINT(1) DEFAULT NULL,
   `patient_uuid`  BINARY(16) DEFAULT NULL,
-  `is_medical`    TINYINT(1) DEFAULT 0,
   `reference`     SMALLINT(5) UNSIGNED DEFAULT NULL,
   `title_employee_id`   TINYINT(3) UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`uuid`),
@@ -664,6 +663,7 @@ DROP TABLE IF EXISTS `title_employee`;
 CREATE TABLE `title_employee` (
   `id` TINYINT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
   `title_txt` VARCHAR(100) NOT NULL,
+  `is_medical` TINYINT(1) DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY `title_1` (`title_txt`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
