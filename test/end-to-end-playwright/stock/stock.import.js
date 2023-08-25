@@ -14,7 +14,6 @@ function StockImportTests() {
     await TU.navigate('/#!/stock/import');
   });
 
-  // @TODO: Fix.  Works alone but fails with other tests
   test('importing stock from a csv file', async () => {
     await TU.waitForSelector('[data-depot-selection-modal]'); // wait for display
     await shared.setDepot(depot);
@@ -26,7 +25,6 @@ function StockImportTests() {
     await components.notification.hasSuccess();
   });
 
-  // @TODO: Fix.  Works alone but fails with other tests
   test('importing stock from a csv file which have inventory_code missing', async () => {
     await shared.setDepot(depot);
     await components.dateEditor.set(new Date());

@@ -29,14 +29,14 @@ function StockRequisitionTests() {
     await page.changeDepot(DEPOT_PRINCIPAL);
   });
 
-  // // @TODO : FIXME(@jniles) - impossible to automatically allocate stock given the CMM calculation changes
-  // // we need to have relative dates before this will work.
-  // test.skip(`Create a new stock requisition based on current depot ${DEPOT_PRINCIPAL}`, async () => {
-  //   await page.showCreateModal(true);
-  //   await page.setDepot(DEPOT_SECONDAIRE);
-  //   await page.setDescription(`Quick Requisition from current depot ${DEPOT_PRINCIPAL}`);
-  //   await page.submit();
-  // });
+  // @TODO : FIXME(@jniles) - impossible to automatically allocate stock given the CMM calculation changes
+  // we need to have relative dates before this will work.
+  test.skip(`Create a new stock requisition based on current depot ${DEPOT_PRINCIPAL}`, async () => {
+    await page.showCreateModal(true);
+    await page.setDepot(DEPOT_SECONDAIRE);
+    await page.setDescription(`Quick Requisition from current depot ${DEPOT_PRINCIPAL}`);
+    await page.submit();
+  });
 
   test(`Create a new stock requisition from scratch for a service`, async () => {
     await page.showCreateModal();
