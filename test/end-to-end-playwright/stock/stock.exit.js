@@ -14,10 +14,10 @@ function StockExitTests() {
   const SERVICE = 'Medecine Interne';
   const DESCRIPTION = 'Sortie de stock';
 
-  // const requisitionService = {
-  //   service : 'Test Service',
-  //   reference : 'SREQ.TPA.1',
-  // };
+  const requisitionService = {
+    service : 'Test Service',
+    reference : 'SREQ.TPA.1',
+  };
 
   const requisitionDepot = {
     depot : 'Depot Secondaire',
@@ -36,11 +36,11 @@ function StockExitTests() {
     className : 'label-warning',
   };
 
-  // const preventRequisitionDepot3 = {
-  //   depot : 'Depot Secondaire',
-  //   reference : 'SREQ.TPA.2',
-  //   className : 'label-success',
-  // };
+  const preventRequisitionDepot3 = {
+    depot : 'Depot Secondaire',
+    reference : 'SREQ.TPA.2',
+    className : 'label-success',
+  };
 
   // the page object
   const page = new ExitPage();
@@ -187,23 +187,23 @@ function StockExitTests() {
   });
 
   // @TODO : This test needs fixing: Not enough vitamins in Secondaire Depot for this (transfer first?)
-  // test.skip(`should distribute the stock to the service ${requisitionService.service} From Requisition `,
-  //   async () => {
+  test.skip(`should distribute the stock to the service ${requisitionService.service} From Requisition `,
+    async () => {
 
-  //   await page.setDate(new Date());
-  //   await page.setDescription(DESCRIPTION.concat(' - Service'));
+      await page.setDate(new Date());
+      await page.setDescription(DESCRIPTION.concat(' - Service'));
 
-  //   // select the service
-  //   await page.setServiceRequisition(requisitionService);
+      // select the service
+      await page.setServiceRequisition(requisitionService);
 
-  //   // Wait for the grid to display
-  //   await TU.waitForSelector('.ui-grid-canvas .ui-grid-row');
+      // Wait for the grid to display
+      await TU.waitForSelector('.ui-grid-canvas .ui-grid-row');
 
-  //   await page.setLot(0, 'VITAMINE-B');
+      await page.setLot(0, 'VITAMINE-B');
 
-  //   // submit
-  //   await page.submit();
-  // });
+      // submit
+      await page.submit();
+    });
 
   test(`Prevent out of stock for a cancelled requisition`, async () => {
     await page.setDate(new Date());
@@ -226,30 +226,31 @@ function StockExitTests() {
   });
 
   // @TODO: These tests need to be refactored/fixed, principal depot has no Prednisolone
-  // test(`should Complete distribute stock to the depot From Requisition `, async () => {
-  //   await page.setDate(new Date());
-  //   await page.setDescription(DESCRIPTION.concat(' - Depot'));
+  test.skip(`should Complete distribute stock to the depot From Requisition `, async () => {
+    await page.setDate(new Date());
+    await page.setDescription(DESCRIPTION.concat(' - Depot'));
 
-  //   // select the depot
-  //   await page.setDepotRequisition(requisitionDepot);
+    // select the depot
+    await page.setDepotRequisition(requisitionDepot);
 
-  //   // Wait for the grid to display
-  //   await TU.waitForSelector('.ui-grid-canvas .ui-grid-row');
+    // Wait for the grid to display
+    await TU.waitForSelector('.ui-grid-canvas .ui-grid-row');
 
-  //   // first item
-  //   await page.setLot(0, 'QUININE-C', 2);
+    // first item
+    await page.setLot(0, 'QUININE-C', 2);
 
-  //   // submit
-  //   await page.submit();
-  // });
+    // submit
+    await page.submit();
+  });
 
-  // test(`Prevent out of stock for a complete requisition from another warehouse `, async () => {
-  //   await page.setDate(new Date());
-  //   await page.setDescription(DESCRIPTION.concat(' - Depot'));
+  // @TODO : Fix with previous test
+  test.skip(`Prevent out of stock for a complete requisition from another warehouse `, async () => {
+    await page.setDate(new Date());
+    await page.setDescription(DESCRIPTION.concat(' - Depot'));
 
-  //   // select the depot
-  //   await page.preventDepotRequisition(preventRequisitionDepot3);
-  // });
+    // select the depot
+    await page.preventDepotRequisition(preventRequisitionDepot3);
+  });
 
 }
 

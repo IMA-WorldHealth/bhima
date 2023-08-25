@@ -1,7 +1,7 @@
 const { chromium } = require('@playwright/test');
 const { test, expect } = require('@playwright/test');
-const TU = require('../shared/TestUtils');
-const { by } = require('../shared/TestUtils');
+const TU = require('../../shared/TestUtils');
+const { by } = require('../../shared/TestUtils');
 
 test.beforeAll(async () => {
   const browser = await chromium.launch();
@@ -11,7 +11,7 @@ test.beforeAll(async () => {
 });
 
 const AccountsPage = require('./accounts.page');
-const components = require('../shared/components');
+const components = require('../../shared/components');
 
 test.describe('Account Management', () => {
   const path = '/#!/accounts';
@@ -128,18 +128,20 @@ test.describe('Account Management', () => {
 
     // eslint-disable-next-line
     for (const accnt of accounts) {
-    // eslint-disable-next-line
+      // eslint-disable-next-line
       await createAccount(accnt);
     }
 
     await page.toggleBatchCreate();
     await createAccount({ number : '70611016', label : 'Laboratoire' });
 
-    // Make sure all the new accounts were created
-    await accounts.forEach(async acct => {
-      await TU.waitForSelector(`.ui-grid-contents-wrapper div:has-text("${acct.number}")`);
-    });
-    TU.waitForSelector('.ui-grid-contents-wrapper div:has-text("70611016")');
+    // Wait for the grid to redisplay
+    await TU.waitForSelector('div.ui-grid-viewport:visible');
+
+    expect(await TU.isPresent('div:has-text("70611013")'));
+    expect(await TU.isPresent('div:has-text("70611014")'));
+    expect(await TU.isPresent('div:has-text("70611015")'));
+    expect(await TU.isPresent('div:has-text("70611016")'));
   });
 
   // generic function to create an account in the modal

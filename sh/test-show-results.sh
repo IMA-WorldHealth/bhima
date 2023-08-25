@@ -25,15 +25,21 @@ if test -f "./test/integration-stock/report"; then
   echo "   " `egrep -e '(failing|pending)' ./test/integration-stock/report`
   echo
 fi
-if test -f "./test/end-to-end-playwright/report"; then
-  echo "End-to-end tests (Playwright) without stock tests"
-  echo "   " `grep passed ./test/end-to-end-playwright/report`
-  echo "   " `egrep -e '([0-9]+ failing|[0-9]+ failed|[0-9]+ pending|[0-9]+ skipped|[0-9]+ flakey)' ./test/end-to-end-playwright/report`
+if test -f "./test/end-to-end-playwright/report-account"; then
+  echo "End-to-end account tests (Playwright)"
+  echo "   " `grep passed ./test/end-to-end-playwright/report-account`
+  echo "   " `egrep -e '([0-9]+ failing|[0-9]+ failed|[0-9]+ pending|[0-9]+ skipped|[0-9]+ flakey)' ./test/end-to-end-playwright/report-account`
   echo
 fi
 if test -f "./test/end-to-end-playwright/report-stock"; then
   echo "End-to-end stock tests (Playwright)"
   echo "   " `grep passed ./test/end-to-end-playwright/report-stock`
   echo "   " `egrep -e '([0-9]+ failing|[0-9]+ failed|[0-9]+ pending|[0-9]+ skipped|[0-9]+ flakey)' ./test/end-to-end-playwright/report-stock`
+  echo
+fi
+if test -f "./test/end-to-end-playwright/report"; then
+  echo "End-to-end tests without stock or account tests (Playwright)"
+  echo "   " `grep passed ./test/end-to-end-playwright/report`
+  echo "   " `egrep -e '([0-9]+ failing|[0-9]+ failed|[0-9]+ pending|[0-9]+ skipped|[0-9]+ flakey)' ./test/end-to-end-playwright/report`
   echo
 fi

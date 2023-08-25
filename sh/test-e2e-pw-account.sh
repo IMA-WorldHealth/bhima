@@ -1,9 +1,9 @@
 #!/bin/bash
 
 echo ""
-echo "==================================================="
-echo "Running the end-to-end stock tests using playwright"
-echo "==================================================="
+echo "====================================================="
+echo "Running the end-to-end account tests using playwright"
+echo "====================================================="
 echo ""
 
 # bash script mode
@@ -35,9 +35,9 @@ echo "[test] Spawned node process."
 echo "[test] Sleeping for $TIMEOUT seconds."
 sleep "$TIMEOUT"
 
-echo "[test] Running end-to-end stock tests using playwright."
+echo "[test] Running end-to-end account tests using playwright."
 cd ..
-E2E_DIR=stock npx playwright test 2>&1 | tee ./test/end-to-end-playwright/report-stock
+E2E_DIR=account npx playwright test 2>&1 | tee ./test/end-to-end-playwright/report-account
 
 # FYI: Use --workers=1  to limit number of workers
 
