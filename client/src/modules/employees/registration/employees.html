@@ -367,7 +367,7 @@
                       <ui-select
                         name="fonction"
                         ng-model="EmployeeCtrl.employee.fonction_id">
-                        <ui-select-match placeholder="{{ 'FORM.SELECT.PROFESSION' | translate }}">
+                        <ui-select-match placeholder="{{ 'FORM.SELECT.FUNCTION' | translate }}">
                           <span>{{$select.selected.fonction_txt}}</span>
                         </ui-select-match>
                         <ui-select-choices ui-select-focus-patch repeat="f.id as f in EmployeeCtrl.functions | filter:{ fonction_txt : $select.search } | orderBy:'fonction_txt'">
@@ -398,20 +398,6 @@
                           <span ng-bind-html="f.title_txt | highlight:$select.search"></span>
                         </ui-select-choices>
                       </ui-select>
-                    </div>
-                  </div>
-
-                  <!-- Employee Medical Or Non-Medical -->
-                  <div
-                    class="form-group"
-                    ng-class="{'has-error' : DetailForm.is_medical.$invalid && EmployeeRegistrationForm.$submitted}">
-
-                    <label class="col-md-3 control-label" translate>FORM.LABELS.IS_MEDICAL_STAFF</label>
-                    <div class="col-md-9">
-                      <input type="checkbox" name="is_medical" ng-true-value="1" ng-false-value="0" ng-model="EmployeeCtrl.employee.is_medical">
-                      <div class="help-block" ng-messages="DetailForm.email.$error" ng-show="EmployeeRegistrationForm.$submitted">
-                        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-                      </div>
                     </div>
                   </div>
 

@@ -27,3 +27,11 @@ CALL add_column_if_missing('employee', 'title_employee_id', 'TINYINT(1) NOT NULL
 ALTER TABLE `employee` ADD CONSTRAINT `employee__title_employee` FOREIGN KEY (`title_employee_id`) REFERENCES `title_employee` (`id`);
 
 CALL add_column_if_missing('enterprise_setting', 'percentage_fixed_bonus', 'TINYINT(3) UNSIGNED NOT NULL DEFAULT 100');
+
+/**
+ * @author: lomamech
+ * @description: Move is_medical property from employee to title #7170
+ * @date: 2023-08-25
+ */
+ALTER TABLE `employee` DROP COLUMN  `is_medical`;
+CALL add_column_if_missing('title_employee', 'is_medical', 'TINYINT(1) DEFAULT 0');

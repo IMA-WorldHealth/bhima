@@ -26,7 +26,7 @@ function TitleModalController($state, Titles, Notify, AppCache, params) {
   if (!vm.isCreateState) {
     Titles.read(vm.stateParams.id)
       .then(data => {
-        vm.function = data;
+        vm.title = data;
       })
       .catch(Notify.handleError);
   }

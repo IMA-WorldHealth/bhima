@@ -102,7 +102,6 @@ describe('(/multiplePayroll ) the Payroll API endpoint', () => {
        nb_enfant : 0,
        grade_uuid : '9ee06e4a-7b59-48e6-812c-c0f8a00cf7d3',
        locked : null,
-       is_medical : 0,
        text : '1.1',
        basic_salary : 50,
        fonction_id : 1,
