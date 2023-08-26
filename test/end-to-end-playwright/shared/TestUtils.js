@@ -360,8 +360,8 @@ module.exports = {
    *
    * @param {string} model - the ng-model target to select
    * @param {string} label - the text of the option element to choose
-   * @param {Element} anchor_ - a protractor element to search within
-   * @returns {Promise} - a protractor option element
+   * @param {Element} anchor_ - an element to search within
+   * @returns {Promise} - an option element
    */
   typeahead : async function typeahead(model, label, anchor_) {
     const anchor = anchor_ || await page.locator('body');
@@ -380,8 +380,8 @@ module.exports = {
    *
    * @param {string} modelName - the ng-model target to select
    * @param {string} option - the text of the <option> element to choose
-   * @param {Element} anchor - a protractor element to search within
-   * @returns {Element} - a protractor <option> element
+   * @param {Element} anchor - an element to search within
+   * @returns {Element} - an <option> element
    */
   select : async function select(modelName, option, anchor) {
     const model = `[ng-model="${modelName}"]`;
@@ -395,10 +395,10 @@ module.exports = {
    * @function uiSelect
    * @param {string} model - the ng-model target to select
    * @param {string} label - the text of the option element to choose
-   * @param {Element} anchor - a protractor element to search within
+   * @param {Element} anchor - an element to search within
    * @param {boolean} isMultipleSelection - flag
    * @param {string} searchType - contains|exact|fullWord|accountName
-   * @returns {Element} - a protractor option element
+   * @returns {Element} - an option element
    */
   uiSelect : async function uiSelect(
     model, label, anchor, isMultipleSelection, searchType = 'contains',

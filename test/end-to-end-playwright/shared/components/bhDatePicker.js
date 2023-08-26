@@ -11,7 +11,7 @@ const { by } = require('../TestUtils');
 module.exports = {
   /**
    * @param {date} dateString - date string (YYYY-MM-DD). Ex. 2017-04-17
-   * @param {object} anchor - A protractor element as parent
+   * @param {object} anchor - An element as parent
    */
   async set(dateString, anchor) {
     const root = anchor || TU.locator('body');
