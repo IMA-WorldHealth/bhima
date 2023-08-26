@@ -1,17 +1,15 @@
-/* global element, by */
+const TU = require('../TestUtils');
+const { by } = require('../TestUtils');
 
-const FU = require('../FormUtils');
+const selector = '[bh-account-reference-type-select]';
 
 module.exports = {
-  selector : '[bh-account-reference-type-select]',
-  set      : async function set(accountReferenceTypeSelect, id) {
-    const locator = (id) ? by.id(id) : by.css(this.selector);
-    const target = element(locator);
 
-    // hack to make sure previous 'blur' event fires if we are using
-    // ngModelOptions updateOn 'blur' for every input
+  set : async function set(accountReferenceTypeSelect, id) {
+    const locator = (id) ? by.id(id) : by.css(selector);
+    const target = await TU.locator(locator);
     await target.click();
 
-    return FU.uiSelect('$ctrl.referenceTypeId', accountReferenceTypeSelect);
+    return TU.uiSelect('$ctrl.referenceTypeId', accountReferenceTypeSelect);
   },
 };

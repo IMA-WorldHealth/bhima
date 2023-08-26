@@ -1,36 +1,63 @@
-/* global element, by */
-/* eslint  */
-
 /**
- * This class is represents a Data Collector page in term of structure and
+ * This class represents a Data Collector page in term of structure and
  * behaviour so it is a Data Collector Management page object
  */
 
+const { chromium } = require('@playwright/test');
+const { test } = require('@playwright/test');
+const TU = require('../shared/TestUtils');
+const { by } = require('../shared/TestUtils');
+
+test.beforeAll(async () => {
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  TU.registerPage(page);
+  await TU.login();
+});
+
 /* loading grid actions */
 const GridRow = require('../shared/GridRow');
-const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 
+const gridId = 'data-collector-management-grid';
+
 class DataCollectorManagementPage {
-  constructor() {
-    this.gridId = 'data-collector-management-grid';
-    this.rubricGrid = element(by.id(this.gridId));
+
+  /**
+   * Constructor
+   * @param {object} grid - the GridRows object
+   */
+  constructor(grid) {
+    this.gridId = gridId;
     this.actionLinkColumn = 5;
+    this.rubricGrid = grid;
   }
 
   /**
-   * simulate the create Data Collector button click to show the dialog of creation
+   * Emulate an async constructor
+   *
+   * @returns {DataCollectorManagementPage} a new ConfigurationAnalysisToolsPage object
+   */
+  static async new() {
+    const rubricGrid = await TU.locator(by.id(gridId));
+    return new DataCollectorManagementPage(rubricGrid);
+  }
+
+  /**
+   * Create a new data collector object
+   *
+   * @param {object} dataCollectorManagement - info for the new data collector object
    */
   async create(dataCollectorManagement) {
-    await FU.buttons.create();
-    await FU.input('DataCollectorManagementModalCtrl.dataCollector.label', dataCollectorManagement.label);
-    await FU.input('DataCollectorManagementModalCtrl.dataCollector.description',
+    await TU.buttons.create();
+    await TU.input('DataCollectorManagementModalCtrl.dataCollector.label', dataCollectorManagement.label);
+    await TU.input('DataCollectorManagementModalCtrl.dataCollector.description',
       dataCollectorManagement.description, this.modal);
-    await FU.input('DataCollectorManagementModalCtrl.dataCollector.version_number',
+    await TU.input('DataCollectorManagementModalCtrl.dataCollector.version_number',
       dataCollectorManagement.version_number, this.modal);
-    await FU.uiSelect('DataCollectorManagementModalCtrl.dataCollector.color', dataCollectorManagement.color);
-    await element(by.id('is_related_patient')).click();
-    await FU.buttons.submit();
+    await TU.uiSelect('DataCollectorManagementModalCtrl.dataCollector.color', dataCollectorManagement.color);
+    await TU.locator(by.id('is_related_patient')).click();
+    await TU.buttons.submit();
     await components.notification.hasSuccess();
   }
 
@@ -38,37 +65,41 @@ class DataCollectorManagementPage {
    * block creation without the function name
    */
   async errorOnCreate() {
-    await FU.buttons.create();
-    await FU.buttons.submit();
-    await FU.validation.error('DataCollectorManagementModalCtrl.dataCollector.label');
-    await FU.buttons.cancel();
+    await TU.buttons.create();
+    await TU.buttons.submit();
+    await TU.validation.error('DataCollectorManagementModalCtrl.dataCollector.label');
+    await TU.buttons.cancel();
   }
 
   /**
-   * simulate a click on the edit link of a function
+   * Edit a data collector object
+   *
+   * @param {string} label - label for data collector object to edit
+   * @param {object} updateDataCollector - data for updating
    */
   async edit(label, updateDataCollector) {
     const row = new GridRow(label);
-    await row.dropdown().click();
-    await row.edit().click();
+    await row.dropdown();
+    await row.edit();
 
-    await FU.input('DataCollectorManagementModalCtrl.dataCollector.label', updateDataCollector.label);
-    await FU.input('DataCollectorManagementModalCtrl.dataCollector.version_number', updateDataCollector.version_number);
-    await FU.uiSelect('DataCollectorManagementModalCtrl.dataCollector.color', updateDataCollector.color);
+    await TU.input('DataCollectorManagementModalCtrl.dataCollector.label', updateDataCollector.label);
+    await TU.input('DataCollectorManagementModalCtrl.dataCollector.version_number', updateDataCollector.version_number);
+    await TU.uiSelect('DataCollectorManagementModalCtrl.dataCollector.color', updateDataCollector.color);
 
-    await FU.buttons.submit();
+    await TU.buttons.submit();
     await components.notification.hasSuccess();
   }
 
   /**
-   * simulate a click on the delete link of a function
+   * Delete an data collector object
+   * @param {string} label - label for the data collector object to delete
    */
   async delete(label) {
     const row = new GridRow(label);
-    await row.dropdown().click();
-    await row.remove().click();
+    await row.dropdown();
+    await row.remove();
 
-    await FU.modal.submit();
+    await TU.modal.submit();
     await components.notification.hasSuccess();
   }
 }

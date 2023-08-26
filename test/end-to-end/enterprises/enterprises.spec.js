@@ -1,14 +1,22 @@
-/* global element, by */
 const path = require('path');
-const helpers = require('../shared/helpers');
+const { chromium } = require('@playwright/test');
+const { test, expect } = require('@playwright/test');
 
-const FU = require('../shared/FormUtils');
+const TU = require('../shared/TestUtils');
 const components = require('../shared/components');
+const helpers = require('../shared/helpers');
 
 const fixtures = path.resolve(__dirname, '../../fixtures/');
 
-describe('Enterprises', () => {
-  const location = '#!/enterprises';
+test.beforeAll(async () => {
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  TU.registerPage(page);
+  await TU.login();
+});
+
+test.describe('Enterprises', () => {
+  const location = '/#!/enterprises';
 
   // enterprise
   const enterprise = {
@@ -47,123 +55,120 @@ describe('Enterprises', () => {
   };
 
   // navigate to the enterprise module before running tests
-  before(() => helpers.navigate(location));
+  test.beforeEach(async () => {
+    await TU.navigate(location);
+  });
 
   /**
-   * The actual enterprise module doesn't need to create new one
-   * so we need only to update enterprise informations
+   * The actual enterprise module doesn't need to create a new one
+   * so we need only to update enterprise information
    */
-  it('set enterprise data', async () => {
-    await FU.input('EnterpriseCtrl.enterprise.name', enterprise.name);
-    await FU.input('EnterpriseCtrl.enterprise.abbr', enterprise.abbr);
+  test('set enterprise data', async () => {
+    await TU.input('EnterpriseCtrl.enterprise.name', enterprise.name);
+    await TU.input('EnterpriseCtrl.enterprise.abbr', enterprise.abbr);
 
     await components.accountSelect.set(enterprise.gain_account_id, 'gain-account-id');
     await components.accountSelect.set(enterprise.loss_account_id, 'loss-account-id');
 
-    await FU.input('EnterpriseCtrl.enterprise.po_box', enterprise.po_box);
-    await FU.input('EnterpriseCtrl.enterprise.email', enterprise.email);
-    await FU.input('EnterpriseCtrl.enterprise.phone', enterprise.phone);
+    await TU.input('EnterpriseCtrl.enterprise.po_box', enterprise.po_box);
+    await TU.input('EnterpriseCtrl.enterprise.email', enterprise.email);
+    await TU.input('EnterpriseCtrl.enterprise.phone', enterprise.phone);
 
     // select the locations specified
     await components.locationSelect.set(helpers.data.locations);
 
     // submit the page to the server
-    await FU.buttons.submit();
+    await TU.buttons.submit();
 
     await components.notification.hasSuccess();
   });
 
-  it('blocks invalid form submission with relevant error classes', async () => {
-    await FU.input('EnterpriseCtrl.enterprise.name', '');
-    await FU.input('EnterpriseCtrl.enterprise.abbr', '');
+  test('blocks invalid form submission with relevant error classes', async () => {
+    await TU.input('EnterpriseCtrl.enterprise.name', '');
+    await TU.input('EnterpriseCtrl.enterprise.abbr', '');
 
-    FU.buttons.submit();
-
-    // verify form has not been submitted
-    // expect(helpers.getCurrentPath()).to.equal(path);
+    await TU.buttons.submit();
 
     // The following fields should be required
-    await FU.validation.error('EnterpriseCtrl.enterprise.name');
-    await FU.validation.error('EnterpriseCtrl.enterprise.abbr');
+    await TU.validation.error('EnterpriseCtrl.enterprise.name');
+    await TU.validation.error('EnterpriseCtrl.enterprise.abbr');
 
-    // The following fields is not required
-    await FU.validation.ok('EnterpriseCtrl.enterprise.email');
-    await FU.validation.ok('EnterpriseCtrl.enterprise.po_box');
-    FU.validation.ok('EnterpriseCtrl.enterprise.phone');
+    // The following fields are not required
+    await TU.validation.ok('EnterpriseCtrl.enterprise.email');
+    await TU.validation.ok('EnterpriseCtrl.enterprise.po_box');
+    await TU.validation.ok('EnterpriseCtrl.enterprise.phone');
   });
 
-  /**
-   * Set default enterprise data for others tests
-   */
-  it('reset enterprise data to default', async () => {
-    await FU.input('EnterpriseCtrl.enterprise.name', defaultEnterprise.name);
-    await FU.input('EnterpriseCtrl.enterprise.abbr', defaultEnterprise.abbr);
+  test('reset enterprise data to default', async () => {
+    await TU.input('EnterpriseCtrl.enterprise.name', defaultEnterprise.name);
+    await TU.input('EnterpriseCtrl.enterprise.abbr', defaultEnterprise.abbr);
 
     await components.accountSelect.set(defaultEnterprise.gain_account_id, 'gain-account-id');
     await components.accountSelect.set(defaultEnterprise.loss_account_id, 'loss-account-id');
 
-    await FU.input('EnterpriseCtrl.enterprise.po_box', defaultEnterprise.po_box);
-    await FU.input('EnterpriseCtrl.enterprise.email', defaultEnterprise.email);
-    await FU.input('EnterpriseCtrl.enterprise.phone', defaultEnterprise.phone);
+    await TU.input('EnterpriseCtrl.enterprise.po_box', defaultEnterprise.po_box);
+    await TU.input('EnterpriseCtrl.enterprise.email', defaultEnterprise.email);
+    await TU.input('EnterpriseCtrl.enterprise.phone', defaultEnterprise.phone);
 
     // select the locations specified
     await components.locationSelect.set(helpers.data.locations);
 
     // submit the page to the server
-    await FU.buttons.submit();
+    await TU.buttons.submit();
 
     await components.notification.hasSuccess();
   });
 
-  /**
-   * Upload new logo for the enterprise
-   */
-  it('upload a new enterprise logo', async () => {
+  test('upload a new enterprise logo', async () => {
     const fileToUpload = 'logo.ico';
     const absolutePath = path.resolve(fixtures, fileToUpload);
 
-    await element.all(by.css(`input[type=file]`)).get(0).sendKeys(absolutePath);
-    await FU.buttons.submit();
-    await components.notification.hasSuccess();
+    await TU.locator('input[type=file][name="logo"]').setInputFiles(absolutePath);
+    await TU.buttons.submit();
+    // await components.notification.hasSuccess({ timeout : 12000 });
+
+    // Verify the reloaded page has a new logo image
+    await TU.reloadPage({ waitUntil : 'domcontentloaded' });
+    await TU.waitForSelector('div.logo');
+    const count = await (await TU.locator('div.logo span img')).count();
+    expect(count, 'Logo image upload failed').toBe(1);
   });
 
-  it('add a new project for the enterprise', async () => {
-    await FU.buttons.create();
+  test('add a new project for the enterprise', async () => {
+    await TU.buttons.create();
 
-    await FU.input('$ctrl.project.name', project.name);
-    await FU.input('$ctrl.project.abbr', project.abbr);
+    await TU.input('$ctrl.project.name', project.name);
+    await TU.input('$ctrl.project.abbr', project.abbr);
 
-    await FU.modal.submit();
-
-    await components.notification.hasSuccess();
-  });
-
-  it('edit an existing project', async () => {
-    const btn = $(`[data-project="${abbr}"]`);
-    await btn.$('a[data-method="update"]').click();
-
-    await FU.input('$ctrl.project.name', projectUpdate.name);
-    await FU.input('$ctrl.project.abbr', projectUpdate.abbr);
-
-    await FU.modal.submit();
+    await TU.modal.submit();
 
     await components.notification.hasSuccess();
   });
 
-  it('delete an existing project', async () => {
-    const btn = $(`[data-project="${abbr}"]`);
-    await btn.$('a[data-method="delete"]').click();
+  test('edit an existing project', async () => {
+    await TU.locator(`[data-project="${abbr}"] a[data-method="update"]`).click();
+    await TU.input('$ctrl.project.name', projectUpdate.name);
+    await TU.input('$ctrl.project.abbr', projectUpdate.abbr);
 
-    await FU.input('$ctrl.text', projectUpdate.name);
+    await TU.modal.submit();
 
-    await FU.modal.submit();
+    await components.notification.hasSuccess();
+  });
+
+  test('delete an existing project', async () => {
+    // Pop up the project deletion dialog
+    await TU.locator(`[data-project="${projectUpdate.abbr}"] a[data-method="delete"]`).click();
+    await TU.input('$ctrl.text', projectUpdate.name);
+    await TU.modal.submit();
 
     await components.notification.hasSuccess();
   });
 
   /**
+   * This function returns a random 3 characters string as an abbreviation
+   *
    * @function suffix
-   * @desc This function returns a random 3 characters string as an abbreviation
+   * @returns {string} random 3-letter suffix (A-Z)
    */
   function suffix() {
     const a = String.fromCharCode(random(65, 90));
@@ -172,7 +177,15 @@ describe('Enterprises', () => {
     return `${a}${b}${c}`;
   }
 
+  /**
+   * Return a random number from a range
+   *
+   * @param {number} min - minimum value
+   * @param {number} max - maximum value
+   * @returns {number} random number between min and max (inclusive)
+   */
   function random(min, max) {
     return Math.floor((Math.random() * ((max - min) + 1)) + min);
   }
+
 });

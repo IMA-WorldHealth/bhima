@@ -1,18 +1,23 @@
-const FU = require('../FormUtils');
+const TU = require('../TestUtils');
+
+const selector = '[bh-tag-select]';
 
 module.exports = {
-  selector : '[bh-tag-select]',
-  set      : async function set(tags) {
-    const root = $(this.selector);
+
+  set : async function set(tags) {
+    const root = await TU.locator(selector);
+    const select = await TU.getModel('$ctrl.tagUuids', root);
+
+    await select.click();
 
     if (Array.isArray(tags)) {
-      for (let index = 0; index < tags.length; index++) {
-        const tag = tags[index];
-        // eslint-disable-next-line no-await-in-loop
-        await FU.uiSelect('$ctrl.tagUuids', tag, root);
-      }
-    } else {
-      await FU.uiSelect('$ctrl.tagUuids', tags, root);
+      tags.forEach(async tag => {
+        await select.locator('.dropdown-menu [role="option"]').locator(`//*[contains(text(), '${tag}')]`).click();
+      });
+      await select.blur(); // Necessary to deselect the last tag so submit works
+      return true;
     }
+
+    return TU.uiSelect('$ctrl.tagUuids', tags, root);
   },
 };

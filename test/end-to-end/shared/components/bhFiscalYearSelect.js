@@ -1,10 +1,11 @@
-/* global  element, by */
-const FU = require('../FormUtils');
+const TU = require('../TestUtils');
+const { by } = require('../TestUtils');
 
 const selector = '[bh-fiscal-year-select]';
+
 module.exports = {
-  set : (fiscalYear, id) => {
-    const locator = id ? by.id(id) : by.css(selector);
-    return FU.select('$ctrl.selectedYear', fiscalYear, element(locator));
+  set : async (fiscalYear, id) => {
+    const locator = id ? by.id(id) : selector;
+    return TU.select('$ctrl.selectedYear', fiscalYear, await TU.locator(locator));
   },
 };

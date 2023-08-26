@@ -1,10 +1,23 @@
-const helpers = require('../shared/helpers');
+const { chromium } = require('@playwright/test');
+const { test } = require('@playwright/test');
+const TU = require('../shared/TestUtils');
+
 const HolidayPage = require('./holidays.page');
 
-describe('Holidays Management', () => {
-  before(() => helpers.navigate('#!/holidays'));
+test.beforeAll(async () => {
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  TU.registerPage(page);
+  await TU.login();
+});
 
-  const page = new HolidayPage();
+test.describe('Holidays Management', () => {
+  let page;
+
+  test.beforeEach(async () => {
+    await TU.navigate('/#!/holidays');
+    page = await HolidayPage.new();
+  });
 
   const holiday = {
     percentage  : 100,
@@ -25,23 +38,23 @@ describe('Holidays Management', () => {
     percentage : 75,
   };
 
-  it('successfully creates a new holiday', () => {
+  test('successfully creates a new holiday', () => {
     return page.create(holiday);
   });
 
-  it('successfully edits a holiday', () => {
+  test('successfully edits a holiday', () => {
     return page.update(holiday.label, updateHoliday);
   });
 
-  it('prevent the definition of a nested vacation period', () => {
+  test('prevent the definition of a nested vacation period', () => {
     return page.preventHoliday(nestedHoliday);
   });
 
-  it('don\'t create when incorrect Holiday', () => {
+  test('do not create when incorrect Holiday', () => {
     return page.errorOnCreateHoliday();
   });
 
-  it('successfully delete a holiday', () => {
+  test('successfully delete a holiday', () => {
     return page.remove(updateHoliday.label);
   });
 });

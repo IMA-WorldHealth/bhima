@@ -1,12 +1,12 @@
-/* eslint  */
+const TU = require('../shared/TestUtils');
+const grid = require('../shared/GridUtils');
+
+const Filters = require('../shared/components/bhFilters');
+
 /**
  * This class represents an employee registry page
  * behaviour so it is an employee page object
  */
-
-const FU = require('../shared/FormUtils');
-const grid = require('../shared/GridUtils');
-const Filters = require('../shared/components/bhFilters');
 
 class EmployeeRegistryPage {
   constructor() {
@@ -14,16 +14,17 @@ class EmployeeRegistryPage {
     this.filters = new Filters();
   }
 
-  employeeCount(number, message) {
+  expectEmployeeCount(number, message) {
     return grid.expectRowCount(this.gridId, number, message);
   }
 
   search() {
-    return FU.buttons.search();
+    return TU.buttons.search();
   }
 
-  clearFilter() {
-    return this.filters.resetFilters();
+  async clearFilters() {
+    await this.filters.resetFilters();
+    return TU.waitForSelector('div.ui-grid-footer', { waitUntil : 'domcontentloaded' });
   }
 }
 

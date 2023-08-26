@@ -1,37 +1,50 @@
-const helpers = require('../shared/helpers');
+const { chromium } = require('@playwright/test');
+const { test } = require('@playwright/test');
+const TU = require('../shared/TestUtils');
+
 const DisplayMetadataManagement = require('./displayMetadata.page');
-const SearchModalPage = require('./searchModal.page.js');
+const SearchModalPage = require('./searchModal.page');
 
-describe('Metadata Management', () => {
+test.beforeAll(async () => {
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  TU.registerPage(page);
+  await TU.login();
+});
+
+test.describe('Metadata Management', () => {
+  let page;
+
   // navigate to the page
-  before(() => helpers.navigate('#!/display_metadata'));
+  test.beforeEach(async () => {
+    page = await DisplayMetadataManagement.new();
+    await TU.navigate('/#!/display_metadata');
+  });
 
-  const Page = new DisplayMetadataManagement();
   const searchModalPage = new SearchModalPage();
   const formulaire = 'Formulaire Special';
 
   const newSurveyData1 = {
     label : 'Update',
-    longueur : 205,
-    largeur : 450,
-    nombre_agent : 300,
-    nombre_femme : 0,
+    longueur : '205',
+    largeur : '450',
+    nombre_agent : '300',
+    nombre_femme : '0',
   };
 
   const dataDelete = {
     label : 'Access Project',
   };
 
-  it('successfully Delete data for survey', async () => {
+  test('successfully Delete data for survey', async () => {
     await searchModalPage.surveyFormSelect(formulaire);
     await searchModalPage.submit();
-
-    await Page.deleteDataSurvey(dataDelete);
+    await page.deleteDataSurvey(dataDelete);
   });
 
-  it('successfully Searching for form data for posting and updatingSearches'
+  test('successfully Searching for form data for posting and updatingSearches'
     .concat(' = for form data for posting and updating'), async () => {
-    await Page.updateMetadata('IMA World Health', newSurveyData1);
+    await page.updateMetadata('IMA World Health', newSurveyData1);
   });
 
 });

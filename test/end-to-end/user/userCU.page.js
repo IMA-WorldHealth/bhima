@@ -1,13 +1,9 @@
-/* global element, by */
-/* eslint  */
-
-const FU = require('../shared/FormUtils');
+const TU = require('../shared/TestUtils');
+const { by } = require('../shared/TestUtils');
 
 class CreateUpdateUserPage {
 
   constructor() {
-    this.modal = $('[name="UserForm"]');
-
     this.fields = {
       display_name : 'UserModalCtrl.user.display_name',
       username : 'UserModalCtrl.user.username',
@@ -16,72 +12,61 @@ class CreateUpdateUserPage {
       passwordConfirm : 'UserModalCtrl.user.passwordVerify',
       password : 'UserModalCtrl.user.password',
     };
-
-    this.buttons = {
-      password : element(by.id('user-edit-password')),
-      submit : $('[uib-modal-window] [data-method="submit"]'),
-      cancel : element(by.id('user-cancel')),
-    };
-
-    this.messages = {
-      sameUserPanel : element(by.id('user-same')),
-    };
   }
 
-
   setDisplayName(displayName) {
-    return FU.input(this.fields.display_name, displayName);
+    return TU.input(this.fields.display_name, displayName);
   }
 
   setUsername(username) {
-    return FU.input(this.fields.username, username);
+    return TU.input(this.fields.username, username);
   }
 
   setEmail(email) {
-    return FU.input(this.fields.email, email);
+    return TU.input(this.fields.email, email);
   }
 
   async setProjectValue(value, append) {
-    const uiSelect = element(by.model(this.fields.projects));
+    const uiSelect = await TU.locator(by.model(this.fields.projects));
     await uiSelect.click();
 
     if (append) {
-      await uiSelect.element(by.model('$select.search')).sendKeys(value);
+      await uiSelect.locator(by.model('$select.search')).fill(value);
     } else {
-      await uiSelect.element(by.model('$select.search')).clear().sendKeys(value);
+      await uiSelect.locator(by.model('$select.search')).fill(value);
     }
 
-    return uiSelect.element(by.cssContainingText('.dropdown-menu [role="option"]', value)).click();
+    return uiSelect.locator('.dropdown-menu [role="option"]').locator(by.containsText(value)).click();
   }
 
   /* show a dialog to edit password */
   editPassword() {
-    return this.buttons.password.click();
+    return TU.locator(by.id('user-edit-password')).click();
   }
 
   /* set a password value */
   setPassword(pw) {
-    return FU.input(this.fields.password, pw);
+    return TU.input(this.fields.password, pw);
   }
 
   /* set a password confirmation value */
   setPasswordConfirm(pw) {
-    return FU.input(this.fields.passwordConfirm, pw);
+    return TU.input(this.fields.passwordConfirm, pw);
   }
 
   /* submit a user */
   submitUser() {
-    return this.buttons.submit.click();
+    return TU.modal.submit();
   }
 
   /* cancel creation */
   close() {
-    return this.buttons.cancel.click();
+    return TU.locator(by.id('user-cancel')).click();
   }
 
   /* check if the page is displayed */
   isDisplayed() {
-    return this.buttons.submit.isPresent();
+    return TU.isPresent('[uib-modal-window] [data-method="submit"]');
   }
 
   /* check if the username field is invalid */
@@ -116,13 +101,14 @@ class CreateUpdateUserPage {
 
   /* check if ng-invalid css class is applied on a component */
   isInvalid(field) {
-    return FU.validation.error(field);
+    return TU.validation.error(field);
   }
 
   /* check if the user tried to edited the same user */
   isSameUser() {
-    return this.messages.sameUserPanel.isPresent();
+    return TU.isPresent(by.id('user-same'));
   }
+
 }
 
 module.exports = CreateUpdateUserPage;

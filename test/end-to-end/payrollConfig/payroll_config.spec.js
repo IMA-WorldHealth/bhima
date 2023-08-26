@@ -1,11 +1,26 @@
-const helpers = require('../shared/helpers');
+const { chromium } = require('@playwright/test');
+const { test } = require('@playwright/test');
+const TU = require('../shared/TestUtils');
+
 const PayrollConfigPage = require('./payroll_config.page');
 
-describe('Payroll Configuration Management', () => {
-  // navigate to the page
-  before(() => helpers.navigate('#!/payroll'));
+test.beforeAll(async () => {
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  TU.registerPage(page);
+  await TU.login();
+});
 
-  const Page = new PayrollConfigPage();
+test.describe('Payroll Configuration Management', () => {
+
+  test.beforeEach(async () => {
+    await TU.navigate('#!/payroll');
+
+    // Make sure the grid is loaded
+    await TU.waitForSelector('.ui-grid-canvas .ui-grid-row');
+  });
+
+  const page = new PayrollConfigPage();
 
   const payrollConfig = {
     label : 'new Configuration Period',
@@ -22,19 +37,19 @@ describe('Payroll Configuration Management', () => {
     period : 'week',
   };
 
-  it('successfully creates a Configuration Payroll Period', async () => {
-    await Page.createPayrollConfig(payrollConfig);
+  test('successfully creates a Configuration Payroll Period', async () => {
+    await page.createPayrollConfig(payrollConfig);
   });
 
-  it('successfully edits a Configuration Payroll Period', async () => {
-    await Page.editPayrollConfig(payrollConfig.label, updatePayrollConfig);
+  test('successfully edits a Configuration Payroll Period', async () => {
+    await page.editPayrollConfig(payrollConfig.label, updatePayrollConfig);
   });
 
-  it('don\'t create when incorrect Configuration Payroll Period', async () => {
-    await Page.errorOnCreatePayrollConfig();
+  test('do not create when incorrect Configuration Payroll Period', async () => {
+    await page.errorOnCreatePayrollConfig();
   });
 
-  it('successfully delete a Configuration Payroll Period', async () => {
-    await Page.deletePayrollConfig(updatePayrollConfig.label);
+  test('successfully delete a Configuration Payroll Period', async () => {
+    await page.deletePayrollConfig(updatePayrollConfig.label);
   });
 });

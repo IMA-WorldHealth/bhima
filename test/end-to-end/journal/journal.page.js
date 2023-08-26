@@ -1,13 +1,11 @@
-/* global by, element */
-/* eslint  */
+const TU = require('../shared/TestUtils');
+const { by } = require('../shared/TestUtils');
 
 const GU = require('../shared/GridUtils');
-const FU = require('../shared/FormUtils');
 
 class JournalPage {
   constructor() {
     this.gridId = 'journal-grid';
-    this.grid = element(by.id(this.gridId));
   }
 
   count() {
@@ -16,57 +14,64 @@ class JournalPage {
 
   // select a transaction
   async selectTransaction(transId /* text */) {
-    const rows = await this.grid
-      .element(by.css('.ui-grid-render-container-body'))
-      .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'));
+    const grid = TU.locator(by.id(this.gridId));
+    const rows = await grid
+      .locator('.ui-grid-render-container-body')
+      .locator(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'))
+      .all();
 
-    await FU.series(rows, async (row, index) => {
-      const attr = await row.$(`[data-rowcol]`).getAttribute('data-rowcol');
+    await TU.series(rows, async (row, index) => {
+      const attr = await row.locator(`[data-rowcol]`).getAttribute('data-rowcol');
       if (attr === transId) {
         await GU.selectRow(this.gridId, index);
       }
     });
 
+    return true;
   }
 
   async selectTransactions(transIds /* Array */) {
-    const rows = await this.grid
-      .element(by.css('.ui-grid-render-container-body'))
-      .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'));
+    const grid = TU.locator(by.id(this.gridId));
+    const rows = await grid
+      .locator('.ui-grid-render-container-body')
+      .locator(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'))
+      .all();
 
-    await FU.series(rows, async (row, index) => {
-      const attr = await row.$(`[data-rowcol]`).getAttribute('data-rowcol');
+    await TU.series(rows, async (row, index) => {
+      const attr = await row.locator(`[data-rowcol]`).getAttribute('data-rowcol');
       if (transIds.includes(attr)) {
         await GU.selectRow(this.gridId, index);
       }
     });
+
+    return true;
   }
 
   async openGridConfigurationModal() {
     // open the dropdown menu
-    await $('[data-action="open-tools"]').click();
+    await TU.locator('[data-action="open-tools"]').click();
 
     // get the action and click it
-    await $('[data-method="configure"]').click();
+    return TU.locator('[data-method="configure"]').click();
   }
 
   async openTrialBalanceModal() {
-    await $('[data-method="trial-balance"]').click();
+    return TU.locator('[data-method="trial-balance"]').click();
   }
 
   expectHeaderColumns(array) {
-    return GU.expectHeaderColumns(this.gridId, array);
+    return GU.expectHeaderColumnsContained(this.gridId, array);
   }
 
-  expectRowCount(num) {
+  async expectRowCount(num) {
     return GU.expectRowCount(this.gridId, num);
   }
 
-  expectRowCountAbove(num) {
+  async expectRowCountAbove(num) {
     return GU.expectRowCountAbove(this.gridId, num);
   }
 
-  expectColumnCount(number) {
+  async expectColumnCount(number) {
     return GU.expectColumnCount(this.gridId, number);
   }
 }
