@@ -12,8 +12,8 @@ const { defineConfig, devices } = require('@playwright/test');
 module.exports = defineConfig({
 
   testDir : process.env.E2E_DIR
-    ? `./test/end-to-end-playwright/${process.env.E2E_DIR}`
-    : './test/end-to-end-playwright',
+    ? `./test/end-to-end/${process.env.E2E_DIR}`
+    : './test/end-to-end',
 
   testIgnore : process.env.E2E_DIR ? '' : /\/stock\/|\/account\//,
 
