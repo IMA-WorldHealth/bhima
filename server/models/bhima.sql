@@ -153,7 +153,6 @@ INSERT INTO unit VALUES
   (289, 'Stock Expiration report','TREE.STOCK_EXPIRATION_REPORT','Stock expiration report', 282,'/reports/stock_expiration_report'),
   (290, '[SETTINGS] Settings', 'TREE.STOCK_SETTINGS', 'Stock Settings', 160, '/stock/setting'),
   (291, 'Stock Dashboard', 'TREE.STOCK_DASHBOARD','Stock Dashboard', 160,'/stock/dashboard'),
-  (292, 'Stock Changes Report', 'REPORT.STOCK_CHANGES.TITLE', 'Stock Changes Report', 282, '/reports/stock_changes'),
   (293, 'Aggregated consumption','TREE.AGGREGATED_STOCK_CONSUMPTION','Aggregated consumption', 160,'/stock/aggregated_consumption'),
   (294, 'Duplicate Lots','TREE.DUPLICATE_LOTS','The stock lots duplicates list', 160,'/stock/lots/duplicates'),
   (295, 'Rumer report','TREE.RUMER_REPORT','The rumer reports', 282,'/reports/rumer_report'),
@@ -167,7 +166,6 @@ INSERT INTO unit VALUES
   (303, 'Cost Centers Balance Report','TREE.COST_CENTER_INCOME_EXPENSE_REPORT','Report of cc balance', 286,'/reports/cost_center_income_and_expense'),
   (304, '[SETTINGS] Settings', 'TREE.PAYROLL_SETTINGS', 'Payroll Settings', 57, '/payroll/setting'),
   (305, 'Avg Medical Costs Per Patient', 'TREE.AVERAGE_MED_COST_REPORT', 'Report of avg med costs', 282, '/reports/avg_med_costs_per_patient'),
-  (306, 'ODK Settings', 'TREE.ODK_SETTINGS', 'ODK Settings', 1, '/admin/odk-settings'),
   (307, 'Asset Management', 'TREE.ASSET_MANAGEMENT.TITLE', 'Asset Management', 0, '/ASSET_MANAGEMENT_FOLDER'),
   (308, 'Assets Registry', 'TREE.ASSETS_REGISTRY', 'Assets Registry', 307, '/assets'),
   (309, 'Asset Shipment', 'SHIPMENT.SHIPMENTS', 'Asset Shipment', 0, '/SHIPMENT_FOLDER'),
@@ -178,7 +176,8 @@ INSERT INTO unit VALUES
   (314, 'Asset Management Reports','TREE.REPORTS','asset management reports', 307,'/ASSET_MANAGEMENT_REPORTS_FOLDER'),
   (315, 'Needed Inventory Scans', 'TREE.INVENTORY_SCANS_NEEDED', 'report for needed inventory scans', 314, '/reports/needed_inventory_scans'),
   (316, 'Detailed record of purchases','TREE.PURCHASE_REGISTRY_DETAILED','The purchase registry detailed',154,'/purchases/detailed'),
-  (317, 'Satisfaction Rate Report','TREE.SATISFACTION_RATE_REPORT','Satisfaction Rate Report',282,'/reports/satisfaction_rate_report');
+  (317, 'Satisfaction Rate Report','TREE.SATISFACTION_RATE_REPORT','Satisfaction Rate Report',282,'/reports/satisfaction_rate_report'),
+  (318, 'Job Titles Management','TREE.TITLE','',57, '/titles');
 
 -- Reserved system account type
 INSERT IGNORE INTO `account_category` VALUES
@@ -242,7 +241,6 @@ INSERT IGNORE INTO `report` (`report_key`, `title_key`) VALUES
   ('recovery_capacity', 'REPORT.RECOVERY_CAPACITY.TITLE'),
   ('rumer_report', 'REPORT.RUMER.TITLE'),
   ('satisfaction_rate_report', 'TREE.SATISFACTION_RATE_REPORT'),
-  ('stock_changes', 'REPORT.STOCK_CHANGES.TITLE'),
   ('stock_consumption_graph_report', 'REPORT.STOCK_CONSUMPTION_GRAPH_REPORT.TITLE'),
   ('stock_entry', 'REPORT.STOCK.ENTRY_REPORT'),
   ('stock_exit', 'REPORT.STOCK.EXIT_REPORT'),
@@ -584,4 +582,3 @@ VALUES
     (15, 'REAM', 1),
     (16, 'SACK', 1),
     (17, 'SET', 1);
-

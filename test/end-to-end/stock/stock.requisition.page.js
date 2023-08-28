@@ -1,5 +1,6 @@
-/* global element, by */
-const FU = require('../shared/FormUtils');
+const TU = require('../shared/TestUtils');
+const { by } = require('../shared/TestUtils');
+
 const GU = require('../shared/GridUtils');
 const components = require('../shared/components');
 const SharedStockPage = require('./stock.shared.page');
@@ -10,7 +11,7 @@ function StockRequisitionPage() {
   const modalGridId = 'stock-requisition-grid-articles';
 
   // change current depot
-  page.changeDepot = SharedStockPage.setDepot;
+  page.setDepot = SharedStockPage.setDepot;
 
   // the grid id
   page.gridId = gridId;
@@ -19,11 +20,11 @@ function StockRequisitionPage() {
   // create modal
   page.showCreateModal = async isNewRequisition => {
     const selector = isNewRequisition ? '[data-method="create-record"]' : '[data-method="create-other-record"]';
-    await $(selector).click();
+    return TU.locator(selector).click();
   };
 
   page.showSearchModal = () => {
-    return $('[data-method="search"]').click();
+    return TU.locator('[data-method="search"]').click();
   };
 
   // requestor select
@@ -32,6 +33,10 @@ function StockRequisitionPage() {
   };
 
   // depot select
+  page.changeDepot = depot => {
+    return SharedStockPage.setDepot(depot);
+  };
+
   page.setDepot = depot => {
     return components.depotSelect.set(depot, 'depot-supplier');
   };
@@ -43,25 +48,25 @@ function StockRequisitionPage() {
   // add item
   page.addItem = async function setInventory(rowNumber, code, quantity) {
     // inventory code column
-    const itemCell = await GU.getCell(modalGridId, rowNumber, 0);
-
-    // inventory quantity column
-    const quantityCell = await GU.getCell(modalGridId, rowNumber, 2);
+    const itemCell = await GU.getCell(modalGridId, rowNumber, 1);
 
     // enter data into the typeahead input.
-    await FU.input('row.entity.inventory', code, itemCell);
+    await TU.input('row.entity.inventory', code, itemCell);
 
-    const externalAnchor = element(by.css('body > ul.dropdown-menu.ng-isolate-scope:not(.ng-hide)'));
-    const option = externalAnchor.all(by.cssContainingText('[role="option"]', code)).first();
+    const externalAnchor = await TU.locator('body > ul.dropdown-menu.ng-isolate-scope:not(.ng-hide)');
+    const option = await externalAnchor.locator('[role="option"]').locator(by.containsText(code)).first();
     await option.click();
 
+    // inventory quantity column
+    const quantityCell = await GU.getCell(modalGridId, rowNumber, 3);
+
     // set the quantity
-    await FU.input('row.entity.quantity', quantity, quantityCell);
+    await TU.input('row.entity.quantity', quantity, quantityCell);
   };
 
   // set description
   page.setDescription = description => {
-    return FU.input('$ctrl.model.description', description);
+    return TU.input('$ctrl.model.description', description);
   };
 
   page.expectRowCount = (number) => {
@@ -74,38 +79,41 @@ function StockRequisitionPage() {
 
   page.removeRequisition = async (row = 0) => {
     const cell = await GU.getCell(gridId, row, 7);
-    await cell.$('[data-method=action]').click();
-    await $('[data-method=remove-record]').click();
-    await FU.buttons.submit();
+    await cell.locator('[data-method=action]').click();
+    await TU.locator('[data-method=remove-record]').click();
+    await TU.buttons.submit();
     await components.notification.hasSuccess();
   };
 
   page.updateRequisition = async (row = 0) => {
     const cell = await GU.getCell(gridId, row, 7);
-    await cell.$('[data-method=action]').click();
-    await $('[data-method=edit-record]').click();
+    await cell.locator('[data-method=action]').click();
+    await TU.locator('[data-method=edit-record]').click();
   };
 
   page.changeStatus = async (row = 0, status) => {
     const cell = await GU.getCell(gridId, row, 7);
-    await cell.$('[data-method=action]').click();
-    await $('[data-method=edit]').click();
+    await cell.locator('[data-method=action]').click();
+    await TU.locator('[data-method=edit]').click();
 
-    const selectStatus = element(by.id(status));
+    const selectStatus = TU.locator(by.id(status));
     await selectStatus.click();
 
-    await FU.buttons.submit();
+    await TU.buttons.submit();
   };
 
   /**
    * @method submit
    */
   page.submit = async function submit() {
-    await FU.buttons.submit();
+    await TU.buttons.submit();
+
     // the receipt modal is displayed
-    await FU.exists(by.id('receipt-confirm-created'), true);
+    await TU.waitForSelector(by.id('receipt-confirm-created'));
+    await TU.exists(by.id('receipt-confirm-created'), true);
+
     // close the modal
-    await element(by.css('[data-action="close"]')).click();
+    await TU.locator('[data-action="close"]').click();
   };
 }
 

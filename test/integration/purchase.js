@@ -2,7 +2,7 @@
 /* eslint-disable no-unused-expressions */
 const moment = require('moment');
 const helpers = require('./helpers');
-const SearchTests = require('./purchase.search.js');
+const SearchTests = require('./purchase.search');
 
 const puid = helpers.uuid();
 
@@ -211,6 +211,7 @@ describe('(/purchases) Purchases', () => {
   it('POST /purchases create confirmed purchase order 2', () => {
     return agent.post('/purchases')
       .send(purchaseOrder2)
+      .then((res) => { helpers.api.created(res); })
       .catch(helpers.handler);
   });
 
@@ -218,6 +219,7 @@ describe('(/purchases) Purchases', () => {
     return agent.post('/purchases')
       .send(purchaseOrder3)
       .then((res) => {
+        helpers.api.created(res);
         purchaseOrder3.uuid = res.body.uuid;
       })
       .catch(helpers.handler);
@@ -226,16 +228,18 @@ describe('(/purchases) Purchases', () => {
   it('POST /purchases create confirmed purchase order 4', () => {
     return agent.post('/purchases')
       .send(purchaseOrder4)
+      .then((res) => { helpers.api.created(res); })
       .catch(helpers.handler);
   });
 
   it('POST /purchases create confirmed purchase order 5', () => {
     return agent.post('/purchases')
       .send(purchaseOrder5)
+      .then((res) => { helpers.api.created(res); })
       .catch(helpers.handler);
   });
 
-  it(`GET /inventory/metadata/:uuid 
+  it(`GET /inventory/metadata/:uuid
     Checking the calculation of the order interval for inventory: ${helpers.data.QUININE_TEXT}`, () => {
     return agent.get(`/inventory/metadata/${helpers.data.QUININE}`)
       .then(res => {
@@ -245,7 +249,7 @@ describe('(/purchases) Purchases', () => {
       .catch(helpers.handler);
   });
 
-  it(`GET /inventory/metadata/:uuid 
+  it(`GET /inventory/metadata/:uuid
     Checking the calculation of the order interval for inventory: ${helpers.data.PREDNISONE_TEXT}`, () => {
     return agent.get(`/inventory/metadata/${helpers.data.PREDNISONE}`)
       .then(res => {

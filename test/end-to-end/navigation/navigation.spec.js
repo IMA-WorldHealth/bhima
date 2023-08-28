@@ -1,59 +1,67 @@
-/* global element, by, browser, protractor */
-const chai = require('chai');
+const { chromium } = require('@playwright/test');
+const { test, expect } = require('@playwright/test');
+const TU = require('../shared/TestUtils');
 
-const { expect } = chai;
+test.beforeAll(async () => {
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  TU.registerPage(page);
+  await TU.login();
+});
 
-const EC = protractor.ExpectedConditions;
+test.describe('Tree Navigation', () => {
 
-const helpers = require('../shared/helpers');
+  test('toggles the tree open and closed', async () => {
+    await TU.navigate('/#!/');
 
-describe.skip('Tree Navigation', () => {
-  it('toggles the tree open and closed', async () => {
-    const nav = $('#expandnav');
-
-    // the navigation starts hidden
-    await browser.wait(EC.invisbilityOf(nav), 5000, 'Navigation is never invisible.');
+    // the navigation should start hidden
+    expect(await TU.isPresent('#expandnav span.fa-angle-double-right')).toBe(true);
 
     // click to expand
-    await nav.click();
+    await TU.locator('#expandnav span.fa-angle-double-right').click();
 
     // the navigation should become visible
-    await browser.wait(EC.visibilityOf(nav), 5000, 'Navigation is never visible after click.');
+    expect(await TU.isPresent('#expandnav span.fa-angle-double-right')).toBe(false);
+    expect(await TU.isPresent('#expandnav span.fa-angle-double-left')).toBe(true);
   });
 
-  it('remembers the currently selected node', async () => {
-    await helpers.navigate('#/fiscal');
+  test('remembers the currently selected node', async () => {
+    await TU.navigate('/#!/fiscal');
 
-    let selected = element(by.css('.flex-tree')).$('.selected');
-    expect(await selected.getAttribute('data-unit-key')).to.equal('TREE.FISCAL_YEAR');
+    // Verify that the fiscal year navigation entry is selected
+    let selected = await TU.locator('.flex-tree .selected a');
+    expect(await selected.getAttribute('data-unit-key')).toBe('TREE.FISCAL_YEAR');
 
     // trigger full page reload
-    await browser.refresh();
+    await TU.reloadPage();
 
-    // assert that the node is visible again
-    selected = $('.flex-tree .selected');
-    expect(await selected.isPresent()).to.equal(true);
-    expect(await selected.getAttribute('data-unit-key')).to.equal('TREE.FISCAL_YEAR');
+    // Verify that the fiscal year navigation entry is selected again
+    selected = await TU.locator('.flex-tree .selected a');
+    expect(await selected.getAttribute('data-unit-key')).toBe('TREE.FISCAL_YEAR');
   });
 
-  it('toggles tree nodes open and closed', async () => {
-    const node = $('[data-unit-key="TREE.PAYROLL"]');
+  test('toggles tree nodes open and closed', async () => {
+    await TU.navigate('/#!/');
+
+    const menuItem = '[data-unit-key="TREE.INVENTORY"]';
+    const node = await TU.locator(menuItem);
 
     // expect payroll to be closed by default
-    expect(await node.$('.fa-folder').isPresent()).to.equal(true);
-    expect(await node.$('fa-folder-open').isPresent()).to.equal(false);
+    expect(await TU.isPresent(`${menuItem} .fa-folder`)).toBe(true);
+    expect(await TU.isPresent(`${menuItem} .fa-folder-open`)).toBe(false);
 
     // click to open
     await node.click();
 
     // the open/closed folder icon should be updated
-    expect(await node.$('fa-folder-open').isPresent()).to.equal(true);
-    expect(await node.$('fa-folder').isPresent()).to.equal(false);
+    expect(await TU.isPresent(`${menuItem} .fa-folder-open`)).toBe(true);
+    expect(await TU.isPresent(`${menuItem} .fa-folder`)).toBe(false);
 
     // toggle to close again
     await node.click();
 
-    expect(await node.$('fa-folder-open').isPresent()).to.equal(false);
-    expect(await node.$('fa-folder').isPresent()).to.equal(true);
+    expect(await TU.isPresent(`${menuItem} .fa-folder-open`)).toBe(false);
+    expect(await TU.isPresent(`${menuItem} .fa-folder`)).toBe(true);
   });
+
 });

@@ -10,7 +10,7 @@ const db = require('../../../lib/db');
 // GET /PAYROLL_CONFIG
 function lookupPayrollConfig(id) {
   const sql = `
-    SELECT p.id, p.label, p.dateFrom, p.dateTo, p.config_rubric_id, 
+    SELECT p.id, p.label, p.dateFrom, p.dateTo, p.config_rubric_id,
     p.config_accounting_id, p.config_weekend_id, p.config_ipr_id, p.config_employee_id
     FROM payroll_configuration AS p
     WHERE p.id = ?`;
@@ -21,7 +21,7 @@ function lookupPayrollConfig(id) {
 // Lists the Payroll configurations
 function list(req, res, next) {
   const sql = `
-    SELECT p.id, p.label, p.dateFrom, p.dateTo, p.config_rubric_id, 
+    SELECT p.id, p.label, p.dateFrom, p.dateTo, p.config_rubric_id,
     p.config_accounting_id, p.config_weekend_id, p.config_ipr_id, p.config_employee_id
     FROM payroll_configuration AS p
     ORDER BY p.dateTo DESC;`;

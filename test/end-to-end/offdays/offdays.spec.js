@@ -1,10 +1,23 @@
-const helpers = require('../shared/helpers');
+const { chromium } = require('@playwright/test');
+const { test } = require('@playwright/test');
+const TU = require('../shared/TestUtils');
+
 const OffdayPage = require('./offdays.page');
 
-describe('Offdays Management', () => {
-  before(() => helpers.navigate('#!/offdays'));
+test.beforeAll(async () => {
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  TU.registerPage(page);
+  await TU.login();
+});
 
-  const Page = new OffdayPage();
+test.describe('Offdays Management', () => {
+
+  test.beforeEach(async () => {
+    await TU.navigate('/#!/offdays');
+  });
+
+  const page = new OffdayPage();
 
   const offday = {
     label         : 'Fete de Parent',
@@ -18,20 +31,20 @@ describe('Offdays Management', () => {
     percent_pay   : 100,
   };
 
-  it('successfully creates a new Offday', () => {
-    return Page.createOffday(offday);
+  test('successfully creates a new Offday', () => {
+    return page.createOffday(offday);
   });
 
-  it('successfully edits a Offday', () => {
-    return Page.editOffday(offday.label, updateOffday);
+  test('successfully edits a Offday', () => {
+    return page.editOffday(offday.label, updateOffday);
   });
 
-  it('don\'t create when incorrect Offday', () => {
-    return Page.errorOnCreateOffday();
+  test('do not create when incorrect Offday', () => {
+    return page.errorOnCreateOffday();
   });
 
-  it('successfully delete a Offday', () => {
-    return Page.deleteOffday(updateOffday.label);
+  test('successfully delete a Offday', () => {
+    return page.deleteOffday(updateOffday.label);
   });
 
 });

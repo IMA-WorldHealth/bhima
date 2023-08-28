@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# bash script mode
+# bash strict mode
 set -euo pipefail
 
 set -a

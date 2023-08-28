@@ -119,7 +119,7 @@ function lookupEmployee(uid) {
       employee.locked, employee.is_medical, grade.text, grade.basic_salary,
       fonction.id AS fonction_id, fonction.fonction_txt, service.name AS service_txt, patient.hospital_no,
       patient.phone, patient.email, patient.address_1 AS adresse, BUID(employee.patient_uuid) AS patient_uuid,
-      employee.bank, employee.bank_account,
+      employee.bank, employee.bank_account, employee.title_employee_id, title_employee.title_txt,
       employee.individual_salary, grade.code AS code_grade, BUID(debtor.uuid) as debtor_uuid,
       debtor.text AS debtor_text, BUID(debtor.group_uuid) as debtor_group_uuid, entity_map.text AS reference,
       BUID(creditor.uuid) as creditor_uuid, creditor.text AS creditor_text,
@@ -134,6 +134,7 @@ function lookupEmployee(uid) {
       JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid
       LEFT JOIN service ON service.uuid = employee.service_uuid
       LEFT JOIN entity_map ON entity_map.uuid = employee.creditor_uuid
+      LEFT JOIN title_employee ON title_employee.id = employee.title_employee_id
     WHERE employee.uuid = ?;
   `;
 
@@ -251,6 +252,7 @@ function update(req, res, next) {
     individual_salary : employee.individual_salary,
     code : employee.code,
     is_medical : employee.is_medical,
+    title_employee_id : employee.title_employee_id,
   };
 
   const updateCreditor = `UPDATE creditor SET ? WHERE creditor.uuid = ?`;
@@ -444,7 +446,7 @@ function find(options) {
       employee.nb_enfant, BUID(employee.grade_uuid) as grade_uuid, employee.locked, grade.text,
       grade.basic_salary, fonction.id AS fonction_id, fonction.fonction_txt, patient.hospital_no,
       patient.phone, patient.email, patient.address_1 AS adresse, BUID(employee.patient_uuid) AS patient_uuid,
-      employee.bank, employee.bank_account,
+      employee.bank, employee.bank_account, employee.title_employee_id, title_employee.title_txt,
       employee.individual_salary, employee.is_medical, grade.code AS code_grade, BUID(debtor.uuid) as debtor_uuid,
       debtor.text AS debtor_text, BUID(debtor.group_uuid) as debtor_group_uuid,
       BUID(creditor.uuid) as creditor_uuid, creditor.text AS creditor_text,
@@ -463,6 +465,7 @@ function find(options) {
      LEFT JOIN service_cost_center AS scc ON scc.service_uuid = service.uuid
      LEFT JOIN cost_center AS cc ON cc.id = scc.cost_center_id
      LEFT JOIN entity_map ON entity_map.uuid = employee.creditor_uuid
+     LEFT JOIN title_employee ON title_employee.id = employee.title_employee_id
   `;
 
   const filters = new FilterParser(options, { tableAlias : 'employee' });
@@ -476,6 +479,7 @@ function find(options) {
   filters.equals('code', 'code', 'employee');
   filters.equals('service_uuid', 'service_uuid', 'employee');
   filters.equals('fonction_id', 'fonction_id', 'employee');
+  filters.equals('title_employee_id', 'title_employee_id', 'employee');
   filters.equals('grade_uuid', 'grade_uuid', 'employee');
   filters.equals('is_medical', 'is_medical', 'employee');
   filters.equals('reference', 'text', 'entity_map');

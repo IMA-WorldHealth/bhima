@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# bash script mode
+# bash strict mode
 set -eo pipefail
 
 # get DB settings
@@ -50,17 +50,31 @@ fi
 if [ $SUITE = "integration-stock" ] || [ $SUITE = "ALL" ] ; then
   startfold "Running Stock Integration Tests..." "test-stock-integration";
   ./sh/integration-stock-tests.sh
-  endfold "test-end-to-end" ;
+  endfold "test-stock-integration" ;
 fi
 
-# run end to end tests
+# # run end to end account tests with Playwright
+# if [ $SUITE = "end-to-end-account" ] || [ $SUITE = "ALL" ] ; then
+#   startfold "Running account End to End Tests..." "test-end-to-end-account";
+#   ./sh/test-e2e-pw-account.sh
+#   endfold "test-end-to-end-account" ;
+# fi
+
+# # run end to end stock tests with Playwright
+# if [ $SUITE = "end-to-end-stock" ] || [ $SUITE = "ALL" ] ; then
+#   startfold "Running Stock End to End Tests..." "test-end-to-end-stock";
+#   ./sh/test-e2e-pw-stock.sh
+#   endfold "test-end-to-end-stock" ;
+# fi
+
+# # run end to end tests with Playwright
 # if [ $SUITE = "end-to-end" ] || [ $SUITE = "ALL" ] ; then
-#   startfold "Running Client End to End Tests..." "test-end-to-end";
-#   ./sh/test-ends.sh
+#   startfold "Running End to End Tests (except stock tests)..." "test-end-to-end";
+#   ./sh/test-e2e-pw.sh
 #   endfold "test-end-to-end" ;
 # fi
 
 # Show summary of results
-./sh/show-test-results.sh
+./sh/test-show-results.sh
 
 exit 0;

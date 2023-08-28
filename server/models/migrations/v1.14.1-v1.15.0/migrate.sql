@@ -622,7 +622,7 @@ DELIMITER ;
 
     CALL drop_constraints('staffing_indice_parameters');
      ALTER TABLE `staffing_indice_parameters`
-     ADD  CONSTRAINT `staffing_indice_param__payrall_config` FOREIGN KEY (`payroll_configuration_id`) REFERENCES `payroll_configuration` (`id`);
+     ADD  CONSTRAINT `staffing_indice_param__payroll_config` FOREIGN KEY (`payroll_configuration_id`) REFERENCES `payroll_configuration` (`id`);
 
     CALL drop_constraints('survey_form');
     ALTER TABLE `survey_form` ADD CONSTRAINT `survey_form__data_collector_management` FOREIGN KEY (`data_collector_management_id`) REFERENCES `data_collector_management` (`id`);

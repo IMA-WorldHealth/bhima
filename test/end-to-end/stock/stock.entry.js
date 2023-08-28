@@ -1,5 +1,7 @@
 const moment = require('moment');
-const helpers = require('../shared/helpers');
+const { test } = require('@playwright/test');
+const TU = require('../shared/TestUtils');
+
 const EntryPage = require('./stock.entry.page');
 
 function StockEntryTests() {
@@ -15,13 +17,17 @@ function StockEntryTests() {
   const page = new EntryPage();
 
   // navigate to the page
-  before(() => helpers.navigate('#/stock/entry'));
+  test.beforeEach(async () => {
+    await TU.navigate('/#!/stock/entry');
+  });
 
-  it(`Should select the ${DEPOT_PRINCIPAL}`, async () => {
+  test(`Should select the ${DEPOT_PRINCIPAL}`, async () => {
+    // Give the page a chance to load
+    await TU.waitForSelector('form[name="StockEntryForm"]');
     await page.setDepot(DEPOT_PRINCIPAL);
   });
 
-  it('Should enter stock from a purchase order', async () => {
+  test('Should enter stock from a purchase order', async () => {
     // select the purchase order
     await page.setPurchase(0);
 
@@ -34,17 +40,18 @@ function StockEntryTests() {
       { label : 'LX-TWO', quantity : 300, expiration_date : expireInTwoYears },
       { label : 'LX-THREE', quantity : 200, expiration_date : expireInOneYear },
     ];
+    const globalQuantity = lots.reduce((sum, lot) => sum + lot.quantity, 0);
 
-    await page.setLots(0, lots, false);
+    await page.setLots(0, lots, false, globalQuantity);
 
     // submit
     await page.submit();
   });
 
-  it(`Should enter stock in ${DEPOT_SECONDAIRE} from an integration`, async function t() {
-    await this.timeout(60000);
+  test(`Should enter stock in ${DEPOT_SECONDAIRE} from an integration`, async () => {
 
     // set another Depot
+    await TU.waitForSelector('form[name="StockEntryForm"]');
     await page.setDepot(DEPOT_SECONDAIRE);
 
     // select the integration option
@@ -64,7 +71,7 @@ function StockEntryTests() {
       { label : 'ASP-FIVE', quantity : 500, expiration_date : expireInThreeYears },
     ];
 
-    await page.setItem(0, 'Quinine');
+    await page.setItem(0, 'DORA_QUIN1S-_0'); // Quinine Bichlorhydrate, sirop, 100mg base/5ml, 100ml, flacon, Unité
 
     await page.setLots(0, lots, false, 1500, 0.09);
 
@@ -72,7 +79,7 @@ function StockEntryTests() {
     await page.submit();
   });
 
-  it('Should enter stock from a transfer reception', async () => {
+  test('Should enter stock from a transfer reception', async () => {
     // set another Depot
     await page.setDepot(DEPOT_SECONDAIRE);
 
@@ -87,16 +94,15 @@ function StockEntryTests() {
       { quantity : 75 },
     ];
 
-    await page.setLots(0, lots, true);
-
-    await this.timeout(600000);
+    await page.setLots(0, lots, true, null);
 
     // submit
     await page.submit();
   });
 
-  // Brute force skip fast lot insertion - far too flakey.
-  it.skip(`Should add automatically new lot row when fast insert is enabled`, async () => {
+  // @TODO Fix this: enabling fast lots insert does not seem to be working in the test
+  test.skip('Should add automatically new lot row when fast insert is enabled', async () => {
+
     // set another Depot
     await page.setDepot(DEPOT_SECONDAIRE);
 
@@ -109,7 +115,7 @@ function StockEntryTests() {
 
     await page.addRows(1);
 
-    await page.setItem(0, 'Quinine');
+    await page.setItem(0, 'DORA_QUIN1S-_0'); // Quinine Bichlorhydrate, sirop, 100mg base/5ml, 100ml, flacon, Unité
 
     await page.openLotsModal(0);
 
@@ -118,6 +124,7 @@ function StockEntryTests() {
     const lots = ['AAA', 'BBB', 'CCC'];
     await page.fastLotsInsert(lots);
   });
+
 }
 
 module.exports = StockEntryTests;

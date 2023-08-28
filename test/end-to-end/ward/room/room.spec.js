@@ -1,19 +1,30 @@
+const { chromium } = require('@playwright/test');
+const { test } = require('@playwright/test');
+const TU = require('../../shared/TestUtils');
 
 const RoomPage = require('./room.page');
-const helpers = require('../../shared/helpers');
 const components = require('../../shared/components');
 
-// the page object
-const page = new RoomPage();
+test.beforeAll(async () => {
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  TU.registerPage(page);
+  await TU.login();
+});
 
-function RoomManagementTests() {
+test.describe('Room Management Tests', () => {
+
+  // the page object
+  const page = new RoomPage();
 
   // navigate to the page
-  before(() => helpers.navigate('#/ward/configuration'));
+  test.beforeEach(async () => {
+    await TU.navigate('/#!/ward/configuration');
+  });
 
   const room = 'CH.A.001';
 
-  it('should add a new Room', async () => {
+  test('should add a new Room', async () => {
     await page.openCreateModal();
     await page.setWard('Pavillon A');
     await page.setLabel(room);
@@ -22,7 +33,7 @@ function RoomManagementTests() {
     await components.notification.hasSuccess();
   });
 
-  it('should add a new Room without description', async () => {
+  test('should add a new Room without description', async () => {
     await page.openCreateModal();
     await page.setWard('Pavillon A');
     await page.setLabel('CH.A.002');
@@ -30,7 +41,7 @@ function RoomManagementTests() {
     await components.notification.hasSuccess();
   });
 
-  it('should edit Room', async () => {
+  test('should edit Room', async () => {
     await page.editRoom(room);
     await page.setWard('Pavillon B');
     await page.setLabel(room.concat(' edited'));
@@ -39,7 +50,7 @@ function RoomManagementTests() {
     await components.notification.hasSuccess();
   });
 
-  it('should not add a new Room without ward', async () => {
+  test('should not add a new Room without ward', async () => {
     await page.openCreateModal();
     await page.setLabel('CH.A.003');
     await page.submit();
@@ -47,11 +58,10 @@ function RoomManagementTests() {
     await page.cancel();
   });
 
-  it('should delete the test Room', async () => {
+  test('should delete the test Room', async () => {
     await page.deleteRoom(room.concat(' edited'));
     await page.submit();
     await components.notification.hasSuccess();
   });
-}
 
-describe('Room Management Tests', RoomManagementTests);
+});

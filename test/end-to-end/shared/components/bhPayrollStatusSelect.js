@@ -1,17 +1,18 @@
-/* global element, by */
+const TU = require('../TestUtils');
+const { by } = require('../TestUtils');
 
-const FU = require('../FormUtils');
+const selector = '[bh-payroll-status-select]';
 
 module.exports = {
-  selector : '[bh-payroll-status-select]',
-  set      : async function set(payrollStatus = [], id) {
+
+  set : async function set(payrollStatus = [], id = null) {
     const IS_MULTIPLE_SELECTION = true;
-    const locator = (id) ? by.id(id) : by.css(this.selector);
-    const target = element(locator);
+    const locator = (id) ? by.id(id) : selector;
+    const target = await TU.locator(locator);
 
     await target.click();
 
-    await FU.series(payrollStatus,
-      state => FU.uiSelect('$ctrl.selectedPayrollStatus', state, null, IS_MULTIPLE_SELECTION));
+    await TU.series(payrollStatus,
+      state => TU.uiSelect('$ctrl.selectedPayrollStatus', state, null, IS_MULTIPLE_SELECTION));
   },
 };

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# bash script mode
+# bash strict mode
 set -uo pipefail
 
 # This script creates a migration script to upgrade BHIMA from the previous version of BHIMA

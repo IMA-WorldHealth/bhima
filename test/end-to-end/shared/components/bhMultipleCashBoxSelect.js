@@ -1,16 +1,20 @@
-/* global element, by */
+const TU = require('../TestUtils');
+const { by } = require('../TestUtils');
 
-const FU = require('../FormUtils');
+const selector = '[bh-multiple-cashbox-select]';
 
 module.exports = {
-  selector : '[bh-multiple-cashbox-select]',
-  set      : async function set(cashboxes = [], id) {
+
+  set : async function set(cashboxes = [], id = null) {
     const IS_MULTIPLE_SELECTION = true;
-    const locator = (id) ? by.id(id) : by.css(this.selector);
-    const target = element(locator);
+    const locator = (id) ? by.id(id) : selector;
+    const target = await TU.locator(locator);
 
     await target.click();
 
-    await FU.series(cashboxes, cashbox => FU.uiSelect('$ctrl.cashboxIds', cashbox, null, IS_MULTIPLE_SELECTION));
+    await TU.series(cashboxes, cashbox => TU.uiSelect('$ctrl.cashboxIds', cashbox, null, IS_MULTIPLE_SELECTION));
+
+    // Let the GUI know we are finished selecting cashboxes
+    return target.blur();
   },
 };
