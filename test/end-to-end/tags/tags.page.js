@@ -1,6 +1,6 @@
-/* global by, element */
+const TU = require('../shared/TestUtils');
+const { by } = require('../shared/TestUtils');
 
-const FU = require('../shared/FormUtils');
 const GridRow = require('../shared/GridRow');
 
 function TagsPage() {
@@ -16,38 +16,47 @@ function TagsPage() {
   page.openCreateModal = openCreateModal;
   page.setColor = setColor;
 
-  const tagName = element(by.model('ModalCtrl.tags.name'));
-
   page.submit = function submit() {
-    return FU.modal.submit();
+    return TU.modal.submit();
   };
 
-  function setName(txt) {
-    return tagName.clear().sendKeys(txt);
+  async function setName(txt) {
+    const tagName = await TU.locator(by.model('ModalCtrl.tags.name'));
+    return tagName.fill(txt);
   }
 
-  function setColor(color) {
-    return FU.uiSelect('ModalCtrl.tags.color', color);
+  async function setColor(color) {
+    // Open the color drop-down
+    const colors = await TU.getModel('ModalCtrl.tags.color');
+    await colors.click();
+
+    // Select the first matching color
+    const thisColor = colors.locator('.dropdown-menu [role="option"]')
+      .locator(`//*[contains(text(), '${color}')]`).first();
+    return thisColor.click();
   }
 
   async function showDragAndDropMenu(label) {
     const row = new GridRow(label);
-    await row.dropdown().click();
+    await row.dropdown();
     return row;
   }
 
   async function editTags(label) {
     const row = await showDragAndDropMenu(label);
-    await row.edit().click();
+    await row.edit();
   }
 
   async function deleteTags(label) {
     const row = await showDragAndDropMenu(label);
-    await row.remove().click();
+    await row.remove();
   }
 
-  function openCreateModal() {
-    return FU.buttons.create();
+  async function openCreateModal() {
+    await TU.buttons.create();
+
+    // Wait for the create modal to actually come up
+    return TU.waitForSelector('form[name="tagsForm"] .modal-footer');
   }
 }
 

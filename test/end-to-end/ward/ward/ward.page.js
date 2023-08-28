@@ -1,6 +1,6 @@
-/* global by, element */
+const TU = require('../../shared/TestUtils');
+const { by } = require('../../shared/TestUtils');
 
-const FU = require('../../shared/FormUtils');
 const components = require('../../shared/components');
 const GridRow = require('../../shared/GridRow');
 
@@ -10,7 +10,7 @@ class WardPage {
   }
 
   submit() {
-    return FU.modal.submit();
+    return TU.modal.submit();
   }
 
   selectService(name) {
@@ -18,33 +18,33 @@ class WardPage {
   }
 
   setName(txt) {
-    const WardName = element(by.model('ModalCtrl.ward.name'));
-    return WardName.clear().sendKeys(txt);
+    const WardName = TU.locator(by.model('ModalCtrl.ward.name'));
+    return WardName.fill(txt);
   }
 
   setDescription(txt) {
-    const WardDescription = element(by.model('ModalCtrl.ward.description'));
-    return WardDescription.clear().sendKeys(txt);
+    const WardDescription = TU.locator(by.model('ModalCtrl.ward.description'));
+    return WardDescription.fill(txt);
   }
 
   async openDropdownMenu(label) {
     const row = new GridRow(label);
-    await row.dropdown().click();
+    await row.dropdown();
     return row;
   }
 
   async editWard(label) {
     const row = await this.openDropdownMenu(label);
-    await row.edit().click();
+    await row.edit();
   }
 
   async deleteWard(label) {
     const row = await this.openDropdownMenu(label);
-    await row.remove().click();
+    await row.remove();
   }
 
   openCreateModal() {
-    return element(by.css('[data-create-ward]')).click();
+    return TU.locator('[data-create-ward]').click();
   }
 }
 

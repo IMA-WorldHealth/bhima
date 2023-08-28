@@ -1,55 +1,47 @@
-/* global element, by */
-const FU = require('../shared/FormUtils');
+const TU = require('../shared/TestUtils');
+const { by } = require('../shared/TestUtils');
 
 class TrialBalancePage {
   constructor() {
     this.overviewGridId = 'overview-grid';
     this.errorGridId = 'error-grid';
-
-    this.buttons = {
-      submit : FU.modal.submit,
-      cancel : FU.modal.cancel,
-      errors : $('[data-action="go-to-error-page"]'),
-      overview : $('[data-action="go-to-overview-page"]'),
-    };
   }
 
   submit() {
-    return this.buttons.submit();
+    return TU.modal.submit();
   }
 
   cancel() {
-    return this.buttons.cancel();
+    return TU.modal.cancel();
   }
 
   countOverviewRows() {
-    return element(by.id(this.overviewGridId))
-      .element(by.css('.ui-grid-render-container-body'))
-      .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'))
+    return TU.locator(by.id(this.overviewGridId))
+      .locator('.ui-grid-render-container-body')
+      .locator(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'))
       .count();
   }
 
   countErrorRows() {
-    return element(by.id(this.errorGridId))
-      .element(by.css('.ui-grid-render-container-body'))
-      .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'))
+    return TU.locator(by.id(this.errorGridId))
+      .locator('.ui-grid-render-container-body')
+      .locator(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'))
       .count();
   }
 
   goToErrorPage() {
-    return this.buttons.errors.click();
+    return TU.locator('[data-action="go-to-error-page"]').click();
   }
 
   goToOverviewPage() {
-    return this.buttons.overview.click();
+    return TU.locator('[data-action="go-to-overview-page"]').click();
   }
 
   // reference is account number
-  showAccountDetails(reference) {
-    const link = element(by.id(this.overviewGridId))
-      .$(`[data-row="${reference}"]`)
-      .$('[data-method="view-in-journal"]');
-
+  async showAccountDetails(reference) {
+    const link = await TU.locator(by.id(this.overviewGridId))
+      .locator(`[data-row="${reference}"]`)
+      .locator('[data-method="view-in-journal"]');
     return link.click();
   }
 }

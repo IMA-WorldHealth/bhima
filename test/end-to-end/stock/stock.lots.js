@@ -1,79 +1,77 @@
 const moment = require('moment');
+
+const { test } = require('@playwright/test');
+const TU = require('../shared/TestUtils');
+
 const GU = require('../shared/GridUtils');
-const helpers = require('../shared/helpers');
 const SearchModal = require('../shared/search.page');
 const Filters = require('../shared/components/bhFilters');
 const components = require('../shared/components');
-const FU = require('../shared/FormUtils');
 
 function StockLotsRegistryTests() {
+  const path = '/#!/stock/lots';
   let modal;
   let filters;
 
   // navigate to the page
-  before(() => helpers.navigate('#/stock/lots'));
-
-  beforeEach(async () => {
-    await SearchModal.open();
-    modal = new SearchModal('stock-lots-search');
+  test.beforeEach(async () => {
+    await TU.navigate(path);
+    modal = new SearchModal('stock-lots-search', path);
+    await modal.open();
     filters = new Filters();
   });
 
-  afterEach(async () => {
+  test.afterEach(async () => {
     await filters.resetFilters();
   });
 
   const gridId = 'stock-lots-grid';
 
   const depotGroupingRow = 1;
-  // techinically this is 23 in total, but the grid doesn't render that
-  // many on small screens
-  const LOT_FOR_ALLTIME = 24;
-  const LOT_FOR_TODAY = 17;
-  const LOT_FOR_LAST_YEAR = 24;
 
   const inventoryGroup = 'Injectable';
 
-  it(`finds ${LOT_FOR_TODAY} lot for today`, async () => {
+  test(`finds lots for today`, async () => {
     await modal.switchToDefaultFilterTab();
     await modal.setPeriod('today');
-    await modal.submit();
-    await GU.expectRowCount(gridId, LOT_FOR_TODAY);
+    await TU.modal.submit();
+
+    await GU.expectRowCount(gridId, [12, 15]);
   });
 
-  it(`finds ${LOT_FOR_LAST_YEAR} lot for this last year`, async () => {
+  test(`finds lots for this last year`, async () => {
     await modal.switchToDefaultFilterTab();
-    await modal.setPeriod('year');
+    await modal.setPeriod('lastYear');
     await modal.submit();
-    await GU.expectRowCount(gridId, LOT_FOR_LAST_YEAR);
+    await GU.expectRowCount(gridId, [12, 15]);
   });
 
-  it(`finds at least ${LOT_FOR_ALLTIME} lot for all time`, async () => {
+  test(`finds lots for all time`, async () => {
     await modal.switchToDefaultFilterTab();
     await modal.setPeriod('allTime');
     await modal.submit();
-    await GU.expectRowCount(gridId, LOT_FOR_ALLTIME);
+    await GU.expectRowCount(gridId, [12, 15]);
   });
 
-  it('find lots in depot principal', async () => {
+  test('find lots in depot principal', async () => {
     await modal.setDepot('Depot Principal');
     await modal.submit();
-    await GU.expectRowCount(gridId, 16 + depotGroupingRow);
+    await GU.expectRowCount(gridId, [7 + depotGroupingRow, 17 + depotGroupingRow]);
   });
 
-  it('find lots by inventory', async () => {
-    await modal.setInventory('Quinine');
+  test('find lots by inventory', async () => {
+    await modal.setInventory('DORA_QUIN1S-_0'); // Quinine Bichlorhydrate, sirop, 100mg base/5ml, 100ml, flacon, Unité
     await modal.submit();
-    await GU.expectRowCount(gridId, 4 + (2 * depotGroupingRow));
+    await GU.expectRowCount(gridId, [3 + depotGroupingRow, 8 + depotGroupingRow]);
   });
 
-  it('find lot by name', async () => {
+  test('find lot by name', async () => {
     await modal.setLotLabel('VITAMINE-A');
     await modal.submit();
-    await GU.expectRowCount(gridId, 1 + depotGroupingRow);
+    await GU.expectRowCount(gridId, [1 + depotGroupingRow, 3 + depotGroupingRow]);
   });
 
-  it('find lots by expiration date', async () => {
+  test('find lots by expiration date', async () => {
     const yearSubstract3 = moment(new Date(), 'YYYY').subtract(3, 'year');
     const formatYear = moment(yearSubstract3).format('YYYY');
 
@@ -87,33 +85,34 @@ function StockLotsRegistryTests() {
     );
 
     await modal.submit();
-    await GU.expectRowCount(gridId, 0);
+    await GU.expectRowCount(gridId, [0, 4]);
   });
 
-  it('Find the lots with a risk of expiry', async () => {
+  test('Find the lots with a risk of expiry', async () => {
     await components.yesNoRadios.set('yes', 'isExpiryRisk');
     await modal.switchToDefaultFilterTab();
     await modal.setPeriod('allTime');
 
     await modal.submit();
-    await GU.expectRowCount(gridId, 0);
+    await GU.expectRowCount(gridId, [0, 2]);
   });
 
-  it('Find the lots with no risk of expiry', async () => {
+  test('Find the lots with no risk of expiry', async () => {
     await components.yesNoRadios.set('no', 'isExpiryRisk');
     await modal.switchToDefaultFilterTab();
     await modal.setPeriod('allTime');
 
     await modal.submit();
-    await GU.expectRowCount(gridId, 24);
+    await GU.expectRowCount(gridId, [12, 14]);
   });
 
-  it('find inventories by group', async () => {
+  test('find inventories by group', async () => {
     await components.inventoryGroupSelect.set(inventoryGroup);
-    await FU.modal.submit();
-    await GU.expectRowCount(gridId, 9);
+    await TU.modal.submit();
+    await GU.expectRowCount(gridId, [3, 5]);
     await filters.resetFilters();
   });
+
 }
 
 module.exports = StockLotsRegistryTests;

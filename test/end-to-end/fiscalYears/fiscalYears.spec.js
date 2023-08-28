@@ -1,140 +1,152 @@
-/* global element, by */
-const { expect } = require('chai');
-const FU = require('../shared/FormUtils');
-const helpers = require('../shared/helpers');
+const moment = require('moment');
+const { chromium } = require('@playwright/test');
+const { test, expect } = require('@playwright/test');
+const TU = require('../shared/TestUtils');
+
+test.beforeAll(async () => {
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  TU.registerPage(page);
+  await TU.login();
+});
+
 const components = require('../shared/components');
 
-describe('Fiscal Year', () => {
-  const path = '#!/fiscal';
-  const pathNew = '#!/fiscal/create';
+test.describe('Fiscal Year', () => {
+  const path = '/#!/fiscal';
+  const pathNew = '/#!/fiscal/create';
 
-  before(() => helpers.navigate(path));
+  // Compute the current year
+  const currentYear = (moment(Date.now()).year()).toString();
+  const newFY = (parseInt(currentYear, 10) + 1).toString();
+
+  test.beforeEach(async () => {
+    await TU.navigate(path);
+  });
 
   const fiscalYear = {
     label    : 'A Special Fiscal Year',
     note     : 'Note for the new fiscal Year',
-    previous : '2020',
+    // previous : currentYear.toString(),
+    previous : `Fiscal Year 2023(01 Jan 2023 - 31 Dec 2023`,
   };
 
-  it('blocks invalid form submission with relevant error classes', async () => {
+  test('blocks invalid form submission with relevant error classes', async () => {
     // switch to the create form
-    await FU.buttons.create();
+    await TU.buttons.create();
+    await TU.waitForSelector('form[name="FiscalForm"]');
 
     // verify form has not been successfully submitted
-    expect(await helpers.getCurrentPath()).to.equal(pathNew);
+    expect(await TU.getCurrentPath()).toBe(pathNew);
 
     // set invalid date range to test `number_of_months`
     await components.dateInterval.range('01/02/2016', '01/01/2016');
 
-    await FU.buttons.submit();
+    await TU.buttons.submit();
 
     // the following fields should be required
-    await FU.validation.error('FiscalManageCtrl.fiscal.label');
-    await FU.validation.error('FiscalManageCtrl.fiscal.number_of_months');
+    await TU.validation.error('FiscalManageCtrl.fiscal.label');
+    await TU.validation.error('FiscalManageCtrl.fiscal.number_of_months');
 
     await components.notification.hasDanger();
   });
 
-  it('creates a new Fiscal Year', async () => {
-    await FU.input('FiscalManageCtrl.fiscal.label', fiscalYear.label);
+  test('creates a new Fiscal Year', async () => {
+    // switch to the create form
+    await TU.buttons.create();
+    await TU.waitForSelector('form[name="FiscalForm"]');
+
+    await TU.input('FiscalManageCtrl.fiscal.label', fiscalYear.label);
 
     // select the proper date
-    await components.dateInterval.range('01/01/2022', '31/12/2022');
-    await FU.select('FiscalManageCtrl.fiscal.previous_fiscal_year_id', fiscalYear.previous);
-    await FU.input('FiscalManageCtrl.fiscal.note', fiscalYear.note);
-    await FU.buttons.submit();
+    await components.dateInterval.range(`01/01/${newFY}`, `31/12/${newFY}`);
+    await TU.select('FiscalManageCtrl.fiscal.previous_fiscal_year_id', fiscalYear.previous);
+
+    // model, label, anchor
+    await TU.input('FiscalManageCtrl.fiscal.note', fiscalYear.note);
+    await TU.buttons.submit();
 
     await components.notification.hasSuccess();
   });
 
-  it('edits a fiscal year', async () => {
-    const updateButton = element.all(by.css('[data-fiscal-entry]'));
-    await updateButton.all(by.css('[data-method="update"]')).first().click();
+  test('edits a fiscal year', async () => {
+    await TU.locator('[data-fiscal-entry] [data-method="update"]').first().click();
 
     // modify the fiscal year label and note
-    await FU.input('FiscalManageCtrl.fiscal.label', 'Test Fiscal Year 2017 (update)');
-    await FU.input('FiscalManageCtrl.fiscal.note', 'Test 2017 [update]');
+    await TU.input('FiscalManageCtrl.fiscal.label', `Test Fiscal Year ${newFY} (update)`);
+    await TU.input('FiscalManageCtrl.fiscal.note', `Test ${newFY} [update]`);
 
-    await FU.buttons.submit();
+    await TU.buttons.submit();
     await components.notification.hasSuccess();
   });
 
-  it('delete a fiscal Year', async () => {
-    const deleteButton = element.all(by.css('[data-fiscal-entry]'));
-    await deleteButton.all(by.css('[data-method="delete"]')).first().click();
+  test('delete a fiscal Year', async () => {
+    await TU.locator('[data-fiscal-entry] [data-method="delete"]').first().click();
 
     // click the alert asking for permission
     await components.modalAction.confirm();
     await components.notification.hasSuccess();
   });
 
-  it('set the opening balance for the first fiscal year', async () => {
-    // await helpers.navigate(path);
-
-    await $('.pagination-last > a').click();
-
+  test('set the opening balance for the first fiscal year', async () => {
     // the last in the list is the oldest
-    const updateButton = element.all(by.css('[data-fiscal-entry]'));
-    await updateButton.all(by.css('[data-method="update"]')).last().click();
+    await TU.locator('.pagination-last > a').click();
+    await TU.locator('[data-fiscal-entry] [data-method="update"]').last().click();
 
     // click on the opening balance button
-    await element(by.css('[data-action="opening-balance"]')).click();
+    await TU.locator('[data-action="opening-balance"]').click();
+    await TU.waitForSelector('div.ui-grid-footer');
 
     // actions in the grid
     const account1 = 85;
     const account2 = 89;
     const account3 = 83;
 
-    await element(by.css(`[data-debit-account="${account1}"]`)).clear().sendKeys(150);
-    await element(by.css(`[data-debit-account="${account2}"]`)).clear().sendKeys(150);
-    await element(by.css(`[data-credit-account="${account3}"]`)).clear().sendKeys(300);
+    await TU.locator(`[data-debit-account="${account1}"]`).fill('150');
+    await TU.locator(`[data-debit-account="${account2}"]`).fill('150');
+    await TU.locator(`[data-credit-account="${account3}"]`).fill('300');
 
-    await FU.buttons.submit();
+    await TU.buttons.submit();
     await components.notification.hasSuccess();
   });
 
-  it('forbid not balanced submission', async () => {
-    await helpers.navigate(path);
-
-    // jump to opening balance
-    // await $('.pagination-last').click();
+  test('forbid not balanced submission', async () => {
+    // await TU.navigate(path);
+    await TU.navigate(path);
 
     // the last in the list is the oldest
-    const updateButton = element.all(by.css('[data-fiscal-entry]'));
-    await updateButton.all(by.css('[data-method="update"]')).last().click();
+    await TU.locator('.pagination-last > a').click();
+    await TU.locator('[data-fiscal-entry] [data-method="update"]').last().click();
 
     // click on the opening balance button
-    await element(by.css('[data-action="opening-balance"]')).click();
+    await TU.locator('[data-action="opening-balance"]').click();
+    await TU.waitForSelector('div.ui-grid-footer');
 
     // actions in the grid
     const account1 = 85;
     const account2 = 89;
     const account3 = 83;
 
-    await element(by.css(`[data-debit-account="${account1}"]`)).clear().sendKeys(150);
-    await element(by.css(`[data-debit-account="${account2}"]`)).clear().sendKeys(150);
-    await element(by.css(`[data-credit-account="${account3}"]`)).clear().sendKeys(200);
-
-    await FU.buttons.submit();
+    await TU.locator(`[data-debit-account="${account1}"]`).fill('150');
+    await TU.locator(`[data-debit-account="${account2}"]`).fill('150');
+    await TU.locator(`[data-credit-account="${account3}"]`).fill('200');
+    await TU.buttons.submit();
     await components.notification.hasDanger();
-    expect(await element(by.css('[data-status="not-balanced"]')).isPresent()).to.equal(true);
+    expect(await TU.isPresent('[data-status="not-balanced"]')).toBe(true);
   });
 
-  it('closing a fiscal year in normal way', async () => {
-    await helpers.navigate(path);
-
-    // jump to opening balance
-    // await $('.pagination-last').click();
+  test('closing a fiscal year in normal way', async () => {
+    await TU.navigate(path);
 
     // the last in the list is the oldest
-    const updateButton = element.all(by.css('[data-fiscal-entry]'));
-    await updateButton.all(by.css('[data-method="update"]')).last().click();
+    await TU.locator('.pagination-last > a').click();
+    await TU.locator('[data-fiscal-entry] [data-method="update"]').last().click();
 
     // this fix multiple element found take first
-    const submitButton = element.all(by.css('[data-method="submit"]')).first();
+    const submitButton = TU.locator('[data-method="submit"]').first();
 
     // click on the opening balance button
-    await element(by.css('[data-action="closing-fiscal-year"]')).click();
+    await TU.locator('[data-action="closing-fiscal-year"]').click();
 
     // inner variables
     const resultAccount = '13110001'; // 13110001 -Résusltat de l\'exercise

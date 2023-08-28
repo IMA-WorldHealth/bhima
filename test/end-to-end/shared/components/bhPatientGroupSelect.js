@@ -1,17 +1,14 @@
-/* global element, by */
+const TU = require('../TestUtils');
+const { by } = require('../TestUtils');
 
-const FU = require('../FormUtils');
+const selector = '[bh-patient-group-select]';
 
 module.exports = {
-  selector : '[bh-patient-group-select]',
   set      : async function set(patientGroup, id) {
-    const locator = (id) ? by.id(id) : by.css(this.selector);
-    const target = element(locator);
-
-    // hack to make sure previous 'blur' event fires if we are using
-    // ngModelOptions updateOn 'blur' for every input
+    const locator = (id) ? by.id(id) : selector;
+    const target = await TU.locator(locator);
     await target.click();
 
-    await FU.uiSelect('$ctrl.patientGroupUuid', patientGroup, target);
+    await TU.uiSelect('$ctrl.patientGroupUuid', patientGroup, target);
   },
 };

@@ -180,7 +180,7 @@ Nos tests sont répartis en tests unitaires, tests de bout en bout et tests d'in
 2. **Tests unitaires de serveur** - Les bibliothèques de serveur sont testées d'unité avec mocha et chai, de manière similaire aux tests d'intégration. Pour les exécuter, tapez
    `test de fil: unité-serveur.`
 3. **Tests d'unité client** - Les composants client sont testés avec karma et doivent être installés si vous avez installé toutes les dépendances. Karma lance un navigateur chrome pour exécuter les tests. Pour les exécuter, tapez `test de fil: unité-client`.
-4. **Tests de bout en bout** - L'ensemble de la pile est testée avec \(souvent flaky \) des tests de bout en bout à l'aide de [rapporteur](https://github.com/IMA-WorldHealth/bhima/blob/master/docs/protractortest.org). Le rapporteur dépend de `webdriver-manager` qui doit être installé séparément. Voir leur documentation pour plus d'informations. Les tests de bout en bout peuvent être exécutés avec `yarn test:ends`.
+4. **Tests de bout en bout** - L'ensemble de la pile est testée avec \(souvent flaky \) des tests de bout en bout à l'aide de [rapporteur](https://playwright.dev/).  Les tests de bout en bout peuvent être exécutés avec `yarn test:e2e`.
 
 Vous pouvez exécuter tous les tests en tapant simplement `yarn test`.
 

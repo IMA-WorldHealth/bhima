@@ -1,46 +1,52 @@
-/* global element, by */
-
-const helpers = require('../shared/helpers');
-const FU = require('../shared/FormUtils');
+const { chromium } = require('@playwright/test');
+const { test } = require('@playwright/test');
+const TU = require('../shared/TestUtils');
 const components = require('../shared/components');
 
-describe('Patient Edit', () => {
+test.beforeAll(async () => {
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  TU.registerPage(page);
+  await TU.login();
+});
+
+test.describe('Patient Edit', () => {
   const patient = '81af634f-321a-40de-bc6f-ceb1167a9f65';
-  const path = `#!/patients/${patient}/edit`;
+  const path = `/#!/patients/${patient}/edit`;
 
-  before(() => helpers.navigate(path));
+  test.beforeEach(async () => {
+    await TU.navigate(path, { waitUntil : 'domcontentloaded' });
+  });
 
-  it('ignores and warns for submission with no changes', async () => {
-    await FU.buttons.submit();
+  test('ignores and warns for submission with no changes', async () => {
+    await TU.buttons.submit();
     await components.notification.hasWarn();
   });
 
-  it('updates a patients details', async () => {
+  test('updates a patients details', async () => {
     // required information
-    await FU.input('PatientEditCtrl.medical.display_name', 'Updated Last Name');
+    await TU.input('PatientEditCtrl.medical.display_name', 'Updated Last Name');
 
     // optional information
-    await FU.input('PatientEditCtrl.medical.title', 'Mr.');
-    await FU.input('PatientEditCtrl.medical.email', 'update@email.com');
-    await FU.buttons.submit();
+    await TU.input('PatientEditCtrl.medical.title', 'Mr.');
+    await TU.input('PatientEditCtrl.medical.email', 'update@email.com');
+    await TU.buttons.submit();
     await components.notification.hasSuccess();
   });
 
-  it('updates a patients debtor group subscription', async () => {
+  test('updates a patients debtor group subscription', async () => {
     // opens update modal
-    await element(by.css('[data-update-group-debtor]')).click();
+    await TU.locator('[data-update-group-debtor]').click();
     await components.debtorGroupSelect.set('NGO IMA World Health');
 
-    await FU.modal.submit();
+    await TU.modal.submit();
     await components.notification.hasSuccess();
   });
 
-  it('updates a patients group subscriptions', async () => {
-    await element(by.css('[data-update-group-patient]')).click();
-
-    await element.all(by.css('[data-group-option]')).get(1).click();
-    await FU.modal.submit();
-
+  test('updates a patients group subscriptions', async () => {
+    await TU.locator('[data-update-group-patient]').click();
+    await TU.locator('[data-group-option]').nth(1).click();
+    await TU.modal.submit();
     await components.notification.hasSuccess();
   });
 });

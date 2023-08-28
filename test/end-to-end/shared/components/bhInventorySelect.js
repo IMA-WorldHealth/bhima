@@ -1,15 +1,22 @@
-/* global element, by */
+const TU = require('../TestUtils');
+const { by } = require('../TestUtils');
 
-const FU = require('../FormUtils');
+const selector = '[bh-inventory-select]';
 
 module.exports = {
-  selector : '[bh-inventory-select]',
-  set      : async function set(inventory, id) {
-    const locator = (id) ? by.id(id) : by.css(this.selector);
-    const target = element(locator);
 
+  /**
+   * Select an inventory item
+   *
+   * @param {string} inventory - name of the desired inventory item
+   * @param {string} [id] - id of the input field (optional)
+   * @returns {Promise} for selecting the desired inventory item
+   */
+  set : async function set(inventory, id) {
+    const locator = (id) ? by.id(id) : by.css(selector);
+    const target = await TU.locator(locator);
     await target.click();
 
-    await FU.uiSelect('$ctrl.inventoryUuid', inventory, target);
+    await TU.uiSelect('$ctrl.inventoryUuid', inventory, target);
   },
 };

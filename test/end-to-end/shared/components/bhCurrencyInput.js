@@ -1,28 +1,37 @@
-/* global element, by */
+const TU = require('../TestUtils');
+const { by } = require('../TestUtils');
 
 /**
  * hooks for the currency input component described in the component
  * bhCurrencyInput.js.
- * @public
  */
+
+const selector = '[data-bh-currency-input]';
+
 module.exports = {
-  selector : '[data-bh-currency-input]',
 
   /**
-   * sets the value of the currency input.
-  */
-  set : function set(value, id) {
-  // it might be clearer to do this in two steps.
-    const root = element(id ? by.id(id) : by.css(this.selector));
-    const elm = root.element(by.model('$ctrl.model'));
-    return elm.clear().sendKeys(value);
+   * sets the value of the currency input
+   *
+   * @param {string} value - The desired currency name to set
+   * @param {string} [id] - id for locator (optional)
+   * @returns {Promise} of entering the desired currency
+   */
+  set : async function set(value, id) {
+    const root = await TU.locator(id ? by.id(id) : selector);
+    const elm = await root.locator(by.model('$ctrl.model'));
+
+    // Playwright is having problems with input fields with type=number
+    return elm.type(typeof value === 'number' ? value.toString() : value);
   },
 
   /**
-   * get the value of the currency input.
+   * get the value of the currency input
+   *
+   * @returns {Promise} for the value of the currency field
    */
-  get : function get() {
-    const elm = element(by.css(this.selector));
+  get : async function get() {
+    const elm = await TU.locator(selector);
     return elm.getAttribute('value');
   },
 };

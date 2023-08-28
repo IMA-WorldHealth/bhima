@@ -1,10 +1,22 @@
-/* global by */
-const components = require('../shared/components');
-const FU = require('../shared/FormUtils');
-const helpers = require('../shared/helpers');
+const { chromium } = require('@playwright/test');
+const { test } = require('@playwright/test');
+const TU = require('../shared/TestUtils');
+const { by } = require('../shared/TestUtils');
 
-describe('Simple Vouchers', () => {
-  before(() => helpers.navigate('#/vouchers/simple'));
+const components = require('../shared/components');
+
+test.beforeAll(async () => {
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  TU.registerPage(page);
+  await TU.login();
+});
+
+test.describe('Simple Vouchers', () => {
+
+  test.beforeEach(async () => {
+    await TU.navigate('/#!/vouchers/simple');
+  });
 
   /*
    * TODO - why does this not work on midnight JAN 1 2017?
@@ -14,19 +26,19 @@ describe('Simple Vouchers', () => {
 
   const voucher = {
     date : new Date(),
-    type : 'Transfer',
-    toAccount : 'NGO',
+    type : 'Transfer of the funds Auxiliary cashbox',
+    toAccount : 'NGO', //  41111011 - NGO
     fromAccount : '57110011', // 57110011 - Caisse Auxiliaire CDF
     description : 'Awesome description',
     amount : 100.12,
   };
 
-  it('can create a simple voucher', async () => {
+  test('can create a simple voucher', async () => {
     // configure the date to yesterday
     await components.dateEditor.set(voucher.date);
 
-    await FU.input('SimpleVoucherCtrl.Voucher.details.description', voucher.description);
-    await FU.uiSelect('SimpleVoucherCtrl.Voucher.details.type_id', voucher.type);
+    await TU.input('SimpleVoucherCtrl.Voucher.details.description', voucher.description);
+    await TU.uiSelect('SimpleVoucherCtrl.Voucher.details.type_id', voucher.type);
 
     // select the appropriate accounts
     await components.accountSelect.set(voucher.fromAccount, 'fromAccount');
@@ -36,12 +48,12 @@ describe('Simple Vouchers', () => {
     await components.currencyInput.set(voucher.amount);
 
     // submit the form
-    await FU.buttons.submit();
+    await TU.buttons.submit();
 
     // make sure a receipt is displayed
-    await FU.exists(by.id('receipt-confirm-created'), true);
+    await TU.waitForSelector(by.id('receipt-confirm-created'));
 
     // close the modal
-    await FU.modal.close();
+    await TU.modal.close();
   });
 });

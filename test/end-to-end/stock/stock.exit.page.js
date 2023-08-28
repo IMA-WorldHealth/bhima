@@ -1,6 +1,8 @@
-/* global element, by */
+const { expect } = require('@playwright/test');
 
-const FU = require('../shared/FormUtils');
+const TU = require('../shared/TestUtils');
+const { by } = require('../shared/TestUtils');
+
 const GU = require('../shared/GridUtils');
 const components = require('../shared/components');
 
@@ -26,21 +28,19 @@ function StockExitPage() {
       await components.findPatient.findById(reference);
     }
 
-    if (invoice) {
-      await clickJoinInvoice();
-      await components.findInvoice.set(invoice);
-    }
+    await TU.waitForSelector(by.model('$ctrl.invoiceReference')); // Wait for the prompt for invoices to appear
+    await components.findInvoice.set(invoice);
 
-    await FU.modal.submit();
+    return TU.modal.submit();
   };
 
-  /**
-   * @method unset invoice
-   */
-  function clickJoinInvoice() {
-    const elm = element(by.model('$ctrl.joinInvoice'));
-    return elm.click();
-  }
+  // ??? /**
+  //  * @method unset invoice
+  //  */
+  // function clickJoinInvoice() {
+  //   const elm = TU.locator(by.model('$ctrl.joinInvoice'));
+  //   return elm.click();
+  // }
 
   /**
    * @method setService
@@ -48,9 +48,9 @@ function StockExitPage() {
    */
   page.setService = async function setService(service) {
     await components.stockEntryExitType.set('service');
-    const modalContent = element(by.css('[class="modal-content"]'));
-    await FU.uiSelect('$ctrl.selected', service, modalContent);
-    await FU.modal.submit();
+    const modalContent = TU.locator('[class="modal-content"]');
+    await TU.uiSelect('$ctrl.selected', service, modalContent);
+    return TU.modal.submit();
   };
 
   /**
@@ -59,11 +59,11 @@ function StockExitPage() {
    */
   page.setServiceRequisition = async function setServiceRequisition(requisition) {
     await components.stockEntryExitType.set('service');
-    const modalContent = element(by.css('[class="modal-content"]'));
-    await FU.uiSelect('$ctrl.selected', requisition.service, modalContent);
+    const modalContent = TU.locator('[class="modal-content"]');
+    await TU.uiSelect('$ctrl.selected', requisition.service, modalContent);
     await components.yesNoRadios.set('yes', 'requisitionVoucherExist');
     await components.requisitionSelect.set(requisition.reference);
-    await FU.modal.submit();
+    return TU.modal.submit();
   };
 
   /**
@@ -72,11 +72,11 @@ function StockExitPage() {
    */
   page.setDepotRequisition = async function setDepotRequisition(requisition) {
     await components.stockEntryExitType.set('depot');
-    const modalContent = element(by.css('[class="modal-content"]'));
-    await FU.uiSelect('$ctrl.selected', requisition.depot, modalContent);
+    const modalContent = TU.locator('[class="modal-content"]');
+    await TU.uiSelect('$ctrl.selected', requisition.depot, modalContent);
     await components.yesNoRadios.set('yes', 'requisitionVoucherExist');
     await components.requisitionSelect.set(requisition.reference);
-    await FU.modal.submit();
+    return TU.modal.submit();
   };
 
   /**
@@ -85,13 +85,17 @@ function StockExitPage() {
    */
   page.preventDepotRequisition = async function preventDepotRequisition(requisition) {
     await components.stockEntryExitType.set('depot');
-    const modalContent = element(by.css('[class="modal-content"]'));
-    await FU.uiSelect('$ctrl.selected', requisition.depot, modalContent);
+    const modalContent = TU.locator('[class="modal-content"]');
+    await TU.uiSelect('$ctrl.selected', requisition.depot, modalContent);
     await components.yesNoRadios.set('yes', 'requisitionVoucherExist');
     await components.requisitionSelect.set(requisition.reference);
-    await FU.modal.submit();
-    await FU.exists(by.className(requisition.className), true);
-    await FU.modal.cancel();
+    await TU.modal.submit();
+
+    // Verify that we get an error message
+    await TU.waitForSelector(by.className(requisition.className));
+    expect(await TU.isPresent(`[class="${requisition.className}"]`));
+
+    return TU.modal.cancel();
   };
 
   /**
@@ -100,16 +104,16 @@ function StockExitPage() {
    */
   page.setDestinationDepot = async function setDestinationDepot(depot) {
     await components.stockEntryExitType.set('depot');
-    const modalContent = element(by.css('[class="modal-content"]'));
-    await FU.uiSelect('$ctrl.selected', depot, modalContent);
-    await FU.modal.submit();
+    const modalContent = TU.locator('[class="modal-content"]');
+    await TU.uiSelect('$ctrl.selected', depot, modalContent);
+    return TU.modal.submit();
   };
 
   /**
    * @method setLoss
    */
   page.setLoss = async function setLoss() {
-    await components.stockEntryExitType.set('loss');
+    return components.stockEntryExitType.set('loss');
   };
 
   /**
@@ -117,7 +121,7 @@ function StockExitPage() {
    * @param {string} descrition - the exit description
    */
   page.setDescription = function setDescription(description) {
-    return FU.input('StockCtrl.movement.description', description);
+    return TU.input('StockCtrl.stockForm.details.description', description);
   };
 
   /**
@@ -139,41 +143,40 @@ function StockExitPage() {
    * @method setItem
    */
   page.setItem = async function setItem(rowNumber, code, lot, quantity) {
-    // inventory code column
-    const itemCell = await GU.getCell(gridId, rowNumber, 1);
+    const row = await GU.getRow(gridId, rowNumber);
 
-    // inventory lot column
-    const lotCell = await GU.getCell(gridId, rowNumber, 3);
+    // Select the inventory item
+    const itemCell = await row.locator(by.model('row.entity.inventory_uuid'));
+    await TU.fill(itemCell, code);
+    await itemCell.press('Enter');
 
-    // inventory quantity column
-    const quantityCell = await GU.getCell(gridId, rowNumber, 4);
-
-    // enter data into the typeahead input.
-    await FU.input('row.entity.inventory', code, itemCell);
-
-    const externalAnchor = $('body > ul.dropdown-menu.ng-isolate-scope:not(.ng-hide)');
-    const option = externalAnchor.element(by.cssContainingText('[role="option"]', code));
-    await option.click();
-
-    // select the inventory lot
-    await FU.uiSelectAppended('row.entity.lot', lot, lotCell);
+    // Choose the desired lot
+    const lotCell = await row.locator(by.model('row.entity.lot_uuid'));
+    await lotCell.click();
+    await TU.waitForSelector('.ui-select-choices-row-inner');
+    const sel = await TU.locator(`a:has-text("${lot}")`);
+    await sel.click();
 
     // set the quantity
-    await FU.input('row.entity.quantity', quantity, quantityCell);
+    const quantityCell = await row.locator(by.model('row.entity.quantity'));
+    return TU.fill(quantityCell, quantity);
   };
 
   /**
    * @method setLot
    */
   page.setLot = async (rowNumber, lot, quantity) => {
-    const lotCell = await GU.getCell(gridId, rowNumber, 3);
-    await FU.uiSelectAppended('row.entity.lot', lot, lotCell);
+    const row = await GU.getRow(gridId, rowNumber);
+
+    const lotCell = await row.locator(by.model('row.entity.lot_uuid'));
+    await lotCell.click();
+    await TU.waitForSelector('.ui-select-choices-row-inner');
+    const sel = await TU.locator(`a:has-text("${lot}")`);
+    await sel.click();
 
     if (quantity) {
-      // inventory quantity column
-      const quantityCell = await GU.getCell(gridId, rowNumber, 4);
-      // set the quantity
-      await FU.input('row.entity.quantity', quantity, quantityCell);
+      const quantityCell = await row.locator(by.model('row.entity.quantity'));
+      await TU.fill(quantityCell, quantity);
     }
   };
 
@@ -181,22 +184,23 @@ function StockExitPage() {
    * @method submit
    */
   page.submit = async function submit() {
-    await FU.buttons.submit();
+    await TU.buttons.submit();
 
     // the receipt modal is displayed
-    await FU.exists(by.id('receipt-confirm-created'), true);
+    await TU.waitForSelector(by.id('receipt-confirm-created'));
+    await TU.exists(by.id('receipt-confirm-created'), true);
 
     // close the modal
-    await $('[data-action="close"]').click();
+    return TU.buttons.close();
   };
 
   /**
    * @method submitError
    */
   page.submitError = async function submitError() {
-    FU.buttons.submit();
+    TU.buttons.submit();
 
-    await components.notification.hasDanger();
+    return components.notification.hasDanger();
   };
 
 }

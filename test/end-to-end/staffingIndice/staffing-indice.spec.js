@@ -1,13 +1,24 @@
-const FU = require('../shared/FormUtils');
-const helpers = require('../shared/helpers');
+const { chromium } = require('@playwright/test');
+const { test } = require('@playwright/test');
+const TU = require('../shared/TestUtils');
+
+test.beforeAll(async () => {
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  TU.registerPage(page);
+  await TU.login();
+});
+
 const components = require('../shared/components');
 const GA = require('../shared/GridAction');
 
-describe('Staffing indice Management Tests', () => {
+test.describe('Staffing indice Management Tests', () => {
 
-  const path = '#!/staffing_indices';
-  // navigate to the page before the test suite
-  before(() => helpers.navigate(path));
+  const path = '/#!/staffing_indices';
+
+  test.beforeEach(async () => {
+    await TU.navigate(path);
+  });
 
   const indice = {
     grade : 'grade 3',
@@ -27,54 +38,59 @@ describe('Staffing indice Management Tests', () => {
 
   const gridId = 'staffing-indice-grid';
   const actionLinkCol = 6;
-  it('creates a new staffing indice', async () => {
-    await FU.buttons.create();
+
+  test('creates a new staffing indice', async () => {
+    await TU.buttons.create();
     await components.employeeSelect.set(indice.employee);
     await components.gradeSelect.set(indice.grade);
-    await components.fonctionSelect.set(indice.function);
-    await components.inpuText.set('grade_indice', indice.grade_indice);
-    await components.inpuText.set('function_indice', indice.function_indice);
+    await components.functionSelect.set(indice.function);
+    await components.inputText.set('grade_indice', indice.grade_indice);
+    await components.inputText.set('function_indice', indice.function_indice);
     // submit the page to the server
-    await FU.buttons.submit();
+    await TU.buttons.submit();
     await components.notification.hasSuccess();
   });
 
-  it('should edit a staffing indice', async () => {
+  test('should edit a staffing indice', async () => {
+    // Make sure the grid is loaded
+    await TU.waitForSelector('.ui-grid-canvas .ui-grid-row');
     await GA.clickOnMethod(2, actionLinkCol, 'edit-record', gridId);
-    await components.inpuText.set('function_indice', 200);
+    await components.inputText.set('function_indice', 200);
     // submit the page to the server
-    await FU.buttons.submit();
+    await TU.buttons.submit();
     await components.notification.hasSuccess();
   });
 
-  it('creates a new Staffing indice', async () => {
-    await FU.buttons.create();
+  test('creates a new Staffing indice', async () => {
+    await TU.buttons.create();
     await components.employeeSelect.set(indiceTest.employee);
     await components.gradeSelect.set(indiceTest.grade);
-    await components.fonctionSelect.set(indiceTest.function);
-    await components.inpuText.set('grade_indice', indiceTest.grade_indice);
-    await components.inpuText.set('function_indice', indiceTest.function_indice);
+    await components.functionSelect.set(indiceTest.function);
+    await components.inputText.set('grade_indice', indiceTest.grade_indice);
+    await components.inputText.set('function_indice', indiceTest.function_indice);
     // submit the page to the server
-    await FU.buttons.submit();
+    await TU.buttons.submit();
     await components.notification.hasSuccess();
   });
 
-  it('should delete the staffing indice', async () => {
+  test('should delete the staffing indice', async () => {
+    // Make sure the grid is loaded
+    await TU.waitForSelector('.ui-grid-canvas .ui-grid-row');
     // click the edit button
     await GA.clickOnMethod(3, actionLinkCol, 'delete-record', gridId);
-    await FU.buttons.submit();
+    await TU.buttons.submit();
     await components.notification.hasSuccess();
   });
 
-  it('blocks invalid form submission with relevant error classes', async () => {
+  test('blocks invalid form submission with relevant error classes', async () => {
     // switch to the create form
-    await FU.buttons.create();
+    await TU.buttons.create();
     // submit the page to the server
-    await FU.buttons.submit();
+    await TU.buttons.submit();
     // the following fields should be required
-    await components.inpuText.validationError('function_indice');
-    await components.inpuText.validationError('grade_indice');
-    await FU.buttons.cancel();
+    await components.inputText.validationError('function_indice');
+    await components.inputText.validationError('grade_indice');
+    await TU.buttons.cancel();
   });
 
 });

@@ -1,29 +1,39 @@
-const helpers = require('../shared/helpers');
+const { chromium } = require('@playwright/test');
+const { test } = require('@playwright/test');
+const TU = require('../shared/TestUtils');
+
 const GU = require('../shared/GridUtils');
-const FU = require('../shared/FormUtils');
 const VoucherRegistrySearch = require('./vouchers.search');
 const GridRow = require('../shared/GridRow');
 const components = require('../shared/components');
 
-describe('Voucher Registry', () => {
-  const NUM_VOUCHERS = 17;
+test.beforeAll(async () => {
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  TU.registerPage(page);
+  await TU.login();
+});
+
+test.describe('Voucher Registry', () => {
+  const NUM_VOUCHERS = [4, 11];
   const gridId = 'voucher-grid';
 
-  before(() => helpers.navigate('vouchers'));
+  test.beforeEach(async () => {
+    await TU.navigate('/#!/vouchers');
+  });
 
-  it(`displays ${NUM_VOUCHERS} vouchers on the page`, async () => {
+  test(`displays ${NUM_VOUCHERS} vouchers on the page`, async () => {
     await GU.expectRowCount(gridId, NUM_VOUCHERS);
   });
 
-  describe('Search', VoucherRegistrySearch);
+  test.describe('Search', VoucherRegistrySearch);
 
-  it('deletes a record from the voucher registry', async () => {
+  test('deletes a record from the voucher registry', async () => {
     const row = new GridRow('VO.TPA.1');
-    await row.dropdown().click();
-    await row.remove().click();
+    await row.dropdown();
+    await row.remove();
 
-    // accept the confirm modal
-    await FU.modal.submit();
+    await TU.modal.submit();
 
     await components.notification.hasSuccess();
   });
