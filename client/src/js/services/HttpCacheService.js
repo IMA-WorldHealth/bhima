@@ -15,6 +15,7 @@ HttpCacheService.$inject = ['$interval'];
  *
  * NOTE(@jniles) - we use $interval here to avoid slowing down protractor tests.
  * Thanks to @sfount who debugged this in Dec 2016.
+ * TODO(@jniles) - do we still need this workaround?
  */
 function HttpCacheService($interval) {
 

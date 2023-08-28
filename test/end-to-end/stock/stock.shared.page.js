@@ -1,6 +1,6 @@
-/* global by, element */
 const path = require('path');
-const FU = require('../shared/FormUtils');
+const TU = require('../shared/TestUtils');
+const { by } = require('../shared/TestUtils');
 
 const fixtures = path.resolve(__dirname, '../../fixtures/');
 
@@ -12,10 +12,10 @@ const fixtures = path.resolve(__dirname, '../../fixtures/');
  */
 async function selectDropdownAction(action) {
   // open the dropdown menu
-  await $('[data-action="open-tools"]').click();
+  await TU.locator('[data-action="open-tools"]').click();
 
   // get the action and click it
-  await $(`[data-action="${action}"]`).click();
+  return TU.locator(`[data-action="${action}"]`).click();
 }
 
 /**
@@ -24,21 +24,15 @@ async function selectDropdownAction(action) {
  * @description
  * Makes sure that the modal is either already open or opens it.
  *
- * TODO(@jniles) This isn't great practice ... it probably should be re-examined
+ * @TODO (@jniles) This isn't great practice ... it probably should be re-examined
  * if tests should have conditionals like this.
  */
-function ensureModalIsOpen() {
-  const modal = $('[data-depot-selection-modal]');
+async function ensureModalIsOpen() {
+  if (await TU.isPresent('[data-depot-selection-modal]')) {
+    return true;
+  }
 
-  return modal.isPresent()
-    .then(isPresent => {
-
-      // if this is present, return
-      if (isPresent) { return 0; }
-
-      // else, open the modal
-      return selectDropdownAction('change-depot');
-    });
+  return selectDropdownAction('change-depot');
 }
 
 /**
@@ -50,10 +44,12 @@ function ensureModalIsOpen() {
 async function setDepot(label) {
   await ensureModalIsOpen();
 
-  const depot = element(by.cssContainingText('li.list-group-item', label));
+  // Make sure the menu of depots is fully loaded and showing
+  await TU.waitForSelector('li.list-group-item');
+  const depot = await TU.locator(`li.list-group-item:has-text("${label}")`);
   await depot.click();
 
-  await FU.modal.submit();
+  return TU.modal.submit();
 }
 
 /**
@@ -65,7 +61,7 @@ async function setDepot(label) {
  */
 async function uploadFile(fileToUpload, elementId = 'import-input') {
   const absolutePath = path.resolve(fixtures, fileToUpload);
-  await element(by.id(elementId)).sendKeys(absolutePath);
+  return TU.uploadFile(absolutePath, by.id(elementId));
 }
 
 // make this available to all modules

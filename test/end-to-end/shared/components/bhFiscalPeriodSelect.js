@@ -1,20 +1,23 @@
-/* global element, by */
+const TU = require('../TestUtils');
+const { by } = require('../TestUtils');
+
+const mainSelector = '[bh-fiscal-period-select]';
 
 module.exports = {
-  mainSelector : '[bh-fiscal-period-select]',
+
   set : async function set(fiscalYearId, periodFromId, periodToId, id) {
-    const getValue = ident => by.css(`option[value="number:${ident}"]`);
-    const getById = ident => by.css(`option[value="${ident}"]`);
+    const getValue = ident => `option[value="number:${ident}"]`;
+    const getById = ident => `option[value="${ident}"]`;
 
-    const bhFiscalPeriod = (id) ? element(by.id(id)) : element(by.css(this.mainSelector));
+    const bhFiscalPeriod = (id) ? TU.locator(by.id(id)) : TU.locator(mainSelector);
 
-    let opts = bhFiscalPeriod.element(by.model('$ctrl.selectedFiscal'));
-    await opts.element(getValue(fiscalYearId)).click();
+    let opts = bhFiscalPeriod.locator(by.model('$ctrl.selectedFiscal'));
+    await opts.locator(getValue(fiscalYearId)).click();
 
-    opts = bhFiscalPeriod.element(by.model('$ctrl.selectedPeriodFrom'));
-    await opts.element(getById(periodFromId)).click();
+    opts = bhFiscalPeriod.locator(by.model('$ctrl.selectedPeriodFrom'));
+    await opts.locator(getById(periodFromId)).click();
 
-    opts = bhFiscalPeriod.element(by.model('$ctrl.selectedPeriodTo'));
-    await opts.element(getById(periodToId)).click();
+    opts = bhFiscalPeriod.locator(by.model('$ctrl.selectedPeriodTo'));
+    return opts.locator(getById(periodToId)).click();
   },
 };

@@ -1,14 +1,14 @@
-const helpers = require('../shared/helpers');
+const { test } = require('@playwright/test');
+
 const PatientRegistrySearch = require('./registry.search');
 const PatientMerge = require('./registry.merge');
 
 // patient registry tests
-describe('Patient Registry', () => {
-  before(() => helpers.navigate('#/patients'));
+test.describe('Patient Registry', () => {
 
   // groups patient search modal queries
-  describe('Search', PatientRegistrySearch);
+  test.describe('Search', PatientRegistrySearch);
 
   // merge patients
-  describe('Merge patients', PatientMerge);
+  test.describe('Merge patients', PatientMerge);
 });

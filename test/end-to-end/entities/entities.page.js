@@ -1,28 +1,24 @@
-/* eslint  */
-/* global element, by */
-
-/**
- * This class is represents a entity page in term of structure and
- * behaviour so it is a entity page object.
- */
-const FU = require('../shared/FormUtils');
+const TU = require('../shared/TestUtils');
 const components = require('../shared/components');
 
 const GridRow = require('../shared/GridRow');
 
+/**
+ * This class is represents a entity page in term of structure and
+ * behavior so it is a entity page object.
+ */
 class EntityPage {
   constructor() {
     this.gridId = 'entity-grid';
-    this.entityGrid = element(by.id(this.gridId));
   }
 
   /**
    * create an entity
    */
   async createEntity(name, type, gender, phone, email, address) {
-    await FU.buttons.create();
+    await TU.buttons.create();
     // entity name
-    await FU.input('EntityModalCtrl.entity.display_name', name);
+    await TU.input('EntityModalCtrl.entity.display_name', name);
 
     // entity type
     await components.entityTypeSelect.set(type);
@@ -31,26 +27,16 @@ class EntityPage {
     await components.genderSelect.set(gender);
 
     // entity phone
-    await FU.input('EntityModalCtrl.entity.phone', phone);
+    await TU.input('EntityModalCtrl.entity.phone', phone);
 
     // entity email
-    await FU.input('EntityModalCtrl.entity.email', email);
+    await TU.input('EntityModalCtrl.entity.email', email);
 
     // entity address
-    await FU.input('EntityModalCtrl.entity.address', address);
+    await TU.input('EntityModalCtrl.entity.address', address);
 
-    await FU.buttons.submit();
+    await TU.buttons.submit();
     await components.notification.hasSuccess();
-  }
-
-  /**
-   * block creation without the entity name
-   */
-  async errorOnCreateEntity() {
-    await FU.buttons.create();
-    await FU.buttons.submit();
-    await FU.validation.error('EntityModalCtrl.entity.display_name');
-    await FU.buttons.cancel();
   }
 
   /**
@@ -58,11 +44,12 @@ class EntityPage {
    */
   async editEntity(name, newName, type, gender, phone, email, address) {
     const row = new GridRow(name);
-    await row.dropdown().click();
-    await row.edit().click();
+
+    await row.dropdown();
+    await row.edit();
 
     if (newName) {
-      await FU.input('EntityModalCtrl.entity.display_name', newName);
+      await TU.input('EntityModalCtrl.entity.display_name', newName);
     }
 
     if (type) {
@@ -74,19 +61,29 @@ class EntityPage {
     }
 
     if (phone) {
-      await FU.input('EntityModalCtrl.entity.phone', phone);
+      await TU.input('EntityModalCtrl.entity.phone', phone);
     }
 
     if (email) {
-      await FU.input('EntityModalCtrl.entity.email', email);
+      await TU.input('EntityModalCtrl.entity.email', email);
     }
 
     if (address) {
-      await FU.input('EntityModalCtrl.entity.address', address);
+      await TU.input('EntityModalCtrl.entity.address', address);
     }
 
-    await FU.modal.submit();
+    await TU.modal.submit();
     await components.notification.hasSuccess();
+  }
+
+  /**
+   * block creation without the entity name
+   */
+  async errorOnCreateEntity() {
+    await TU.buttons.create();
+    await TU.buttons.submit();
+    await TU.validation.error('EntityModalCtrl.entity.display_name');
+    await TU.buttons.cancel();
   }
 
   /**
@@ -94,8 +91,8 @@ class EntityPage {
    */
   async deleteEntity(name) {
     const row = new GridRow(name);
-    await row.dropdown().click();
-    await row.remove().click();
+    await row.dropdown();
+    await row.remove();
 
     await components.modalAction.confirm();
     await components.notification.hasSuccess();

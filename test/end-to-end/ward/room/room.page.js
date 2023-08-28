@@ -1,6 +1,6 @@
-/* global by, element */
+const TU = require('../../shared/TestUtils');
+const { by } = require('../../shared/TestUtils');
 
-const FU = require('../../shared/FormUtils');
 const components = require('../../shared/components');
 const GridRow = require('../../shared/GridRow');
 
@@ -10,19 +10,19 @@ class RoomPage {
   }
 
   submit() {
-    return FU.modal.submit();
+    return TU.modal.submit();
   }
 
   cancel() {
-    return FU.modal.cancel();
+    return TU.modal.cancel();
   }
 
   setLabel(txt) {
-    return components.inpuText.set('label', txt);
+    return components.inputText.set('label', txt);
   }
 
   labelValidationError() {
-    return components.inpuText.validationError('label');
+    return components.inputText.validationError('label');
   }
 
   wardValidationError() {
@@ -30,8 +30,8 @@ class RoomPage {
   }
 
   setDescription(txt) {
-    const RoomDescription = element(by.model('ModalCtrl.room.description'));
-    return RoomDescription.clear().sendKeys(txt);
+    const RoomDescription = TU.locator(by.model('ModalCtrl.room.description'));
+    return RoomDescription.fill(txt);
   }
 
   setWard(ward) {
@@ -40,22 +40,22 @@ class RoomPage {
 
   async openDropdownMenu(label) {
     const row = new GridRow(label);
-    await row.dropdown().click();
+    await row.dropdown();
     return row;
   }
 
   async editRoom(label) {
     const row = await this.openDropdownMenu(label);
-    await row.edit().click();
+    await row.edit();
   }
 
   async deleteRoom(label) {
     const row = await this.openDropdownMenu(label);
-    await row.remove().click();
+    await row.remove();
   }
 
   openCreateModal() {
-    return element(by.css('[data-create-room]')).click();
+    return TU.locator('[data-create-room]').click();
   }
 }
 

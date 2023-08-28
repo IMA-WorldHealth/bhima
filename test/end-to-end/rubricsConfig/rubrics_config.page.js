@@ -1,8 +1,7 @@
-/* global element, by, browser */
+const TU = require('../shared/TestUtils');
+const { by } = require('../shared/TestUtils');
 
-const EC = require('protractor').ExpectedConditions;
 const GridRow = require('../shared/GridRow');
-const FU = require('../shared/FormUtils');
 const { notification } = require('../shared/components');
 
 class RubricConfigPage {
@@ -10,74 +9,74 @@ class RubricConfigPage {
     this.gridId = 'rubric-grid';
   }
 
-  count() {
-    return element(by.id(this.gridId))
-      .element(by.css('.ui-grid-render-container-body'))
-      .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'))
-      .count();
+  async count() {
+    const rows = await TU.locator(by.id(this.gridId))
+      .locator('.ui-grid-render-container-body')
+      .locator(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'));
+    return rows.count();
   }
 
   async create(rubric) {
-    await FU.buttons.create();
-    await FU.input('ConfigModalCtrl.rubric.label', rubric.label);
+    await TU.buttons.create();
+    await TU.input('ConfigModalCtrl.rubric.label', rubric.label);
 
-    await FU.modal.submit();
+    await TU.modal.submit();
     await notification.hasSuccess();
   }
 
   async errorOnCreateRubricConfig() {
-    await FU.buttons.create();
-    await FU.modal.submit();
-    await FU.validation.error('ConfigModalCtrl.rubric.label');
-    await FU.modal.cancel();
+    await TU.buttons.create();
+    await TU.modal.submit();
+    await TU.validation.error('ConfigModalCtrl.rubric.label');
+    await TU.modal.cancel();
   }
 
   async update(label, updateRubricConfig) {
     const row = new GridRow(label);
-    await row.dropdown().click();
-    await row.edit().click();
+    await row.dropdown();
+    await row.edit();
 
-    await FU.input('ConfigModalCtrl.rubric.label', updateRubricConfig.label);
+    await TU.input('ConfigModalCtrl.rubric.label', updateRubricConfig.label);
 
-    await FU.modal.submit();
+    await TU.modal.submit();
     await notification.hasSuccess();
   }
 
   async setRubricConfig(label) {
     const row = new GridRow(label);
-    await row.dropdown().click();
-    await row.method('configure').click();
+    await row.dropdown();
+    await row.method('configure');
 
-    await browser.wait(EC.elementToBeClickable(element(by.id('social'))), 1500);
+    await TU.waitForSelector(by.id('social'));
 
-    await element(by.id('social')).click();
-    await element(by.id('tax')).click();
+    await TU.locator(by.id('social')).click();
+    await TU.locator(by.id('tax')).click();
 
-    await FU.modal.submit();
+    await TU.modal.submit();
     await notification.hasSuccess();
   }
 
   async unsetRubricConfig(label) {
     const row = new GridRow(label);
-    await row.dropdown().click();
-    await row.method('configure').click();
+    await row.dropdown();
+    await row.method('configure');
 
-    const checkbox = element(by.id('all'));
-    await browser.wait(EC.elementToBeClickable(checkbox), 1500);
+    await TU.waitForSelector(by.id('all'));
+    const checkbox = TU.locator(by.id('all'));
 
     // double click to set all, then unset
     await checkbox.click();
     await checkbox.click();
 
-    await FU.modal.submit();
+    await TU.modal.submit();
     await notification.hasSuccess();
   }
 
   async remove(label) {
     const row = new GridRow(label);
-    await row.dropdown().click();
-    await row.remove().click();
-    await FU.modal.submit();
+    await row.dropdown();
+    await row.remove();
+    await TU.modal.submit();
     await notification.hasSuccess();
   }
 }

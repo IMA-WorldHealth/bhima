@@ -1,77 +1,73 @@
-/* global element, by */
+const { chromium } = require('@playwright/test');
+const { test, expect } = require('@playwright/test');
+const TU = require('../shared/TestUtils');
 
-const { expect } = require('chai');
-const helpers = require('../shared/helpers');
-const FU = require('../shared/FormUtils');
+const settings = '/#!/settings';
 
-describe('Errors', () => {
-  describe('404', Test404ErrorHandling);
-  describe('403', Test403ErrorHandling);
+test.beforeAll(async () => {
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  TU.registerPage(page);
+});
+
+test.describe('Errors', () => {
+  test.describe('404', Test404ErrorHandling);
+  test.describe('403', Test403ErrorHandling);
 });
 
 function Test404ErrorHandling() {
-  const path = '#!/incorrectPath';
+  const badPath = '/#!/incorrectPath';
 
-  // navigate to the page
-  before(() => helpers.navigate(path));
+  test('shows a 404 page when the path does exist', async () => {
+    // Log in as superuser
+    await TU.login();
 
-  it('shows a 404 page when the path doesn\'t exist', async () => {
+    // Navigate to a bad path
+    await TU.navigate(badPath);
+    await TU.waitForSelector('[data-error="404"]');
+
     // make sure 404 exists
-    await FU.exists(by.css('[data-error="404"]'), true);
+    await TU.exists('[data-error="404"]', true);
 
     // make sure URL is preserved
-    expect(await helpers.getCurrentPath()).to.equal(path);
+    expect(await TU.getCurrentPath()).toBe(badPath);
 
     // make sure we can navigate away
-    const settings = '#!/settings';
-    await helpers.navigate(settings);
-    expect(await helpers.getCurrentPath()).to.equal(settings);
+    await TU.navigate(settings);
+    expect(await TU.getCurrentPath()).toBe(settings);
+
+    await TU.logout();
   });
 
 }
 
 function Test403ErrorHandling() {
-  before(async () => {
-    await helpers.navigate('#!/settings');
-
-    // click logout
-    await element(by.css('[data-logout-button]')).click();
-
-    // Login for Regular User, the regular User have the right on #!/account and #!/fiscal
-    await FU.input('LoginCtrl.credentials.username', 'RegularUser');
-    await FU.input('LoginCtrl.credentials.password', 'RegularUser');
-
-    await FU.buttons.submit();
-  });
 
   async function navigateToUnauthorizedRoute(route) {
-    await helpers.navigate(route);
-    await FU.exists(by.css('[data-error="403"]'), true);
-    expect(await helpers.getCurrentPath()).to.equal(route);
-    await helpers.navigate('#!/settings');
+    // Reset to a good path
+    await TU.navigate(settings);
+
+    // Navigate to the unauthorized path
+    await TU.navigate(route);
+
+    // Make sure it raises a 403 error
+    await TU.waitForSelector('[data-error="403"]');
+    await TU.exists('[data-error="403"]', true);
+    expect(await TU.getCurrentPath()).toBe(route);
   }
 
-  it('check Authorized and unauthorized Path of the user RegularUser:', async () => {
-    await navigateToUnauthorizedRoute('#!/employees');
+  test('check Unauthorized Paths of the user RegularUser:', async () => {
+    await TU.login('RegularUser', 'RegularUser');
 
-    await navigateToUnauthorizedRoute('#!/debtors/groups');
+    await navigateToUnauthorizedRoute('/#!/employees');
 
-    await navigateToUnauthorizedRoute('#!/patients/register');
+    await navigateToUnauthorizedRoute('/#!/debtors/groups');
 
-    await navigateToUnauthorizedRoute('#!/cashboxes');
+    await navigateToUnauthorizedRoute('/#!/patients/register');
+
+    await navigateToUnauthorizedRoute('/#!/cashboxes');
+
+    await TU.logout();
   });
 
-  // this function is called after all tests are run.
-  after(async () => {
-    // go to settings
-    await helpers.navigate('#!/settings');
-
-    // click logout
-    await element(by.css('[data-logout-button]')).click();
-
-    // Login for Regular User, the Super User
-    await FU.input('LoginCtrl.credentials.username', 'superuser');
-    await FU.input('LoginCtrl.credentials.password', 'superuser');
-    await FU.buttons.submit();
-  });
 }

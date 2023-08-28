@@ -1,44 +1,48 @@
-/* global element, by */
-
-/**
-* Date editor component interface for e2e test
-* @public
-*/
-const { expect } = require('chai');
+const { expect } = require('@playwright/test');
+const TU = require('../TestUtils');
+const { by } = require('../TestUtils');
 
 module.exports = {
 
   // root level css selector for this component
   selector : '[input-text]',
 
-  getInput : (id) => {
-    const root = element((id) ? by.id(id) : by.css(this.selector));
-    return id ? root : root.element(by.css('[input-text-field]'));
+  getInput : async (id) => {
+    if (id) {
+      return TU.locator(by.id(id));
+    }
+    const root = await TU.locator(this.selector);
+    if (root) {
+      return root;
+    }
+    const root2 = await TU.locator('[input-text-field]');
+    return root2;
   },
 
   /**
    * Sets the input's value by it id
    *
-   * @param {Date} value - the text value
-   * @param {String} id - a CSS id to select on.
+   * @param {string} id - a CSS id to select on.
+   * @param {string} value - the text value
    */
   set : async function set(id, value) {
-    const input = this.getInput(id);
+    const input = await this.getInput(id);
     await input.clear();
-    await input.sendKeys(value); // set the input value
+    // Convert numbers to string due to Playwright limitations
+    await input.fill(typeof value === 'number' ? value.toString() : value); // set the input value
   },
 
-  validationError : async function err(id) {
-    expect(
-      await this.getInput(id).getAttribute('class'),
-      `Expected ${id} to be invalid, but could not find the ng-invalid class.`
-    ).to.contain('ng-invalid');
+  validationError : async function validationError(id) {
+    const field = await this.getInput(id);
+    const classes = await field.getAttribute('class');
+    expect(classes.includes('ng-invalid'),
+      `Expected ${id} to be invalid, but could not find the ng-invalid class.`);
   },
 
-  validationOk : async function err(id) {
-    expect(
-      await this.getInput(id).getAttribute('class'),
-      `Expected ${id} to be invalid, but could not find the ng-invalid class.`
-    ).to.contain('ng-valid');
+  validationOk : async function validationOk(id) {
+    const field = await this.getInput(id);
+    const classes = await field.getAttribute('class');
+    expect(classes.includes('ng-valid'),
+      `Expected ${id} to be invalid, but could not find the ng-invalid class.`);
   },
 };

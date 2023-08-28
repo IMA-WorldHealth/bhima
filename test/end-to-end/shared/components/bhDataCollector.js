@@ -1,14 +1,15 @@
-/* global element, by */
+const TU = require('../TestUtils');
+const { by } = require('../TestUtils');
 
 module.exports = {
-  selector : '[bh-data-collector]',
+
   set      : async function set(dataCollector) {
-    // get the dropdown
-    const dropdown = element(by.css('[uib-dropdown-toggle]'));
-    await dropdown.click();
+
+    // Open the drop-down menu
+    await TU.locator('bh-data-collector [uib-dropdown-toggle]').click();
 
     // click the correct dropdown item
-    const option = element(by.linkText(dataCollector));
+    const option = await TU.locator(by.linkContainsText(dataCollector));
     await option.click();
   },
 };

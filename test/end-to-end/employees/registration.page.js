@@ -1,91 +1,89 @@
-/* global element, by */
-/* eslint  */
+const TU = require('../shared/TestUtils');
+const { by } = require('../shared/TestUtils');
+
+const components = require('../shared/components');
+const GridRow = require('../shared/GridRow');
 
 /**
  * This class is represents an employee registration page
  * behaviour so it is an employee page object
  */
 
-const FU = require('../shared/FormUtils');
-const components = require('../shared/components');
-const GridRow = require('../shared/GridRow');
-
 class RegistrationPage {
   async editEmployee(reference) {
     const row = new GridRow(reference);
-    await row.dropdown().click();
-    await row.edit().click();
+    await row.dropdown();
+    await row.edit();
   }
 
   createEmployee() {
-    return FU.buttons.submit();
+    return TU.buttons.submit();
   }
 
   // set display name
   setDisplayName(displayName) {
-    return FU.input('EmployeeCtrl.employee.display_name', displayName);
+    return TU.input('EmployeeCtrl.employee.display_name', displayName);
   }
 
   // set dob
   setDob(dob) {
-    return FU.input('EmployeeCtrl.employee.dob', dob);
+    return TU.input('EmployeeCtrl.employee.dob', dob);
   }
 
   // set sex
   setSex(sex) {
     const id = (sex === 'M') ? 'male' : 'female';
-    return $(`[id="${id}"]`).click();
+    return TU.locator(by.id(id)).click();
   }
-
 
   // set number of spouse
   setNumberChild(nbEnfant) {
-    return FU.input('EmployeeCtrl.employee.nb_enfant', nbEnfant);
+    return TU.input('EmployeeCtrl.employee.nb_enfant', nbEnfant);
   }
 
   // set hiring date
   setHiringDate(hiringDate) {
-    return FU.input('EmployeeCtrl.employee.date_embauche', hiringDate);
+    return TU.input('EmployeeCtrl.employee.date_embauche', hiringDate);
   }
 
   // set the employee code
   setCode(code) {
-    return FU.input('EmployeeCtrl.employee.code', code);
+    return TU.input('EmployeeCtrl.employee.code', code);
   }
 
   // set service
   setService(service) {
-    return FU.uiSelect('EmployeeCtrl.employee.service_uuid', service);
+    return TU.uiSelect('EmployeeCtrl.employee.service_uuid', service);
   }
 
   // set grade
   setGrade(grade) {
-    return FU.uiSelect('EmployeeCtrl.employee.grade_uuid', grade);
+    return TU.uiSelect('EmployeeCtrl.employee.grade_uuid', grade);
   }
 
   // set fonction
-  setFonction(fonction) {
-    return FU.uiSelect('EmployeeCtrl.employee.fonction_id', fonction);
+  setFunction(fonction) {
+    return TU.uiSelect('EmployeeCtrl.employee.fonction_id', fonction);
   }
 
   // set Medical Staff
   setIsMedical() {
-    return element(by.model('EmployeeCtrl.employee.is_medical')).click();
+    return TU.locator(by.model('EmployeeCtrl.employee.is_medical')).click();
   }
 
   // set email
   setEmail(email) {
-    return FU.input('EmployeeCtrl.employee.email', email);
+    return TU.input('EmployeeCtrl.employee.email', email);
   }
 
   // set address
   setAddress(address) {
-    return FU.input('EmployeeCtrl.employee.adresse', address);
+    return TU.input('EmployeeCtrl.employee.adresse', address);
   }
 
   // set hospital Number
   setHospitalNumber(hn) {
-    return FU.input('EmployeeCtrl.employee.hospital_no', hn);
+    return TU.input('EmployeeCtrl.employee.hospital_no', hn);
   }
 
   // set debtor group
@@ -95,7 +93,7 @@ class RegistrationPage {
 
   // set creditor group
   setCreditorGroup(cg) {
-    return FU.uiSelect('EmployeeCtrl.employee.creditor_group_uuid', cg);
+    return TU.uiSelect('EmployeeCtrl.employee.creditor_group_uuid', cg);
   }
 
   // Set Currency Input
@@ -105,12 +103,12 @@ class RegistrationPage {
 
   // set bank
   setBank(bank) {
-    return FU.input('EmployeeCtrl.employee.bank', bank);
+    return TU.input('EmployeeCtrl.employee.bank', bank);
   }
 
   // set bank account
   setBankAccount(bankAccount) {
-    return FU.input('EmployeeCtrl.employee.bank_account', bankAccount);
+    return TU.input('EmployeeCtrl.employee.bank_account', bankAccount);
   }
 
   // Set RubricPayroll defined value By Employee
@@ -120,7 +118,7 @@ class RegistrationPage {
     // eslint-disable-next-line
     for (const key of keys) {
       // eslint-disable-next-line
-      await element(by.id(key)).sendKeys(rubrics[key]);
+      await TU.locator(by.id(key)).sendKeys(rubrics[key]);
     }
   }
 
@@ -135,7 +133,7 @@ class RegistrationPage {
   }
 
   isEmployeeCreated(resp) {
-    return FU.exists(by.id('receipt-confirm-created'), resp);
+    return TU.exists(by.id('receipt-confirm-created'), resp);
   }
 
   expectNotificationSuccess() {
@@ -143,24 +141,24 @@ class RegistrationPage {
   }
 
   async requiredFieldErrored() {
-    await FU.validation.error('EmployeeCtrl.employee.display_name');
-    await FU.validation.error('EmployeeCtrl.employee.code');
-    await FU.validation.error('EmployeeCtrl.employee.grade_uuid');
-    await FU.validation.error('EmployeeCtrl.employee.creditor_group_uuid');
-    await FU.validation.error('$ctrl.debtorGroupUuid');
-    await FU.validation.error('EmployeeCtrl.employee.dob');
-    await FU.validation.error('EmployeeCtrl.employee.hospital_no');
+    await TU.validation.error('EmployeeCtrl.employee.display_name');
+    await TU.validation.error('EmployeeCtrl.employee.code');
+    await TU.validation.error('EmployeeCtrl.employee.grade_uuid');
+    await TU.validation.error('EmployeeCtrl.employee.creditor_group_uuid');
+    await TU.validation.error('$ctrl.debtorGroupUuid');
+    await TU.validation.error('EmployeeCtrl.employee.dob');
+    await TU.validation.error('EmployeeCtrl.employee.hospital_no');
   }
 
   async notRequiredFieldOk() {
-    await FU.validation.ok('EmployeeCtrl.employee.nb_enfant');
-    await FU.validation.ok('EmployeeCtrl.employee.phone');
-    await FU.validation.ok('EmployeeCtrl.employee.email');
-    await FU.validation.ok('EmployeeCtrl.employee.bank');
-    await FU.validation.ok('EmployeeCtrl.employee.bank_account');
-    await FU.validation.ok('EmployeeCtrl.employee.service_uuid');
-    await FU.validation.ok('EmployeeCtrl.employee.fonction_id');
-    await FU.validation.ok('EmployeeCtrl.employee.adresse');
+    await TU.validation.ok('EmployeeCtrl.employee.nb_enfant');
+    await TU.validation.ok('EmployeeCtrl.employee.phone');
+    await TU.validation.ok('EmployeeCtrl.employee.email');
+    await TU.validation.ok('EmployeeCtrl.employee.bank');
+    await TU.validation.ok('EmployeeCtrl.employee.bank_account');
+    await TU.validation.ok('EmployeeCtrl.employee.service_uuid');
+    await TU.validation.ok('EmployeeCtrl.employee.fonction_id');
+    await TU.validation.ok('EmployeeCtrl.employee.adresse');
   }
 }
 

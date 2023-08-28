@@ -1,6 +1,5 @@
-/* global by, element */
+const TU = require('../../shared/TestUtils');
 
-const FU = require('../../shared/FormUtils');
 const components = require('../../shared/components');
 const GridRow = require('../../shared/GridRow');
 
@@ -10,19 +9,19 @@ class BedPage {
   }
 
   submit() {
-    return FU.modal.submit();
+    return TU.modal.submit();
   }
 
   cancel() {
-    return FU.modal.cancel();
+    return TU.modal.cancel();
   }
 
   setLabel(txt) {
-    return components.inpuText.set('label', txt);
+    return components.inputText.set('label', txt);
   }
 
   labelValidationError() {
-    return components.inpuText.validationError('label');
+    return components.inputText.validationError('label');
   }
 
   setWard(ward) {
@@ -43,24 +42,24 @@ class BedPage {
 
   async openDropdownMenu(label) {
     const row = new GridRow(label);
-    await row.dropdown().click();
+    await row.dropdown();
     return row;
   }
 
   async editBed(label) {
-    await element(by.css('[data-expand]')).click();
+    await TU.locator('[data-expand]').click();
     const row = await this.openDropdownMenu(label);
-    await row.edit().click();
+    await row.edit();
   }
 
   async deleteBed(label) {
-    await element(by.css('[data-expand]')).click();
+    await TU.locator('[data-expand]').click();
     const row = await this.openDropdownMenu(label);
-    await row.remove().click();
+    await row.remove();
   }
 
   openCreateModal() {
-    return element(by.css('[data-create-bed]')).click();
+    return TU.locator('[data-create-bed]').click();
   }
 }
 

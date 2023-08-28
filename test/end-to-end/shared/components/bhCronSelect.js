@@ -1,14 +1,12 @@
-/* global element, by */
-const FU = require('../FormUtils');
+const TU = require('../TestUtils');
+const { by } = require('../TestUtils');
 
 const selector = '[bh-cron-select]';
 
-function set(cron, id) {
-  const locator = (id) ? by.id(id) : by.css(selector);
-  const target = element(locator);
-  return FU.uiSelect('$ctrl.id', cron, target);
-}
-
 module.exports = {
-  set,
+  set : async function set(cron, id) {
+    const locator = (id) ? by.id(id) : selector;
+    const target = await TU.locator(locator);
+    return TU.uiSelect('$ctrl.id', cron, target);
+  },
 };

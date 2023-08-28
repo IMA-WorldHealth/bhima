@@ -1,17 +1,16 @@
-/* global element, by */
+const TU = require('../TestUtils');
+const { by } = require('../TestUtils');
 
-const FU = require('../FormUtils');
+const selector = '[bh-employee-config-select]';
 
 module.exports = {
-  selector : '[bh-employee-config-select]',
-  set      : async function set(employee, id) {
-    const locator = (id) ? by.id(id) : by.css(this.selector);
-    const target = element(locator);
 
-    // hack to make sure previous 'blur' event fires if we are using
-    // ngModelOptions updateOn 'blur' for every input
+  set : async function set(employee, id) {
+    const locator = (id) ? by.id(id) : selector;
+    const target = await TU.locator(locator);
+
     await target.click();
 
-    return FU.uiSelect('$ctrl.configEmployeeId', employee, target);
+    return TU.uiSelect('$ctrl.configEmployeeId', employee, target, false, 'exact');
   },
 };

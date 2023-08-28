@@ -1,16 +1,28 @@
-const helpers = require('../shared/helpers');
+const { chromium } = require('@playwright/test');
+const { test } = require('@playwright/test');
+const TU = require('../shared/TestUtils');
 
-const JournalConfigurationTests = require('./ConfigurationModal.test');
-const TrialBalanceTests = require('./TrialBalance.test');
-const JournalSearchTests = require('./SearchModal.test');
+const JournalConfigurationTests = require('./ConfigurationModal.tests');
+const TrialBalanceTests = require('./TrialBalance.tests');
+const JournalSearchTests = require('./SearchModal.tests');
 
-describe('Posting Journal', () => {
-  const path = '#!/journal';
-  before(() => helpers.navigate(path));
+test.beforeAll(async () => {
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  TU.registerPage(page);
+  await TU.login();
+});
 
-  describe('Configuration Modal Tests', JournalConfigurationTests);
+test.describe('Posting Journal', () => {
+  const path = '/#!/journal';
 
-  describe('Search Tests', JournalSearchTests);
+  test.beforeEach(async () => {
+    await TU.navigate(path);
+  });
 
-  describe('Trial Balance Tests', TrialBalanceTests);
+  test.describe('Configuration Modal Tests', JournalConfigurationTests);
+
+  test.describe('Search Tests', JournalSearchTests);
+
+  test.describe('Trial Balance Tests', TrialBalanceTests);
 });
