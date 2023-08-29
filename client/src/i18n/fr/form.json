@@ -100,6 +100,7 @@
             "UNHIDE" : "Révéler",
             "UNLOCK" : "Débloquer",
             "UPDATE": "Mettre à jour",
+            "UPDATE_EMPLOYEE": "Modifier l'employé",
             "UPDATE_PASSWORD": "Modifier le mot de passe",
             "VALIDATE": "Valider",
             "VIEW_DETAILS": "Voir les détails",
