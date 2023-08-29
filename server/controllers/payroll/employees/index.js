@@ -116,7 +116,7 @@ function lookupEmployee(uid) {
       BUID(employee.uuid) AS uuid, employee.code, patient.display_name, patient.sex,
       patient.dob, employee.date_embauche, BUID(employee.service_uuid) as service_uuid,
       employee.nb_spouse, employee.nb_enfant, BUID(employee.grade_uuid) as grade_uuid,
-      employee.locked, employee.is_medical, grade.text, grade.basic_salary,
+      employee.locked, title_employee.is_medical, grade.text, grade.basic_salary,
       fonction.id AS fonction_id, fonction.fonction_txt, service.name AS service_txt, patient.hospital_no,
       patient.phone, patient.email, patient.address_1 AS adresse, BUID(employee.patient_uuid) AS patient_uuid,
       employee.bank, employee.bank_account, employee.title_employee_id, title_employee.title_txt,
@@ -251,7 +251,6 @@ function update(req, res, next) {
     bank_account : employee.bank_account,
     individual_salary : employee.individual_salary,
     code : employee.code,
-    is_medical : employee.is_medical,
     title_employee_id : employee.title_employee_id,
   };
 
@@ -447,7 +446,7 @@ function find(options) {
       grade.basic_salary, fonction.id AS fonction_id, fonction.fonction_txt, patient.hospital_no,
       patient.phone, patient.email, patient.address_1 AS adresse, BUID(employee.patient_uuid) AS patient_uuid,
       employee.bank, employee.bank_account, employee.title_employee_id, title_employee.title_txt,
-      employee.individual_salary, employee.is_medical, grade.code AS code_grade, BUID(debtor.uuid) as debtor_uuid,
+      employee.individual_salary, title_employee.is_medical, grade.code AS code_grade, BUID(debtor.uuid) as debtor_uuid,
       debtor.text AS debtor_text, BUID(debtor.group_uuid) as debtor_group_uuid,
       BUID(creditor.uuid) as creditor_uuid, creditor.text AS creditor_text,
       BUID(creditor.group_uuid) as creditor_group_uuid, creditor_group.account_id,
@@ -481,7 +480,7 @@ function find(options) {
   filters.equals('fonction_id', 'fonction_id', 'employee');
   filters.equals('title_employee_id', 'title_employee_id', 'employee');
   filters.equals('grade_uuid', 'grade_uuid', 'employee');
-  filters.equals('is_medical', 'is_medical', 'employee');
+  filters.equals('is_medical', 'is_medical', 'title_employee');
   filters.equals('reference', 'text', 'entity_map');
 
   if (options.cost_center_id) {

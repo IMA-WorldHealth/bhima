@@ -4,16 +4,16 @@
     <span class="caret"></span>
   </a>
 
-  <ul data-row-menu="{{row.entity.fonction_txt}}" class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
-    <li class="bh-dropdown-header">{{row.entity.fonction_txt}}</li>
+  <ul data-row-menu="{{row.entity.title_txt}}" class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
+    <li class="bh-dropdown-header">{{row.entity.title_txt}}</li>
     <li>
-      <a data-method="edit-record" ui-sref="functions.edit({ id : row.entity.id })" href>
+      <a data-method="edit-record" ui-sref="titles.edit({ id : row.entity.id })" href>
         <i class="fa fa-edit"></i> <span translate>FORM.BUTTONS.EDIT</span>
       </a>
     </li>
     <li class="divider"></li>
     <li>
-      <a data-method="delete-record" ng-click="grid.appScope.deleteFunction(row.entity)" href>
+      <a data-method="delete-record" ng-click="grid.appScope.deleteTitles(row.entity)" href>
         <span class="text-danger">
           <i class="fa fa-trash"></i> <span translate>PROFESSION.DELETE</span>
         </span>

@@ -8,7 +8,7 @@ const db = require('../../lib/db');
 
 // GET /title
 function lookupTitle(id) {
-  const sql = `SELECT id, title_txt FROM title_employee
+  const sql = `SELECT id, title_txt, is_medical FROM title_employee
     WHERE title_employee.id = ?`;
 
   return db.one(sql, [id]);
@@ -16,7 +16,7 @@ function lookupTitle(id) {
 
 // Lists the titles of hospital employees
 function list(req, res, next) {
-  const sql = `SELECT id, title_txt FROM title_employee;`;
+  const sql = `SELECT id, title_txt, is_medical FROM title_employee;`;
 
   db.exec(sql)
     .then((rows) => {
