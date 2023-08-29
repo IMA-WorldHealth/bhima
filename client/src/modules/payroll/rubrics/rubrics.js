@@ -30,7 +30,6 @@ function RubricManagementController(
   vm.currencySymbol = Session.enterprise.currencySymbol;
 
   vm.convertIndexType = function convertIndexType(key) {
-    console.debug("Key: ", key);
     const item = Rubrics.indexesMap.find(elt => elt.id === key);
     if (item) {
       return $translate.instant(item.label);
