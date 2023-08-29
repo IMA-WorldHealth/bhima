@@ -15,7 +15,7 @@ function TitleManagementController(Titles, Modals, Notify, uiGridConstants) {
   const vm = this;
 
   // bind methods
-  vm.deleteFunction = deleteTitles;
+  vm.deleteTitles = deleteTitles;
   vm.toggleFilter = toggleFilter;
 
   // global variables
@@ -34,10 +34,16 @@ function TitleManagementController(Titles, Modals, Notify, uiGridConstants) {
       displayName : 'FORM.LABELS.DESIGNATION',
       headerCellFilter : 'translate',
     }, {
+      field            : 'is_medical',
+      width            : 180,
+      displayName      : 'FORM.LABELS.MEDICAL_STAFF',
+      headerCellFilter : 'translate',
+      cellTemplate     : '/modules/titles/templates/medical.cell.html',
+    }, {
       field : 'action',
       width : 80,
       displayName : '...',
-      cellTemplate : '/modules/functions/templates/action.tmpl.html',
+      cellTemplate : '/modules/titles/templates/action.tmpl.html',
       enableSorting : false,
       enableFiltering : false,
     }],
@@ -66,12 +72,12 @@ function TitleManagementController(Titles, Modals, Notify, uiGridConstants) {
   }
 
   // switch to delete warning mode
-  function deleteTitles(profession) {
+  function deleteTitles(title) {
     Modals.confirm('FORM.DIALOGS.CONFIRM_DELETE')
       .then((bool) => {
         if (!bool) { return; }
 
-        Titles.delete(profession.id)
+        Titles.delete(title.id)
           .then(() => {
             Notify.success('FORM.INFO.DELETE_SUCCESS');
             loadTitles();
