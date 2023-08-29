@@ -17,6 +17,10 @@ function EmployeeController(Employees, Services, Grades, Functions, Titles, Cred
   vm.enterprise = Session.enterprise;
 
   vm.isUpdating = $state.params.uuid;
+  vm.updateEditLabel = vm.isUpdating
+    ? 'FORM.BUTTONS.UPDATE_EMPLOYEE'
+    : 'FORM.BUTTONS.REGISTER_EMPLOYEE';
+
   vm.origin = '';
 
   if (referenceUuid && !saveAsEmployee) {
