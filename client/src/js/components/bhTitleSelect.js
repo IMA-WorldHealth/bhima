@@ -4,7 +4,7 @@ angular.module('bhima.components')
     controller  : TitleSelectController,
     transclude  : true,
     bindings    : {
-      fonctionId        : '<',
+      titleId        : '<',
       onSelectCallback : '&',
       label : '@?',
     },
@@ -32,6 +32,6 @@ function TitleSelectController(titles, Notify) {
 
   // fires the onSelectCallback bound to the component boundary
   $ctrl.onSelect = ($item) => {
-    $ctrl.onSelectCallback({ fonction : $item });
+    $ctrl.onSelectCallback({ title : $item });
   };
 }
