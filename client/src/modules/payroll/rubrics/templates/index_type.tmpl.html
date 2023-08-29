@@ -1,0 +1,8 @@
+<div class="ui-grid-cell-contents text-left">
+  <div ng-if="row.entity.indice_type"
+       uib-tooltip="{{ grid.appScope.convertIndexType(row.entity.indice_type) }}"
+       tooltip-append-to-body="true"
+       tooltip-placement="left">
+       <span translate>{{row.entity.indice_type}}</span>
+  </div>
+</div>
