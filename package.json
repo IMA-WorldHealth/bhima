@@ -188,7 +188,7 @@
     "karma-ng-html2js-preprocessor": "^1.0.0",
     "merge-stream": "^2.0.0",
     "mocha": "^10.2.0",
-    "postcss": "^8.4.28",
+    "postcss": "^8.4.29",
     "qs": "^6.11.2",
     "release-it": "^16.1.5",
     "sinon": "^15.2.0",
