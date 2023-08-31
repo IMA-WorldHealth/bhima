@@ -128,7 +128,7 @@
     "jquery": "^3.7.1",
     "jsbarcode": "^3.11.5",
     "json-2-csv": "^4.1.0",
-    "jsonwebtoken": "^9.0.1",
+    "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
     "luxon": "^3.4.2",
     "moment": "^2.29.4",
