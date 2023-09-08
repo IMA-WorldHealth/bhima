@@ -104,7 +104,7 @@
     "angular-translate-loader-url": "^2.19.0",
     "angular-ui-bootstrap": "^2.5.6",
     "angular-ui-grid": "^4.12.4",
-    "bootstrap": "^3.3.0",
+    "bootstrap": "^5.3.1",
     "chart.js": "^3.9.1",
     "chartjs-plugin-datalabels": "^2.1.0",
     "connect-redis": "^7.1.0",
