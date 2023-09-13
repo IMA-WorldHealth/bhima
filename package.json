@@ -146,7 +146,7 @@
     "typeface-open-sans": "^1.1.13",
     "ui-select": "0.17.1",
     "use-strict": "^1.0.1",
-    "uuid": "^9.0.0",
+    "uuid": "^9.0.1",
     "uuid-parse": "^1.0.0",
     "webcam": "^3.2.1",
     "winston": "^3.10.0"
