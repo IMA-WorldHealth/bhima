@@ -173,3 +173,4 @@ exports.stockExitAggregateConsumptionReceipt = stockExitAggregateConsumptionRece
 
 exports.monthlyConsumption = require('./stock/monthly_consumption');
 exports.rumer = require('./stock/rumer');
+exports.rumerApi = require('../api/rumer');

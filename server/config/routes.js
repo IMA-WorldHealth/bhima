@@ -903,6 +903,9 @@ exports.configure = function configure(app) {
   app.get('/reports/stock/assign', stockReports.stockAssignReport);
   app.get('/reports/stock/satisfaction_rate_report', stockReports.satisfactionRateReport);
 
+  // stock api for inter-operability
+  app.get('/api/stock/rumer', stockReports.rumerApi.getData);
+
   app.get('/reports/assets/needed_inventory_scans', assets.neededInventoryScansReport);
 
   // stock receipts API
