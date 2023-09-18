@@ -73,7 +73,6 @@ test.describe('Employees', () => {
     await registrationPage.setNumberChild(employee.nb_enfant);
     await registrationPage.setService('Administration');
     await registrationPage.setFunction('Infirmier');
-    await registrationPage.setIsMedical();
     await registrationPage.setEmail(employee.email);
     await registrationPage.setAddress(employee.adresse);
     await registrationPage.setCurrencyInput('individual_salary', 0);
@@ -102,7 +101,6 @@ test.describe('Employees', () => {
     await registrationPage.setNumberChild(patient.nb_enfant);
     await registrationPage.setService('Administration');
     await registrationPage.setFunction('Infirmier');
-    await registrationPage.setIsMedical();
     await registrationPage.setEmail(patient.email);
     await registrationPage.setAddress(patient.adresse);
     await registrationPage.setCurrencyInput('individual_salary', 0);

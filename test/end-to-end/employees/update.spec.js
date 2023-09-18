@@ -28,7 +28,6 @@ test.describe('Update Employees', () => {
 
     await registrationPage.setService('Administration');
     await registrationPage.setFunction('Infirmier');
-    await registrationPage.setIsMedical();
     await registrationPage.setGrade('A1');
 
     await registrationPage.setCurrencyInput('TPR', 10);
