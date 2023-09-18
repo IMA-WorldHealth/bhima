@@ -66,11 +66,6 @@ class RegistrationPage {
     return TU.uiSelect('EmployeeCtrl.employee.fonction_id', fonction);
   }
 
-  // set Medical Staff
-  setIsMedical() {
-    return TU.locator(by.model('EmployeeCtrl.employee.is_medical')).click();
-  }
-
   // set email
   setEmail(email) {
     return TU.input('EmployeeCtrl.employee.email', email);
