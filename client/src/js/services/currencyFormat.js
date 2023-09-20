@@ -1,44 +1,43 @@
 /**
- * @description
  * Provides asynchronous GET requests for currency configuration files, fetched
  * configurations are cached and served directly to subsequent requests.
  *
  * @returns {object} Wrapper object exposing request configuration method
  */
 angular.module('bhima.services')
-.factory('currencyFormat', currencyFormat);
+  .factory('currencyFormat', currencyFormat);
 
 currencyFormat.$inject = [
-  'CurrencyService', '$http', 'Store'
+  'CurrencyService', '$http', 'Store',
 ];
 
 function currencyFormat(Currencies, $http, Store) {
-  var currencyConfigurationPath = '/i18n/currency/';
-  var loadedSupportedCurrencies = false;
-  var supportedCurrencies = new Store({identifier : 'id'});
-  var currentFormats = new Store({identifier : 'format_key'});
-  var fetchingKeys = [];
-  var invalidCurrency = { supported : false };
+  const currencyConfigurationPath = '/i18n/currency/';
+  let loadedSupportedCurrencies = false;
+  const supportedCurrencies = new Store({ identifier : 'id' });
+  const currentFormats = new Store({ identifier : 'format_key' });
+  const fetchingKeys = [];
+  const invalidCurrency = { supported : false };
 
   // Request all defined BHIMA currencies
   Currencies.read()
-  .then(function (currencies) {
-    supportedCurrencies.setData(currencies);
-    loadedSupportedCurrencies = true;
+    .then(currencies => {
+      supportedCurrencies.setData(currencies);
+      loadedSupportedCurrencies = true;
 
-    // automatically load all currency formats at startup
-    currencies.forEach(function (currency) {
-      searchFormatConfiguration(currency.id);
+      // automatically load all currency formats at startup
+      currencies.forEach(currency => {
+        searchFormatConfiguration(currency.id);
+      });
     });
-  });
 
   // Requests individual currency configurations
   function fetchFormatConfiguration(key) {
-    var formatObject = null;
+    let formatObject = null;
     fetchingKeys[key] = true;
 
     $http.get(currencyConfigurationPath.concat(key.toLowerCase(), '.json'))
-      .then(function (response) {
+      .then(response => {
 
         // Add configuration to local cache
         formatObject = response.data;
@@ -46,7 +45,7 @@ function currencyFormat(Currencies, $http, Store) {
         formatObject.format_key = key;
         addFormat(formatObject);
       })
-      .catch(function (err) {
+      .catch(() => {
 
         // Deny future attempts to request this configuration
         formatObject = invalidCurrency;
@@ -60,21 +59,22 @@ function currencyFormat(Currencies, $http, Store) {
   }
 
   /**
-   * @param {number} currencyId ID of currency to be checked against BHIMA's database
+   * Seach format configuration
    *
+   * @param {number} currencyId - ID of currency to be checked against BHIMA's database
    * @returns {object} Returns format configuration if it has been found and fetched,
    * objects reporting unsupported status if configuration or currency cannot be found
    */
   function searchFormatConfiguration(currencyId) {
-    var supportedCurrency = supportedCurrencies.get(currencyId);
+    const supportedCurrency = supportedCurrencies.get(currencyId);
 
     if (angular.isUndefined(supportedCurrency)) {
       return invalidCurrency;
     }
 
     // currency has been identified - search for configuration
-    var formatKey = supportedCurrency.format_key;
-    var progress = fetchingKeys[formatKey];
+    const formatKey = supportedCurrency.format_key;
+    const progress = fetchingKeys[formatKey];
 
     // initial for request for currency with this key - initialise configuration request
     if (!angular.isDefined(progress)) {
@@ -85,6 +85,8 @@ function currencyFormat(Currencies, $http, Store) {
   }
 
   /**
+   * Report status
+   *
    * @returns {boolean} Exposes status of initial currency index cache request
    */
   function reportStatus() {
@@ -93,6 +95,6 @@ function currencyFormat(Currencies, $http, Store) {
 
   return {
     request : searchFormatConfiguration,
-    indexReady : reportStatus
+    indexReady : reportStatus,
   };
 }
