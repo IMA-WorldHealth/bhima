@@ -271,7 +271,7 @@
                <!-- submit button-->
                 <div class="panel-footer text-right">
                   <bh-loading-button loading-state="EmployeeRegistrationForm.$loading">
-                    <span translate>FORM.BUTTONS.REGISTER_EMPLOYEE</span>
+                    <span translate>{{EmployeeCtrl.updateEditLabel}}</span>
                   </bh-loading-button>
                 </div>
             </div>
@@ -359,15 +359,15 @@
 
                     <uib-alert class="text-danger" type="danger" ng-if="EmployeeCtrl.fonctions.length === 0">
                       <i class="fa fa-warning"></i>
-                      <span translate>FORM.LABELS.PROFESSION</span> <b><span translate>FORM.LABELS.CONTACT_ADMIN</span></b>
+                      <span translate>FORM.LABELS.FUNCTION</span> <b><span translate>FORM.LABELS.CONTACT_ADMIN</span></b>
                     </uib-alert>
 
-                    <label class="col-md-3 control-label" translate>FORM.LABELS.PROFESSION</label>
+                    <label class="col-md-3 control-label" translate>FORM.LABELS.FUNCTION</label>
                     <div class="col-md-9">
                       <ui-select
                         name="fonction"
                         ng-model="EmployeeCtrl.employee.fonction_id">
-                        <ui-select-match placeholder="{{ 'FORM.SELECT.PROFESSION' | translate }}">
+                        <ui-select-match placeholder="{{ 'FORM.SELECT.FUNCTION' | translate }}">
                           <span>{{$select.selected.fonction_txt}}</span>
                         </ui-select-match>
                         <ui-select-choices ui-select-focus-patch repeat="f.id as f in EmployeeCtrl.functions | filter:{ fonction_txt : $select.search } | orderBy:'fonction_txt'">
@@ -377,17 +377,27 @@
                     </div>
                   </div>
 
-                  <!-- Employee Medical Or Non-Medical -->
-                  <div
-                    class="form-group"
-                    ng-class="{'has-error' : DetailForm.is_medical.$invalid && EmployeeRegistrationForm.$submitted}">
+                  <!-- Employee Job title-->
+                  <div class="form-group"
+                    ng-class="{'has-error' : DetailForm.title.$invalid && EmployeeRegistrationForm.$submitted}">
 
-                    <label class="col-md-3 control-label" translate>FORM.LABELS.IS_MEDICAL_STAFF</label>
+                    <uib-alert class="text-danger" type="danger" ng-if="EmployeeCtrl.titles.length === 0">
+                      <i class="fa fa-warning"></i>
+                      <span translate>FORM.LABELS.PROFESSION</span> <b><span translate>FORM.LABELS.CONTACT_ADMIN</span></b>
+                    </uib-alert>
+
+                    <label class="col-md-3 control-label" translate>FORM.LABELS.PROFESSION</label>
                     <div class="col-md-9">
-                      <input type="checkbox" name="is_medical" ng-true-value="1" ng-false-value="0" ng-model="EmployeeCtrl.employee.is_medical">
-                      <div class="help-block" ng-messages="DetailForm.email.$error" ng-show="EmployeeRegistrationForm.$submitted">
-                        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-                      </div>
+                      <ui-select
+                        name="title"
+                        ng-model="EmployeeCtrl.employee.title_employee_id">
+                        <ui-select-match placeholder="{{ 'FORM.SELECT.PROFESSION' | translate }}">
+                          <span>{{$select.selected.title_txt}}</span>
+                        </ui-select-match>
+                        <ui-select-choices ui-select-focus-patch repeat="f.id as f in EmployeeCtrl.titles | filter:{ title_txt : $select.search } | orderBy:'title_txt'">
+                          <span ng-bind-html="f.title_txt | highlight:$select.search"></span>
+                        </ui-select-choices>
+                      </ui-select>
                     </div>
                   </div>
 

@@ -1,31 +1,41 @@
+const { chromium } = require('@playwright/test');
+const { test } = require('@playwright/test');
+const TU = require('../../shared/TestUtils');
 
 const WardPage = require('./ward.page');
-const helpers = require('../../shared/helpers');
 const components = require('../../shared/components');
 
-// the page object
-const page = new WardPage();
+test.beforeAll(async () => {
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  TU.registerPage(page);
+  await TU.login();
+});
 
-function WardManagementTests() {
+test.describe('Ward Management Tests', () => {
+
+  const page = new WardPage();
 
   // navigate to the page
-  before(() => helpers.navigate('#/ward/configuration'));
+  test.beforeEach(async () => {
+    await TU.navigate('/#!/ward/configuration');
+  });
 
-  it('should add a new Ward', async () => {
+  test('should add a new Ward', async () => {
     await page.openCreateModal();
     await page.setName('Ward accouchement');
     await page.submit();
     await components.notification.hasSuccess();
   });
 
-  it('should add a new Ward', async () => {
+  test('should add another new Ward', async () => {
     await page.openCreateModal();
     await page.setName('Ward 1');
     await page.submit();
     await components.notification.hasSuccess();
   });
 
-  it('should add a new Ward linked to a service', async () => {
+  test('should add a new Ward linked to a service', async () => {
     await page.openCreateModal();
     await page.setName('Ward linked to a service');
     await page.selectService('Medecine Interne');
@@ -33,7 +43,7 @@ function WardManagementTests() {
     await components.notification.hasSuccess();
   });
 
-  it('should add a new Ward', async () => {
+  test('should add a new Ward with a description', async () => {
     await page.openCreateModal();
     await page.setName('Test');
     await page.setDescription('Ward description');
@@ -41,7 +51,7 @@ function WardManagementTests() {
     await components.notification.hasSuccess();
   });
 
-  it('should edit Ward', async () => {
+  test('should edit Ward', async () => {
     await page.editWard('Ward 1');
     await page.setName('Ward A');
     await page.setDescription('Ward updated');
@@ -49,11 +59,10 @@ function WardManagementTests() {
     await components.notification.hasSuccess();
   });
 
-  it('should delete the test Ward', async () => {
+  test('should delete the test Ward', async () => {
     await page.deleteWard('Test');
     await page.submit();
     await components.notification.hasSuccess();
   });
-}
 
-describe('Ward Management Tests', WardManagementTests);
+});

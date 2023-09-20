@@ -3,19 +3,17 @@ angular.module('bhima.controllers')
 
 UsersController.$inject = [
   '$state', '$uibModal', 'UserService', 'NotifyService', 'ModalService', 'uiGridConstants',
-  'ODKSettingsService',
 ];
 
 /**
  * Users Controller
  * This module is responsible for handling the CRUD operation on the user
  */
-function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstants, ODKSettings) {
+function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstants) {
   const vm = this;
   vm.gridApi = {};
   vm.toggleFilter = toggleFilter;
   vm.editRoles = editRoles;
-  vm.showQRCode = showQRCode;
 
   // this function selectively applies the muted cell classes to
   // disabled user entities
@@ -169,19 +167,6 @@ function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstant
 
   function toggleLoadingIndicator() {
     vm.loading = !vm.loading;
-  }
-
-  function showQRCode(userId) {
-    ODKSettings.getAppUserQRCode(userId)
-      .then(qrcode => {
-        return $uibModal.open({
-          templateUrl : 'modules/users/qrcode.modal.html',
-          controller : 'UserQRCodeController as UserQRCtrl',
-          resolve : { data : () => qrcode },
-        }).result;
-      })
-      .then(() => load(Users.filters.formatHTTP(true)))
-      .catch(Notify.handleError);
   }
 
   startup();

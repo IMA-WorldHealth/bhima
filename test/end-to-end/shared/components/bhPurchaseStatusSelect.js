@@ -1,15 +1,16 @@
-/* global element, by */
+const TU = require('../TestUtils');
+const { by } = require('../TestUtils');
 
-const FU = require('../FormUtils');
+const selector = '[bh-purchase-status-select]';
 
 module.exports = {
-  selector : '[bh-purchase-status-select]',
-  set      : async function set(purchaseStatus, id) {
-    const locator = (id) ? by.id(id) : by.css(this.selector);
-    const target = element(locator);
+
+  set : async function set(purchaseStatus, id) {
+    const locator = (id) ? by.id(id) : selector;
+    const target = await TU.locator(locator);
 
     await target.click();
 
-    await FU.series(purchaseStatus, ps => FU.uiSelect('$ctrl.selectedPurchaseStatus', ps));
+    await TU.series(purchaseStatus, ps => TU.uiSelect('$ctrl.selectedPurchaseStatus', ps));
   },
 };

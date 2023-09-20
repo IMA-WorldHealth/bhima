@@ -3,12 +3,12 @@ angular.module('bhima.controllers')
   .controller('EmployeeController', EmployeeController);
 
 EmployeeController.$inject = [
-  'EmployeeService', 'ServiceService', 'GradeService', 'FunctionService',
+  'EmployeeService', 'ServiceService', 'GradeService', 'FunctionService', 'TitleService',
   'CreditorGroupService', 'util', 'NotifyService', '$state',
   'bhConstants', 'ReceiptModal', 'SessionService', 'RubricService', 'PatientService',
 ];
 
-function EmployeeController(Employees, Services, Grades, Functions, CreditorGroups, util, Notify,
+function EmployeeController(Employees, Services, Grades, Functions, Titles, CreditorGroups, util, Notify,
   $state, bhConstants, Receipts, Session, Rubrics, Patients) {
   const vm = this;
   const referenceUuid = $state.params.uuid;
@@ -17,6 +17,10 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
   vm.enterprise = Session.enterprise;
 
   vm.isUpdating = $state.params.uuid;
+  vm.updateEditLabel = vm.isUpdating
+    ? 'FORM.BUTTONS.UPDATE_EMPLOYEE'
+    : 'FORM.BUTTONS.REGISTER_EMPLOYEE';
+
   vm.origin = '';
 
   if (referenceUuid && !saveAsEmployee) {
@@ -153,6 +157,11 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
   // Loading Functions
   Functions.read().then((data) => {
     vm.functions = data;
+  }).catch(Notify.handleError);
+
+  // Loading Titles
+  Titles.read().then((data) => {
+    vm.titles = data;
   }).catch(Notify.handleError);
 
   // submit the data to the server

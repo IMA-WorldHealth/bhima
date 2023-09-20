@@ -1,13 +1,26 @@
-const { expect } = require('chai');
-const helpers = require('../shared/helpers');
+const { chromium } = require('@playwright/test');
+const { test, expect } = require('@playwright/test');
+const TU = require('../shared/TestUtils');
+
 const GradePage = require('./grades.page');
 
-describe('Grades Management', () => {
+test.beforeAll(async () => {
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  TU.registerPage(page);
+  await TU.login();
+});
+
+test.describe('Grades Management', () => {
+
+  let page;
 
   // navigate to the page
-  before(() => helpers.navigate('#!/grades'));
-
-  const page = new GradePage();
+  test.beforeEach(async () => {
+    await TU.navigate('/#!/grades');
+    await TU.waitForSelector('.ui-grid-canvas');
+    page = await GradePage.new();
+  });
 
   const grade = {
     text : 'New Grade',
@@ -21,24 +34,23 @@ describe('Grades Management', () => {
     basic_salary : 450,
   };
 
-
-  it('begins with 3 grades', async () => {
-    expect(await page.count()).to.equal(3);
+  test('begins with 3 grades', async () => {
+    expect(await page.count()).toBe(3);
   });
 
-  it('successfully creates a new grade', async () => {
+  test('successfully creates a new grade', async () => {
     await page.create(grade);
   });
 
-  it('successfully edits a grade', async () => {
+  test('successfully edits a grade', async () => {
     await page.update(grade.code, updateGrade);
   });
 
-  it(`doesn't create a record when grade name is incorrect`, async () => {
+  test(`doesn't create a record when grade name is incorrect`, async () => {
     await page.errorOnCreateGrade();
   });
 
-  it('successfully delete a grade', async () => {
+  test('successfully delete a grade', async () => {
     await page.remove(updateGrade.code);
   });
 });

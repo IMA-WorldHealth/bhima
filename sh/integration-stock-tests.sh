@@ -1,4 +1,4 @@
-# bash script mode
+# bash strict mode
 set -euo pipefail
 
 ./sh/build-stock-database.sh || { echo 'failed to build DB' ; exit 1; }

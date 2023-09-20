@@ -1,66 +1,75 @@
+const TU = require('./TestUtils');
+
 /**
- * @class GridRow
- *
- * @description
  * This class is specifically for dealing with dropdown menus on grid rows in
  * registries.  It is registry agnostic, provided that the registry implements
  * "data-row='${reference}'" on its dropdown menu.
  */
 class GridRow {
-  constructor(reference, anchor = $('body')) {
+  constructor(reference) {
     this.reference = reference;
-    this.anchor = anchor;
-    this.link = anchor.$(`[data-row="${reference}"]`);
-    this.menu = this.anchor.$(`[data-row-menu="${reference}"]`);
   }
 
-  dropdown() {
-    return this.link.$('[data-action="open-dropdown-menu"]');
+  async dropdown() {
+    const menu = await TU.locator(`[data-row="${this.reference}"] [data-action="open-dropdown-menu"]`);
+    return menu.click();
   }
 
-  reverse() {
-    return this.menu.$('[data-method="reverse-record"]');
+  async reverse() {
+    const record = await TU.locator(`[data-row-menu="${this.reference}"] [data-method="reverse-record"]`);
+    return record.click();
   }
 
-  remove() {
-    return this.menu.$('[data-method="delete-record"]');
+  async remove() {
+    const record = await TU.locator(`[data-row-menu="${this.reference}"] [data-method="delete-record"]`);
+    return record.click();
   }
 
-  edit() {
-    return this.menu.$('[data-method="edit-record"]');
+  async edit() {
+    const record = await TU.locator(`[data-row-menu="${this.reference}"] [data-method="edit-record"]`);
+    return record.click();
   }
 
-  receipt() {
-    return this.menu.$('[data-method="receipt"]');
+  async receipt() {
+    const record = await TU.locator(`[data-row-menu="${this.reference}"] [data-method="receipt"]`);
+    return record.click();
   }
 
-  method(methodName) {
-    return this.menu.$(`[data-method="${methodName}"]`);
+  async method(methodName) {
+    const record = await TU.locator(`[data-row-menu="${this.reference}"] [data-method="${methodName}"]`);
+    return record.click();
   }
 
-  goToInvoice() {
-    return this.menu.$('[data-method="view-invoice"]');
+  async goToInvoices() {
+    const record = await TU.locator(`[data-row-menu="${this.reference}"] [data-method="view-invoices"]`);
+    return record.click();
   }
 
-  goToTransaction() {
-    return this.menu.$('[data-method="view-transaction"]');
+  async goToTransaction() {
+    const record = await TU.locator(`[data-row-menu="${this.reference}"] [data-method="view-transaction"]`);
+    return record.click();
   }
 
-  goToPayment() {
-    return this.menu.$('[data-method="view-payment"]');
+  async goToPayment() {
+    const record = await TU.locator(`[data-row-menu="${this.reference}"] [data-method="view-payment"]`);
+    return record.click();
   }
 
-  goToPatient() {
-    return this.menu.$('[data-method="view-patient"]');
+  async goToPatient() {
+    const record = await TU.locator(`[data-row-menu="${this.reference}"] [data-method="view-patient"]`);
+    return record.click();
   }
 
-  openReverseReceipt() {
-    return this.menu.$('[data-method="reverse-receipt"]');
+  async openReverseReceipt() {
+    const record = await TU.locator(`[data-row-menu="${this.reference}"] [data-method="reverse-receipt"]`);
+    return record.click();
   }
 
-  goToVoucher() {
-    return this.menu.$('[data-method="view-voucher"]');
+  async goToVoucher() {
+    const record = await TU.locator(`[data-row-menu="${this.reference}"] [data-method="view-voucher"]`);
+    return record.click();
   }
+
 }
 
 module.exports = GridRow;

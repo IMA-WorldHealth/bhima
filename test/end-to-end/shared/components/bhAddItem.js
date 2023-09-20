@@ -1,16 +1,17 @@
-/* global element, by */
+const TU = require('../TestUtils');
+const { by } = require('../TestUtils');
 
-const FU = require('../FormUtils');
+// const selector = '[bh-add-item]';
 
 module.exports = {
-  selector : '[bh-add-item]',
-  set      : async function set(increment, anchor) {
+
+  set : async function set(increment, anchor) {
     // get the input and enter the increment provided
-    await FU.input('$ctrl.itemIncrement', increment, anchor);
+    await TU.input('$ctrl.itemIncrement', increment, anchor);
 
     const btn = anchor
-      ? anchor.element(by.id('btn-add-rows'))
-      : element(by.id('btn-add-rows'));
+      ? await anchor.locator(by.id('btn-add-rows'))
+      : await TU.locator(by.id('btn-add-rows'));
 
     // submit the value
     return btn.click();

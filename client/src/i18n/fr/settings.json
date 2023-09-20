@@ -8,6 +8,8 @@
     "HAVING_DATE_INTERVAL": "Utiliser un intervalle de date",
     "HAVING_DATE_INTERVAL_HELP_TEXT": "Cette option vous permez de definir une date de debut et une date de fin",    
     "POS_RECEIPT_INFO": "Si cette option est activé, l'impression sera fait avec l'imprimante thermique.",
+    "PERCENTAGE_ATTRIBUTED_FIXED_BONUS": "Le pourcentage à attribuer à la prime fixe",
+    "PERCENTAGE_ATTRIBUTED_FIXED_BONUS_HELP_TEXT": "Définition du pourcentage à attribuer à la prime fixe par rapport à la prime de performance sur la feuille de paie?",
     "SIMPLIFIED_CARD_INFO": "Les identifiants simples de patients ont une largeur de 75mm, la hauteur de 125mm est en orientation 'Paysage'. Les identités standard sont 'A6'.",    
     "TITLE": "Paramètres"
   }

@@ -2,17 +2,22 @@
 * Modal Action component interface for e2e test
 * @public
 */
+
+const TU = require('../TestUtils');
+
 module.exports = {
 
-  confirm : function confirm() {
+  confirm : async function confirm() {
     // This function is called when the test requires
     // a click on the button confirms the modal window
-    return $('[data-confirm-modal] [data-method="submit"]').click();
+    const submit = await TU.locator('[data-confirm-modal] [data-method="submit"]');
+    return submit.click();
   },
 
-  dismiss : function dismiss() {
+  dismiss : async function dismiss() {
     // This function is called when the test requires
     // a click on the button cancel for dismiss the action
-    return $('[data-confirm-modal] [data-method="cancel"]').click();
+    const cancel = await TU.locator('[data-confirm-modal] [data-method="cancel"]');
+    return cancel.click();
   },
 };

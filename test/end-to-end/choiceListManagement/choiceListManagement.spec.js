@@ -1,11 +1,25 @@
-const helpers = require('../shared/helpers');
+const { chromium } = require('@playwright/test');
+const { test } = require('@playwright/test');
+const TU = require('../shared/TestUtils');
+
+test.beforeAll(async () => {
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  TU.registerPage(page);
+  await TU.login();
+});
+
 const ChoiceListManagement = require('./choiceListManagement.page');
 
-describe('Choice List Management', () => {
-  // navigate to the page
-  before(() => helpers.navigate('#!/choices_list_management'));
+test.describe('Choice List Management', () => {
 
-  const Page = new ChoiceListManagement();
+  let page;
+
+  // navigate to the page
+  test.beforeEach(async () => {
+    TU.navigate('/#!/choices_list_management');
+    page = await ChoiceListManagement.new();
+  });
 
   const newChoiceListElement = {
     name : 'oshwe',
@@ -22,23 +36,23 @@ describe('Choice List Management', () => {
     group_label : 'Avenue',
   };
 
-  it('successfully creates a new Choice List Management', async () => {
-    await Page.create(newChoiceListElement);
+  test('successfully creates a new Choice List Management', async () => {
+    await page.create(newChoiceListElement);
   });
 
-  it('successfully edits a Choice List Management', async () => {
-    await Page.edit(newChoiceListElement.label, updateChoiceListElement);
+  test('successfully edits a Choice List Management', async () => {
+    await page.edit(newChoiceListElement.label, updateChoiceListElement);
   });
 
-  it('don\'t create when incorrect Choice List Management', async () => {
-    await Page.errorOnCreate();
+  test('do not create when incorrect Choice List Management', async () => {
+    await page.errorOnCreate();
   });
 
-  it('successfully creates a deletable element', async () => {
-    await Page.create(deleteListElement);
+  test('successfully creates a deletable element', async () => {
+    await page.create(deleteListElement);
   });
 
-  it('successfully delete a list Element', async () => {
-    await Page.delete(deleteListElement.label);
+  test('successfully delete a list Element', async () => {
+    await page.delete(deleteListElement.label);
   });
 });

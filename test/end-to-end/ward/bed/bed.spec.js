@@ -1,16 +1,28 @@
+const { chromium } = require('@playwright/test');
+const { test } = require('@playwright/test');
+const TU = require('../../shared/TestUtils');
+
 const BedPage = require('./bed.page');
-const helpers = require('../../shared/helpers');
 const components = require('../../shared/components');
 
-// the page object
-const page = new BedPage();
+test.beforeAll(async () => {
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  TU.registerPage(page);
+  await TU.login();
+});
 
-function BedManagementTests() {
-  before(() => helpers.navigate('#/ward/configuration'));
+test.describe('Bed Management Tests', () => {
+
+  const page = new BedPage();
+
+  test.beforeEach(async () => {
+    await TU.navigate('/#!/ward/configuration');
+  });
 
   const bed = 'PA.RA.001';
 
-  it('should add a new Bed', async () => {
+  test('should add a new Bed', async () => {
     await page.openCreateModal();
     await page.setWard('Pavillon A');
     await page.setRoom('Room A in Ward A');
@@ -19,7 +31,7 @@ function BedManagementTests() {
     await components.notification.hasSuccess();
   });
 
-  it('should not add a new Bed without ward', async () => {
+  test('should not add a new Bed without ward', async () => {
     await page.openCreateModal();
     await page.setLabel(bed.concat(' without ward'));
     await page.submit();
@@ -27,7 +39,7 @@ function BedManagementTests() {
     await page.cancel();
   });
 
-  it('should edit Bed', async () => {
+  test('should edit Bed', async () => {
     await page.editBed(bed);
     await page.setWard('Pavillon B');
     await page.setRoom('Room B in Ward B');
@@ -36,11 +48,10 @@ function BedManagementTests() {
     await components.notification.hasSuccess();
   });
 
-  it('should delete the test Bed', async () => {
+  test('should delete the test Bed', async () => {
     await page.deleteBed(bed.concat(' edited'));
     await page.submit();
     await components.notification.hasSuccess();
   });
-}
 
-describe('Bed Management Tests', BedManagementTests);
+});

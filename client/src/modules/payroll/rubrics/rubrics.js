@@ -5,7 +5,7 @@ RubricManagementController.$inject = [
   'RubricService', 'ModalService',
   'NotifyService', 'uiGridConstants', '$state',
   'SessionService', 'GridColumnService', 'GridStateService',
-  'ModalService', 'LanguageService',
+  'ModalService', 'LanguageService', '$translate',
 ];
 
 /**
@@ -16,7 +16,7 @@ RubricManagementController.$inject = [
  */
 function RubricManagementController(
   Rubrics, ModalService, Notify, uiGridConstants,
-  $state, Session, Columns, GridState, Modal, Language
+  $state, Session, Columns, GridState, Modal, Language, $translate,
 ) {
   const vm = this;
   const cacheKey = 'RubricUigrid';
@@ -29,20 +29,43 @@ function RubricManagementController(
   vm.openColumnConfiguration = openColumnConfiguration;
   vm.currencySymbol = Session.enterprise.currencySymbol;
 
+  vm.convertIndexType = function convertIndexType(key) {
+    const item = Rubrics.indexesMap.find(elt => elt.id === key);
+    if (item) {
+      return $translate.instant(item.label);
+    }
+    return '';
+  };
+
   // global variables
   vm.gridApi = {};
   vm.filterEnabled = false;
 
   const gridColumn = [
-    { field : 'label', displayName : 'FORM.LABELS.DESIGNATION', headerCellFilter : 'translate' },
-    { field : 'abbr', displayName : 'FORM.LABELS.ABBREVIATION', headerCellFilter : 'translate' },
+    {
+      field : 'label',
+      displayName : 'FORM.LABELS.DESIGNATION',
+      headerTooltip : 'FORM.LABELS.DESIGNATION',
+      headerCellFilter : 'translate',
+    },
+    {
+      field : 'abbr',
+      displayName : 'FORM.LABELS.ABBREVIATION',
+      headerTooltip : 'FORM.LABELS.ABBREVIATION',
+      headerCellFilter : 'translate',
+    },
     {
       field : 'is_discount',
       displayName : '(+)/(-)',
       cellTemplate : '/modules/payroll/rubrics/templates/discount.tmpl.html',
       headerCellFilter : 'translate',
     },
-    { field : 'value', displayName : 'FORM.LABELS.VALUE', headerCellFilter : 'translate' },
+    {
+      field : 'value',
+      displayName : 'FORM.LABELS.VALUE',
+      headerTooltip : 'FORM.LABELS.VALUE',
+      headerCellFilter : 'translate',
+    },
     {
       field : 'is_percent',
       displayName : '%',
@@ -51,57 +74,84 @@ function RubricManagementController(
     },
     {
       field : 'is_indice',
-      displayName : 'PAYROLL_RUBRIC.IS_INDICE',
+      displayName : 'PAYROLL_RUBRIC.IS_INDEX_SHORT',
+      headerTooltip : 'PAYROLL_RUBRIC.IS_INDICE',
       cellTemplate : '/modules/payroll/rubrics/templates/index.tmpl.html',
       headerCellFilter : 'translate',
     },
     {
+      field : 'indice_type',
+      displayName : 'PAYROLL_RUBRIC.INDICE_TYPE',
+      headerCellFilter : 'translate',
+      cellTemplate : '/modules/payroll/rubrics/templates/index_type.tmpl.html',
+      visible : false,
+    },
+    {
       field : 'is_social_care',
       displayName : 'FORM.LABELS.IS_SOCIAL_CARE',
+      headerToolTip : 'FORM.LABELS.IS_SOCIAL_CARE',
       cellTemplate : '/modules/payroll/rubrics/templates/social.tmpl.html',
       headerCellFilter : 'translate',
+      visible : false,
     },
     {
       field : 'is_membership_fee',
       displayName : 'FORM.INFO.IS_MEMBERSHIP_FEE',
+      headerToolTip : 'FORM.INFO.IS_MEMBERSHIP_FEE',
       cellTemplate : '/modules/payroll/rubrics/templates/membership.tmpl.html',
       headerCellFilter : 'translate',
+      visible : false,
     },
     {
       field : 'is_tax',
       displayName : 'FORM.LABELS.TAX',
+      headerToolTip : 'FORM.LABELS.TAX',
       cellTemplate : '/modules/payroll/rubrics/templates/tax.tmpl.html',
       headerCellFilter : 'translate',
     },
     {
       field : 'is_ipr',
       displayName : 'FORM.LABELS.IS_IPR',
+      headerToolTip : 'FORM.LABELS.IS_IPR',
       cellTemplate : '/modules/payroll/rubrics/templates/ipr.tmpl.html',
       headerCellFilter : 'translate',
     },
     {
       field : 'is_associated_employee',
       displayName : 'FORM.LABELS.EMPLOYEE_ID',
+      headerToolTip : 'FORM.LABELS.EMPLOYEE_ID',
       cellTemplate : '/modules/payroll/rubrics/templates/associated.tmpl.html',
       headerCellFilter : 'translate',
     },
     {
       field : 'is_seniority_bonus',
       displayName : 'FORM.LABELS.SENIORITY_BONUS',
+      headerToolTip : 'FORM.LABELS.SENIORITY_BONUS',
       cellTemplate : '/modules/payroll/rubrics/templates/seniority.tmpl.html',
       headerCellFilter : 'translate',
+      visible : false,
     },
     {
       field : 'is_family_allowances',
       displayName : 'FORM.LABELS.FAMILY_ALLOWANCES',
+      headerToolTip : 'FORM.LABELS.FAMILY_ALLOWANCES',
       cellTemplate : '/modules/payroll/rubrics/templates/allowances.tmpl.html',
       headerCellFilter : 'translate',
+      visible : false,
     },
     {
-      field : 'debtorAccount', displayName : 'FORM.LABELS.DEBTOR_ACCOUNT', headerCellFilter : 'translate',
+      field : 'debtorAccount',
+      displayName : 'FORM.LABELS.DEBTOR_ACCOUNT',
+      headerToolTip : 'FORM.LABELS.DEBTOR_ACCOUNT',
+      headerCellFilter : 'translate',
+      visible : false,
     },
     {
-      field : 'expenseAccount', displayName : 'FORM.LABELS.EXPENSE_ACCOUNT', headerCellFilter : 'translate',
+      field : 'expenseAccount',
+      displayName : 'FORM.LABELS.EXPENSE_ACCOUNT',
+      headerToolTip : 'FORM.LABELS.EXPENSE_ACCOUNT',
+      headerCellFilter : 'translate',
+      visible : false,
     },
     {
       field : 'action',

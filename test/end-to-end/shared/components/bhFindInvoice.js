@@ -1,17 +1,16 @@
-/* global element, by */
+const TU = require('../TestUtils');
+const { by } = require('../TestUtils');
 
-const FU = require('../FormUtils');
+// const selector = '[data-find-invoice]';
 
 /**
  * hooks for the find invoice component described in the component
  * bhFindInvoice.js.
- * @public
  */
 module.exports = {
-  selector : '[data-find-invoice]',
 
   set : async (value) => {
-    await FU.input('$ctrl.invoiceReference', value);
-    await element(by.id('search-button')).click();
+    await TU.input('$ctrl.invoiceReference', value);
+    await TU.locator(by.id('search-button')).click();
   },
 };

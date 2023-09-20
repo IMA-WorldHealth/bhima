@@ -1,35 +1,49 @@
-/* global element, by */
-/* eslint  */
+const TU = require('../shared/TestUtils');
+const { by } = require('../shared/TestUtils');
 
 /**
  * This class is represents a Choice List Management page in term of structure and
- * behaviour so it is a Choice List Management page object
+ * behavior so it is a Choice List Management page object
  */
 
 /* loading grid actions */
 const GridRow = require('../shared/GridRow');
-const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 
 class ChoiceListManagementPage {
-  constructor() {
+
+  /**
+   * Constructor
+   * @param {object} grid - new rubricGrid object
+   */
+  constructor(grid) {
     this.gridId = 'choices-list-management-grid';
-    this.rubricGrid = element(by.id(this.gridId));
     this.actionLinkColumn = 5;
+    this.rubricGrid = grid;
+  }
+
+  /**
+   * Emulate an async constructor
+   *
+   * @returns {ChoiceListManagementPage} a new ChoiceListManagementPage object
+   */
+  static async new() {
+    const rubricGrid = await TU.locator(by.id(this.gridId));
+    return new ChoiceListManagementPage(rubricGrid);
   }
 
   /**
    * simulate the create Choice list button click to show the dialog of creation
+   * @param {object} choiceListElement - a choice list element
    */
-  async create(ChoiceListElement) {
-    await FU.buttons.create();
-    await FU.input('ChoicesListManagementModalCtrl.choice.label', ChoiceListElement.label);
-    await FU.input('ChoicesListManagementModalCtrl.choice.name', ChoiceListElement.name);
-    await element(by.id('is_title')).click();
-    await element(by.id('is_group')).click();
+  async create(choiceListElement) {
+    await TU.buttons.create();
+    await TU.input('ChoicesListManagementModalCtrl.choice.label', choiceListElement.label);
+    await TU.input('ChoicesListManagementModalCtrl.choice.name', choiceListElement.name);
+    await TU.locator(by.id('is_title')).click();
+    await TU.locator(by.id('is_group')).click();
 
-
-    await FU.buttons.submit();
+    await TU.buttons.submit();
     await components.notification.hasSuccess();
   }
 
@@ -37,39 +51,42 @@ class ChoiceListManagementPage {
    * block creation without the function name
    */
   async errorOnCreate() {
-    await FU.buttons.create();
-    await FU.buttons.submit();
-    await FU.validation.error('ChoicesListManagementModalCtrl.choice.label');
-    await FU.buttons.cancel();
+    await TU.buttons.create();
+    await TU.buttons.submit();
+    await TU.validation.error('ChoicesListManagementModalCtrl.choice.label');
+    await TU.buttons.cancel();
   }
 
   /**
    * simulate a click on the edit link of a function
+   * @param {string} label - label for the grid row
+   * @param {object} updateDataCollector - object with updates
    */
   async edit(label, updateDataCollector) {
     const row = new GridRow(label);
-    await row.dropdown().click();
-    await row.edit().click();
+    await row.dropdown();
+    await row.edit();
 
     await components.choiceListSelect.set(updateDataCollector.parent, 'parent');
     await components.choiceListSelect.set(updateDataCollector.group_label, 'group_label');
 
-    await element(by.id('is_title')).click();
-    await element(by.id('is_group')).click();
+    await TU.locator(by.id('is_title')).click();
+    await TU.locator(by.id('is_group')).click();
 
-    await FU.buttons.submit();
+    await TU.buttons.submit();
     await components.notification.hasSuccess();
   }
 
   /**
    * simulate a click on the delete link of a function
+   * @param {string} label - label of row
    */
   async delete(label) {
     const row = new GridRow(label);
-    await row.dropdown().click();
-    await row.remove().click();
+    await row.dropdown();
+    await row.remove();
 
-    await FU.modal.submit();
+    await TU.modal.submit();
     await components.notification.hasSuccess();
   }
 }

@@ -1,11 +1,24 @@
-const helpers = require('../shared/helpers');
+const { chromium } = require('@playwright/test');
+const { test } = require('@playwright/test');
+const TU = require('../shared/TestUtils');
+
+test.beforeAll(async () => {
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  TU.registerPage(page);
+  await TU.login();
+});
+
 const DataCollectorManagement = require('./dataCollectorManagement.page');
 
-describe('Data Collector Management', () => {
-  // navigate to the page
-  before(() => helpers.navigate('#!/data_collector_management'));
+test.describe('Data Collector Management', () => {
+  let page;
 
-  const Page = new DataCollectorManagement();
+  // navigate to the page
+  test.beforeEach(async () => {
+    await TU.navigate('/#!/data_collector_management');
+    page = await DataCollectorManagement.new();
+  });
 
   const newDataCollector = {
     label : 'Consultations externes',
@@ -21,19 +34,19 @@ describe('Data Collector Management', () => {
     color : 'chartreuse',
   };
 
-  it('successfully creates a new Data Collector Management', async () => {
-    await Page.create(newDataCollector);
+  test('successfully creates a new Data Collector Management', async () => {
+    await page.create(newDataCollector);
   });
 
-  it('successfully edits a Data Collector Management', async () => {
-    await Page.edit(newDataCollector.label, updateDataCollector);
+  test('successfully edits a Data Collector Management', async () => {
+    await page.edit(newDataCollector.label, updateDataCollector);
   });
 
-  it('don\'t create when incorrect Data Collector Management', async () => {
-    await Page.errorOnCreate();
+  test('do not create when incorrect Data Collector Management', async () => {
+    await page.errorOnCreate();
   });
 
-  it('successfully delete a Data Collector Management', async () => {
-    await Page.delete(updateDataCollector.label);
+  test('successfully delete a Data Collector Management', async () => {
+    await page.delete(updateDataCollector.label);
   });
 });
