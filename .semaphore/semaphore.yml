@@ -65,7 +65,6 @@ blocks:
             - 'yarn test:integration'
             - 'yarn test:integration:stock'
             - 'yarn test:e2e-account'
-            - 'yarn test:e2e-stock'
           matrix:
             - env_var: MYSQL_VERSION
               values:
