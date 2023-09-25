@@ -439,10 +439,10 @@
   resolved "https://registry.yarnpkg.com/@trysound/sax/-/sax-0.2.0.tgz#cccaab758af56761eb7bf37af6f03f326dd798ad"
   integrity sha512-L7z9BgrNEcYyUYtF+HaEfiS5ebkh9jXqbszz7pC0hRBPaatV0XjSD3+eHrpqFemQfgwiFF0QPIarnIihIDn7OA==
 
-"@types/angular@^1.8.4", "@types/angular@^1.8.5":
-  version "1.8.5"
-  resolved "https://registry.yarnpkg.com/@types/angular/-/angular-1.8.5.tgz#71c7d3581898f1863100eeed9d25bb737a8e1062"
-  integrity sha512-tifGGLxuKOEl7Z1BoAkZKpu+eEyfZ/0Ugm5imM+D1Vj+QzuhPQS0icI34laN3CLbksyfZQPGTQa0i+jjZdpiLw==
+"@types/angular@^1.8.4", "@types/angular@^1.8.6":
+  version "1.8.6"
+  resolved "https://registry.yarnpkg.com/@types/angular/-/angular-1.8.6.tgz#faeb6c734dd64ef60bbd41edf3d32d2f9c9956bf"
+  integrity sha512-2ub0NF1vSSZ1iHp20xyGwQyc4+QScuWnE5o2sKqh6KQ5Z4rImd8GX4E2hvgKfa6yLigzugYnZo5dFz2ogGcLCg==
 
 "@types/chai@4":
   version "4.3.5"
