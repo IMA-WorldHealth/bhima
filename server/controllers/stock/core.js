@@ -60,14 +60,13 @@ module.exports = {
 };
 
 /**
- * @function getLotFilters
+ * getLotFilters
  *
- * @description
  * Groups all filtering functionality used in the different getLots* functions into
  * a single function.  The filterparser is returned so that any additional modifications
  * can be made in the function before execution.
  *
- * @param {Object} parameters - an object of filter params.
+ * @param {object} parameters - an object of filter params.
  */
 
 function getLotFilters(parameters) {
@@ -137,22 +136,6 @@ function getLotFilters(parameters) {
     )`,
   );
 
-  // depot permission check
-  filters.custom(
-    'check_user_id',
-    `d.uuid IN (
-      SELECT DISTINCT d.depot_uuid
-        FROM (
-          SELECT dp.depot_uuid, dp.user_id
-          FROM depot_permission AS dp
-          UNION
-          SELECT ds.depot_uuid, ds.user_id
-          FROM depot_supervision AS ds
-        ) AS d
-      WHERE d.user_id = ?
-    )`,
-  );
-
   // lot tags
   filters.custom('tags', 't.uuid IN (?)', [params.tags]);
 
@@ -196,6 +179,33 @@ function getLotFilters(parameters) {
   return filters;
 }
 
+/**
+ * Use this additional filter to restrict the db lots queries to the depots
+ * that the user has permission to access
+ *
+ * @param {object} filters - the query filters object
+ * @param {object} params - the same parameters used to create the filters object
+ */
+async function addDepotPermissionsFilter(filters, params) {
+  if ('check_user_id' in params && params.check_user_id) {
+    const userId = params.check_user_id;
+    const psql = `
+      SELECT DISTINCT BUID(d.depot_uuid) AS uuid
+      FROM (
+        SELECT dp.depot_uuid, dp.user_id
+        FROM depot_permission AS dp
+        UNION
+        SELECT ds.depot_uuid, ds.user_id
+        FROM depot_supervision AS ds
+      ) AS d
+      WHERE d.user_id = ?;
+    `;
+    const results = await db.exec(psql, [userId]);
+    const uuids = results.map(item => `'${item.uuid}'`);
+    filters.custom('check_user_id', `BUID(d.uuid) IN (${uuids})`);
+  }
+}
+
 async function lookupLotByUuid(uid) {
   const [lot] = await getLots(null, { uuid : uid });
   return lot;
@@ -232,6 +242,8 @@ function getLots(sqlQuery, parameters, finalClause = '', orderBy = '') {
   `;
 
   const filters = getLotFilters(parameters);
+
+  addDepotPermissionsFilter(filters, parameters);
 
   // if finalClause is an empty string, filterParser will not group, it will be an empty string
   filters.setGroup(finalClause);
@@ -335,10 +347,13 @@ async function getAssets(params) {
 
   const filters = getLotFilters(params);
 
+  addDepotPermissionsFilter(filters, params);
+
   if (['scanned', 'unscanned'].includes(params.scan_status)) {
     filters.custom('scan_status',
       params.scan_status === 'scanned' ? 'last_scan.uuid IS NOT NULL' : 'last_scan.uuid IS NULL');
   }
+
   filters.setGroup(groupByClause);
   filters.setHaving(havingClause);
   filters.setOrder('ORDER BY i.code, l.label');
@@ -434,6 +449,7 @@ async function getLotsDepot(depotUuid, params, finalClause) {
 
   const groupByClause = finalClause || ` GROUP BY l.uuid, m.depot_uuid ${emptyLotToken} ORDER BY i.code, l.label `;
   const filters = getLotFilters(params);
+  addDepotPermissionsFilter(filters, params);
   filters.setGroup(groupByClause);
 
   let resultFromProcess;
