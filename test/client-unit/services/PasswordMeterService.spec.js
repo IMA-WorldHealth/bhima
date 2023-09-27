@@ -22,8 +22,9 @@ describe('PasswordMeterService', () => {
 
     const user = _MockDataService_.user();
     const project = _MockDataService_.project();
+    const stockSettings = _MockDataService_.stock_settings();
     const enterprise = _MockDataService_.enterprise();
-    Session.create(user, enterprise, project);
+    Session.create(user, enterprise, stockSettings, project);
 
     // make sure password validation is on
     Session.enterprise.settings.enable_password_validation = true;
