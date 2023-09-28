@@ -19,7 +19,7 @@ const DEFAULT_PARAMS = {
  * @description
  * This method builds the RUMER (Registre d’Utilisation des Médicaments Et Recettes) report by month
  *
- * GET /api/stock/rumer
+ * GET /stock/rumer
  */
 async function getData(reqQuery) {
   const params = reqQuery;
