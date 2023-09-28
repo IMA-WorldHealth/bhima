@@ -190,7 +190,7 @@
     "mocha": "^10.2.0",
     "postcss": "^8.4.30",
     "qs": "^6.11.2",
-    "release-it": "^16.2.0",
+    "release-it": "^16.2.1",
     "sinon": "^16.0.0",
     "standard-version": "^9.5.0",
     "typescript": "^5.2.2"
