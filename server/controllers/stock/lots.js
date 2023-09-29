@@ -191,9 +191,13 @@ async function getLotsUsageSchedule(req, res, next) {
   const params = {
     inventory_uuid : req.params.uuid,
     depot_uuid : req.params.depotUuid,
-    month_average_consumption : req.query.month_average_consumption,
-    average_consumption_algo : req.query.average_consumption_algo,
+    month_average_consumption :
+      req.query.month_average_consumption || req.session.stock_settings.month_average_consumption,
+    average_consumption_algo :
+      req.query.average_consumption_algo || req.session.stock_settings.average_consumption_algo,
   };
+
+  // Number of months that the call will cover
   const numMonths = req.query.interval_num_months || 6;
 
   let lots;

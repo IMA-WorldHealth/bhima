@@ -17,9 +17,9 @@ describe('Inventory lots schedule HTML REST API', () => {
     const numMonths = 3;
     return agent.get(`/inventory/${uuid}/schedule/${depotUuid}`)
       .query({
-        month_average_consumption : 6,
-        average_consumption_algo : 'algo_msh',
         interval_num_months : numMonths,
+        // month_average_consumption : 6,
+        // average_consumption_algo : 'algo_msh',
       })
       .then(res => {
         const today = new Date();
