@@ -1,11 +1,29 @@
-const helpers = require('../shared/helpers');
+const { chromium } = require('@playwright/test');
+const { test } = require('@playwright/test');
+const TU = require('../shared/TestUtils');
+
 const VisitsPage = require('./visits.page');
 
-describe('Patient Visits', () => {
-  const path = '#!/patients/visits';
-  beforeEach(() => helpers.navigate(path));
+test.beforeAll(async () => {
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  TU.registerPage(page);
+  await TU.login();
+});
 
-  const Page = new VisitsPage();
+test.describe('Patient Visits', () => {
+
+  const path = '/#!/patients/visits';
+
+  test.beforeEach(async () => {
+    await TU.navigate(path);
+  });
+
+  test.beforeEach(async () => {
+    await TU.navigate(path);
+  });
+
+  const page = new VisitsPage();
 
   const defaultVisit = {
     patient : 'Test 2 Patient',
@@ -22,92 +40,94 @@ describe('Patient Visits', () => {
     room : 'Room A in Ward A',
   };
 
-  const OLD_VISITS = 1;
-  const NEW_VISITS = 2;
-
-  it('successfully creates a new visit', () => {
-    return Page.createVisitSuccess(
+  test('successfully creates a new visit', () => {
+    return page.createVisitSuccess(
       defaultVisit.patient,
       defaultVisit.service,
       defaultVisit.diagnosis,
-      defaultVisit.note
+      defaultVisit.note,
     );
   });
 
-  it('forbid to create a new visit for a pending patient', () => {
-    return Page.createVisitFail(
+  test('forbid to create a new visit for a pending patient', () => {
+    return page.createVisitFail(
       defaultVisit.patient,
       defaultVisit.service,
       defaultVisit.diagnosis,
-      defaultVisit.note
+      defaultVisit.note,
     );
   });
 
-  it('successfully creates a new hospitalization visit', async () => {
-    await Page.createVisitSuccess(
+  test('successfully creates a new hospitalization visit', async () => {
+    await page.createVisitSuccess(
       hospiVisit.patient,
       hospiVisit.service,
       hospiVisit.diagnosis,
       hospiVisit.note,
       true, true, true, true, true,
       hospiVisit.ward,
-      hospiVisit.room
+      hospiVisit.room,
     );
   });
 
-  it('counts visits in the registry', async () => {
-    await Page.expectNumberOfGridRows(OLD_VISITS + NEW_VISITS);
+  const NUM_VISITS_IN_REGISTRY = [2, 3];
+  test('counts visits in the registry', async () => {
+    await page.expectNumberOfGridRows(NUM_VISITS_IN_REGISTRY);
   });
 
-  it('search only hospitalized patients', async () => {
+  test('search only hospitalized patients', async () => {
     const options = {
       isHospitalized : 1,
     };
-    await Page.search(options);
-    await Page.expectNumberOfGridRows(1);
+    await page.search(options);
+    await page.expectNumberOfGridRows(1);
   });
 
-  it('search by patient name', async () => {
+  const NUM_PATIENTS_BY_NAME = [1, 2];
+  test('search by patient name', async () => {
     const options = {
       displayName : 'Test 2 Patient',
     };
-    await Page.search(options);
-    await Page.expectNumberOfGridRows(OLD_VISITS + 1);
+    await page.search(options);
+    await page.expectNumberOfGridRows(NUM_PATIENTS_BY_NAME);
   });
 
-  it('search pregnant visits', async () => {
+  test('search pregnant visits', async () => {
     const options = {
       isPregnant : 1,
     };
-    await Page.search(options);
-    await Page.expectNumberOfGridRows(1);
+    await page.search(options);
+    await page.expectNumberOfGridRows(1);
   });
 
-  it('search patient visits by service', async () => {
+  const NUM_PATIENT_VISITS_BY_SERVICE = [2, 3];
+  test('search patient visits by service', async () => {
     const options = {
       service : 'Medecine Interne',
     };
-    await Page.search(options);
-    await Page.expectNumberOfGridRows(OLD_VISITS + 2);
+    await page.search(options);
+    await page.expectNumberOfGridRows(NUM_PATIENT_VISITS_BY_SERVICE);
   });
 
-  it('search patient visits by ward', async () => {
+  test('search patient visits by ward', async () => {
     const options = {
       ward : 'Pavillon A',
     };
-    await Page.search(options);
-    await Page.expectNumberOfGridRows(1);
+    await page.search(options);
+    await page.expectNumberOfGridRows(1);
+
     options.ward = 'Pavillon B';
-    await Page.search(options);
-    await Page.expectNumberOfGridRows(0);
+    await page.search(options);
+    await page.expectNumberOfGridRows(0);
   });
 
-  it('search patient visits', async () => {
+  test('search patient visits', async () => {
     const options = {
       isHospitalized : 1,
       displayName : 'Test 2 Patient',
     };
-    await Page.search(options);
-    await Page.expectNumberOfGridRows(0);
+    await page.search(options);
+    await page.expectNumberOfGridRows(0);
   });
+
 });

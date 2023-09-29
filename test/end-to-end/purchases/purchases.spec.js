@@ -1,32 +1,41 @@
-/* global by */
 const moment = require('moment');
-const { expect } = require('chai');
-const helpers = require('../shared/helpers');
+const { chromium } = require('@playwright/test');
+const { test, expect } = require('@playwright/test');
+const TU = require('../shared/TestUtils');
+const { by } = require('../shared/TestUtils');
 
-const FU = require('../shared/FormUtils');
 const PurchaseOrderPage = require('./purchases.page');
 const components = require('../shared/components');
+
+test.beforeAll(async () => {
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  TU.registerPage(page);
+  await TU.login();
+});
 
 /*
  * Simple Tests for Purchase Orders
  */
-describe('Purchase Orders', () => {
-  const path = '#!/purchases/create';
+test.describe('Purchase Orders', () => {
+  const path = '/#!/purchases/create';
 
   // navigate to the patient invoice page
-  beforeEach(() => helpers.navigate(path));
+  test.beforeEach(async () => {
+    await TU.navigate(path);
+  });
 
-  it('supports single item purchase orders', async () => {
+  test('supports single item purchase orders', async () => {
     const page = new PurchaseOrderPage();
     const datePurchase = moment(new Date(), 'YYYY-MM-DD').subtract(1712, 'days').toDate();
 
     // prepare the page with default supplier, description, etc
     await components.supplierSelect.set('SNEL');
-    await FU.input('PurchaseCtrl.order.details.note', 'This is a brief description of what is going on');
+    await TU.input('PurchaseCtrl.order.details.note', 'This is a brief description of what is going on');
     await components.dateEditor.set(datePurchase);
 
     // set the 'other' delivery method parameter
-    await $('#other').click();
+    await TU.locator('#other').click();
 
     // add the following inventory item
     await page.addInventoryItem(0, 'Quinine Bichlorhydrate, sirop, 100mg');
@@ -38,32 +47,32 @@ describe('Purchase Orders', () => {
     await page.adjustItemPrice(0, 25);
 
     // make sure the submit button is not disabled
-    expect(await page.btns.submit.isEnabled()).to.equal(true);
+    expect(await page.submitButtonEnabled()).toBe(true);
 
     // attempt to submit the page.
     await page.submit();
 
-    await FU.exists(by.id('receipt-confirm-created'), true);
+    await TU.waitForSelector(by.id('receipt-confirm-created'));
     await page.reset();
   });
 
-  it('supports multi-item purchase orders', async () => {
+  test('supports multi-item purchase orders', async () => {
     const page = new PurchaseOrderPage();
     const datePurchase = moment(new Date(), 'YYYY-MM-DD').subtract(1710, 'days').toDate();
 
     // prepare the page with default supplier, description, etc
     await components.supplierSelect.set('SNEL');
-    await FU.input('PurchaseCtrl.order.details.note', 'We need more penicillin');
+    await TU.input('PurchaseCtrl.order.details.note', 'We need more penicillin');
     await components.dateEditor.set(datePurchase);
 
     // set the 'on-purchase' delivery method parameter
-    await $('#on-purchase').click();
+    await TU.locator('#on-purchase').click();
 
     // add a two rows to the grid
     await page.addRows(2);
 
     // the grid now has three rows
-    expect(await page.getRows().count()).to.equal(3);
+    expect((await page.getRows()).length).toBe(3);
 
     // add two inventory items to each row (0-indexing)
     await page.addInventoryItem(0, 'DDIS_FORM1T-_1');
@@ -84,73 +93,74 @@ describe('Purchase Orders', () => {
     await page.adjustItemQuantity(2, 16);
 
     // make sure the submit button is not disabled
-    expect(await page.btns.submit.isEnabled()).to.equal(true);
+    expect(await page.submitButtonEnabled()).toBe(true);
 
     // submit the page
     await page.submit();
 
     /** @todo - this can validate totals and receipt content in the future */
-    await FU.exists(by.id('receipt-confirm-created'), true);
+    await TU.waitForSelector(by.id('receipt-confirm-created'));
     await page.reset();
   });
 
-  it.skip('supports An optimal purchase orders', async () => {
+  test.skip('supports An optimal purchase orders', async () => {
+    // @TODO : fix this test
     const page = new PurchaseOrderPage();
     const datePurchase = moment(new Date(), 'YYYY-MM-DD').subtract(1710, 'days').toDate();
 
     // prepare the page with default supplier, description, etc
     await components.supplierSelect.set('SNEL');
-    await FU.input('PurchaseCtrl.order.details.note', 'Optimal Purchase Order');
+    await TU.input('PurchaseCtrl.order.details.note', 'Optimal Purchase Order');
     await components.dateEditor.set(datePurchase);
 
     // set the 'on-purchase' delivery method parameter
-    await $('#on-purchase').click();
+    await TU.locator('#on-purchase').click();
 
     // click on buttom Optimal Purchase
     await page.optimalPurchase();
 
     // the grid now has three rows
-    expect(await page.getRows().count()).to.equal(1);
+    expect((await page.getRows()).length).toBe(1);
 
     // change the prices
     await page.adjustItemPrice(0, 2.25);
 
     // make sure the submit button is not disabled
-    expect(await page.btns.submit.isEnabled()).to.equal(true);
+    expect(await page.submitButtonEnabled()).toBe(true);
 
     // submit the page
     await page.submit();
 
     /** @todo - this can validate totals and receipt content in the future */
-    await FU.exists(by.id('receipt-confirm-created'), true);
+    await TU.waitForSelector(by.id('receipt-confirm-created'));
     await page.reset();
   });
 
-  it('blocks submission if no supplier is available', async () => {
+  test('blocks submission if no supplier is available', async () => {
     const page = new PurchaseOrderPage();
 
-    FU.input('PurchaseCtrl.order.details.note', 'We need more purchases.');
+    TU.input('PurchaseCtrl.order.details.note', 'We need more purchases.');
 
     // make sure the "add rows" button is still disabled
-    expect(await page.btns.add.isEnabled()).to.equal(false);
+    expect(await page.addButtonEnabled()).toBe(false);
 
     // make sure the "submit" button is still disabled
-    expect(await page.btns.submit.isEnabled()).to.equal(false);
+    expect(await page.submitButtonEnabled()).toBe(false);
   });
 
-  it('blocks submission for an invalid grid', async () => {
+  test('blocks submission for an invalid grid', async () => {
     const page = new PurchaseOrderPage();
     const datePurchase = moment(new Date(), 'YYYY-MM-DD').subtract(1714, 'days').toDate();
 
-    await page.btns.clear.click();
+    await page.btns.clear();
 
     // prepare the page with default supplier, description, etc
     await components.supplierSelect.set('SNEL');
-    await FU.input('PurchaseCtrl.order.details.note', 'We need more purchases.');
+    await TU.input('PurchaseCtrl.order.details.note', 'We need more purchases.');
     await components.dateEditor.set(datePurchase);
 
     // set the 'on-purchase' delivery method parameter
-    await $('#on-purchase').click();
+    await TU.locator('#on-purchase').click();
 
     // add two rows to grid.
     await page.addRows(1);

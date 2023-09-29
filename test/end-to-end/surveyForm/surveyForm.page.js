@@ -1,15 +1,14 @@
-/* global element, by, browser */
+const { expect } = require('@playwright/test');
+const TU = require('../shared/TestUtils');
+const { by } = require('../shared/TestUtils');
+
+const GridRow = require('../shared/GridRow');
+const components = require('../shared/components');
 
 /**
  * This class is represents a Survey Form page in term of structure and
  * behaviour so it is a Survey Form Management page object
  */
-
-const EC = require('protractor').ExpectedConditions;
-const GridRow = require('../shared/GridRow');
-const FU = require('../shared/FormUtils');
-const components = require('../shared/components');
-
 class SurveyFormManagementPage {
 
   /**
@@ -17,13 +16,15 @@ class SurveyFormManagementPage {
    */
   async create(SurveyForm) {
     await components.dataCollector.set(SurveyForm.dataCollector);
-    await FU.buttons.create();
+    await TU.buttons.create();
+
     await components.surveyFormTypeSelect.set(SurveyForm.type);
-    await FU.input('SurveyFormModalCtrl.surveyForm.name', SurveyForm.name);
-    await FU.input('SurveyFormModalCtrl.surveyForm.label', SurveyForm.label);
-    await FU.input('SurveyFormModalCtrl.surveyForm.hint', SurveyForm.hint);
-    await element(by.id('is_required')).click();
-    await FU.buttons.submit();
+    await TU.input('SurveyFormModalCtrl.surveyForm.name', SurveyForm.name);
+    await TU.input('SurveyFormModalCtrl.surveyForm.label', SurveyForm.label);
+    await TU.input('SurveyFormModalCtrl.surveyForm.hint', SurveyForm.hint);
+    await TU.locator(by.id('is_required')).click();
+
+    await TU.buttons.submit();
     await components.notification.hasSuccess();
   }
 
@@ -32,17 +33,23 @@ class SurveyFormManagementPage {
    */
   async checkValidate(SurveyForm, surveyFormName) {
     await components.dataCollector.set(SurveyForm.dataCollector);
-    await FU.buttons.create();
+    await TU.buttons.create();
+
     await components.surveyFormTypeSelect.set(SurveyForm.type);
-    await FU.input('SurveyFormModalCtrl.surveyForm.name', surveyFormName);
-    await FU.input('SurveyFormModalCtrl.surveyForm.label', SurveyForm.label);
-    await FU.input('SurveyFormModalCtrl.surveyForm.hint', SurveyForm.hint);
-    const isRequiredField = element(by.id('is_required'));
-    await browser.wait(EC.elementToBeClickable(isRequiredField), 2000, 'Cannot click is_required field');
-    await isRequiredField.click();
-    await FU.buttons.submit();
-    await FU.exists(by.id('error_format'), true);
-    await FU.modal.cancel();
+    await TU.input('SurveyFormModalCtrl.surveyForm.name', surveyFormName);
+    await TU.input('SurveyFormModalCtrl.surveyForm.label', SurveyForm.label);
+    await TU.input('SurveyFormModalCtrl.surveyForm.hint', SurveyForm.hint);
+    await TU.waitForSelector(by.id('is_required'));
+    await TU.locator(by.id('is_required')).check();
+
+    // Verify the submit button is disabled because of the error
+    const submitBtn = await TU.locator('[data-method="submit"]');
+    expect(await submitBtn.isEnabled()).toBe(false);
+
+    // await TU.buttons.submit();
+    // await TU.waitForSelector(by.id('error_format'));
+    // await TU.exists(by.id('error_format'), true);
+    await TU.modal.cancel();
   }
 
   /**
@@ -50,16 +57,15 @@ class SurveyFormManagementPage {
    */
 
   async createDeletable(SurveyForm) {
-    await FU.buttons.create();
+    await TU.buttons.create();
     await components.surveyFormTypeSelect.set(SurveyForm.type);
     await components.choiceListSelect.set(SurveyForm.choice_list_id);
     await components.surveyListSelect.set(SurveyForm.filter_choice_list_id);
-    await FU.input('SurveyFormModalCtrl.surveyForm.name', SurveyForm.name);
-    await FU.input('SurveyFormModalCtrl.surveyForm.label', SurveyForm.label);
-    const isRequiredField = element(by.id('is_required'));
-    await browser.wait(EC.elementToBeClickable(isRequiredField), 2000, 'Cannot click is_required field');
-    await isRequiredField.click();
-    await FU.buttons.submit();
+    await TU.input('SurveyFormModalCtrl.surveyForm.name', SurveyForm.name);
+    await TU.input('SurveyFormModalCtrl.surveyForm.label', SurveyForm.label);
+    await TU.waitForSelector(by.id('is_required'));
+    await TU.locator(by.id('is_required')).check();
+    await TU.buttons.submit();
     await components.notification.hasSuccess();
   }
 
@@ -68,17 +74,16 @@ class SurveyFormManagementPage {
    */
   async edit(label, updateSurveyForm) {
     const row = new GridRow(label);
-    await row.dropdown().click();
-    await row.edit().click();
+    await row.dropdown();
+    await row.edit();
     await components.surveyFormTypeSelect.set(updateSurveyForm.type);
     await components.choiceListSelect.set(updateSurveyForm.choice_list_id);
-    await FU.input('SurveyFormModalCtrl.surveyForm.name', updateSurveyForm.name);
-    await FU.input('SurveyFormModalCtrl.surveyForm.label', updateSurveyForm.label);
-    await FU.input('SurveyFormModalCtrl.surveyForm.hint', updateSurveyForm.hint);
-    const isRequiredField = element(by.id('is_required'));
-    await browser.wait(EC.elementToBeClickable(isRequiredField), 2000, 'Cannot click is_required field');
-    await isRequiredField.click();
-    await FU.buttons.submit();
+    await TU.input('SurveyFormModalCtrl.surveyForm.name', updateSurveyForm.name);
+    await TU.input('SurveyFormModalCtrl.surveyForm.label', updateSurveyForm.label);
+    await TU.input('SurveyFormModalCtrl.surveyForm.hint', updateSurveyForm.hint);
+    await TU.waitForSelector(by.id('is_required'));
+    await TU.locator(by.id('is_required')).check();
+    await TU.buttons.submit();
     await components.notification.hasSuccess();
   }
 
@@ -87,10 +92,10 @@ class SurveyFormManagementPage {
    */
   async delete(label) {
     const row = new GridRow(label);
-    await row.dropdown().click();
-    await row.remove().click();
+    await row.dropdown();
+    await row.remove();
 
-    await FU.modal.submit();
+    await TU.modal.submit();
     await components.notification.hasSuccess();
   }
 }

@@ -1,33 +1,33 @@
-/* global element, by */
-/* eslint  */
+const TU = require('../shared/TestUtils');
+const { by } = require('../shared/TestUtils');
+
+const components = require('../shared/components');
 
 /**
  * This class represents a modal search page
  * behaviour so it is a modal search page object
  */
 
-const FU = require('../shared/FormUtils');
-const components = require('../shared/components');
-
 class SearchModalPage {
   setDisplayName(displayName) {
-    return FU.input('ModalCtrl.searchQueries.display_name', displayName);
+    return TU.input('ModalCtrl.searchQueries.display_name', displayName);
   }
 
   setReference(reference) {
-    return FU.input('ModalCtrl.searchQueries.reference', reference);
+    return TU.input('ModalCtrl.searchQueries.reference', reference);
   }
 
-  submit() {
-    return FU.modal.submit();
+  async submit() {
+    await TU.modal.submit();
+    return TU.waitForSelector('div.ui-grid-footer', { waitUntil : 'domcontentloaded' });
   }
 
   selectSex(sex) {
-    return element(by.id(`${sex}`)).click();
+    return TU.locator(by.id(`${sex}`)).click();
   }
 
   setRegistrationDateRange(range) {
-    return $('[date-id="embauche-date"]').$(`[data-date-range="${range}"]`).click();
+    return TU.locator(`[date-id="embauche-date"] [data-date-range="${range}"]`).click();
   }
 
   selectService(service) {
@@ -38,9 +38,10 @@ class SearchModalPage {
     return components.gradeSelect.set(grade);
   }
 
-  selectFonction(fonction) {
-    return components.fonctionSelect.set(fonction);
+  selectFunction(fonction) {
+    return components.functionSelect.set(fonction);
   }
+
 }
 
 module.exports = SearchModalPage;

@@ -1,70 +1,68 @@
-/* global element, by, browser */
-const EC = require('protractor').ExpectedConditions;
-const FU = require('../shared/FormUtils');
+const TU = require('../shared/TestUtils');
+const { by } = require('../shared/TestUtils');
+
 const GridRow = require('../shared/GridRow');
 
 const { bhCheckboxTree } = require('../shared/components');
 
 class RolesPage {
-  constructor() {
-    this.roleLabel = element(by.model('RolesAddCtrl.role.label'));
-  }
 
   submit() {
-    return FU.modal.submit();
+    return TU.modal.submit();
   }
 
-  setLabel(txt) {
-    return this.roleLabel.clear().sendKeys(txt);
+  async setLabel(txt) {
+    const roleLabel = await TU.locator(by.model('RolesAddCtrl.role.label'));
+    return roleLabel.fill(txt);
   }
 
   async openDropdownMenu(label) {
     const row = new GridRow(label);
-    await row.dropdown().click();
+    await row.dropdown();
     return row;
   }
 
   async editRole(label) {
     const row = await this.openDropdownMenu(label);
-    await row.edit().click();
+    await row.edit();
   }
 
   async deleteRole(label) {
     const row = await this.openDropdownMenu(label);
-    await row.remove().click();
+    await row.remove();
   }
 
   async editPermissions(label) {
     const row = await this.openDropdownMenu(label);
-    await row.menu.$('[data-method="edit-permissions"]').click();
+    await row.method('edit-permissions');
   }
 
   async checkAllPermissions() {
-    await browser.wait(EC.presenceOf($(bhCheckboxTree.selector)), 1500);
+    await TU.waitForSelector(bhCheckboxTree.selector);
     await bhCheckboxTree.toggleAllCheckboxes();
   }
 
   async assignRole(label) {
     const row = await this.openDropdownMenu(label);
-    await row.menu.$('[data-method="assign_roles"]').click();
+    await row.method('assign_roles');
   }
 
   async assignActions(label) {
     const row = await this.openDropdownMenu(label);
-    await row.menu.$('[data-method="edit-actions"]').click();
+    await row.method('edit-actions');
   }
 
   async setRole(txt) {
-    await browser.wait(EC.presenceOf($(bhCheckboxTree.selector)), 1500);
+    await TU.waitForSelector(bhCheckboxTree.selector);
     return bhCheckboxTree.toggle([txt]);
   }
 
   setAction(label) {
-    return $(`[data-label="${label}"]`).click();
+    return TU.locator(`[data-label="${label}"]`).click();
   }
 
   openCreateModal() {
-    return FU.buttons.create();
+    return TU.buttons.create();
   }
 }
 

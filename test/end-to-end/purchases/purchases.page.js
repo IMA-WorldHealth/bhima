@@ -1,16 +1,15 @@
-/* global element, by */
+const TU = require('../shared/TestUtils');
+const { by } = require('../shared/TestUtils');
 
-const FU = require('../shared/FormUtils');
-const GU = require('../shared/GridUtils.js');
+const GU = require('../shared/GridUtils');
 const addItem = require('../shared/components/bhAddItem');
 
 function PurchaseOrderPage() {
   const page = this;
 
   const btns = {
-    submit : $('[data-method="submit"]'),
-    add : element(by.id('btn-add-rows')),
-    clear : $('[data-method="clear"]'),
+    submit : TU.modal.submit,
+    clear : TU.buttons.clear,
   };
 
   const gridId = 'purchase-order-grid';
@@ -19,7 +18,7 @@ function PurchaseOrderPage() {
 
   // try to click the submit button
   page.submit = function submit() {
-    return btns.submit.click();
+    return TU.buttons.submit();
   };
 
   // adds n rows to the grid
@@ -29,13 +28,14 @@ function PurchaseOrderPage() {
 
   // try to click the submit button 'Optimal Purchase Order'
   page.optimalPurchase = async function optimalPurchase() {
-    await element(by.id(`optimal_purchase`)).click();
+    await TU.locator(by.id(`optimal_purchase`)).click();
   };
 
   // returns n rows
   page.getRows = function getRows() {
-    return grid.element(by.css('.ui-grid-render-container-body'))
-      .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'));
+    return grid.locator('.ui-grid-render-container-body')
+      .locator(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'))
+      .all();
   };
 
   // add an inventory item to the grid
@@ -44,11 +44,11 @@ function PurchaseOrderPage() {
     // first column of the nth row
     const itemCell = await GU.getCell(gridId, rowNumber, 1);
 
-    // enter data into the typeahead input.  We cannot use FU.typeahead because it is appended to the body.
-    await FU.input('row.entity.inventory_uuid', code, itemCell);
+    // enter data into the typeahead input.  We cannot use TU.typeahead because it is appended to the body.
+    await TU.input('row.entity.inventory_uuid', code, itemCell);
 
-    const externalAnchor = $('body > ul.dropdown-menu.ng-isolate-scope:not(.ng-hide)');
-    const option = externalAnchor.element(by.cssContainingText('[role="option"]', code));
+    const externalAnchor = TU.locator('body > ul.dropdown-menu.ng-isolate-scope:not(.ng-hide)');
+    const option = externalAnchor.locator('[role="option"]').locator(by.containsText(code));
     await option.click();
   };
 
@@ -57,14 +57,13 @@ function PurchaseOrderPage() {
    *
    * This function adjusts the price of the item in row {rowNumber}.
    *
-   * @param {Number} rowNumber - the grid's row number to adjust
-   * @param {Number} price - the new transaction price to set
+   * @param {number} rowNumber - the grid's row number to adjust
+   * @param {number} price - the new transaction price to set
    */
   page.adjustItemPrice = async function adjustItemPrice(rowNumber, price) {
-
     // fourth column of the last nth row
     const priceCell = await GU.getCell(gridId, rowNumber, 5);
-    await FU.input('row.entity.unit_price', price, priceCell);
+    await TU.input('row.entity.unit_price', price, priceCell);
   };
 
   /**
@@ -72,19 +71,28 @@ function PurchaseOrderPage() {
    *
    * This function adjusts the quantity of the item in row {rowNumber}.
    *
-   * @param {Number} rowNumber - the grid's row number to adjust
-   * @param {Number} quantity - the number of items expected to have
+   * @param {number} rowNumber - the grid's row number to adjust
+   * @param {number} quantity - the number of items expected to have
    */
   page.adjustItemQuantity = async function adjustItemQuantity(rowNumber, quantity) {
-
     // third column column of the nth row
     const quantityCell = await GU.getCell(gridId, rowNumber, 4);
-    await FU.input('row.entity.quantity', quantity, quantityCell);
+    await TU.input('row.entity.quantity', quantity, quantityCell);
+  };
+
+  page.addButtonEnabled = async function addButtonEnabled() {
+    const button = await TU.locator(by.id('btn-add-rows'));
+    return button.isEnabled();
+  };
+
+  page.submitButtonEnabled = async function submitButtonEnabled() {
+    const button = await TU.locator('[data-method="submit"]');
+    return button.isEnabled();
   };
 
   // click the reset modal button
   page.reset = async function reset() {
-    await $('[data-action="close"]').click();
+    await TU.locator('[data-action="close"]').click();
   };
 
   // bind the buttons for external use

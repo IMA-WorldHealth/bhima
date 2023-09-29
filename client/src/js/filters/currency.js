@@ -1,16 +1,4 @@
-/* eslint-disable prefer-template */
-/* eslint-disable no-useless-escape */
-/**
- * BHIMA fork of angular's native currency filter.
- * Allows currency to be defined for each filter individually.
- * Currency IDs are used to fetch configuration files asynchronously from the server.
- * Completely separates locale from currency format to facilitate reliable accounting.
- * Clearly fails given an unsupported currency ID or configuration.
- *
- * @param {number} amount Value to be converted into currency
- * @param {number} currencyId ID for
- * @returns {string} Valid supported currency or error string
- */
+/* eslint-disable prefer-template, no-useless-escape, no-param-reassign */
 
 angular.module('bhima.filters')
   .filter('currency', CurrencyFilter);
@@ -22,6 +10,26 @@ CurrencyFilter.$inject = [
 function CurrencyFilter(CurrencyFormat, Session, $translate) {
   const requireCurrencyDefinition = false;
 
+  /**
+   * BHIMA fork of angular's native currency filter.
+   * Allows currency to be defined for each filter individually.
+   * Currency IDs are used to fetch configuration files asynchronously from the server.
+   * Completely separates locale from currency format to facilitate reliable accounting.
+   * Clearly fails given an unsupported currency ID or configuration.
+   *
+   * Invoke from HTML:   <number> | currency: id : <numDigits>
+   *
+   * Note: numDigits is optional
+   *
+   * Examples:
+   *    23.1 | currency : Session.enterprise.currency_id  --> 23.10 FC
+   *    23.1 | currency : Session.enterprise.currency_id:0  --> 23 FC
+   *
+   * @param {number} amount - Value to be converted into currency
+   * @param {number} currencyId - ID for currency
+   * @param {number} numDecimals - number digits after the decimal (optional, defaults default for currency)
+   * @returns {string} Valid supported currency or error string
+   */
   function currencyFilter(amount, currencyId, numDecimals) {
     const amountUndefined = angular.isUndefined(amount) || angular === null;
 
@@ -31,7 +39,6 @@ function CurrencyFilter(CurrencyFormat, Session, $translate) {
         return formatError('EXCHANGE.INVALID_CURRENCY_DEFINITION', amount);
       }
 
-      // eslint-disable-next-line no-param-reassign
       currencyId = Session.enterprise.currency_id;
     }
 
@@ -58,7 +65,8 @@ function CurrencyFilter(CurrencyFormat, Session, $translate) {
     }
 
     return formatNumber(amount,
-      formatConfiguration.PATTERNS[1], formatConfiguration.GROUP_SEP, formatConfiguration.DECIMAL_SEP, numDecimals)
+      formatConfiguration.PATTERNS[1], formatConfiguration.GROUP_SEP,
+      formatConfiguration.DECIMAL_SEP, numDecimals)
       .replace(/\u00A4/g, formatConfiguration.CURRENCY_SYM);
   }
 
@@ -71,62 +79,69 @@ function CurrencyFilter(CurrencyFormat, Session, $translate) {
   const DECIMAL_SEP = '.';
 
   /**
- * @function formatNumber
- * @number is the ammount
- * @numDecimals is the number of decimals allowed
- */
-  function formatNumber(number, pattern, groupSep, decimalSep, fractionSize, numDecimals) {
+   * Format the number
+   * @param {number} number - value of the number to format
+   * @param {object} pattern - pattern
+   * @param {string} groupSep - thousands group separator
+   * @param {string} decimalSep - decimal symbol
+   * @param {number} numDecimals - number of digits after the decimal
+   * @returns {string} formatted number
+   */
+  function formatNumber(number, pattern, groupSep, decimalSep, numDecimals) {
 
-    if (angular.isObject(number)) return '';
+    if (angular.isObject(number)) {
+      // Ignore objects
+      return '';
+    }
 
-    // eslint-disable-next-line no-param-reassign
+    const isNegative = number < 0;
+
+    // Deal with the non-negative value
     number = Math.abs(number);
 
     const isInfinity = number === Infinity;
-    // eslint-disable-next-line no-restricted-globals
-    if (!isInfinity && !isFinite(number)) return '';
+
+    if (!isInfinity && !Number.isFinite(number)) {
+      // Ignore NaNs
+      return '';
+    }
 
     const numStr = `${number} `;
     let formattedText = '';
-    let hasExponent = false;
+
+    const hasExponent = numStr.indexOf('e') !== -1;
+    const fractionLen = (numStr.split(DECIMAL_SEP)[1] || '').length;
     const parts = [];
 
-    // eslint-disable-next-line no-const-assign
-    if (isInfinity) formattedText = '\u221e';
+    let fractionSize = Math.min(Math.max(pattern.minFrac, fractionLen), pattern.maxFrac);
 
-    if (!isInfinity && numStr.indexOf('e') !== -1) {
+    if (isInfinity) {
+      formattedText = '\u221e';
+    }
+
+    if (!isInfinity && hasExponent) {
       const match = numStr.match(/([\d\.]+)e(-?)(\d+)/);
+      // Force numbers very small numbers to zero
       if (match && match[2] === '-' && match[3] > fractionSize + 1) {
-        // eslint-disable-next-line no-param-reassign
+
         number = 0;
       } else {
         formattedText = numStr;
-        hasExponent = true;
       }
     }
 
     if (!isInfinity && !hasExponent) {
-      const fractionLen = (numStr.split(DECIMAL_SEP)[1] || '').length;
-
-      // determine fractionSize if it is not specified
-      if (angular.isUndefined(fractionSize)) {
-        // eslint-disable-next-line no-param-reassign
-        fractionSize = Math.min(Math.max(pattern.minFrac, fractionLen), pattern.maxFrac);
-      }
 
       // Just to use the number of decimals defined in the parameters
-      // eslint-disable-next-line no-param-reassign
       fractionSize = numDecimals || fractionSize;
 
-      if (number > 0.01) {
-        // eslint-disable-next-line no-param-reassign
-        fractionSize = Math.min(Math.max(pattern.minFrac, fractionLen), pattern.maxFrac);
+      if (!angular.isUndefined(numDecimals) && (numDecimals < fractionSize)) {
+        fractionSize = numDecimals;
       }
 
       // safely round numbers in JS without hitting imprecisions of floating-point arithmetics
       // inspired by:
       // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/round
-      // eslint-disable-next-line no-param-reassign
       number = +(Math.round(+(number.toString() + 'e' + fractionSize)).toString() + 'e' + -fractionSize);
 
       let fraction = ('' + number).split(DECIMAL_SEP);
@@ -160,14 +175,13 @@ function CurrencyFilter(CurrencyFormat, Session, $translate) {
         fraction += '0';
       }
 
-      if (fractionSize && fractionSize !== '0') { formattedText += decimalSep + fraction.substr(0, fractionSize); }
+      if (fractionSize && fractionSize !== '0') {
+        formattedText += decimalSep + fraction.substr(0, fractionSize);
+      }
     } else if (fractionSize > 0 && number < 1) {
       formattedText = number.toFixed(fractionSize);
-      // eslint-disable-next-line no-param-reassign
       number = parseFloat(formattedText);
     }
-
-    const isNegative = number < 0;
 
     parts.push(isNegative ? pattern.negPre : pattern.posPre,
       formattedText,

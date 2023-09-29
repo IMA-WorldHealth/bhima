@@ -1,6 +1,8 @@
-const FU = require('../../shared/FormUtils');
-const ReportPage = require('../page');
+const TU = require('../../shared/TestUtils');
+
 const components = require('../../shared/components');
+
+const ReportPage = require('../page');
 
 class CashflowReportPage {
   constructor(key) {
@@ -20,9 +22,9 @@ class CashflowReportPage {
 
     // save report as PDF
     await this.page.saveAs();
-    await FU.input('SaveCtrl.documentOptions.label', reportName);
-    await FU.select('SaveCtrl.documentOptions.renderer', reportFormat);
-    await FU.modal.submit();
+    await TU.input('SaveCtrl.documentOptions.label', reportName);
+    await TU.select('SaveCtrl.documentOptions.renderer', reportFormat);
+    await TU.modal.submit();
 
     // successfully saved notification
     await components.notification.hasSuccess();
@@ -38,6 +40,7 @@ class CashflowReportPage {
   // check saved report
   async checkSavedCashflowReport(reportName) {
     await this.page.gotoArchive();
+    await TU.waitForSelector('.ui-grid-canvas .ui-grid-row');
     await this.page.lastReportMatching(reportName);
     await this.page.backToConfig();
   }

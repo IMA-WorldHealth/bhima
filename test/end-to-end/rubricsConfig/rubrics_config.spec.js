@@ -1,9 +1,21 @@
-const { expect } = require('chai');
-const helpers = require('../shared/helpers');
+const { chromium } = require('@playwright/test');
+const { test, expect } = require('@playwright/test');
+const TU = require('../shared/TestUtils');
+
 const RubricConfigPage = require('./rubrics_config.page');
 
-describe('Rubrics Configuration Management', () => {
-  before(() => helpers.navigate('#!/payroll/rubric_configuration'));
+test.beforeAll(async () => {
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  TU.registerPage(page);
+  await TU.login();
+});
+
+test.describe('Rubrics Configuration Management', () => {
+
+  test.beforeEach(async () => {
+    await TU.navigate('/#!/payroll/rubric_configuration');
+  });
 
   const page = new RubricConfigPage();
 
@@ -15,31 +27,33 @@ describe('Rubrics Configuration Management', () => {
     label : 'Configuration 2013 Updated',
   };
 
-  it('successfully creates a new rubric configuration', async () => {
+  test('successfully creates a new rubric configuration', async () => {
     await page.create(rubricConfig);
   });
 
-  it('successfully edits a rubric configuration', async () => {
+  test('successfully edits a rubric configuration', async () => {
     await page.update(rubricConfig.label, updateRubricConfig);
   });
 
-  it('successfully set rubrics in rubric configuration', async () => {
+  test('successfully set rubrics in rubric configuration', async () => {
     await page.setRubricConfig(updateRubricConfig.label);
   });
 
-  it('successfully unset rubrics in rubric configuration', async () => {
+  test('successfully unset rubrics in rubric configuration', async () => {
     await page.unsetRubricConfig(updateRubricConfig.label);
   });
 
-  it('don\'t create when incorrect rubric', async () => {
+  test('do not create when incorrect rubric', async () => {
     await page.errorOnCreateRubricConfig();
   });
 
-  it('successfully delete a rubric', async () => {
+  test('successfully delete a rubric', async () => {
     await page.remove(updateRubricConfig.label);
   });
 
-  it('should have 2 rubrics to end with', async () => {
-    expect(await page.count()).to.equal(2);
+  test('should have 2 rubrics to end with', async () => {
+    // Make sure the grid is loaded
+    await TU.waitForSelector('.ui-grid-canvas .ui-grid-row');
+    expect(await page.count()).toBe(2);
   });
 });

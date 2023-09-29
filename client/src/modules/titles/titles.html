@@ -1,0 +1,39 @@
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.ADMIN</li>
+      <li class="title" translate>TREE.TITLE</li>
+    </ol>
+
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <button class="btn btn-default text-capitalize" ui-sref="titles.create" data-method="create">
+          <span class="fa fa-plus"></span>
+          <span translate class="hidden-xs">FORM.BUTTONS.ADD_TITLE</span>
+        </button>
+      </div>
+
+      <bh-filter-toggle
+        on-toggle="TitleCtrl.toggleFilter()">
+      </bh-filter-toggle>
+    </div>
+  </div>
+</div>
+
+<!-- main content -->
+<div class="flex-content">
+  <div class="container-fluid">
+    <div
+      id="title-grid"
+      class="grid-full-height"
+      ui-grid="TitleCtrl.gridOptions"
+      ui-grid-auto-resize>
+
+      <bh-grid-loading-indicator
+        loading-state="TitleCtrl.loading"
+        empty-state="TitleCtrl.gridOptions.data.length === 0"
+        error-state="TitleCtrl.hasError">
+      </bh-grid-loading-indicator>
+    </div>
+  </div>
+</div>

@@ -1,11 +1,11 @@
-/* global  element, by */
-const FU = require('../FormUtils');
+const TU = require('../TestUtils');
+const { by } = require('../TestUtils');
 
 const selector = '[bh-period-selection]';
 
 module.exports = {
   set : (period, id) => {
-    const locator = id ? by.id(id) : by.css(selector);
-    return FU.select('$ctrl.selectedPeriod', period, element(locator));
+    const locator = id ? by.id(id) : selector;
+    return TU.select('$ctrl.selectedPeriod', period, TU.locator(locator));
   },
 };

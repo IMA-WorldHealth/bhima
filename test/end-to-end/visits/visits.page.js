@@ -1,24 +1,25 @@
-/* global element, by, $$ */
+const TU = require('../shared/TestUtils');
+const { by } = require('../shared/TestUtils');
+
+const GU = require('../shared/GridUtils');
+const components = require('../shared/components');
 
 /**
  * This class is represents a visit page in term of structure and
  * behaviour so it is a visit page object
- * */
-const GU = require('../shared/GridUtils');
-const FU = require('../shared/FormUtils');
-const components = require('../shared/components');
-
+ */
 class VisitPage {
 
   constructor() {
     this.gridId = 'visit-grid';
-    this.visitGrid = element(by.id(this.gridId));
   }
 
   /**
    * send back the number of visits in the grid
    */
   async expectNumberOfGridRows(number) {
+    // Make sure the grid is loaded first
+    await TU.waitForSelector('.ui-grid-grid-footer');
     await GU.expectRowCount(this.gridId, number, `Expected Visit Registry's ui-grid row count to be ${number}.`);
   }
 
@@ -27,12 +28,10 @@ class VisitPage {
    */
   async createVisitSuccess(
     patientName, serviceName, diagnosis, note, isHospitalized, isOldCase,
-    isPregnant, notInsideHealthZone, isRefered, ward, room
-  ) {
+    isPregnant, notInsideHealthZone, isRefered, ward, room) {
     await this.createVisit(
       patientName, serviceName, diagnosis, note, isHospitalized, isOldCase,
-      isPregnant, notInsideHealthZone, isRefered, ward, room
-    );
+      isPregnant, notInsideHealthZone, isRefered, ward, room);
     await components.notification.hasSuccess();
   }
 
@@ -41,15 +40,13 @@ class VisitPage {
    */
   async createVisitFail(
     patientName, serviceName, diagnosis, note, isHospitalized, isOldCase,
-    isPregnant, notInsideHealthZone, isRefered, ward, room
-  ) {
+    isPregnant, notInsideHealthZone, isRefered, ward, room) {
     await this.createVisit(
       patientName, serviceName, diagnosis, note, isHospitalized, isOldCase,
-      isPregnant, notInsideHealthZone, isRefered, ward, room
-    );
-    const warningAdmittedTag = by.css('[data-patient-already-admitted]');
-    await FU.exists(warningAdmittedTag, true);
-    await FU.buttons.cancel();
+      isPregnant, notInsideHealthZone, isRefered, ward, room);
+    const warningAdmittedTag = '[data-patient-already-admitted]';
+    await TU.exists(warningAdmittedTag, true);
+    await TU.buttons.cancel();
     await components.notification.hasDanger();
   }
 
@@ -58,9 +55,8 @@ class VisitPage {
    */
   async createVisit(
     patientName, serviceName, diagnosis, note, isHospitalized, isOldCase,
-    isPregnant, notInsideHealthZone, isRefered, ward, room
-  ) {
-    await FU.buttons.create();
+    isPregnant, notInsideHealthZone, isRefered, ward, room) {
+    await TU.buttons.create();
     // choose the patient
     await components.findPatient.findByName(patientName);
 
@@ -73,26 +69,26 @@ class VisitPage {
     }
 
     // set note
-    await FU.input('AdmitCtrl.visit.notes', note || '');
+    await TU.input('AdmitCtrl.visit.notes', note || '');
 
     if (isHospitalized) {
-      await FU.radio('AdmitCtrl.visit.hospitalized', 1);
+      await TU.radio('AdmitCtrl.visit.hospitalized', 1);
     }
 
     if (isOldCase) {
-      await FU.radio('AdmitCtrl.visit.is_new_case', 1);
+      await TU.radio('AdmitCtrl.visit.is_new_case', 1);
     }
 
     if (isPregnant) {
-      await element(by.model('AdmitCtrl.visit.is_pregnant')).click();
+      await TU.locator(by.model('AdmitCtrl.visit.is_pregnant')).check();
     }
 
     if (isRefered) {
-      await element(by.model('AdmitCtrl.visit.is_refered')).click();
+      await TU.locator(by.model('AdmitCtrl.visit.is_refered')).check();
     }
 
     if (notInsideHealthZone) {
-      await FU.radio('AdmitCtrl.visit.inside_health_zone', 1);
+      await TU.radio('AdmitCtrl.visit.inside_health_zone', 1);
     }
 
     if (ward) {
@@ -103,63 +99,63 @@ class VisitPage {
       await components.roomSelect.set(room);
     }
 
-    await FU.buttons.submit();
+    await TU.buttons.submit();
   }
 
   /**
    * search
    */
   async search(options) {
-    await FU.buttons.search();
+    await TU.buttons.search();
 
     // set to default values the form
     await this.reset();
 
     if (options.isRefered) {
-      await element(by.model('$ctrl.searchQueries.is_refered')).click();
+      await TU.locator(by.model('$ctrl.searchQueries.is_refered')).check();
     }
 
     if (options.isPregnant) {
-      await element(by.model('$ctrl.searchQueries.is_pregnant')).click();
+      await TU.locator(by.model('$ctrl.searchQueries.is_pregnant')).check();
     }
 
     // hospitalization
     if (options.isHospitalized === 1) {
-      await element(by.id('hospitalized_yes')).click();
+      await TU.locator(by.id('hospitalized_yes')).check();
     }
 
     if (options.isHospitalized === 0) {
-      await element(by.id('hospitalized_no')).click();
+      await TU.locator(by.id('hospitalized_no')).check();
     }
 
     // new case
     if (options.isNewCase === 1) {
-      await element(by.id('is_new_case_yes')).click();
+      await TU.locator(by.id('is_new_case_yes')).check();
     }
 
     if (options.isNewCase === 0) {
-      await element(by.id('is_new_case_no')).click();
+      await TU.locator(by.id('is_new_case_no')).check();
     }
 
     // inside health zone
     if (options.insideHealthZone === 1) {
-      await element(by.id('inside_health_zone_yes')).click();
+      await TU.locator(by.id('inside_health_zone_yes')).check();
     }
 
     if (options.insideHealthZone === 0) {
-      await element(by.id('inside_health_zone_no')).click();
+      await TU.locator(by.id('inside_health_zone_no')).check();
     }
 
     if (options.displayName) {
-      await FU.input('$ctrl.searchQueries.display_name', options.displayName);
+      await TU.input('$ctrl.searchQueries.display_name', options.displayName);
     }
 
     if (options.reference) {
-      await FU.input('$ctrl.searchQueries.reference', options.reference);
+      await TU.input('$ctrl.searchQueries.reference', options.reference);
     }
 
     if (options.hospital_no) {
-      await FU.input('$ctrl.searchQueries.hospital_no', options.hospital_no);
+      await TU.input('$ctrl.searchQueries.hospital_no', options.hospital_no);
     }
 
     if (options.service) {
@@ -174,22 +170,21 @@ class VisitPage {
       await components.roomSelect.set(options.room);
     }
 
-    await FU.buttons.submit();
+    await TU.buttons.submit();
   }
 
   /**
    * reset
    */
   async reset() {
-    const clearButtons = await $$('[data-reset-input]');
+    const clearButtons = await TU.locator('[data-reset-input]').all();
 
-    // start clean from the bottom to the top
-    // because if the clean start from the top and arrive in the bottom, top elements
-    // are not visible
+    // start clearing from the bottom to the top
+    // because if the clean start from the top and arrive in the bottom,
+    // top elements are not visible
     for (let i = clearButtons.length - 1; i >= 0; i--) {
       const clearBtn = clearButtons[i];
-      // eslint-disable-next-line
-      await clearBtn.click();
+      await clearBtn.click(); // eslint-disable-line no-await-in-loop
     }
   }
 }

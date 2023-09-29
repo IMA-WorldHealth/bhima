@@ -1,38 +1,41 @@
-/* global element, by */
+const TU = require('../TestUtils');
+const { by } = require('../TestUtils');
 
 /**
 * Date editor component interface for e2e test
-* @public
 */
+
+const selector = '[data-date-editor]';
+
 module.exports = {
 
   // root level css selector for this component
-  selector : '[data-date-editor]',
 
   /**
    * Sets the date input's value to the passed in value
    *
-   * @param {Date} date - a date object
-   * @param {String} id - a CSS id to select on.
-   * @param {String} elementClick - determine a css class that will clicked to
-   *   close the selection component Dates.
+   * @param {Date} date - a date object to set
+   * @param {string} id - a CSS id to select on.
+   * @param {string} elementClick - determine a css class that will clicked to
+   * close the selection component Dates.
+   * @returns {Promise} for closing the dialog after setting the date
    */
   set : async function set(date, id, elementClick) {
     const elementCloseComponent = elementClick || '.header-image';
 
-    // fail hard if the user did not pass into
-    /* if (!(date instanceof Date)) {
+    // fail hard if the user did not provide a Date object
+    if (!(date instanceof Date)) {
       throw new TypeError('You  must provide a date object to the set() method.');
-    } */
+    }
 
     // find the component in the DOM by its selector
-    const root = element((id) ? by.id(id) : by.css(this.selector));
+    const root = await TU.locator((id) ? by.id(id) : by.css(selector));
 
     // get the dropdown toggle and click it.
-    const btn = root.element(by.css('[data-date-editor-dropdown-toggle]'));
+    const btn = await root.locator(by.css('[data-date-editor-dropdown-toggle]'));
     await btn.click();
 
-    const input = root.element(by.css('[data-date-editor-input]'));
+    const input = await root.locator(by.css('[data-date-editor-input]'));
     await input.clear();
 
     // format the date appropriately.
@@ -45,7 +48,7 @@ module.exports = {
     const day = (_day.length < 2) ? `0${_day}` : _day;
 
     // set the date on the input
-    await input.sendKeys([day, month, year].join('/'));
+    await input.type([day, month, year].join('/'));
 
     // at this point, the datepicker is still open, and will intercept all
     // clicks that are made to any elements it is covering.  In order to make
@@ -53,6 +56,7 @@ module.exports = {
     // in default option, If not, the click will be on an element of the form,
     // if and only if the logo is not visible, for example for the modal window
     // the dropdown and remove it.
-    await element(by.css(elementCloseComponent)).click();
+    const closer = await TU.locator(by.css(elementCloseComponent));
+    return closer.click();
   },
 };

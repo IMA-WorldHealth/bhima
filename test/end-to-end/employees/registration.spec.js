@@ -1,10 +1,19 @@
-/* global browser */
-const { expect } = require('chai');
+const { chromium } = require('@playwright/test');
+const { test, expect } = require('@playwright/test');
+const TU = require('../shared/TestUtils');
 const helpers = require('../shared/helpers');
-const RegistrationPage = require('./registration.page.js');
 
-describe('Employees', () => {
-  const path = '#!/employees/register';
+const RegistrationPage = require('./registration.page');
+
+test.beforeAll(async () => {
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  TU.registerPage(page);
+  await TU.login();
+});
+
+test.describe('Employees', () => {
+  const path = '/#!/employees/register';
   const registrationPage = new RegistrationPage();
   const employee = {
     code          : 'HBB80',
@@ -34,20 +43,22 @@ describe('Employees', () => {
     creditor_group : 'Employees',
   };
 
-  const pathPatient = '#!/employees/81AF634F321A40DEBC6FCEB1167A9F65/patientAsEmployee';
+  const pathPatient = '/#!/employees/81AF634F321A40DEBC6FCEB1167A9F65/patientAsEmployee';
 
-  before(() => helpers.navigate(path));
+  test.beforeEach(async () => {
+    await TU.navigate(path);
+  });
 
-  it('blocks invalid form submission with relevant error classes', async () => {
+  test('blocks invalid form submission with relevant error classes', async () => {
     // verify we are in the current path
-    expect(await helpers.getCurrentPath()).to.equal(path);
+    expect(await TU.getCurrentPath()).toBe(path);
 
     await registrationPage.createEmployee();
     await registrationPage.requiredFieldErrored();
     await registrationPage.notRequiredFieldOk();
   });
 
-  it('creates a new employee', async () => {
+  test('creates a new employee', async () => {
     await registrationPage.setDisplayName(employee.display_name);
     await registrationPage.setDob(employee.dob);
     await registrationPage.setSex(employee.sex);
@@ -61,8 +72,7 @@ describe('Employees', () => {
     await registrationPage.setHiringDate(employee.date_embauche);
     await registrationPage.setNumberChild(employee.nb_enfant);
     await registrationPage.setService('Administration');
-    await registrationPage.setFonction('Infirmier');
-    await registrationPage.setIsMedical();
+    await registrationPage.setFunction('Infirmier');
     await registrationPage.setEmail(employee.email);
     await registrationPage.setAddress(employee.adresse);
     await registrationPage.setCurrencyInput('individual_salary', 0);
@@ -77,13 +87,12 @@ describe('Employees', () => {
     await registrationPage.setBankAccount(employee.bank_account);
 
     await registrationPage.createEmployee();
+    await TU.waitForSelector('#receipt-confirm-created');
     await registrationPage.isEmployeeCreated(true);
-    await browser.refresh();
   });
 
-  it('register an employee from a patient', async () => {
-    await browser.get(pathPatient);
-
+  test('register an employee from a patient', async () => {
+    await TU.navigate(pathPatient);
     await registrationPage.setCode(patient.code);
     await registrationPage.setGrade('A1');
     await registrationPage.setCreditorGroup(patient.creditor_group);
@@ -91,8 +100,7 @@ describe('Employees', () => {
     await registrationPage.setHiringDate(patient.date_embauche);
     await registrationPage.setNumberChild(patient.nb_enfant);
     await registrationPage.setService('Administration');
-    await registrationPage.setFonction('Infirmier');
-    await registrationPage.setIsMedical();
+    await registrationPage.setFunction('Infirmier');
     await registrationPage.setEmail(patient.email);
     await registrationPage.setAddress(patient.adresse);
     await registrationPage.setCurrencyInput('individual_salary', 0);
@@ -106,6 +114,5 @@ describe('Employees', () => {
 
     await registrationPage.createEmployee();
     await registrationPage.expectNotificationSuccess();
-    await browser.refresh();
   });
 });

@@ -1,8 +1,21 @@
-const helpers = require('../shared/helpers');
+const { chromium } = require('@playwright/test');
+const { test } = require('@playwright/test');
+const TU = require('../shared/TestUtils');
+
 const RubricPage = require('./rubrics.page');
 
-describe('Rubrics Management', () => {
-  before(() => helpers.navigate('#!/payroll/rubrics'));
+test.beforeAll(async () => {
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  TU.registerPage(page);
+  await TU.login();
+});
+
+test.describe('Rubrics Management', () => {
+
+  test.beforeEach(async () => {
+    await TU.navigate('/#!/payroll/rubrics');
+  });
 
   const page = new RubricPage();
 
@@ -24,23 +37,23 @@ describe('Rubrics Management', () => {
     is_percent : 0,
   };
 
-  it('successfully creates a new rubric', async () => {
+  test('successfully creates a new rubric', async () => {
     await page.create(rubric);
   });
 
-  it('successfully edits a rubric', async () => {
+  test('successfully edits a rubric', async () => {
     await page.update(rubric.label, updateRubric);
   });
 
-  it('don\'t create when incorrect rubric', async () => {
+  test('do not create when incorrect rubric', async () => {
     await page.errorOnCreateRubric();
   });
 
-  it('successfully deletes a rubric', async () => {
+  test('successfully deletes a rubric', async () => {
     await page.remove(updateRubric.label);
   });
 
-  it('successfully import indexes rubrics', async () => {
+  test('successfully import indexes rubrics', async () => {
     await page.importIndexesRubric();
   });
 });

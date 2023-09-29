@@ -1,9 +1,13 @@
-const FU = require('../FormUtils');
+const TU = require('../TestUtils');
+
+const selector = '[bh-multiple-depot-search-select]';
+
+// @TODO : Warning!  This has not been tested
 
 module.exports = {
-  selector : '[bh-multiple-depot-search-select]',
-  set      : async function set(depot) {
-    const root = $(this.selector);
-    await FU.typeaheadAppended('$ctrl.depotSelected', depot, root);
+
+  set : async function set(depot) {
+    const root = await TU.locator(selector);
+    await TU.typeaheadAppended('$ctrl.depotSelected', depot, root);
   },
 };

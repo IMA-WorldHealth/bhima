@@ -14,7 +14,6 @@ const {
 
 let VENDOR_FILES = [
   'node_modules/jquery/dist/jquery.min.js', // jquery
-  'node_modules/cropper/dist/cropper.min.js', // TODO(@jniles) - do we need this?
 
   // Angular
   'node_modules/angular/angular.min.js',

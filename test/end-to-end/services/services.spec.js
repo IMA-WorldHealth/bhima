@@ -1,15 +1,29 @@
-const helpers = require('../shared/helpers');
+const { chromium } = require('@playwright/test');
+const { test } = require('@playwright/test');
+const TU = require('../shared/TestUtils');
+
 const ServicePage = require('./services.page');
 
-describe('Services', () => {
+test.beforeAll(async () => {
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  TU.registerPage(page);
+  await TU.login();
+});
+
+test.describe('Services', () => {
   const path = '#!/services';
-  before(() => helpers.navigate(path));
+
+  test.beforeEach(async () => {
+    await TU.navigate(path);
+  });
 
   const Page = new ServicePage();
 
   const service = {
     name : 'Pharmacie d\'Usage',
     project : 'Test Project A',
+    costCenter : 'Principale TPA',
   };
 
   const updatedServiceName = 'Pharmacie de la Nuit';
@@ -17,27 +31,27 @@ describe('Services', () => {
 
   const alternativeProject = 'Test Project B';
 
-  it('successfully creates a new service', async () => {
-    await Page.createService(service.name, service.project);
+  test('successfully creates a new service', async () => {
+    await Page.createService(service.name, service.project, service.costCenter);
   });
 
-  it('successfully edits a service', async () => {
+  test('successfully edits a service', async () => {
     await Page.editService(service.name, updatedServiceName, alternativeProject);
   });
 
-  it('correctly blocks invalid form submission with relevant error classes', async () => {
+  test('correctly blocks invalid form submission with relevant error classes', async () => {
     await Page.errorOnCreateService();
   });
 
-  it('successfully delete a service', async () => {
+  test('successfully delete a service', async () => {
     await Page.deleteService(updatedServiceName);
   });
 
-  it('cancellation of removal process of a service', async () => {
+  test('cancellation of removal process of a service', async () => {
     await Page.cancelDeleteService(oldServiceName);
   });
 
-  it('no way to delete a service', async () => {
+  test('no way to delete a service', async () => {
     await Page.errorOnDeleteService(oldServiceName);
   });
 });

@@ -1,13 +1,17 @@
-/* global by */
-/* eslint  */
+const TU = require('../shared/TestUtils');
+const { by } = require('../shared/TestUtils');
+
 const SearchModal = require('../shared/search.page');
 const bhAccountSelect = require('../shared/components/bhAccountSelect');
 const bhYesNoRadios = require('../shared/components/bhYesNoRadios');
-const FU = require('../shared/FormUtils');
 
 class JournalSearchModal extends SearchModal {
-  constructor() {
-    super('journal-search');
+  constructor(path) {
+    super('journal-search', path);
+  }
+
+  async submit() {
+    return TU.modal.submit();
   }
 
   async showFullTransactions(bool) {
@@ -16,30 +20,31 @@ class JournalSearchModal extends SearchModal {
     const selection = bool ? 'yes' : 'no';
     await bhYesNoRadios.set(selection);
 
-    await this.switchToCustomFilterTab();
+    return this.switchToCustomFilterTab();
   }
 
   async showPostedRecords(bool) {
     if (bool) {
       await this.element
-        .element(by.model('ModalCtrl.searchQueries.includeNonPosted')).click();
+        .locator(by.model('ModalCtrl.searchQueries.includeNonPosted')).click();
     }
+    return true;
   }
 
   async setAccount(account) {
-    await bhAccountSelect.set(account);
+    return bhAccountSelect.set(account);
   }
 
   async setEntity(entity) {
-    await FU.input('ModalCtrl.searchQueries.hrEntity', entity, this.element);
+    return TU.input('ModalCtrl.searchQueries.hrEntity', entity, this.element);
   }
 
   async setRecord(entity) {
-    await FU.input('ModalCtrl.searchQueries.hrRecord', entity, this.element);
+    return TU.input('ModalCtrl.searchQueries.hrRecord', entity, this.element);
   }
 
   async setReference(entity) {
-    await FU.input('ModalCtrl.searchQueries.hrReference', entity, this.element);
+    return TU.input('ModalCtrl.searchQueries.hrReference', entity, this.element);
   }
 }
 

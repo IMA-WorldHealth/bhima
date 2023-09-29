@@ -95,7 +95,7 @@
 
                 <label class="btn btn-default btn-block">
                     <span class="fa fa-upload"></span> {{ PatientRecordCtrl.uploadButtonText | translate }}
-                    <input type="file" accept="image/*" ngf-max-size="2MB" ngf-select="PatientRecordCtrl.uploadFiles($file, $invalidFiles)" style="display: none;">
+                    <input type="file" id="upload-patient-photo" accept="image/*" ngf-max-size="2MB" ngf-select="PatientRecordCtrl.uploadFiles($file, $invalidFiles)" style="display: none;">
                 </label>
                 <a
                   href
