@@ -1,16 +1,27 @@
-const helpers = require('../shared/helpers');
+const { chromium } = require('@playwright/test');
+const { test } = require('@playwright/test');
+const TU = require('../shared/TestUtils');
+
 const TagPage = require('./tags.page');
 const components = require('../shared/components');
 
-// the page object
-const page = new TagPage();
+test.beforeAll(async () => {
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  TU.registerPage(page);
+  await TU.login();
+});
 
-function tagsManagementTests() {
+test.describe('tags Management Tests', () => {
 
-  // navigate to the page
-  before(() => helpers.navigate('#/tags'));
+  // the page object
+  const page = new TagPage();
 
-  it('should add a new tags', async () => {
+  test.beforeEach(async () => {
+    await TU.navigate('/#!/tags');
+  });
+
+  test('should add a new tags', async () => {
     await page.openCreateModal();
     await page.setName('Tag1');
     await page.setColor('aqua');
@@ -18,36 +29,34 @@ function tagsManagementTests() {
     await components.notification.hasSuccess();
   });
 
-  it('should add another tags', async () => {
+  test('should add another tags', async () => {
     await page.openCreateModal();
     await page.setName('Broken');
-    await page.setColor('gris');
+    await page.setColor('gray');
     await page.submit();
     await components.notification.hasSuccess();
   });
 
-  it('should add a third tags', async () => {
+  test('should add a third tags', async () => {
     await page.openCreateModal();
     await page.setName('Test tag');
-    await page.setColor('vert');
+    await page.setColor('green');
     await page.submit();
     await components.notification.hasSuccess();
   });
 
-  it('should edit tags', async () => {
+  test('should edit tags', async () => {
     await page.editTags('Tag1');
     await page.setName('Repaired');
-    await page.setColor('jaune');
+    await page.setColor('yellow');
     await page.submit();
     await components.notification.hasSuccess();
   });
 
-  it('should delete the test tags', async () => {
+  test('should delete the test tags', async () => {
     await page.deleteTags('Test tag');
     await page.submit();
     await components.notification.hasSuccess();
   });
 
-}
-
-describe('tags Management Tests', tagsManagementTests);
+});

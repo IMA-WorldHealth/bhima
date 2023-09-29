@@ -1,9 +1,21 @@
-const helpers = require('../shared/helpers');
+const { chromium } = require('@playwright/test');
+const { test } = require('@playwright/test');
+const TU = require('../shared/TestUtils');
+
+test.beforeAll(async () => {
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  TU.registerPage(page);
+  await TU.login();
+});
+
 const FillFormManagement = require('./fillForm.page');
 
-describe('Fill Form Management', () => {
+test.describe('Fill Form Management', () => {
   // navigate to the page
-  before(() => helpers.navigate('#!/fill_form'));
+  test.beforeEach(async () => {
+    await TU.navigate('/#!/fill_form');
+  });
 
   const Page = new FillFormManagement();
 
@@ -30,11 +42,11 @@ describe('Fill Form Management', () => {
     minutes : '45',
   };
 
-  it('successfully creates a new Survey data Element', async () => {
+  test('successfully creates a new Survey data Element', async () => {
     await Page.create(newSurveyData1);
   });
 
-  it('successfully creates a new Survey data Element for complexe form', async () => {
+  test('successfully creates a new Survey data Element for complexe form', async () => {
     await Page.createComplexe(newSurveyData2);
   });
 });

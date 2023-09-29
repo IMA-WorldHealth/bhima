@@ -33,71 +33,123 @@
           <td class="col-xs-6 text-center" colspan="4">
             <table class="table table-condensed table-bordered table-report" style="width: 100%;">
               <th style="background-color:#efefef;" colspan="2"><strong> {{translate 'PAYROLL_RUBRIC.INDEXES'}} </strong></th>
-              {{#if is_base_index.value}}
+            {{#if is_base_index.value}}
+              <tr>
+                <td> {{ is_base_index.label }} </td>
+                <td class="text-right"> {{ is_base_index.value }} </td>
+              </tr>
+            {{/if}}
+
+            {{#if is_responsability.value}}
+              <tr>
+                <td> {{ is_responsability.label }} </td>
+                <td class="text-right"> {{ is_responsability.value }} </td>
+              </tr>
+            {{/if}}
+
+            {{#if is_seniority_index.value}}
+              <tr>
+                <td> {{ is_seniority_index.label }} </td>
+                <td class="text-right"> {{ is_seniority_index.value }} </td>
+              </tr>
+            {{/if}}
+
+            {{#if is_day_worked.value}}
+              <tr>
+                <td> {{ is_day_worked.label }} </td>
+                <td class="text-right"> {{ is_day_worked.value }} </td>
+              </tr>
+            {{/if}}
+
+            {{#if is_extra_day.value}}
+              <tr>
+                <td> {{ is_extra_day.label }} </td>
+                <td class="text-right"> {{ is_extra_day.value }} </td>
+              </tr>
+            {{/if}}
+
+            {{#if is_extra_day.value}}
+              <tr>
+                <td><strong>{{ is_total_days.label }}</strong></td>
+                <td class="text-right"> <strong>{{ is_total_days.value }}</strong></td>
+              </tr>
+            {{/if}}
+
+            {{#if is_day_index.value}}
+              <tr>
+                <td> {{ is_day_index.label }} </td>
+                <td class="text-right"> {{ is_day_index.value }} </td>
+              </tr>
+            {{/if}}
+
+            {{#if is_reagistered_index.value}}
+              <tr>
+                <td> {{ is_reagistered_index.label }} </td>
+                <td class="text-right"> {{ is_reagistered_index.value }} </td>
+              </tr>
+            {{/if}}
+
+            {{#each otherProfits}}
+              {{#if value}}
                 <tr>
-                  <td> {{ is_base_index.label }} </td>
-                  <td class="text-right"> {{ is_base_index.value }} </td>
+                  <td> {{ label }} </td>
+                  <td class="text-right"> {{ value }} </td>
                 </tr>
               {{/if}}
+            {{/each}}
 
-              {{#if is_day_worked.value}}
-                <tr>
-                  <td> {{ is_day_worked.label }} </td>
-                  <td class="text-right"> {{ is_day_worked.value }} </td>
-                </tr>
-              {{/if}}
+            {{#if is_total_code.value}}
+              <tr>
+                <td><strong>{{ is_total_code.label }}</strong></td>
+                <td class="text-right"><strong>{{ is_total_code.value }}</strong></td>
+              </tr>
+            {{/if}}
 
-              {{#if is_extra_day.value}}
-                <tr>
-                  <td> {{ is_extra_day.label }} </td>
-                  <td class="text-right"> {{ is_extra_day.value }} </td>
-                </tr>
-              {{/if}}
+            {{#if is_pay_rate.value}}
+              <tr>
+                <td><strong>{{ is_pay_rate.label }}</strong></td>
+                <td class="text-right"> <strong>{{ is_pay_rate.value }}</strong></td>
+              </tr>
+            {{/if}}
 
-              {{#if is_extra_day.value}}
-                <tr>
-                  <td><strong>{{ is_total_days.label }}</strong></td>
-                  <td class="text-right"> <strong>{{ is_total_days.value }}</strong></td>
-                </tr>
-              {{/if}}
+            {{#if is_fixed_bonus}}
+              <tr style="background-color:#fefefe;">
+                <td> <strong>{{ is_fixed_bonus.label }}</strong> </td>
+                <td class="text-right">
+                  <strong>{{currency (multiply is_fixed_bonus.value  ../payrollPeriod.exchangeRate) ../payrollPeriod.currency }} </strong>
+                </td>
+              </tr>
+            {{/if}}
 
-              {{#if is_day_index.value}}
-                <tr>
-                  <td> {{ is_day_index.label }} </td>
-                  <td class="text-right"> {{ is_day_index.value }} </td>
-                </tr>
-              {{/if}}
+            {{#if is_individual_performance.value}}
+              <tr>
+                <td> {{ is_individual_performance.label }} </td>
+                <td class="text-right"> {{ is_individual_performance.value }} %</td>
+              </tr>
+            {{/if}}
 
-              {{#if is_reagistered_index.value}}
-                <tr>
-                  <td> {{ is_reagistered_index.label }} </td>
-                  <td class="text-right"> {{ is_reagistered_index.value }} </td>
-                </tr>
-              {{/if}}
+            {{#if is_relative_point.value}}
+              <tr>
+                <td> {{ is_relative_point.label }} </td>
+                <td class="text-right"> {{ is_relative_point.value }} </td>
+              </tr>
+            {{/if}}
 
-              {{#each otherProfits}}
-                {{#if value}}
-                  <tr>
-                    <td> {{ label }} </td>
-                    <td class="text-right"> {{ value }} </td>
-                  </tr>
-                {{/if}}
-              {{/each}}
+            {{#if is_performance_rate.value}}
+              <tr>
+                <td> <strong>{{ is_performance_rate.label }}</strong> </td>
+                <td class="text-right"> <strong>{{ is_performance_rate.value }}</strong> </td>
+              </tr>
+            {{/if}}
 
-              {{#if is_total_code.value}}
-                <tr>
-                  <td><strong>{{ is_total_code.label }}</strong></td>
-                  <td class="text-right"><strong>{{ is_total_code.value }}</strong></td>
-                </tr>
-              {{/if}}
-
-              {{#if is_pay_rate.value}}
-                <tr>
-                  <td><strong>{{ is_pay_rate.label }}</strong></td>
-                  <td class="text-right"> <strong>{{ is_pay_rate.value }}</strong></td>
-                </tr>
-              {{/if}}
-
+            {{#if is_performance_bonus}}
+              <tr style="background-color:#fefefe;">
+                <td> <strong>{{ is_performance_bonus.label }}</strong> </td>
+                <td class="text-right">
+                  <strong>{{currency (multiply is_performance_bonus.value  ../payrollPeriod.exchangeRate) ../payrollPeriod.currency }}</strong> 
+                </td>
+              </tr>
+            {{/if}}
 
             <tr style="background-color:#efefef;">
               <td><strong>{{translate 'TABLE.COLUMNS.BASE'}}</strong></td>

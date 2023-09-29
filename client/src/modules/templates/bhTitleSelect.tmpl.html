@@ -1,0 +1,24 @@
+<div bh-title-select ng-model-options="{ updateOn: 'default' }">
+  <div
+    class="form-group"
+    ng-class="{ 'has-error' : TitleForm.$$parent.$submitted && TitleForm.title_id.$invalid }">
+
+    <label class="control-label" translate>
+      {{$ctrl.label}}
+    </label>
+    
+    <ng-transclude></ng-transclude>
+    <ui-select name="title_id" 
+      ng-model="$ctrl.titleId"
+      on-select="$ctrl.onSelect($item, $model)">
+      <ui-select-match placeholder="{{ 'FORM.SELECT.PROFESSION' | translate }}"><span>{{$select.selected.title_txt}}</span></ui-select-match>
+      <ui-select-choices ui-select-focus-patch repeat="title.id as title in $ctrl.titles | filter: { 'title_txt': $select.search }">
+        <span ng-bind-html="title.title_txt | highlight:$select.search"></span>
+      </ui-select-choices>
+    </ui-select>
+
+    <div class="help-block" ng-messages="TitleForm.title_id.$error" ng-show="TitleForm.$$parent.$submitted">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+</div>

@@ -1,13 +1,16 @@
-/* global element, by */
+const TU = require('../TestUtils');
+const { by } = require('../TestUtils');
 
-const FU = require('../FormUtils');
+const selector = '[bh-report-source]';
+
+// @TODO : Warning!  This has not been tested
 
 module.exports = {
-  selector : '[bh-report-source]',
-  set      : function set(source, id) {
-    const locator = (id) ? by.id(id) : by.css(this.selector);
-    const target = element(locator);
 
-    return FU.select('$ctrl.value', source, target);
+  set : function set(source, id) {
+    const locator = (id) ? by.id(id) : selector;
+    const target = TU.locator(locator);
+
+    return TU.select('$ctrl.value', source, target);
   },
 };

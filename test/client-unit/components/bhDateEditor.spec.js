@@ -56,7 +56,7 @@ function bhDateEditorTests() {
     $compile = _$compile_;
     $scope = _$rootScope_.$new();
 
-    Session.create(Mocks.user(), Mocks.enterprise(), Mocks.project());
+    Session.create(Mocks.user(), Mocks.enterprise(), Mocks.stock_settings(), Mocks.project());
 
     // spy on the onChange callback
     $scope.date = new Date();

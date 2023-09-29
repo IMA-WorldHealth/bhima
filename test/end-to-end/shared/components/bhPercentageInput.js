@@ -1,4 +1,7 @@
-/* global element, by */
+const TU = require('../TestUtils');
+const { by } = require('../TestUtils');
+
+const selector = '[data-bh-percentage-input]';
 
 /**
  * hooks for the percentage input component described in the component
@@ -6,23 +9,21 @@
  * @public
  */
 module.exports = {
-  selector : '[data-bh-percentage-input]',
 
   /**
    * sets the value of the percentage input.
   */
   set : function set(value, id) {
-  // it might be clearer to do this in two steps.
-    const root = element(id ? by.id(id) : by.css(this.selector));
-    const elm = root.element(by.model('$ctrl.model'));
-    return elm.clear().sendKeys(value);
+    const root = TU.locator(id ? by.id(id) : selector);
+    const elm = root.locator(by.model('$ctrl.model'));
+    return TU.fill(elm, value);
   },
 
   /**
    * get the value of the percentage input.
    */
   get : function get() {
-    const elm = element(by.css(this.selector));
+    const elm = TU.locator(selector);
     return elm.getAttribute('value');
   },
 };

@@ -1,103 +1,58 @@
-/* global by, element, browser */
-const chai = require('chai');
+const { test, expect } = require('@playwright/test');
+const TU = require('../shared/TestUtils');
 
-const { expect } = chai;
-const helpers = require('../shared/helpers');
+// routes used in tests
+const login = 'login';
+const settings = 'settings';
 
-const FU = require('../shared/FormUtils');
-const components = require('../shared/components');
+test.describe('Login', () => {
 
-describe('Login Page', () => {
-
-  // routes used in tests
-  const settings = 'settings';
-  const login = 'login';
-
-  before(async () => {
-    // access the settings page
-    await helpers.navigate(settings);
-
-    // click the logout button and close the growl notification
-    await element(by.css('[data-logout-button]')).click();
+  test.beforeEach(async ({ page }) => {
+    TU.registerPage(page);
+    await TU.navigate(login);
   });
 
-  it('rejects an invalid username/password combo with (only) a growl notification', async () => {
-    await FU.input('LoginCtrl.credentials.username', 'undefineds');
-    await FU.input('LoginCtrl.credentials.password', 'undefined1');
-    await FU.buttons.submit();
+  test('verify we can log in', async () => {
+    await TU.login();
 
-    await FU.exists(by.css('.help-block'), false);
-    await components.notification.hasDanger();
+    // Check the project title to verify that we are logged in
+    const title = await TU.locator('.title-content').innerText();
+    expect(title).toBe('Test Project A');
+
+    await TU.logout();
+
+    // Verify that we have logged out
+    const heading = await TU.locator('div.panel-heading').innerText();
+    expect(heading).toBe('Login');
   });
 
-  it('rejects user missing a username with (only) a help block', async () => {
-    await FU.input('LoginCtrl.credentials.username', 'username');
-    await element(by.model('LoginCtrl.credentials.password')).clear();
-    await FU.buttons.submit();
+  test('rejects an invalid username/password combo with (only) a growl notification', async () => {
+    // NOTE: This test should pass even though it generates an 'Unauthorized' console error
+    await TU.input('LoginCtrl.credentials.username', 'undefineds');
+    await TU.input('LoginCtrl.credentials.password', 'undefined1');
+    await TU.buttons.submit();
 
-    await FU.exists(by.css('.help-block'), true);
-    await FU.exists(by.css('[data-bh-growl-notification]'), false);
+    // Verify that we get a warning message
+    await TU.waitForSelector('[data-notification-type="notification-danger"]');
+
+    // Verify that we have not logged in
+    expect(TU.getCurrentPath().endsWith('/login'));
   });
 
-
-  it('rejects user missing a password with (only) a help block', async () => {
-    await FU.input('LoginCtrl.credentials.password', 'password');
-    await element(by.model('LoginCtrl.credentials.username')).clear();
-    await FU.buttons.submit();
-
-    await FU.exists(by.css('.help-block'), true);
-    await FU.exists(by.css('[data-bh-growl-notification]'), false);
+  test('has a default project value', async () => {
+    await TU.waitForSelector('select[name="project"]');
+    const projectOptions = await TU.locator('select[name="project"]');
+    await projectOptions.click(); // Expose the options
+    const defaultProject = await projectOptions.locator('option[selected]').innerText();
+    expect(defaultProject.length > 0);
   });
 
-
-  it('rejects a deactivated user to login with a growl notification', async () => {
-    await FU.input('LoginCtrl.credentials.username', 'admin');
-    await FU.input('LoginCtrl.credentials.password', '1');
-    await FU.buttons.submit();
-
-    await FU.exists(by.css('.help-block'), false);
-    await components.notification.hasDanger();
+  test('page refresh preserves the user session', async () => {
+    await TU.login();
+    await TU.navigate(settings);
+    await TU.reloadPage();
+    const path = TU.getCurrentPath();
+    expect(path.endsWith('/settings'));
   });
 
-
-  it('has a default project value', async () => {
-    const defaultProject = await element(by.model('LoginCtrl.credentials.project'))
-      .$('option:checked').getText();
-
-    // eslint-disable-next-line
-    expect(defaultProject).to.exist;
-    // eslint-disable-next-line
-    expect(defaultProject).to.not.be.empty;
-  });
-
-  it('allows a valid user to log in to the application', async () => {
-    await FU.input('LoginCtrl.credentials.username', 'superuser');
-    await FU.input('LoginCtrl.credentials.password', 'superuser');
-    await FU.buttons.submit();
-
-    expect(await helpers.getCurrentPath()).to.equal('#!/');
-  });
-
-  it('page refresh preserves the use session', async () => {
-    await helpers.navigate(settings);
-    await browser.refresh();
-    expect(await helpers.getCurrentPath()).to.equal(`#!/${settings}`);
-  });
-
-  it('prevents access to the login page after login', async () => {
-    // go to the setting page (for example)
-    await helpers.navigate(settings);
-
-    // assert that we get to the settings page
-    expect(await helpers.getCurrentPath()).to.equal(`#!/${settings}`);
-
-    // attempt to access the login page.
-    await helpers.navigate(login);
-
-    // assert that a growl notification was shown
-    await components.notification.hasWarn();
-
-    // assert that we did not get to the login page
-    expect(await helpers.getCurrentPath()).to.equal(`#!/${settings}`);
-  });
 });

@@ -1,9 +1,21 @@
-const helpers = require('../shared/helpers');
+const { chromium } = require('@playwright/test');
+const { test } = require('@playwright/test');
+const TU = require('../shared/TestUtils');
+
 const SurveyFormManagement = require('./surveyForm.page');
 
-describe('Survey Form Management', () => {
-  // navigate to the page
-  before(() => helpers.navigate('#!/survey_form'));
+test.beforeAll(async () => {
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  TU.registerPage(page);
+  await TU.login();
+});
+
+test.describe('Survey Form Management', () => {
+
+  test.beforeEach(async () => {
+    await TU.navigate('/#!/survey_form');
+  });
 
   const Page = new SurveyFormManagement();
 
@@ -27,10 +39,8 @@ describe('Survey Form Management', () => {
     hint : 'Veuillez renseigner le nom de l\' image',
   };
 
-  //  Sélection Multiple
-
   const updateSurveyFormElement = {
-    type : 'Sélection Multiple',
+    type : 'Select Multiple',
     choice_list_id : 'Médicament',
     name : 'medConsommes',
     label : 'Médicaments consommés',
@@ -38,46 +48,46 @@ describe('Survey Form Management', () => {
   };
 
   const deleteListElement = {
-    type : 'Sélection Unique',
+    type : 'Select One',
     choice_list_id : 'Médicament',
     filter_choice_list_id : 'Médicaments consommés',
     name : 'ElementSup',
     label : 'Element a supprimer',
   };
 
-  it('successfully creates a new Survey Form Element', async () => {
+  test('successfully creates a new Survey Form Element', async () => {
     await Page.create(newSurveyFormElement);
   });
 
-  it('Failed to create a form element whose name parameter with space', async () => {
+  test('Failed to create a form element whose name parameter with space', async () => {
     await Page.checkValidate(checkValidationName, checkValidationName.name1);
   });
 
-  it('Failed to create a form element whose name parameter with virgul', async () => {
+  test('Failed to create a form element whose name parameter with virgul', async () => {
     await Page.checkValidate(checkValidationName, checkValidationName.name2);
   });
 
-  it('Failed to create a form element whose name parameter with @ ', async () => {
+  test('Failed to create a form element whose name parameter with @ ', async () => {
     await Page.checkValidate(checkValidationName, checkValidationName.name3);
   });
 
-  it('Failed to create a form element whose name parameter with Quotation mark and apostrophe ', async () => {
+  test('Failed to create a form element whose name parameter with Quotation mark and apostrophe ', async () => {
     await Page.checkValidate(checkValidationName, checkValidationName.name4);
   });
 
-  it('Failed to create a form element whose name parameter with parenthesis ', async () => {
+  test('Failed to create a form element whose name parameter with parenthesis ', async () => {
     await Page.checkValidate(checkValidationName, checkValidationName.name5);
   });
 
-  it('successfully edits a Survey Form Element', async () => {
+  test('successfully edits a Survey Form Element', async () => {
     await Page.edit(newSurveyFormElement.label, updateSurveyFormElement);
   });
 
-  it('successfully creates a deletable element', async () => {
+  test('successfully creates a deletable element', async () => {
     await Page.createDeletable(deleteListElement);
   });
 
-  it('successfully delete a list Element', async () => {
+  test('successfully delete a list Element', async () => {
     await Page.delete(deleteListElement.label);
   });
 });

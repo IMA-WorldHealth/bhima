@@ -1,8 +1,7 @@
-/* global element, by */
-/* eslint  */
+const TU = require('../shared/TestUtils');
+const { by } = require('../shared/TestUtils');
 
 const GridRow = require('../shared/GridRow');
-const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 
 class IprTaxPage {
@@ -10,48 +9,48 @@ class IprTaxPage {
     this.gridId = 'ipr-grid';
   }
 
-  count() {
-    return element(by.id(this.gridId))
-      .element(by.css('.ui-grid-render-container-body'))
-      .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'))
-      .count();
+  async count() {
+    const rows = await TU.locator(by.id(this.gridId))
+      .locator('.ui-grid-render-container-body')
+      .locator(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'));
+    return rows.count();
   }
 
   async create(iprTax) {
-    await FU.buttons.create();
+    await TU.buttons.create();
 
-    await FU.input('IprTaxModalCtrl.iprTax.label', iprTax.label);
-    await FU.input('IprTaxModalCtrl.iprTax.description', iprTax.description);
+    await TU.input('IprTaxModalCtrl.iprTax.label', iprTax.label);
+    await TU.input('IprTaxModalCtrl.iprTax.description', iprTax.description);
     await components.currencySelect.set(iprTax.currency_id);
 
-    await FU.modal.submit();
+    await TU.modal.submit();
     await components.notification.hasSuccess();
   }
 
   async errorOnCreateIprTax() {
-    await FU.buttons.create();
-    await FU.modal.submit();
-    await FU.validation.error('IprTaxModalCtrl.iprTax.label');
-    await FU.buttons.cancel();
+    await TU.buttons.create();
+    await TU.modal.submit();
+    await TU.validation.error('IprTaxModalCtrl.iprTax.label');
+    await TU.buttons.cancel();
   }
 
   async update(label, updateIprTax) {
     const row = new GridRow(label);
-    await row.dropdown().click();
-    await row.edit().click();
+    await row.dropdown();
+    await row.edit();
 
-    await FU.input('IprTaxModalCtrl.iprTax.label', updateIprTax.label);
-    await FU.input('IprTaxModalCtrl.iprTax.description', updateIprTax.description);
+    await TU.input('IprTaxModalCtrl.iprTax.label', updateIprTax.label);
+    await TU.input('IprTaxModalCtrl.iprTax.description', updateIprTax.description);
     await components.currencySelect.set(updateIprTax.currency_id);
 
-    await FU.modal.submit();
+    await TU.modal.submit();
     await components.notification.hasSuccess();
   }
 
   async remove(label) {
     const row = new GridRow(label);
-    await row.dropdown().click();
-    await row.remove().click();
+    await row.dropdown();
+    await row.remove();
 
     await components.modalAction.confirm();
     await components.notification.hasSuccess();

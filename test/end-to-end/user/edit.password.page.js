@@ -1,61 +1,66 @@
-/* global element, by, */
-const { expect } = require('chai');
+const { expect } = require('@playwright/test');
+const TU = require('../shared/TestUtils');
+const { by } = require('../shared/TestUtils');
 
 /**
  * This class is represents a user password editing page in terms of structure and
  * behaviour so it is a user password editing page object
- * */
+ */
+
 function EditPasswordPage() {
   const page = this;
 
-  const password = element(by.model('UsersPasswordModalCtrl.user.password'));
-  const passwordConfirm = element(by.model('UsersPasswordModalCtrl.user.passwordVerify'));
-  const submitButton = $('[uib-modal-window] [data-method="submit"]');
-  const cancelButton = $('[uib-modal-window] [data-method="cancel"]');
-  const modal = $('[data-edit-password-modal]');
-
-  /** set a password value * */
-  function setPassword(pw) {
-    return password.clear().sendKeys(pw);
+  // set a password value
+  async function setPassword(pw) {
+    const password = await TU.locator(by.model('UsersPasswordModalCtrl.user.password'));
+    return password.fill(pw);
   }
 
-  /** set a password confirmation value * */
+  // set a password confirmation value
   function setPasswordConfirm(pw) {
-    return passwordConfirm.clear().sendKeys(pw);
+    const passwordConfirm = TU.locator(by.model('UsersPasswordModalCtrl.user.passwordVerify'));
+    return passwordConfirm.fill(pw);
   }
 
-  /** submit a user * */
-  function submitPassword() {
-    return submitButton.click();
+  // submit a user
+  async function submitPassword() {
+    const form = await TU.locator('form[name="PasswordForm"]');
+    return form.locator('[data-method="submit"]').click();
   }
 
-  /** cancel creation * */
-  function cancelEditing() {
-    return cancelButton.click();
+  // cancel creation
+  async function cancelEditing() {
+    const form = await TU.locator('form[name="PasswordForm"]');
+    return form.locator('[data-method="cancel"]').click();
   }
 
-  /** check if the page is displayed * */
-  function isDisplayed() {
+  // check if the page is displayed
+  async function isDisplayed() {
+    const modal = await TU.locator('[data-edit-password-modal]');
     return modal.isPresent();
   }
 
-  /** check if the password field is invalid * */
-  function expectPasswordInvalid() {
+  // check if the password field is invalid
+  async function expectPasswordInvalid() {
+    const password = await TU.locator(by.model('UsersPasswordModalCtrl.user.password'));
     return isInvalid(password);
   }
 
-  /** check if the passwordConfirm field is invalid * */
-  function expectPasswordConfirmInvalid() {
+  // check if the passwordConfirm field is invalid
+  async function expectPasswordConfirmInvalid() {
+    const passwordConfirm = await TU.locator(by.model('UsersPasswordModalCtrl.user.passwordVerify'));
     return isInvalid(passwordConfirm);
   }
 
   function expectPasswordMismatch() {
-    return $('[data-no-password-match]').isPresent();
+    return TU.isPresent('[data-no-password-match]');
   }
 
-  /** check if ng-invalid css class is applied on a component * */
+  // check if ng-invalid css class is applied on a component
   async function isInvalid(component) {
-    expect(await component.getAttribute('class')).to.contain('ng-invalid');
+    const classStr = await component.getAttribute('class');
+    expect(classStr.includes('ng-invalid'));
+    return classStr;
   }
 
   page.setPassword = setPassword;

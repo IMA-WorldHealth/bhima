@@ -1,50 +1,67 @@
-/* global element, browser, by */
-/* eslint  */
+const TU = require('../shared/TestUtils');
+const { by } = require('../shared/TestUtils');
+
+const GridRow = require('../shared/GridRow');
+const components = require('../shared/components');
 
 /**
  * This class is represents a Survey Form page in term of structure and
  * behaviour so it is a Survey Form Management page object
  */
 
-/* loading grid actions */
-const GridRow = require('../shared/GridRow');
-const FU = require('../shared/FormUtils');
-const components = require('../shared/components');
+class DisplayMetadataManagementPage {
 
-class displayMetadataManagementPage {
-  constructor() {
-    this.gridId = 'display-metadata-grid';
-    this.dataGrid = element(by.id(this.gridId));
+  constructor(gridId, grid) {
+    this.gridId = gridId;
+    this.dataGrid = grid;
     this.actionLinkColumn = 8;
   }
 
   /**
-   * simulate a click on the edit link of a function
+   * Emulate an async constructor
+   *
+   * @returns {DisplayMetadataManagementPage} a new DisplayMetadataManagementPage object
+   */
+  static async new() {
+    const gridId = 'display-metadata-grid';
+    const grid = await TU.locator(by.id(gridId));
+    return new DisplayMetadataManagementPage(gridId, grid);
+  }
+
+  /**
+   * Update the metadata in a survey
+   *
+   * @param {string} structure - which one to update
+   * @param {object} surveyData - data for the update
    */
   async updateMetadata(structure, surveyData) {
     const row = new GridRow(structure);
-    await row.dropdown().click();
-    await row.edit().click();
+    await row.dropdown();
+    await row.edit();
 
-    await browser.findElement(by.css('[name="label"]')).sendKeys(surveyData.label);
-    await browser.findElement(by.css('[name="longueur"]')).sendKeys(surveyData.longueur);
-    await browser.findElement(by.css('[name="largeur"]')).sendKeys(surveyData.largeur);
-    await browser.findElement(by.css('[name="nombre_agent"]')).sendKeys(surveyData.nombre_agent);
-    await browser.findElement(by.css('[name="nombre_femme"]')).sendKeys(surveyData.nombre_femme);
+    await TU.locator('[name="label"]').fill(surveyData.label);
+    await TU.locator('[name="longueur"]').fill(surveyData.longueur);
+    await TU.locator('[name="largeur"]').fill(surveyData.largeur);
+    await TU.locator('[name="nombre_agent"]').fill(surveyData.nombre_agent);
+    await TU.locator('[name="nombre_femme"]').fill(surveyData.nombre_femme);
 
-    await FU.buttons.submit();
+    await TU.buttons.submit();
     await components.notification.hasSuccess();
   }
 
-  // Delete Data of survey
+  /**
+   * Delete a survey
+   *
+   * @param {object} dataDelete - data for deletion
+   */
   async deleteDataSurvey(dataDelete) {
     const row = new GridRow(dataDelete.label);
-    await row.dropdown().click();
-    await row.remove().click();
+    await row.dropdown();
+    await row.remove();
 
-    await FU.modal.submit();
+    await TU.modal.submit();
     await components.notification.hasSuccess();
   }
 }
 
-module.exports = displayMetadataManagementPage;
+module.exports = DisplayMetadataManagementPage;

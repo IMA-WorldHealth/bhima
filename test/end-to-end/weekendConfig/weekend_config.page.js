@@ -1,47 +1,48 @@
+const TU = require('../shared/TestUtils');
+
 const GridRow = require('../shared/GridRow');
-const FU = require('../shared/FormUtils');
 const { notification } = require('../shared/components');
 
 class WeekendConfigPage {
 
   async create(label) {
-    await FU.buttons.create();
-    await FU.input('WeekendModalCtrl.weekend.label', label);
+    await TU.buttons.create();
+    await TU.input('WeekendModalCtrl.weekend.label', label);
 
-    $('[data-label="FORM.LABELS.WEEK_DAYS.SUNDAY"]').click();
-    $('[data-label="FORM.LABELS.WEEK_DAYS.MONDAY"]').click();
-    $('[data-label="FORM.LABELS.WEEK_DAYS.SATURDAY"]').click();
+    await TU.locator('[data-label="FORM.LABELS.WEEK_DAYS.SUNDAY"]').click();
+    await TU.locator('[data-label="FORM.LABELS.WEEK_DAYS.MONDAY"]').click();
+    await TU.locator('[data-label="FORM.LABELS.WEEK_DAYS.SATURDAY"]').click();
 
-    await FU.modal.submit();
-    await notification.hasSuccess();
+    await TU.modal.submit();
+    return notification.hasSuccess();
   }
 
   async errorOnCreateWeekendConfig() {
-    await FU.buttons.create();
-    await FU.buttons.submit();
-    await FU.validation.error('WeekendModalCtrl.weekend.label');
+    await TU.buttons.create();
+    await TU.buttons.submit();
+    await TU.validation.error('WeekendModalCtrl.weekend.label');
 
-    await FU.buttons.cancel();
+    return TU.buttons.cancel();
   }
 
   async update(oldLabel, newLabel) {
     const row = new GridRow(oldLabel);
-    await row.dropdown().click();
-    await row.edit().click();
-    await FU.input('WeekendModalCtrl.weekend.label', newLabel);
+    await row.dropdown();
+    await row.edit();
+    await TU.input('WeekendModalCtrl.weekend.label', newLabel);
 
-    $('[data-label="FORM.LABELS.WEEK_DAYS.SUNDAY"]').click();
-    $('[data-label="FORM.LABELS.WEEK_DAYS.MONDAY"]').click();
-    $('[data-label="FORM.LABELS.WEEK_DAYS.SATURDAY"]').click();
+    await TU.locator('[data-label="FORM.LABELS.WEEK_DAYS.SUNDAY"]').click();
+    await TU.locator('[data-label="FORM.LABELS.WEEK_DAYS.MONDAY"]').click();
+    await TU.locator('[data-label="FORM.LABELS.WEEK_DAYS.SATURDAY"]').click();
 
-    await FU.modal.submit();
-    await notification.hasSuccess();
+    await TU.modal.submit();
+    return notification.hasSuccess();
   }
 
   async remove(label) {
     const row = new GridRow(label);
-    await row.dropdown().click();
-    await row.remove().click();
+    await row.dropdown();
+    return row.remove();
   }
 }
 

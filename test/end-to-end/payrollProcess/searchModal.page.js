@@ -1,10 +1,10 @@
-/* eslint  */
+const TU = require('../shared/TestUtils');
+
 /**
  * This class represents a modal search page
  * behaviour so it is a modal search page object
  */
 
-const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 
 class SearchModalPage {
@@ -17,7 +17,7 @@ class SearchModalPage {
   }
 
   submit() {
-    return FU.modal.submit();
+    return TU.modal.submit();
   }
 }
 

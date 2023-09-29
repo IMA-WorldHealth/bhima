@@ -1,9 +1,9 @@
-/* global */
+const { test } = require('@playwright/test');
+const TU = require('../shared/TestUtils');
 
-const helpers = require('../shared/helpers');
 const InventoryAdjustment = require('./stock.adjustment.page');
-const StockInventoriesRegistryTests = require('./stock.z2.inventory-adjustment-inventories.spec');
-const StockLotsRegistryTests = require('./stock.z3.inventory-adjustment-lots.spec');
+const StockInventoriesRegistryTests = require('./stock.z2.inventory-adjustment-inventories');
+const StockLotsRegistryTests = require('./stock.z3.inventory-adjustment-lots');
 
 function StockInventoryAdjustmentTests() {
   const DEPOT_PRINCIPAL = 'Depot Principal';
@@ -13,13 +13,16 @@ function StockInventoryAdjustmentTests() {
   const page = new InventoryAdjustment();
 
   // navigate to the page
-  before(() => helpers.navigate('#/stock/inventory-adjustment'));
+  test.beforeEach(async () => {
+    await TU.navigate('/#!/stock/inventory-adjustment');
+  });
 
-  it(`Should select the ${DEPOT_PRINCIPAL}`, () => {
+  test(`Should select the ${DEPOT_PRINCIPAL}`, async () => {
+    await TU.waitForSelector('h3:has-text("Stock Inventory Adjustment"), li.title:has-text("Depot Selection")');
     return page.setDepot(DEPOT_PRINCIPAL);
   });
 
-  it.skip('Should make inventory adjustment correctly', async () => {
+  test('Should make inventory adjustment correctly', async () => {
     await page.setDate(new Date());
 
     await page.setDescription(DESCRIPTION);
@@ -39,10 +42,11 @@ function StockInventoryAdjustmentTests() {
     // submit
     await page.submit();
   });
+
 }
 
 module.exports = () => {
-  describe('Inventory Adjustment Test', StockInventoryAdjustmentTests);
-  describe('Inventory Registry After Adjustment', StockInventoriesRegistryTests);
-  describe('Lots Registry After Adjustment', StockLotsRegistryTests);
+  test.describe('Inventory Adjustment Test', StockInventoryAdjustmentTests);
+  test.describe('Inventory Registry After Adjustment', StockInventoriesRegistryTests);
+  test.describe('Lots Registry After Adjustment', StockLotsRegistryTests);
 };

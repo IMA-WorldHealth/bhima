@@ -1,5 +1,6 @@
-/* global element, by */
-const FU = require('../shared/FormUtils');
+const TU = require('../shared/TestUtils');
+const { by } = require('../shared/TestUtils');
+
 const GU = require('../shared/GridUtils');
 const components = require('../shared/components');
 
@@ -12,11 +13,11 @@ function StockAssignPage() {
 
   // create modal
   page.showCreateModal = () => {
-    return $('[data-method="create-record"]').click();
+    return TU.locator('[data-method="create-record"]').click();
   };
 
   page.showSearchModal = () => {
-    return $('[data-method="search"]').click();
+    return TU.locator('[data-method="search"]').click();
   };
 
   // depot select
@@ -26,12 +27,12 @@ function StockAssignPage() {
 
   // inventory select
   page.setInventory = text => {
-    return FU.uiSelect('$ctrl.inventory_uuid', text);
+    return TU.uiSelect('$ctrl.inventory_uuid', text);
   };
 
   // lot select
   page.setLot = text => {
-    return FU.uiSelect('$ctrl.model.lot_uuid', text);
+    return TU.uiSelect('$ctrl.model.lot_uuid', text);
   };
 
   // entity select
@@ -41,12 +42,12 @@ function StockAssignPage() {
 
   // set quantity
   page.setQuantity = quantity => {
-    return FU.input('$ctrl.model.quantity', quantity);
+    return TU.input('$ctrl.model.quantity', quantity);
   };
 
   // set description
   page.setDescription = description => {
-    return FU.input('$ctrl.model.description', description);
+    return TU.input('$ctrl.model.description', description);
   };
 
   page.expectRowCount = (number) => {
@@ -59,20 +60,20 @@ function StockAssignPage() {
 
   page.deleteAssignment = async () => {
     const cell = await GU.getCell(gridId, 0, 7);
-    await cell.$('[data-method=action]').click();
-    await $('[data-method=remove-record]').click();
-    await FU.buttons.submit();
+    await cell.locator('[data-method=action]').click();
+    await TU.locator('[data-method=remove-record]').click();
+    await TU.buttons.submit();
   };
 
   /**
    * @method submit
    */
   page.submit = async function submit() {
-    await FU.buttons.submit();
+    await TU.buttons.submit();
     // the receipt modal is displayed
-    await FU.exists(by.id('receipt-confirm-created'), true);
+    await TU.exists(by.id('receipt-confirm-created'), true);
     // close the modal
-    await element(by.css('[data-action="close"]')).click();
+    await TU.locator('[data-action="close"]').click();
   };
 }
 

@@ -1,30 +1,42 @@
-const helpers = require('../shared/helpers');
+const { chromium } = require('@playwright/test');
+const { test } = require('@playwright/test');
+const TU = require('../shared/TestUtils');
+
 const { notification } = require('../shared/components');
 const FunctionPage = require('./functions.page');
 
-describe('Job Titles Management', () => {
-  before(() => helpers.navigate('#!/functions'));
+test.beforeAll(async () => {
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  TU.registerPage(page);
+  await TU.login();
+});
+
+test.describe('Job Titles Management', () => {
+  test.beforeEach(async () => {
+    await TU.navigate('/#!/functions');
+  });
 
   const page = new FunctionPage();
 
   const newProfession = 'Comptable';
   const updateProfession = 'Chef Comptable';
 
-  it('successfully creates a new job title', async () => {
+  test('successfully creates a new job title', async () => {
     await page.create(newProfession);
     await notification.hasSuccess();
   });
 
-  it('successfully edits a job title', async () => {
+  test('successfully edits a job title', async () => {
     await page.update(newProfession, updateProfession);
     await notification.hasSuccess();
   });
 
-  it('errors when missing job tit create when incorrect job title', async () => {
+  test('errors when missing job tit create when incorrect job title', async () => {
     await page.errorOnCreateFunction();
   });
 
-  it('successfully delete a job title', async () => {
+  test('successfully delete a job title', async () => {
     await page.remove(updateProfession);
     await notification.hasSuccess();
   });

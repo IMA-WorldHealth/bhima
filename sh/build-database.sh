@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# bash script mode
+# bash strict mode
 set -o pipefail
 
 # This assumes you run tests from the top level bhima directory.

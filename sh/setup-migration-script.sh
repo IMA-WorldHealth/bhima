@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# bash script mode
+# bash strict mode
 set -uo pipefail
 
 # This script creates a migration script to upgrade BHIMA from the previous version of BHIMA
@@ -56,7 +56,7 @@ echo "" >> $MIGRATION_FILE
 
 echo "[migrate] Adding latest triggers, functions, and procedures to $DATABASE."
 cat "$BHIMA_PATH"/server/models/functions.sql \
-  "$BHIMA_PATH"/server/models/procedures/*.sql \
+  "$BHIMA_PATH"/server/models/procedures.sql \
   "$BHIMA_PATH"/server/models/admin.sql \
   "$BHIMA_PATH"/server/models/triggers.sql \
   >> $MIGRATION_FILE

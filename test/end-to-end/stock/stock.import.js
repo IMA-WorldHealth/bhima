@@ -1,6 +1,7 @@
-const helpers = require('../shared/helpers');
+const { test } = require('@playwright/test');
+const TU = require('../shared/TestUtils');
+
 const components = require('../shared/components');
-const FU = require('../shared/FormUtils');
 const shared = require('./stock.shared.page');
 
 function StockImportTests() {
@@ -9,27 +10,28 @@ function StockImportTests() {
   const depot = 'Depot Principal';
 
   // navigate to the page
-  beforeEach(() => helpers.navigate('#/stock/import'));
+  test.beforeEach(async () => {
+    await TU.navigate('/#!/stock/import');
+  });
 
-  it('importing stock from a csv file', async () => {
+  test('importing stock from a csv file', async () => {
+    await TU.waitForSelector('[data-depot-selection-modal]'); // wait for display
     await shared.setDepot(depot);
-
     await components.dateEditor.set(new Date());
 
     await shared.uploadFile(STOCK_CSV_FILE);
 
-    await FU.buttons.submit();
+    await TU.buttons.submit();
     await components.notification.hasSuccess();
   });
 
-  it('importing stock from a csv file which have inventory_code and inventory_cmm missing', async () => {
+  test('importing stock from a csv file which have inventory_code missing', async () => {
     await shared.setDepot(depot);
-
     await components.dateEditor.set(new Date());
 
     await shared.uploadFile(STOCK_CSV_FILE_NO_CODE_NO_CMM);
 
-    await FU.buttons.submit();
+    await TU.buttons.submit();
     await components.notification.hasSuccess();
   });
 }
