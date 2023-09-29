@@ -27,6 +27,7 @@ const barcode = require('../../lib/barcode');
 const util = require('../../lib/util');
 const FilterParser = require('../../lib/filter');
 const identifiers = require('../../config/identifiers');
+const core = require('../../controllers/stock/core');
 
 const detailsQuery = `
   SELECT
@@ -45,6 +46,7 @@ exports.update = update;
 exports.details = details;
 exports.getLotTags = getLotTags;
 exports.getCandidates = getCandidates;
+exports.getLotsUsageSchedule = getLotsUsageSchedule;
 exports.getDupes = getDupes;
 exports.getAllDupes = getAllDupes;
 exports.merge = merge;
@@ -182,6 +184,82 @@ function getCandidates(req, res, next) {
     })
     .catch(next)
     .done();
+}
+
+async function getLotsUsageSchedule(req, res, next) {
+  // Get the raw lots data for this inventory/depot combo
+  const params = {
+    inventory_uuid : req.params.uuid,
+    depot_uuid : req.params.depotUuid,
+    month_average_consumption : req.query.month_average_consumption,
+    average_consumption_algo : req.query.average_consumption_algo,
+  };
+  const numMonths = req.query.interval_num_months || 6;
+
+  let lots;
+
+  try {
+    const rawLots = await core.getLotsDepot(null, params);
+    if (rawLots.length > 0) {
+      const today = new Date();
+
+      // Get the average consumption (note that this lot may be purged below)
+      const avgConsumption = rawLots[0].avg_consumption;
+
+      // We need to eliminate any exhausted lots and any expired lots
+      lots = rawLots.filter(lot => lot.quantity > 0)
+        .filter(lot => moment(new Date(lot.expiration_date)) >= moment(today));
+
+      // runningDate is the date the last lot ran out
+      // (Always start the first lot 00:00 AM of current date; ignore the past)
+      let runningDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+      lots.forEach(lot => {
+        // Process the lots and determine sequential start/end dates and other info
+        lot.start_date = new Date(runningDate);
+        lot.expiration_date = new Date(lot.expiration_date);
+
+        // Compute when the lot runs out (based on adjusted start date)
+        if (avgConsumption > 0) {
+          // Calculate in days since moment.add does not handle fractional months
+          // NB: Since moment.diff silently truncates its arguments, even this
+          //     calculation will include some round-off errors.
+          lot.exhausted_date = moment(lot.start_date).add(30.5 * (lot.quantity / avgConsumption), 'days').toDate();
+        } else {
+          lot.exhausted_date = moment(lot.start_date).add(numMonths, 'months').toDate();
+        }
+
+        // Compute the end date for this lot
+        lot.end_date = new Date(lot.exhausted_date);
+        lot.premature_expiration = false;
+        const daysResidual = moment(lot.exhausted_date).diff(moment(lot.expiration_date), 'days');
+        if (daysResidual > 0) {
+          lot.end_date = lot.expiration_date;
+          lot.premature_expiration = true;
+        }
+
+        // Compute the starting value (assume enterprise currency)
+        lot.value = lot.quantity * lot.unit_cost;
+
+        // Compute the lot quantity that will be left at the end date
+        lot.num_days = moment(lot.end_date).diff(moment(lot.start_date), 'days');
+        lot.num_months = lot.num_days / 30.5;
+
+        // If we do not expire before exhaustion, assume all stock articles are used.
+        // Otherwise, do the calculation to estimate how many will be wasted
+        const numUsed = lot.premature_expiration ? Math.ceil(lot.num_months * avgConsumption) : lot.quantity;
+        lot.quantity_used = Math.min(numUsed, lot.quantity); // Cannot use more than we have!
+        lot.quantity_wasted = lot.quantity - lot.quantity_used;
+        lot.value_wasted = lot.quantity_wasted * lot.unit_cost;
+
+        // Adjust the running date (the next lot will start at this date)
+        runningDate = lot.end_date;
+      });
+    }
+    res.status(200).json(lots);
+  } catch (error) {
+    next(error);
+  }
 }
 
 /**
