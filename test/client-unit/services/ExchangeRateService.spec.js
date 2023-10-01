@@ -23,7 +23,7 @@ describe('ExchangeRateService', () => {
     Mocks = _MockDataService_;
 
     const enterprise = Mocks.enterprise();
-    Session.create(Mocks.user(), Mocks.enterprise(), Mocks.project());
+    Session.create(Mocks.user(), Mocks.enterprise(), Mocks.stock_settings(), Mocks.project()); // ??? fix
 
     const rates = [{
       id : 1,

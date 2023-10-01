@@ -1,13 +1,10 @@
 /* v1.28.x */
-
--- Fix the constraint fails
-DELETE ru FROM role_unit ru JOIN unit u ON u.id = ru.unit_id WHERE u.`path` = "/admin/odk-settings";
-DELETE ru FROM role_unit ru JOIN unit u ON u.id = ru.unit_id WHERE u.`path` = "/reports/stock_changes";
-
+DELETE FROM role_unit WHERE unit_id = (SELECT id FROM unit WHERE `path` = '/admin/odk-settings');
 DELETE FROM unit WHERE `path` = '/admin/odk-settings';
 DROP TABLE IF EXISTS `odk_central_integration`;
 
 -- remove references to stock_changes report
+DELETE FROM role_unit WHERE unit_id = (SELECT id FROM unit WHERE `path` = '/reports/stock_changes');
 DELETE FROM unit WHERE `path` = '/reports/stock_changes';
 DELETE FROM report where `report_key` = 'stock_changes';
 
@@ -27,8 +24,8 @@ CREATE TABLE `title_employee` (
 INSERT IGNORE INTO unit VALUES
   (318, 'Job Titles Management','TREE.TITLE','',57, '/titles');
 
-CALL add_column_if_missing('employee', 'title_employee_id', 'TINYINT(1) NOT NULL DEFAULT 0');
--- ALTER TABLE `employee` ADD CONSTRAINT `employee__title_employee` FOREIGN KEY (`title_employee_id`) REFERENCES `title_employee` (`id`);
+CALL add_column_if_missing('employee', 'title_employee_id', 'TINYINT(3) UNSIGNED DEFAULT NULL');
+ALTER TABLE `employee` ADD CONSTRAINT `employee__title_employee` FOREIGN KEY (`title_employee_id`) REFERENCES `title_employee` (`id`);
 
 CALL add_column_if_missing('enterprise_setting', 'percentage_fixed_bonus', 'TINYINT(3) UNSIGNED NOT NULL DEFAULT 100');
 
