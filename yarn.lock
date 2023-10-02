@@ -2188,10 +2188,10 @@ cosmiconfig@8.3.6:
     parse-json "^5.2.0"
     path-type "^4.0.0"
 
-cron@^2.4.4:
-  version "2.4.4"
-  resolved "https://registry.yarnpkg.com/cron/-/cron-2.4.4.tgz#988c1757b3f288d1dfcc360ee6d80087448916dc"
-  integrity sha512-MHlPImXJj3K7x7lyUHjtKEOl69CSlTOWxS89jiFgNkzXfvhVjhMz/nc7/EIfN9vgooZp8XTtXJ1FREdmbyXOiQ==
+cron@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/cron/-/cron-3.0.0.tgz#7f68f1aace0417b0f8ed7ad5e00de0511300e84c"
+  integrity sha512-2aFNFH+kwHUlqJlc1M4sP6/l+gZjBYaoHrhPRkTkg80DlA68ueyhRDfWnMAMulg/+mE9F8cGtfwL8wedr4jfqQ==
   dependencies:
     "@types/luxon" "~3.3.0"
     luxon "~3.3.0"
