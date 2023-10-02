@@ -23,6 +23,7 @@ const DEFAULT_PARAMS = {
  */
 async function getData(reqQuery) {
   const params = reqQuery;
+  params.depotUuid = params.depotUuid || params.depot_uuid;
   params.exclude_out_stock = parseInt(params.exclude_out_stock, 10);
   params.include_daily_balances = parseInt(params.include_daily_balances, 10);
   params.condensed_report = parseInt(params.condensed_report, 10);
