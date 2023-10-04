@@ -21,7 +21,7 @@ CREATE TABLE `title_employee` (
   UNIQUE KEY `title_1` (`title_txt`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
-INSERT INTO unit VALUES
+INSERT IGNORE INTO unit VALUES
   (318, 'Job Titles Management','TREE.TITLE','',57, '/titles');
 
 CALL add_column_if_missing('employee', 'title_employee_id', 'TINYINT(3) UNSIGNED DEFAULT NULL');
