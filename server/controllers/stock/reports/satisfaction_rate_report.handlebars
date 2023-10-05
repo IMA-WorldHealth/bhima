@@ -32,7 +32,7 @@
           </tr>
           <tr style="background-color: #000;">
             <th colspan="9"> </th>
-          </tr>          
+          </tr>
           {{#each data}}
             <thead>
               <tr style="background-color: #EFEFEF;">
@@ -52,7 +52,7 @@
                 <td width="10%"> {{translate 'FORM.LABELS.QUANTITY_VALIDATED'}} </td>
                 <td width="10%"> {{translate 'FORM.LABELS.QUANTITY_DELIVERED'}} </td>
                 <td width="10%"> {{translate 'FORM.LABELS.SATISFACTION_RATE'}} </td>
-              </tr>              
+              </tr>
               {{#each data_requisition_movement }}
               <tr>
                 <td></td>
@@ -60,8 +60,8 @@
                 <td> {{ requisition_reference }} </td>
                 <td> {{ stock_movement_text }} </td>
                 <td> {{ inventory_text }} </td>
-                <td style="text-align: right;"> {{ quatity_requested }} </td>
-                <td style="text-align: right;"> {{ quatity_validated }} </td>
+                <td style="text-align: right;"> {{ quantity_requested }} </td>
+                <td style="text-align: right;"> {{ quantity_validated }} </td>
                 <td style="text-align: right;"> {{ quantity_delivered }} </td>
                 <td style="text-align: right;"><strong>{{percentage satisfaction_rate }}</strong></td>
               </tr>
@@ -76,7 +76,7 @@
               </tr>
               <tr style="background-color: #000;">
                 <th colspan="9"> </th>
-              </tr>                                       
+              </tr>
             </tbody>
           {{/each}}
         </table>

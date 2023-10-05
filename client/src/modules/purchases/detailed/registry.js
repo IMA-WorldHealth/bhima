@@ -112,7 +112,7 @@ function PurchaseDetailedController(
     type : 'number',
     visible : false,
   }, {
-    field : 'quatity_delivered',
+    field : 'quantity_delivered',
     displayName : 'STOCK.QUANTITY_RECEIVED',
     headerTooltip : 'STOCK.QUANTITY_RECEIVED',
     cellClass : 'text-right',

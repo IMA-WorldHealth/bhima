@@ -909,6 +909,8 @@ exports.configure = function configure(app) {
   app.get('/reports/stock/assign', stockReports.stockAssignReport);
   app.get('/reports/stock/satisfaction_rate_report', stockReports.satisfactionRateReport);
 
+  app.get('/stock/satisfaction_rate', stockReports.satisfactionRates);
+
   // stock api for inter-operability
   app.get('/stock/rumer', stockReports.rumerApi.getData);
 
