@@ -60,6 +60,11 @@ function StockExpirationReportConfigCtrl($sce, Notify, SavedReports, AppCache, r
       return 0;
     }
 
+    // Clear previously selected depot UUID if not doing specific depot
+    if (!vm.chooseOneDepot) {
+      delete vm.reportDetails.depot_uuid;
+    }
+
     // update cached configuration
     cache.reportDetails = formatData(vm.reportDetails);
 
