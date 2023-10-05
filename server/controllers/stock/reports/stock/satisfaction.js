@@ -1,5 +1,11 @@
 const { db } = require('../common');
 
+/**
+ * Get satisfaction rate info for specified period and depots
+ *
+ * @param {object} options - contains dateFrom, dateTo, depotUuids
+ * @returns {object} data
+ */
 async function getSatisfactionData(options) {
   const { dateFrom, dateTo } = options;
   let { depotUuids } = options;
@@ -52,12 +58,12 @@ async function getSatisfactionData(options) {
     BUID(req.inventory_uuid) AS inventory_uuid, req.inventory_text,
     req.validator_user_id, BUID(req.depot_supplier_uuid) AS depot_supplier_uuid, req.depot_supplier_text,
     BUID(req.depot_requestor_uuid) AS depot_requestor_uuid, req.depot_requestor_text,
-    req.quatity_requested, req.quatity_validated
+    req.quantity_requested, req.quantity_validated
     FROM (SELECT sr.uuid AS stock_requisition_uuid, it.inventory_uuid, inv.text AS inventory_text,
     sr.validator_user_id, sr.depot_uuid AS depot_supplier_uuid, d.text AS depot_supplier_text,
     sr.requestor_uuid AS depot_requestor_uuid, dd.text AS depot_requestor_text,
-    IF(sr.validator_user_id, it.old_quantity, it.quantity) AS quatity_requested,
-    it.quantity AS quatity_validated, map1.text AS requisition_reference
+    IF(sr.validator_user_id, it.old_quantity, it.quantity) AS quantity_requested,
+    it.quantity AS quantity_validated, map1.text AS requisition_reference
     FROM stock_requisition AS sr
     JOIN stock_requisition_item AS it ON it.requisition_uuid = sr.uuid
     JOIN inventory AS inv ON inv.uuid = it.inventory_uuid
@@ -86,17 +92,17 @@ async function getSatisfactionData(options) {
   const sqlGetRequisitionStockMovementAggregate = `
   SELECT req.depot_supplier_text, req.depot_requestor_text, req.requisition_reference, mov.stock_movement_text,
     mov.quantity_delivered,
-    AVG(IF(mov.quantity_delivered, (mov.quantity_delivered / req.quatity_validated), 0)) AS satisfaction_rate_avg,
+    AVG(IF(mov.quantity_delivered, (mov.quantity_delivered / req.quantity_validated), 0)) AS satisfaction_rate_avg,
     BUID(req.stock_requisition_uuid),
     req.inventory_uuid, req.inventory_text,
     req.validator_user_id, BUID(req.depot_supplier_uuid) AS depot_supplier_uuid,
     BUID(req.depot_requestor_uuid) AS depot_requestor_uuid,
-    req.quatity_requested, req.quatity_validated
+    req.quantity_requested, req.quantity_validated
     FROM (SELECT sr.uuid AS stock_requisition_uuid, it.inventory_uuid, inv.text AS inventory_text,
     sr.validator_user_id, sr.depot_uuid AS depot_supplier_uuid, d.text AS depot_supplier_text,
     sr.requestor_uuid AS depot_requestor_uuid, dd.text AS depot_requestor_text,
-    IF(sr.validator_user_id, it.old_quantity, it.quantity) AS quatity_requested,
-    it.quantity AS quatity_validated, map1.text AS requisition_reference
+    IF(sr.validator_user_id, it.old_quantity, it.quantity) AS quantity_requested,
+    it.quantity AS quantity_validated, map1.text AS requisition_reference
     FROM stock_requisition AS sr
     JOIN stock_requisition_item AS it ON it.requisition_uuid = sr.uuid
     JOIN inventory AS inv ON inv.uuid = it.inventory_uuid
@@ -142,7 +148,7 @@ async function getSatisfactionData(options) {
       ));
 
       dataMovementFilter.forEach(item => {
-        item.satisfaction_rate = item.quantity_delivered / item.quatity_validated;
+        item.satisfaction_rate = item.quantity_delivered / item.quantity_validated;
       });
 
       if (dataMovementFilter.length) {

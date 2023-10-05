@@ -6,9 +6,9 @@ describe('Test the stock statification rate REST API', () => {
 
   it('GET /stock/satisfication_rate', () => {
     const options = {
-      dateFrom: '2023-01-01T00:00:00.000Z',
-      dateTo: '2023-12-31T00:00:00.000Z',
-      depotUuids: [
+      dateFrom : '2023-01-01T00:00:00.000Z',
+      dateTo : '2023-12-31T00:00:00.000Z',
+      depotUuids : [
         'F9CAEB16168443C5A6C447DBAC1DF296',
         'D4BB1452E4FA4742A281814140246877',
       ],
@@ -31,10 +31,10 @@ describe('Test the stock statification rate REST API', () => {
 
         // Spot check a movement
         const movements = depot1.data_requisition_movement.sort((a, b) => a.quantity_requested - b.quantity_requested);
-        const mov = movements[2];
+        const mov = movements[0];
         expect(mov.requisition_reference).to.equal('SREQ.TPA.2');
-        expect(mov.quatity_requested).to.equal(4);
-        expect(mov.quatity_validated).to.equal(4);
+        expect(mov.quantity_requested).to.equal(4);
+        expect(mov.quantity_validated).to.equal(4);
         expect(mov.satisfaction_rate).to.equal(0);
 
         // Check suppliers
