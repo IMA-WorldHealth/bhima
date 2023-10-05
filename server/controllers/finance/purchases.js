@@ -836,7 +836,7 @@ function findDetailed(options) {
       u.display_name AS author, p.currency_id, p.status_id, ps.text AS status,
       ent.display_name AS responsible,
       p.created_at, p.info_purchase_number, p.info_prf_number,
-      SUM(IFNULL(mov.quantity, 0)) AS quatity_delivered, (it.quantity - SUM(mov.quantity)) AS balance
+      SUM(IFNULL(mov.quantity, 0)) AS quantity_delivered, (it.quantity - SUM(mov.quantity)) AS balance
     FROM purchase AS p
     JOIN purchase_item AS it ON it.purchase_uuid = p.uuid
     JOIN document_map dm ON p.uuid = dm.uuid

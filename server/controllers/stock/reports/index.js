@@ -26,6 +26,7 @@ const stockSheetReport = require('./stock/stock_sheet');
 const stockAggregatedConsumptionReport = require('./stock/aggregated_consumption_report');
 const lostStockReport = require('./stock/lost_stock_report');
 const satisfactionRateReport = require('./stock/satisfaction_rate_report');
+const satisfactionRates = require('./stock/satisfaction_rate_data');
 
 const stockExitPatientReceipt = require('./stock/exit_patient_receipt');
 const stockExitDepotReceipt = require('./stock/exit_depot_receipt');
@@ -154,6 +155,7 @@ exports.stockSheetReport = stockSheetReport;
 exports.stockAggregatedConsumptionReport = stockAggregatedConsumptionReport;
 exports.stockAssignReport = stockAssignReport;
 exports.satisfactionRateReport = satisfactionRateReport;
+exports.satisfactionRates = satisfactionRates;
 
 exports.stockValue = stockValue.document;
 exports.stockValueReporting = stockValue.reporting;
