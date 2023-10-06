@@ -191,7 +191,7 @@
     "postcss": "^8.4.31",
     "qs": "^6.11.2",
     "release-it": "^16.2.1",
-    "sinon": "^16.0.0",
+    "sinon": "^16.1.0",
     "standard-version": "^9.5.0",
     "typescript": "^5.2.2"
   },
