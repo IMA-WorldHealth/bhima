@@ -6,8 +6,8 @@ const helpers = require('../helpers');
 describe('Stock Depot RUMER data REST API', () => {
   it('GET /stock/rumer: test the RUMER data for a given depot', () => {
     const depotUuid = helpers.data.depots.principal;
-    const startDate = '2019-12-01';
-    const endDate = '2019-12-31';
+    const startDate = '2022-01-01';
+    const endDate = '2022-01-31';
     const NB_OF_INVENTORIES = 2;
 
     return agent
