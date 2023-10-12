@@ -103,7 +103,7 @@
           {{/each}}
           <tr style="font-weight: bold;">
             <td class="text-right text-capitalize" style="border:0px">{{translate 'FORM.LABELS.TOTAL'}} ({{translate 'FORM.LABELS.INVOICING_FEES'}}) = </td>
-            <td class="text-right" style="border:0px">+{{currency (sum billing 'value') ../metadata.enterprise.currency_id}}</td>
+            <td class="text-right" style="border:0px">+{{currency (sum billing 'value') metadata.enterprise.currency_id}}</td>
           </tr>
         </table>
       {{/if}}
@@ -114,7 +114,7 @@
         <table style="width: 100%;" class="table-report">
           <tr style="border:0px">
             <td class="text-right" style="border:0px">
-              <b>-{{currency (sum subsidy 'value') metadata.enterprise.currency_id}}</b>
+              <b>{{debcred (multiply (sum subsidy 'value') -1)  metadata.enterprise.currency_id}}</b>
             </td>
           </tr>
         </table>
