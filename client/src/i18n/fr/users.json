@@ -6,6 +6,8 @@
     "CREATE" : "Créer",
     "CREATED" : "Crée avec succés",
     "DESCRIPTION" : "Module de gestion des utilisateur et leurs droits",
+    "ENABLE_EXTERNAL_ACCESS" : "Activer l'accès externe",
+    "ENABLE_EXTERNAL_ACCESS_DESCRIPTION" : "Déverrouille le compte utilisateur sur les sites externes qui reflètent la base de données de l'hôpital. L'utilisateur pourra se connecter avec son nom d'utilisateur et son mot de passe sur des sites Web en miroir.",
     "PASSWORD_MISMATCH" : "Les mots de passe fournis ne sont pas identiques",
     "PASSWORDPOLICY" : "Pour se conformer à notre politique de mot de passe fort, le mot de passe doit avoir plus de 7 caractères contentant au moins un caractère spécial (ex.: @, #) , un ou plusiers chiffres ansi que les lettres majuscules et miniscules",
     "PERMISSIONS" : "Permissions",

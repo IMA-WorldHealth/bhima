@@ -33,6 +33,7 @@ describe('(/users) Users and Permissions', () => {
     'bd4b1452-4742-e4fa-a128-246814140877',
   ];
 
+  // this is a depot uuid
   const depotManagementSupervision = 'F9CAEB16168443C5A6C447DBAC1DF296';
   const usersManagement = [2];
   const usersSupervision = [3, 4];
@@ -164,7 +165,7 @@ describe('(/users) Users and Permissions', () => {
       .catch(helpers.handler);
   });
 
-  it('DELETE /users/:id will not possible to delete the user who have Permissions', () => {
+  it('DELETE /users/:id will not delete a user who has permissions set', () => {
     return agent.delete(`/users/${newUser.id}`)
       .then(res => {
         helpers.api.errored(res, 400);
@@ -173,9 +174,9 @@ describe('(/users) Users and Permissions', () => {
   });
 
   // Add depot permissions for user
-  it('POST /users/:id/depots will create user depots', () => {
+  it('POST /users/:id/depots will assign some depots to a user', () => {
     return agent.post(`/users/${newUser.id}/depots`)
-      .send({ depots }) // just the root node
+      .send({ depots })
       .then(res => {
         expect(res).to.have.status(201);
         return agent.get(`/users/${newUser.id}/depots`);
@@ -189,9 +190,9 @@ describe('(/users) Users and Permissions', () => {
   });
 
   // Add depot supervision for user
-  it('POST /users/:id/depotsSupervision will create user depots for Supervision', () => {
+  it('POST /users/:id/depotsSupervision will create user depots for supervision', () => {
     return agent.post(`/users/${newUser.id}/depotsSupervision`)
-      .send({ depots : depotsSupervision }) // just the root node
+      .send({ depots : depotsSupervision })
       .then(res => {
         expect(res).to.have.status(201);
         return agent.get(`/users/${newUser.id}/depotsSupervision`);
@@ -205,7 +206,7 @@ describe('(/users) Users and Permissions', () => {
   });
 
   // Assign users management permissions for depot
-  it('POST /users/:uuid/depotUsersManagment : Assign users management permissions for depot', () => {
+  it('POST /users/:uuid/depotUsersManagment : assign users management permissions for depot', () => {
     return agent.post(`/users/${depotManagementSupervision}/depotUsersManagment`)
       .send({ users : usersManagement })
       .then(res => {
@@ -220,7 +221,7 @@ describe('(/users) Users and Permissions', () => {
   });
 
   // Assign users supervision permissions for depot
-  it('POST /users/:uuid/depotUsersSupervision : Assign users supervision permissions for depot', () => {
+  it('POST /users/:uuid/depotUsersSupervision: assign users supervision permissions for depot', () => {
     return agent.post(`/users/${depotManagementSupervision}/depotUsersSupervision`)
       .send({ users : usersSupervision })
       .then(res => {
@@ -253,7 +254,7 @@ describe('(/users) Users and Permissions', () => {
   // Add cashbox permissions for user
   it('POST /users/:id/cashboxes will create user cashboxes', () => {
     return agent.post(`/users/${newUser.id}/cashboxes`)
-      .send({ cashboxes }) // just the root node
+      .send({ cashboxes })
       .then(res => {
         expect(res).to.have.status(201);
         return agent.get(`/users/${newUser.id}/cashboxes`);
@@ -267,7 +268,7 @@ describe('(/users) Users and Permissions', () => {
   });
 
   // Reset cashbox permissions for user
-  it('POST /users/:id/cashboxes will reset user cashboxes', () => {
+  it('POST /users/:id/cashboxes with empty array will reset user cashboxes', () => {
     return agent.post(`/users/${newUser.id}/cashboxes`)
       .send({ cashboxes : [] })
       .then(res => {
@@ -282,7 +283,7 @@ describe('(/users) Users and Permissions', () => {
       .catch(helpers.handler);
   });
 
-  it('POST /users/:id/cashboxes will reject invalid data formats', () => {
+  it('POST /users/:id/cashboxes will reject invalid data', () => {
     return agent.post(`/users/${newUser.id}/cashboxes`)
       .send({ })
       .then((result) => {

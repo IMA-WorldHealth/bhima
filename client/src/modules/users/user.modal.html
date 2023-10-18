@@ -13,10 +13,7 @@
       </li>
     </ol>
   </div>
-
-  <div class="modal-body" style="overflow-y: scroll; max-height:600px; ">
-
-    <div class="form-group" ng-class="{ 'has-error' : UserForm.$submitted && UserForm.display_name.$invalid }">
+<div class="modal-body" style="overflow-y: scroll; max-height:600px; "> <div class="form-group" ng-class="{ 'has-error' : UserForm.$submitted && UserForm.display_name.$invalid }">
       <label class="control-label" translate>FORM.LABELS.DISPLAY_NAME</label>
       <input
         name="display_name"
@@ -139,6 +136,19 @@
             ng-model="UserModalCtrl.user.is_admin">
           <span translate>USERS.SUPER</span>
         </label>
+      </div>
+    </div>
+
+    <div class="form-group" ng-if="!UserModalCtrl.isCreateState">
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" name="enable_external_access" ng-true-value="1" ng-false-value="0"
+            ng-model="UserModalCtrl.user.enable_external_access">
+          <span translate>USERS.ENABLE_EXTERNAL_ACCESS</span>
+        </label>
+      </div>
+      <div class="help-block">
+        <p translate>USERS.ENABLE_EXTERNAL_ACCESS_DESCRIPTION</p>
       </div>
     </div>
   </div>
