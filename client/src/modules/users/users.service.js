@@ -85,7 +85,7 @@ function UserService(Api, Filters, bhConstants, AppCache, Periods) {
   function update(id, user) {
 
     // delete properties that should not be updated
-    delete user.lastLogin;
+    delete user.last_login;
     delete user.id;
     delete user.active;
     delete user.roles;

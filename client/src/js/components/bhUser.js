@@ -33,10 +33,6 @@ function bhUser(Users, $translate) {
   function _loadUser(userId) {
     Users.read(userId)
       .then((user) => {
-        // sanitise user according to server API alias of `lastLogin`
-        // @TODO(sfount) this should be standardised across the application
-        //               as the database record, last_login should be used
-        user.last_login = user.lastLogin;
         $ctrl.user = user;
       });
   }

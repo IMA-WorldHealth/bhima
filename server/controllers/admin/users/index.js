@@ -11,7 +11,6 @@
  * @requires BadRequest
  */
 
-const _ = require('lodash');
 const db = require('../../../lib/db');
 const FilterParser = require('../../../lib/filter');
 const NotFound = require('../../../lib/errors/NotFound');
@@ -52,7 +51,7 @@ async function lookupUser(id) {
 
   let sql = `
     SELECT user.id, user.username, user.email, user.display_name,
-      user.active, user.last_login AS lastLogin, user.deactivated, user.is_admin,
+      user.active, user.last_login, user.deactivated, user.is_admin, user.enable_external_access,
       GROUP_CONCAT(DISTINCT role.label ORDER BY role.label DESC SEPARATOR ', ') AS roles,
       GROUP_CONCAT(DISTINCT depot.text ORDER BY depot.text DESC SEPARATOR ', ') AS depots,
       GROUP_CONCAT(DISTINCT cb.label ORDER BY cb.label DESC SEPARATOR ', ') AS cashboxes
@@ -100,7 +99,8 @@ async function list(req, res, next) {
 
   try {
     const sql = `
-      SELECT user.id, user.display_name, user.username, user.deactivated, user.last_login as lastLogin,
+      SELECT user.id, user.display_name, user.username, user.deactivated, user.last_login,
+        user.enable_external_access,
         GROUP_CONCAT(DISTINCT role.label ORDER BY role.label DESC SEPARATOR ', ') AS roles,
         GROUP_CONCAT(DISTINCT depot.text ORDER BY depot.text DESC SEPARATOR ', ') AS depots,
         GROUP_CONCAT(DISTINCT cb.label ORDER BY cb.label DESC SEPARATOR ', ') AS cashboxes
@@ -254,7 +254,7 @@ function update(req, res, next) {
 
   // begin updating the user if data was sent back (the user might has
   // simply sent permissions changes).
-  if (!_.isEmpty(data)) {
+  if (Object.keys(data).length !== 0) {
     transaction
       .addQuery('UPDATE user SET ? WHERE id = ?;', [data, req.params.id]);
   }
