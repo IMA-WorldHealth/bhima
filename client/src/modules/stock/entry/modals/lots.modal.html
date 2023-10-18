@@ -25,7 +25,7 @@
             popover-append-to-body="true">
               <i class="text-primary fa fa-info-circle"></i>
             </span>
-    
+
             <input
               class="form-control"
               type="number"
@@ -34,7 +34,7 @@
               ng-model-options="{ '*' : '$inherit' }"
               min="0">
           </div>
-    
+
           <div class="form-group">
             <label class="control-label" translate>FORM.LABELS.PACK_SIZE</label>
             <span
@@ -54,7 +54,7 @@
               required
               min="1">
           </div>
-    
+
           <div class="form-group">
             <label translate>FORM.LABELS.PACKAGE_UNIT_COST</label>
             <span
@@ -63,7 +63,7 @@
             popover-trigger="'mouseenter'"
             popover-append-to-body="true">
               <i class="text-primary fa fa-info-circle"></i>
-            </span>        
+            </span>
             <div ng-if="$ctrl.isCostEditable" class="input-group">
               <input
                 class="form-control"
@@ -90,14 +90,14 @@
             </div>
           </div>
         </div>
-    
+
         <div class="form-group">
           <label class="control-label" translate>FORM.LABELS.GLOBAL_QUANTITY</label>
-    
+
           <div ng-if="$ctrl.entryType === 'transfer_reception'">
             <span class="form-control-static">{{ $ctrl.stockLine.quantity }}</span>
           </div>
-    
+
           <input
             ng-if="$ctrl.isCostEditable"
             class="form-control"
@@ -107,18 +107,18 @@
             ng-model-options="{ '*' : '$inherit' }"
             min="0">
         </div>
-    
+
         <div class="form-group">
           <label translate>STOCK.UNIT_COST</label>
           <span ng-if="$ctrl.stockLine.wacValue" class="text-primary">
             <i class="fa fa-info-circle"></i>&nbsp;
             <span translate>STOCK.WAC_NOTIFICATION</span> : <b>{{ $ctrl.wacValue | currency: $ctrl.currencyId }}</b>
           </span>
-    
+
           <div ng-if="!$ctrl.isCostEditable">
             <span class="form-control-static">{{ $ctrl.stockLine.unit_cost }}  {{ $ctrl.currency.label }} </span>
           </div>
-    
+
           <div ng-if="$ctrl.isCostEditable" class="input-group">
             <input
               class="form-control"
@@ -130,9 +130,9 @@
               ng-model-options="{ updateOn: 'blur', '*' : '$inherit' }">
             <span class="input-group-addon">{{ $ctrl.currency.symbol }}</span>
           </div>
-    
+
           <div ng-if="$ctrl.stockLine.wac" class="text-primary"><i class="fa fa-info-circle"></i>&nbsp;<span translate>STOCK.USE_OF_STOCK_WAC</span></div>
-    
+
         </div>
       </uib-tab>
 
@@ -151,7 +151,7 @@
             <p class="help-block" translate>LOTS.ENABLE_FAST_INSERT_DESCRIPTION</p>
           </div>
         </div>
-    
+
         <div class="form-group" bh-has-permission="$ctrl.bhConstants.actions.EDIT_LOT">
           <div class="checkbox">
             <label>
@@ -167,7 +167,7 @@
             <p class="help-block" translate>LOTS.ENABLE_CORRECTING_LOT_EXPIRATION_DATES_DESCRIPTION</p>
           </div>
         </div>
-    
+
         <div ng-if="!$ctrl.isTransfer" class="form-group">
           <div class="checkbox">
             <label>
@@ -183,7 +183,7 @@
             <p class="help-block" translate>LOTS.ENABLE_GLOBAL_DESCRIPTION_AND_EXPIRATION_DESCRIPTION</p>
           </div>
         </div>
-    
+
         <div ng-if="$ctrl.allowMultiplePackagingPurchase" class="form-group">
           <div class="checkbox">
             <label>
@@ -197,8 +197,8 @@
             </label>
             <p class="help-block" translate>LOTS.MAKE_STOCK_ENTRY_PACKAGING_DESCRIPTION</p>
           </div>
-        </div>    
-    
+        </div>
+
         <div ng-if="$ctrl.enableGlobalDescriptionAndExpiration" class="form-group row">
           <div class="col-xs-6">
             <label for="lot-description" translate>STOCK.GLOBAL_LOT_DESCRIPTION</label>
