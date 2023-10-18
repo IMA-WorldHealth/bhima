@@ -35,7 +35,7 @@ async function getInventoryWac(req, res, next) {
   try {
     const binaryInventoryUuid = db.bid(req.params.inventoryUuid);
     const querySelect = `
-      SELECT 
+      SELECT
         BUID(sv.inventory_uuid) inventory_uuid,
         i.text, sv.date, sv.quantity, sv.wac
       FROM stock_value sv
@@ -98,7 +98,7 @@ async function getInventory(req, res, next) {
 async function getUsers(req, res, next) {
   const sql = `
     SELECT user.id, user.username, user.email, user.display_name,
-      user.active, user.last_login AS lastLogin, user.deactivated,
+      user.active, user.last_login, user.deactivated,
       GROUP_CONCAT(DISTINCT role.label ORDER BY role.label DESC SEPARATOR ', ') AS roles,
       GROUP_CONCAT(DISTINCT cb.label ORDER BY cb.label DESC SEPARATOR ', ') AS cashboxes
     FROM user

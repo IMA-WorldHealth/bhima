@@ -51,7 +51,7 @@ async function lookupUser(id) {
 
   let sql = `
     SELECT user.id, user.username, user.email, user.display_name,
-      user.active, user.last_login AS lastLogin, user.deactivated, user.is_admin, user.enable_external_access,
+      user.active, user.last_login, user.deactivated, user.is_admin, user.enable_external_access,
       GROUP_CONCAT(DISTINCT role.label ORDER BY role.label DESC SEPARATOR ', ') AS roles,
       GROUP_CONCAT(DISTINCT depot.text ORDER BY depot.text DESC SEPARATOR ', ') AS depots,
       GROUP_CONCAT(DISTINCT cb.label ORDER BY cb.label DESC SEPARATOR ', ') AS cashboxes
@@ -99,7 +99,7 @@ async function list(req, res, next) {
 
   try {
     const sql = `
-      SELECT user.id, user.display_name, user.username, user.deactivated, user.last_login as lastLogin,
+      SELECT user.id, user.display_name, user.username, user.deactivated, user.last_login,
         user.enable_external_access,
         GROUP_CONCAT(DISTINCT role.label ORDER BY role.label DESC SEPARATOR ', ') AS roles,
         GROUP_CONCAT(DISTINCT depot.text ORDER BY depot.text DESC SEPARATOR ', ') AS depots,
