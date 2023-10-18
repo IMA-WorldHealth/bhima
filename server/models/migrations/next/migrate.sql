@@ -36,3 +36,11 @@ CALL add_column_if_missing('enterprise_setting', 'percentage_fixed_bonus', 'TINY
  */
 ALTER TABLE `employee` DROP COLUMN  `is_medical`;
 CALL add_column_if_missing('title_employee', 'is_medical', 'TINYINT(1) DEFAULT 0');
+
+/**
+ * author: jniles
+ * description: enable_external_access allows backup scripts to determine which
+ * user accounts to leave unlocked.
+ * date: 2023-10-17
+*/
+CALL add_column_if_missing('user', 'enable_external_access', 'TINYINT(1) NOT NULL DEFAULT 0');
