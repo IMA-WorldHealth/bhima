@@ -2193,13 +2193,13 @@ cosmiconfig@8.3.6:
     parse-json "^5.2.0"
     path-type "^4.0.0"
 
-cron@^3.1.1:
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/cron/-/cron-3.1.1.tgz#124de337c82e42159e3261195099a12137003ac4"
-  integrity sha512-P8rDShXt2IZa16KwuYpbd1w7NjU4BnXeUEfkesBXT36JXhUsQ1P6i6ctsi5H82FQmR4tn/MOz05aB/3vn6dSkA==
+cron@^3.1.3:
+  version "3.1.3"
+  resolved "https://registry.yarnpkg.com/cron/-/cron-3.1.3.tgz#4eac8f6691ce7e24c8e89b5317b8097d6f2d0053"
+  integrity sha512-KVxeKTKYj2eNzN4ElnT6nRSbjbfhyxR92O/Jdp6SH3pc05CDJws59jBrZWEMQlxevCiE6QUTrXy+Im3vC3oD3A==
   dependencies:
     "@types/luxon" "~3.3.0"
-    luxon "~3.3.0"
+    luxon "~3.4.0"
 
 cross-env@^7.0.3:
   version "7.0.3"
@@ -6072,15 +6072,10 @@ lru-cache@^7.14.1:
   resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-10.0.1.tgz#0a3be479df549cca0e5d693ac402ff19537a6b7a"
   integrity sha512-IJ4uwUTi2qCccrioU6g9g/5rvvVl13bsdczUUcqbciD9iLr095yj8DQKdObriEvuNSx325N1rV1O0sJFszx75g==
 
-luxon@^3.4.3:
+luxon@^3.4.3, luxon@~3.4.0:
   version "3.4.3"
   resolved "https://registry.yarnpkg.com/luxon/-/luxon-3.4.3.tgz#8ddf0358a9492267ffec6a13675fbaab5551315d"
   integrity sha512-tFWBiv3h7z+T/tDaoxA8rqTxy1CHV6gHS//QdaH4pulbq/JuBSGgQspQQqcgnwdAx6pNI7cmvz5Sv/addzHmUg==
-
-luxon@~3.3.0:
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/luxon/-/luxon-3.3.0.tgz#d73ab5b5d2b49a461c47cedbc7e73309b4805b48"
-  integrity sha512-An0UCfG/rSiqtAIiBPO0Y9/zAnHUZxAMiCpTd5h2smgsj7GGmcenvrvww2cqNA8/4A5ZrD1gJpHN2mIHZQF+Mg==
 
 macos-release@^3.1.0:
   version "3.2.0"
