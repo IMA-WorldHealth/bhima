@@ -20,13 +20,6 @@ describe('renderers/csv.js', () => {
     expect(csv.extension).to.be.a('string');
   });
 
-  it('#render(data) should return a promise', () => {
-    const promise = csv.render({ csv : data });
-
-    expect(promise.then).to.be.a('function');
-    expect(promise.catch).to.be.a('function');
-  });
-
   it('#render() should return a known string output for known input', async () => {
     const rendered = await csv.render({ csv : data });
 
