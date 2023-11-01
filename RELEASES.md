@@ -13,7 +13,12 @@ before a release and the steps to creating a new release.
 7. Move the `server/models/migrations/next/migrate.sql` file to the directory created in the above step.
 8. Create a blank `migrate.sql` file in `server/models/migrations/next/`.
 9. Commit updated files (git commit ...)
-10. Run `yarn release` and follow the options.
+10. Make sure your personal GITHUB_TOKEN environment variable is defined 
+    (assuming you have permissions to update the main BHIMA repository.   
+	[See Github instructions for this.](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)
+11. Run `yarn release` and follow the options.
+12. Verify the release was created and that the binary <version>.tar.gz file
+    is in the assets for the release.
 
 
 (*) Optional, Best Practice: Test the latest database changes on a production database.
