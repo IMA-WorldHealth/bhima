@@ -1540,10 +1540,10 @@ chai-spies-next@^0.9.3:
   resolved "https://registry.yarnpkg.com/chai-spies-next/-/chai-spies-next-0.9.3.tgz#672a84f68824af152ea1cbdda5a96f1a066302b9"
   integrity sha512-U0jxUHnlErYetMrMUzCYLQH8fYzNl1ttK1/146SlgMYqVs2jZtZnX9V+f5Clt3zoc49lXb5xfgKNaNqQEp/OUA==
 
-chai-spies@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/chai-spies/-/chai-spies-1.0.0.tgz#d16b39336fb316d03abf8c375feb23c0c8bb163d"
-  integrity sha512-elF2ZUczBsFoP07qCfMO/zeggs8pqCf3fZGyK5+2X4AndS8jycZYID91ztD9oQ7d/0tnS963dPkd0frQEThDsg==
+chai-spies@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/chai-spies/-/chai-spies-1.1.0.tgz#a6c270bc708c70716fed667d771f910902a5fb31"
+  integrity sha512-ikaUhQvQWchRYj2K54itFp3nrcxaFRpSDQxDlRzSn9aWgu9Pi7lD8yFxTso4WnQ39+WZ69oB/qOvqp+isJIIWA==
 
 chai@>1.9.0, chai@^4.3.10:
   version "4.3.10"
