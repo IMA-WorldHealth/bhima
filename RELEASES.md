@@ -13,7 +13,13 @@ before a release and the steps to creating a new release.
 7. Move the `server/models/migrations/next/migrate.sql` file to the directory created in the above step.
 8. Create a blank `migrate.sql` file in `server/models/migrations/next/`.
 9. Commit updated files (git commit ...)
-10. Run `yarn release` and follow the options.
+10. Push the `release-next` branch to your fork of the BHIMA repository.
+11. Run `yarn release` and follow the options.
+12. Create a PR on the BHIMA repository for the `release-next` branch (from your fork)
+13. Merge the PR (via Bors r+ or via the "Merge" button)
+14. Once the merge is complete, go to the releases page https://github.com/IMA-WorldHealth/bhima/releases.
+15. Create a new release with the correct release tag (eg, v1.32.0)
+16. Save the new release to complete the Release.
 
 
 (*) Optional, Best Practice: Test the latest database changes on a production database.
