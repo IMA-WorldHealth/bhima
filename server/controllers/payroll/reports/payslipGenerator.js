@@ -134,6 +134,7 @@ function build(req, res, next) {
       });
 
       data.dataEmployees = dataEmployees;
+
       // Set Aggregate of Rubrics
       data.total_basic_salary = totalBasicSalary;
       data.total_taxable = totalBaseTaxable - totalBasicSalary;
@@ -199,7 +200,7 @@ function build(req, res, next) {
           rubricsIndexes.forEach(item => {
             if (employee.employee_uuid === item.employee_uuid && item.indice_type === 'is_other_profits') {
               employee.otherProfits.push({ value : item.rubric_value, label : item.rubric_label });
-            } else {
+            } else if (employee.employee_uuid === item.employee_uuid && item.indice_type !== 'is_other_profits') {
               employee[item.indice_type] = { value : item.rubric_value, label : item.rubric_label };
             }
           });
