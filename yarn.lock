@@ -451,10 +451,10 @@
   resolved "https://registry.yarnpkg.com/@trysound/sax/-/sax-0.2.0.tgz#cccaab758af56761eb7bf37af6f03f326dd798ad"
   integrity sha512-L7z9BgrNEcYyUYtF+HaEfiS5ebkh9jXqbszz7pC0hRBPaatV0XjSD3+eHrpqFemQfgwiFF0QPIarnIihIDn7OA==
 
-"@types/angular@^1.8.4", "@types/angular@^1.8.7":
-  version "1.8.7"
-  resolved "https://registry.yarnpkg.com/@types/angular/-/angular-1.8.7.tgz#6a391016f794e5ade3d3f06130b88b8355799bff"
-  integrity sha512-Itzddybhj/oWRJMmXgjfkFoUl0twZjhhc+AhqisYdVQtJ7M1RcZM8oFIwJsXV8AraLZyxQDfZRrRUTy2G7NU2g==
+"@types/angular@^1.8.4", "@types/angular@^1.8.8":
+  version "1.8.8"
+  resolved "https://registry.yarnpkg.com/@types/angular/-/angular-1.8.8.tgz#9406aeb29447c6463f83fbdd25e1365c835cf00f"
+  integrity sha512-Uq1dujhVh/ZpplkgOmMZK2stKZKdhVJgBo9fcm/yRGQzB0p3pFHHPN1s9bMXtgznxqKuB/mt+8t8cNDgiPlbuQ==
 
 "@types/chai@4":
   version "4.3.5"
