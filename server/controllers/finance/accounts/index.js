@@ -161,7 +161,7 @@ function list(req, res, next) {
       SELECT a.id, a.enterprise_id, a.locked, a.created, a.reference_id, a.number,
         a.label, a.parent, a.type_id, at.type, at.translation_key, a.hidden,
         a.cost_center_id, cc.label AS cost_center_label
-      FROM account AS a 
+      FROM account AS a
       JOIN account_type AS at ON a.type_id = at.id
       LEFT JOIN cost_center AS cc ON a.cost_center_id = cc.id
     `;
@@ -170,6 +170,7 @@ function list(req, res, next) {
   filters.equals('type_id', 'type_id', 'a', true);
   filters.equals('locked');
   filters.equals('hidden');
+  filters.equals('number');
 
   filters.setOrder('ORDER BY a.number');
 
@@ -289,6 +290,45 @@ function getAnnualBalance(req, res, next) {
     .catch(next)
     .done();
 }
+
+/**
+ * Get the account balances of all accounts for a fiscal year
+ *
+ * GET /accounts/:fiscalYearId/all_balances
+ *
+ * WARNING: This API uses the period_total table.  It is necessary
+ * to update the period_total table before calling this function by
+ * using the zRecalculatePeriodTotals() SQL procedure.
+ *
+ * @param {object} req - the request object
+ * @param {object} res - the response object
+ * @param {object} next - next middleware object to pass control to
+ * @returns {Array} an array of the account balances for all accounts
+ */
+function getAllAnnualBalances(req, res, next) {
+  const { fiscalYearId } = req.params;
+
+  const query = `
+    SELECT
+      pt.account_id, a.number, a.label, a.type_id, at.type,
+      IFNULL(SUM(pt.debit), 0) AS debit,
+      IFNULL(SUM(pt.credit), 0) AS credit,
+      IFNULL(SUM(pt.debit - pt.credit), 0) AS balance
+    FROM period_total pt
+    JOIN account AS a ON a.id = pt.account_id
+    JOIN account_type AS at ON at.id = a.type_id
+    WHERE pt.fiscal_year_id = ?
+    GROUP BY pt.account_id
+    ORDER BY pt.account_id;
+  `;
+  return db.exec(query, [fiscalYearId])
+    .then(rows => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
+}
+
 
 /**
  * @function getOpeningBalanceForPeriod
@@ -420,3 +460,4 @@ exports.processAccountDepth = processAccountDepth;
 exports.importing = importing;
 exports.lookupCostCenter = lookupCostCenter;
 exports.getAnnualBalance = getAnnualBalance;
+exports.getAllAnnualBalances = getAllAnnualBalances;

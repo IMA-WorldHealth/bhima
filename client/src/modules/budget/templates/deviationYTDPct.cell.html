@@ -1,0 +1,11 @@
+<div class="ui-grid-cell-contents text-center"
+     ng-class="{
+       'budget-total-income' : row.entity.acctType === 'total-income',
+       'budget-total-expenses' : row.entity.acctType === 'total-expenses',
+     }"
+     ng-if="row.entity.type_id != 6">
+  <span ng-if="row.entity.deviationYTDPct !== null">
+  <span ng-if="row.entity.deviationYTDPct > 0">+</span>
+  {{ row.entity.deviationYTDPct }} %
+  </span>
+</div>
