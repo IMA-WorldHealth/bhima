@@ -4221,4 +4221,54 @@ BEGIN
 
 END$$
 
+/* ---------------------------------------------------------------------------- */
+
+/* This section contains procedures for dealing with budgets */
+
+-- Delete all budget items for each period of the given fiscal year
+DROP PROCEDURE IF EXISTS DeleteBudget$$
+CREATE PROCEDURE DeleteBudget(
+  IN fiscalYearId MEDIUMINT(8) UNSIGNED
+)
+BEGIN
+  DECLARE _periodId mediumint(8) unsigned;
+
+  DECLARE done BOOLEAN;
+  DECLARE periodCursor CURSOR FOR
+    SELECT id FROM period
+    WHERE period.fiscal_year_id = fiscalYearId;
+
+  DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+  OPEN periodCursor;
+    ploop: LOOP
+    FETCH periodCursor INTO _periodId;
+      IF done THEN
+        LEAVE ploop;
+      END IF;
+      DELETE FROM budget WHERE budget.period_id = _periodId;
+    END LOOP;
+  CLOSE periodCursor;
+END$$
+
+-- Insert a budget line for a given period
+-- NOTE: This procedure will error if the record already exists
+DROP PROCEDURE IF EXISTS InsertBudgetItem$$
+CREATE PROCEDURE InsertBudgetItem(
+  IN acctNumber INT UNSIGNED,
+  IN periodId MEDIUMINT(8) UNSIGNED,
+  IN budget DECIMAL(19,4) UNSIGNED,
+  IN locked BOOLEAN
+)
+BEGIN
+    INSERT INTO budget (`account_id`, `period_id`, `budget`, `locked`)
+    SELECT act.id, periodId, budget, locked
+    FROM account AS act
+    WHERE act.number = acctNumber;
+END$$
+
+-- EXAMPLE ABORT CODE
+-- DECLARE MyError CONDITION FOR SQLSTATE '45500';
+-- SIGNAL MyError SET MESSAGE_TEXT = 'message';
+
 DELIMITER ;

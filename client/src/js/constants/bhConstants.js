@@ -244,5 +244,23 @@ function constantConfig() {
         comment : 'PAYROLL_SETTINGS.GROUP_BY_COST_CENTERS_HELP_TEXT',
       },
     ],
+
+    /* MUST match budgetPeriods() in server constants.js */
+    /* eslint-disable no-multi-spaces */
+    periods : [
+      { periodNum : 1,  label : 'PERIODS.NAME.JANUARY',   key : 'jan' },
+      { periodNum : 2,  label : 'PERIODS.NAME.FEBRUARY',  key : 'feb' },
+      { periodNum : 3,  label : 'PERIODS.NAME.MARCH',     key : 'mar' },
+      { periodNum : 4,  label : 'PERIODS.NAME.APRIL',     key : 'apr' },
+      { periodNum : 5,  label : 'PERIODS.NAME.MAY',       key : 'may' },
+      { periodNum : 6,  label : 'PERIODS.NAME.JUNE',      key : 'jun' },
+      { periodNum : 7,  label : 'PERIODS.NAME.JULY',      key : 'jul' },
+      { periodNum : 8,  label : 'PERIODS.NAME.AUGUST',    key : 'aug' },
+      { periodNum : 9,  label : 'PERIODS.NAME.SEPTEMBER', key : 'sep' },
+      { periodNum : 10, label : 'PERIODS.NAME.OCTOBER',   key : 'oct' },
+      { periodNum : 11, label : 'PERIODS.NAME.NOVEMBER',  key : 'nov' },
+      { periodNum : 12, label : 'PERIODS.NAME.DECEMBER',  key : 'dec' },
+    ],
+    /* eslint-enable */
   };
 }
