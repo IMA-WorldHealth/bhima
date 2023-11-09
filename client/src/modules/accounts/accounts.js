@@ -80,7 +80,7 @@ function AccountsController(
       {
         field : 'number',
         displayName : '',
-        cellClass : 'text-right',
+        cellClass : 'text-left',
         width : 80,
       },
       {
@@ -88,6 +88,7 @@ function AccountsController(
         displayName : 'FORM.LABELS.ACCOUNT',
         cellTemplate : '/modules/accounts/templates/grid.indentCell.tmpl.html',
         headerCellFilter : 'translate',
+        cellClass : 'text-left',
       },
       {
         field : 'type',

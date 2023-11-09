@@ -1,0 +1,68 @@
+{
+  "BUDGET": {
+    "TITLE": "Budget",
+    "ACTUALS_SUBTITLE": "(réels)",
+    "BUDGET_SUBTITLE": "(budget)",
+    "BUDGET_YTD": "Budget (CDA)",
+    "BUDGET_YTD_COLUMN": "Budget",
+    "BUDGET_YTD_SUBTITLE": "(CDA)",
+    "BUDGET_YTD_TOOLTIP": "Budget cumul de l'année (CDA)",
+    "EXPENSES_TOTAL": "Dépenses totales",
+    "DEVIATION_YTD": "Déviation (CDA)",
+    "DEVIATION_YTD_TOOLTIP": "Déviation (YTD) = 100*(Réels_YTD - budget_YTD)/budget_YTD",
+    "DIFFERENCE_YTD": "Différence (YTD)",
+    "DIFFERENCE_YTD_TOOLTIP": "Différence = Réels - Budget",
+    "FY_ACTUALS": "FY Réels",
+    "FY_BUDGET": "FY Budget",
+    "FY_DEVIATION": "FY % Déviation",
+    "EDIT_ACCOUNT_BUDGET": {
+      "ACTION": "Modifier les budgets mensuels",
+      "BUDGET_COLUMN_LABEL": "Budget ({{currencySymbol}})",
+      "ERROR_NEW_BUDGET_TOO_HIGH": "ERREUR : Les montants du budget bloqué dépassent le budget disponible pour le compte !",
+      "DESCRIPTION": "Modifiez le budget de ce compte pour chaque mois.",
+      "DESCRIPTION_NOTE": "NOTE : Le verrouillage du budget pour un mois répartira le solde du budget de manière égale entre les mois non verrouillés.",
+      "LOCK": "Verrouiller",
+      "TITLE": "Modifier le compte: {{acctNum}} - {{acctLabel}}"
+    },
+    "EXPORT_BUDGET": "Exporter le budget vers un fichier CSV",
+    "IMPORT_BUDGET": "Importer un fichier CSV de budget",
+    "IMPORT_BUDGET_BAD_HEADERS": "ERREUR : L'importation du budget a échoué ! Vérifier si des noms d'en-têtes de colonnes sont manquants ou mal orthographiés. Attendu : AcctNum, Label, Type, Budget, BudgetLastYear.",
+    "IMPORT_BUDGET_ERROR": "ERREUR : L'importation du budget a échoué !  Vérifiez si des données sont manquantes ou invalides ou si les valeurs de type sont incorrectes (elles devraient être 'title', 'income', ou 'expense').",
+    "IMPORT_BUDGET_ERROR_ACCT_NUM": "ERREUR : L'importation du budget a échoué !  Le numéro de compte n'est pas un integer.",
+    "IMPORT_BUDGET_ERROR_ACCT_TYPE": "ERREUR : L'importation du budget a échoué !  Vérifier si les valeurs de type sont incorrectes (elles devraient être 'title', 'income', ou 'expense').",
+    "IMPORT_BUDGET_ERROR_ACCT_TYPE_INCORRECT": "ERREUR : L'importation du budget a échoué !  Le type de compte ne correspond pas au compte dans la base de données.",
+    "IMPORT_BUDGET_ERROR_BAD_BUDGET_VALUE": "ERREUR : L'importation du budget a échoué !  La valeur du budget n'est pas un nombre.",
+    "IMPORT_BUDGET_ERROR_NEGATIVE_BUDGET_VALUE": "ERREUR : L'importation du budget a échoué !  La valeur du budget est négative.",
+    "IMPORT_BUDGET_WARN_TITLE_BUDGET_IGNORED": "ATTENTION : Les valeurs budgétaires des comptes titres sont ignorées.",
+    "INCOME_TOTAL": "Revenu totales",
+    "ACTUALS": {
+      "JANUARY":  "Réalisations de janvier",
+      "FEBRUARY":  "Réalisations de fevrier",
+      "MARCH": "Réalisations de mars",
+      "APRIL": "Réalisations de avril",
+      "MAY": "Réalisations de mai",
+      "JUNE": "Réalisations de juin",
+      "JULY": "Réalisations de juillet",
+      "AUGUST": "Réalisations de aout",
+      "SEPTEMBER": "Réalisations de septembre",
+      "OCTOBER": "Réalisations de octobre",
+      "NOVEMBER": "Réalisations de novembre",
+      "DECEMBER": "Réalisations de decembre"
+    },
+    "EXPORT": {
+      "DESCRIPTION": "Exporter les données du compte vers un fichier CSV",
+      "MODAL_BREADCRUMB": "Exporter les données budgétaires",
+      "NO_ACCT_BALANCE_DATA_FOR_FY": "Aucune donnée sur le solde des comptes n'a été trouvée pour {{fyName}}!",
+      "SELECT_FY": "Sélectionner l'année fiscale à exporter",
+      "SUCCESS": "Le fichier CSV des données budgétaires de {{fyName}} a été téléchargé avec succès !"
+    },
+    "IMPORT": {
+      "DESCRIPTION": "Vous pouvez télécharger un budget à partir d'un fichier CSV. Seules les lignes des comptes de titres, de revenus et de dépenses peuvent être incluses. Les totaux de budget pour les comptes de tuiles seront ignorés. Notez que les données budgétaires importées remplaceront toutes les données budgétaires existantes pour l'année fiscale sélectionnée.",
+      "DOWNLOAD": "Cliquez ici pour télécharger un exemple de modèle de budget CSV",
+      "LOAD_FROM_FILE": "Importer des données budgétaires à partir d'un fichier CSV",
+      "MODAL_BREADCRUMB": "Télécharger les données budgétaires pour {{fiscalYear}}",
+      "NO_FILE_SELECTED": "Aucun fichier n'est sélectionné",
+      "SUCCESS" : "Les données budgétaires pour {{fyName}} ont été téléchargées et importées avec succès !"
+    }
+  }
+}
