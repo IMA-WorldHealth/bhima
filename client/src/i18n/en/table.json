@@ -44,6 +44,7 @@
                 "MARGIN_VARIABLE_LOADS": "Margin on variable loads",
                 "TURNOVER" : "Sales Revenue"
               },
+            "BUDGET": "Budget",
             "BY": "by",
             "CASHBOX": "Cashbox",
             "CASES": "Cases",
