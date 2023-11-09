@@ -1,0 +1,10 @@
+<div class="ui-grid-cell-contents text-right"
+     ng-class="{
+       'budget-total-income' : row.entity.acctType === 'total-income',
+       'budget-total-expenses' : row.entity.acctType === 'total-expenses',
+     }">
+  <span ng-if="row.entity.budget && row.entity.budget != 0">
+    <span ng-if="(row.entity.type_id === 4) || (row.entity.acctType === 'total-income')">+</span><span ng-if="(row.entity.type_id === 5) || (row.entity.acctType === 'total-expenses')">-</span>
+  {{row.entity.budget | currency: grid.appScope.enterprise.currency_id:0}}
+  </span>
+</div>

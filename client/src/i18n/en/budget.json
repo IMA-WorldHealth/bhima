@@ -1,0 +1,73 @@
+{
+  "BUDGET": {
+    "TITLE": "Budget",
+    "ACTUALS_SUBTITLE": "(actuals)",
+    "BUDGET_SUBTITLE": "(budget)",
+    "BUDGET_YTD": "Budget (YTD)",
+    "BUDGET_YTD_COLUMN": "Budget",
+    "BUDGET_YTD_SUBTITLE": "(YTD)",
+    "BUDGET_YTD_TOOLTIP": "Budget totals for the year to date",
+    "EXPENSES_TOTAL": "Expenses Total",
+    "DEVIATION_YTD": "Deviation % (YTD)",
+    "DEVIATION_YTD_TOOLTIP": "Deviation % (YTD) = 100*(actuals_YTD - budget_YTD)/(budget_YTD)",
+    "DIFFERENCE_YTD": "Difference (YTD)",
+    "DIFFERENCE_YTD_TOOLTIP": "Difference = Actuals - Budget",
+    "FY_ACTUALS": "FY Actuals (YTD)",
+    "FY_BUDGET": "FY Budget",
+    "FY_DEVIATION": "FY % Deviation",
+    "EDIT_ACCOUNT_BUDGET": {
+      "ACTION": "Edit Monthly Budgets",
+      "BUDGET_COLUMN_LABEL": "Budget ({{currencySymbol}})",
+      "ERROR_NEW_BUDGET_TOO_HIGH": "ERROR: Tne locked budget amounts exceed the available budget for the account!",
+      "DESCRIPTION": "Edit the budget for each month for this account.",
+      "DESCRIPTION_NOTE": "NOTE: Locking the budget for a month will distribute the balance of the budget evenly among the unlocked months.",
+      "LOCK": "Lock",
+      "TITLE": "Edit account: {{acctNum}} - {{acctLabel}}"
+    },
+    "EXPORT_BUDGET": "Export Budget to CSV file",
+    "IMPORT_BUDGET": "Import Budget CSV file",
+    "IMPORT_BUDGET_BAD_HEADERS": "ERROR: Budget import failed! Check for missing or misspelled column header names. Expected: AcctNum, Label, Type, Budget, BudgetLastYear.",
+    "IMPORT_BUDGET_ERROR": "ERROR: Budget import failed!  Check for missing or invalid data or incorrect Type values (should be 'title', 'income', or 'expense').",
+    "IMPORT_BUDGET_ERROR_ACCT_NUM": "ERROR: Budget import failed!  Account number is not an integer.",
+    "IMPORT_BUDGET_ERROR_ACCT_TYPE": "ERROR: Budget import failed!  Check for incorrect Type values (should be 'title', 'income', or 'expense').",
+    "IMPORT_BUDGET_ERROR_ACCT_TYPE_INCORRECT": "ERROR: Budget import failed!  Account type does not match account in the database.",
+    "IMPORT_BUDGET_ERROR_BAD_BUDGET_VALUE": "ERROR: Budget import failed!  Budget value is not a number.",
+    "IMPORT_BUDGET_ERROR_NEGATIVE_BUDGET_VALUE": "ERROR: Budget import failed!  Budget value is negative.",
+    "IMPORT_BUDGET_WARN_TITLE_BUDGET_IGNORED": "WARNING: Budget values for title accounts are ignored",
+    "INCOME_TOTAL": "Income Total",
+    "ACTUALS": {
+      "JANUARY":  "January Actuals",
+      "FEBRUARY":  "February Actuals",
+      "MARCH": "March Actuals",
+      "APRIL": "April Actuals",
+      "MAY": "May Actuals",
+      "JUNE": "June Actuals",
+      "JULY": "July Actuals",
+      "AUGUST": "August Actuals",
+      "SEPTEMBER": "September Actuals",
+      "OCTOBER": "October Actuals",
+      "NOVEMBER": "November Actuals",
+      "DECEMBER": "December Actuals"
+    },
+    "EXPORT": {
+      "DATA_CSV": "Export YTD Budget Data (CSV)",
+      "DESCRIPTION": "Export account data to CSV file",
+      "EXCEL": "Export YTD Budget Data (Excel)",
+      "MODAL_BREADCRUMB": "Export Sample Budget Data",
+      "NO_ACCT_BALANCE_DATA_FOR_FY": "No accounts balance data found for {{fyName}}!",
+      "REPORT_FILENAME": "{{fyName}} Budget Report",
+      "REPORT_PDF": "Export YTD Report (PDF)",
+      "REPORT_TITLE": "FY Budget Report (Year to Date)",
+      "SELECT_FY": "Select fiscal year to export",
+      "SUCCESS": "Budget data CSV file for {{fyName}} succesfully downloaded!"
+    },
+    "IMPORT": {
+      "DESCRIPTION": "You can upload a budget from a CSV file. Only lines for title, income, and expense accounts may be included. Budget totals for tile accounts will be ignored. Note that imported budget data will replace any existing budget data for the selected fiscal year.",
+      "DOWNLOAD": "Click here to download an example budget CSV template file",
+      "LOAD_FROM_FILE": "Import budget data from a CSV file",
+      "MODAL_BREADCRUMB": "Upload Budget Data for {{fiscalYear}}",
+      "NO_FILE_SELECTED": "No file is selected",
+      "SUCCESS" : "Budget data for {{fyName}} successfully uploaded and imported!"
+    }
+  }
+}
