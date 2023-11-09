@@ -40,16 +40,20 @@ exports.render = renderCSV;
 exports.headers = headers;
 
 /**
- *
- * @param {Object} data     Object of keys/values for the data
- * @param {String} template Path to a handlebars template
- * @param {Object} options  The default options to be extended and passed to renderer
- * @returns {Promise}       Promise resolving in a rendered dataset (CSV)
+ * Render a csv file`
+ * @param {object} data - Object of keys/values for the data
+ * @param {string} template - Path to a handlebars template
+ * @param {object} options - The default options to be extended and passed to renderer
+ * @returns {Promise} Promise resolving in a rendered dataset (CSV)
  */
 function renderCSV(data, template, options = {}) {
 
   // allow different server routes to pass in csvOptions
   const csvOptions = _.defaults(options.csvOptions, defaults);
+
+  // Force addition of the excel BOM to enable the output file to be treated
+  // as UTF-8 so language-specific UTF-8 characters, accents, etc, are retained
+  csvOptions.excelBOM = true;
 
   let csvData = data[options.csvKey || DEFAULT_DATA_KEY];
 
