@@ -18,6 +18,21 @@
     "CUSTOM_TO" : "à",
     "SELECT_PERIOD" : "Choisir une Période",
     "SELECT_CUSTOM_PERIOD" : "Période Personnalisée",
-    "SUBMIT_CUSTOM_PERIOD" : "Valider la Période"
+    "SUBMIT_CUSTOM_PERIOD" : "Valider la Période",
+    "NAME" : {
+      "ALL": "Tous",
+      "JANUARY": "Janvier",
+      "FEBRUARY": "Fevrier",
+      "MARCH": "Mars",
+      "APRIL": "Avril",
+      "MAY": "Mai",
+      "JUNE": "Juin",
+      "JULY": "Juillet",
+      "AUGUST": "Août",
+      "SEPTEMBER": "Septembre",
+      "OCTOBER": "Octobre",
+      "NOVEMBER": "Novembre",
+      "DECEMBER": "Décembre"
+    }
   }
 }
