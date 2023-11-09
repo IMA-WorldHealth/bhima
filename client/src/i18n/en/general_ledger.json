@@ -1,3 +1,7 @@
-{"GENERAL_LEDGER":{"TITLE":"General Ledger",
-"ACCOUNT_SLIP":"Account Slip",
-"SOLD":"Sold"}}
+{
+  "GENERAL_LEDGER": {
+    "TITLE": "General Ledger",
+    "ACCOUNT_SLIP": "Account Slip",
+    "SOLD": "Sold"
+  }
+}
