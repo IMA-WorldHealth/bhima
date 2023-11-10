@@ -51,6 +51,10 @@ function renderCSV(data, template, options = {}) {
   // allow different server routes to pass in csvOptions
   const csvOptions = _.defaults(options.csvOptions, defaults);
 
+  // Force addition of the excel BOM to enable the output file to be
+  // treated as UTF-8 so language-specific accents, etc, are retained.
+  csvOptions.excelBOM = true;
+
   let csvData = data[options.csvKey || DEFAULT_DATA_KEY];
 
   debug(`processing a CSV of ${csvData.length} rows.`);

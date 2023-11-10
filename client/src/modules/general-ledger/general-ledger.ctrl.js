@@ -68,7 +68,7 @@ function GeneralLedgerController(
     enableFiltering  : true,
     headerCellFilter : 'translate',
     width : 80,
-    cellClass        : 'text-right',
+    cellClass        : 'text-left',
   }, {
     field            : 'label',
     displayName      : 'TABLE.COLUMNS.LABEL',
