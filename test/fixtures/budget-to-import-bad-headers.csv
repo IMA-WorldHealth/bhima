@@ -1,0 +1,26 @@
+﻿AcctNum, Label, BadType, Budget
+70, VENTS, title,
+70111010, Vente Médicaments en comprimes, income,30000
+70111011, Vente Médicaments en Sirop, income,10000
+70112010, Vente d'actifs, income,20000
+70611010, Consultations, income,15000
+70611011, Optique, income,10000
+70611012, Hospitalisation, income,6000
+70611036, URGENCES, income,10000
+75, AUTRES PRODUITS, title,
+75811011, Autres remunerations d administrateurs, income,2000
+75821010, Indemnites d'assurances recues, income,5000
+75881010, Autres revenus, income,7000
+77, REVENUS FINANCIERS ET PRODUITS ASSIMILÉS, title,
+77111010, Interets de Prets, income,10000
+60, ACHATS ET VARIATIONS DE STOCKS, title,
+60111010, Achat Médicaments en comprimés, expense,50000
+60111011, Achat Médicaments en Sirop, expense,20000
+60111014, Achat Injectables, expense,15000
+60111015, Achat Produit de Perfusion, expense,5000
+60111016, Achat Produits Ophtamologiques, expense,10000
+60112010, Achat d'actifs, expense,30000
+61, TRANSPORTS, title,
+61411010, Transport personnel, expense,5000
+66, CHARGES DE PERSONNEL, title,
+66131010, Indemnité de congé, expense,20000

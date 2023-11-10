@@ -3,7 +3,7 @@ angular.module('bhima.services')
 
 PeriodService.$inject = ['moment'];
 
-/** @TODO rewrite this using AMD synatx so that the same file can be used across
+/** @TODO rewrite this using AMD syntax so that the same file can be used across
  *        the client and the server */
 function PeriodService(Moment) {
   const service = this;

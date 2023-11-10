@@ -1,0 +1,9 @@
+<div class="ui-grid-cell-contents text-right"
+     ng-class="{
+       'budget-total-income' : row.entity.acctType === 'total-income',
+       'budget-total-expenses' : row.entity.acctType === 'total-expenses',
+     }"
+     ng-if="row.entity.type_id != 6">
+  <span>{{ grid.appScope.getPeriodActualsSign(col.name, row.entity) }}</span>
+  <span>{{ grid.appScope.getPeriodActuals(col.name, row.entity.period) | currency: grid.appScope.enterprise.currency_id:0 }}</span>
+</div>
