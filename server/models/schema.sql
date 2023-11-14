@@ -110,10 +110,12 @@ CREATE TABLE invoicing_fee (
 
 DROP TABLE IF EXISTS `budget`;
 CREATE TABLE `budget` (
-  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `account_id` INT UNSIGNED NOT NULL,
-  `period_id` MEDIUMINT(8) UNSIGNED NOT NULL,
-  `budget` DECIMAL(10,4) UNSIGNED DEFAULT NULL,
+  `period_id` MEDIUMINT(8) UNSIGNED NOT NULL, -- FY period.number=0 => FY budget total
+  `budget` DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0,
+  `locked` BOOLEAN NOT NULL DEFAULT 0,
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   KEY `account_id` (`account_id`),
   KEY `period_id` (`period_id`),
   CONSTRAINT `budget__account` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
@@ -433,7 +435,6 @@ CREATE TABLE `debtor_group_history` (
 
 
 DROP TABLE IF EXISTS debtor_group_subsidy;
-
 CREATE TABLE debtor_group_subsidy (
   `id`                      SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
   `debtor_group_uuid`      BINARY(16) NOT NULL,
@@ -1318,7 +1319,6 @@ CREATE TABLE `cron_email_report` (
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `posting_journal`;
-
 CREATE TABLE `posting_journal` (
   `uuid`              BINARY(16) NOT NULL,
   `project_id`        SMALLINT(5) UNSIGNED NOT NULL,
@@ -1398,7 +1398,6 @@ CREATE TABLE `project_permission` (
 
 
 DROP TABLE IF EXISTS `province`;
-
 CREATE TABLE `province` (
   `uuid` BINARY(16) NOT NULL,
   `name` VARCHAR(100) NOT NULL,
@@ -1513,7 +1512,6 @@ CREATE TABLE `reference_group` (
 
 
 DROP TABLE IF EXISTS `report`;
-
 CREATE TABLE `report` (
   `id`                  TINYINT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
   `report_key`          TEXT NOT NULL,
@@ -1539,7 +1537,6 @@ CREATE TABLE `saved_report` (
 ) ENGINE= InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `invoice`;
-
 CREATE TABLE `invoice` (
   `project_id`          SMALLINT(5) UNSIGNED NOT NULL,
   `reference`           INT(10) UNSIGNED NOT NULL DEFAULT 0,

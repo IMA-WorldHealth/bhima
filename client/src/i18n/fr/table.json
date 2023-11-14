@@ -44,6 +44,7 @@
               "MARGIN_VARIABLE_LOADS": "Marge sur charges variables (Ms/CV)",
               "TURNOVER" : "Chiffre d'affaire"
             },
+            "BUDGET": "Budget",
             "CANCEL_CASH": "Annuler le paiement",
             "BY": "Par",
             "CASES": "Cas",
