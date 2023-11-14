@@ -92,6 +92,7 @@ const invoicingFees = require('../controllers/finance/invoicingFees');
 const unpaidInvoicePayments = require('../controllers/finance/reports/unpaid_invoice_payments');
 const accounts = require('../controllers/finance/accounts');
 const subsidies = require('../controllers/finance/subsidies');
+const budget = require('../controllers/finance/budget');
 const patientInvoice = require('../controllers/finance/patientInvoice');
 const financeReports = require('../controllers/finance/reports');
 const discounts = require('../controllers/finance/discounts');
@@ -255,6 +256,7 @@ exports.configure = function configure(app) {
   app.get('/accounts/:id', accounts.detail);
   app.get('/accounts/:id/balance', accounts.getBalance);
   app.get('/accounts/:id/balance/:fiscalYearId', accounts.getAnnualBalance);
+  app.get('/accounts/:fiscalYearId/all_balances', accounts.getAllAnnualBalances);
   app.get('/accounts/:id/openingBalance', accounts.getOpeningBalanceForPeriod);
   app.get('/accounts/:id/cost-center', accounts.lookupCostCenter);
   app.post('/accounts', accounts.create);
@@ -316,6 +318,20 @@ exports.configure = function configure(app) {
   app.get('/fiscal/:id/closing_balance', fiscal.getClosingBalanceRoute);
 
   app.get('/fiscal/:id/periods', fiscal.getPeriods);
+  app.get('/fiscal/:id/periodZero', fiscal.getPeriodZero);
+
+  // Budget routes
+  app.get('/budget', budget.list);
+  app.get('/budget/data/:fiscal_year', budget.getBudgetData);
+  app.get('/budget/download_template_file', budget.downloadTemplate);
+  app.post('/budget', budget.insertBudgetItem);
+  app.put('/budget/update/:id', budget.updateBudgetItem);
+  app.put('/budget/updatePeriodBudgets', budget.updateBudgetPeriods);
+  app.post('/budget/import/:fiscal_year', upload.middleware('csv', 'file'), budget.importBudget);
+  app.delete('/budget/:fiscal_year', budget.deleteBudget);
+  app.post('/budget/populate/:fiscal_year', budget.populateBudgetPeriods);
+  app.put('/budget/fill/:fiscal_year', budget.fillBudget);
+  app.get('/reports/budget', budget.getReport);
 
   // periods API
   app.get('/periods', period.list);
