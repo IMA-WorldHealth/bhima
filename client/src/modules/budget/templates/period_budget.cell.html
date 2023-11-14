@@ -1,0 +1,10 @@
+<div class="ui-grid-cell-contents text-right"
+     ng-class="{
+       'budget-total-income' : row.entity.acctType === 'total-income',
+       'budget-total-expenses' : row.entity.acctType === 'total-expenses',
+     }"
+     ng-if="row.entity.type_id != 6">
+  <span ng-if="grid.appScope.getPeriodBudgetLocked(col.name, row.entity.period)"><i class="fa fa-lock"></i> </span>
+  <span>{{ grid.appScope.getPeriodBudgetSign(col.name, row.entity) }}</span>
+  <span>{{ grid.appScope.getPeriodBudget(col.name, row.entity.period) | currency: grid.appScope.enterprise.currency_id:0 }}</span>
+</div>
