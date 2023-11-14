@@ -435,6 +435,10 @@ li.selected {
   border-left-color : #2089CE;
 }
 
+.marginTop1ex {
+  margin-top: 1ex;
+}
+
 /**
  * Temporary header breadcrumb bootstrap fork
  * @todo implement this in less using the bootstrap element
@@ -1302,3 +1306,61 @@ form.NoSubmitButton div.modal-footer button.btn-primary {
   min-height: calc(320px);
 }
 /* -------------------- end lots modal grid ---------------- */
+
+/* -------------------- budget -------------------- */
+
+.budget-title {
+  font-weight : bold;
+}
+
+.budget-income {
+  color: #007F00;
+}
+
+.budget-expense {
+  color: #7F0000;
+}
+
+.budget-total-expenses {
+  font-weight: bold;
+  background-color: #ffafaf;
+}
+
+.budget-total-expenses-large {
+  font-weight: bold;
+  font-size: 120%;
+  text-transform: uppercase;
+  background-color: #ffafaf;
+}
+
+.budget-total-income {
+  font-weight: bold;
+  background-color: #afffaf;
+}
+
+.budget-total-income-large {
+  font-weight: bold;
+  font-size: 120%;
+  text-transform: uppercase;
+  background-color: #afffaf;
+}
+
+
+.budget-total-summary {
+  font-weight: bold;
+  background-color: #cfcfcf;
+}
+
+.budget-total-summary-large {
+  font-weight: bold;
+  font-size: 120%;
+  text-transform: uppercase;
+  background-color: #cfcfcf;
+}
+
+.budget-edit-td {
+  padding-bottom: 0 !important;
+  vertical-align: middle !important;
+}
+
+/* -------------------- end budget -------------------- */

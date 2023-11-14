@@ -1,0 +1,5 @@
+AcctNum, Label, Type, Budget, BudgetLastYear
+70, VENTS, title,
+70111010, Vente Médicaments en comprimes, income,30000
+60, ACHATS ET VARIATIONS DE STOCKS, title,
+60111010, Achat Médicaments en comprimés, expense,50000

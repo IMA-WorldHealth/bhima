@@ -1,0 +1,11 @@
+<div class="ui-grid-cell-contents text-left"
+     ng-class="{
+      'budget-income' : row.entity.acctType == 'income',
+      'budget-expense' : row.entity.acctType == 'expense',
+      'budget-total-income-large' : row.entity.acctType == 'total-income',
+      'budget-total-expenses-large' : row.entity.acctType == 'total-expenses',
+      'budget-total-summary-large' : row.entity.acctType == 'total-summary'
+     }">
+  <span style="padding-left : {{ row.entity.$$treeLevel * grid.appScope.indentTitleSpace }}px;"></span>
+  <span translate>{{ row.entity.label }}</span>
+</div>
