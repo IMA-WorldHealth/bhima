@@ -3,7 +3,7 @@ const _ = require('lodash');
 const {
   ReportManager,
   formatFilters,
-  shipment,
+  Shipment,
   SHIPMENTS_REPORT_TEMPLATE,
 } = require('./common');
 
@@ -24,7 +24,7 @@ async function getReport(req, res, next) {
     }
 
     const report = new ReportManager(SHIPMENTS_REPORT_TEMPLATE, req.session, optionReport);
-    const rows = await shipment.find(params);
+    const rows = await Shipment.find(params);
 
     const data = {
       rows,
