@@ -1,4 +1,5 @@
 // shared constants identical to `bhConstants` on the client side
+
 // TODO(@jniles) unify this with `bhConstants` and build the same
 // constant configuration across the client/server.
 
@@ -11,6 +12,8 @@ module.exports = {
     DELETE_PURCHASE_ORDER : 5,
     DELETE_STOCK_MOVEMENT : 6,
     DELETE_VOUCHER : 7,
+    EDIT_LOT : 8,
+    VALIDATE_REQUISITION : 9,
   },
   accounts : {
     ROOT  : 0,
@@ -94,6 +97,7 @@ module.exports = {
     HAS_MINIMUM_WARNING  : 'minimum_reached',
     HAS_OVERAGE_WARNING  : 'over_maximum',
     UNUSED_STOCK         : 'unused_stock',
+    AVAILABLE_NOT_USABLE : 'available_not_usable',
   },
   reports : {
     AGED_DEBTOR    : 'AGED_DEBTOR',
@@ -136,4 +140,24 @@ module.exports = {
     MID : 2,
     HIGH : 3,
   },
+
+  /* MUST match budgetPeriods() in client bhConstants.js */
+  /* eslint-disable no-multi-spaces */
+  periods : [
+    { periodNum : 0,  label : 'PERIODS.NAME.ALL',       key : 'all' },
+    { periodNum : 1,  label : 'PERIODS.NAME.JANUARY',   key : 'jan' },
+    { periodNum : 2,  label : 'PERIODS.NAME.FEBRUARY',  key : 'feb' },
+    { periodNum : 3,  label : 'PERIODS.NAME.MARCH',     key : 'mar' },
+    { periodNum : 4,  label : 'PERIODS.NAME.APRIL',     key : 'apr' },
+    { periodNum : 5,  label : 'PERIODS.NAME.MAY',       key : 'may' },
+    { periodNum : 6,  label : 'PERIODS.NAME.JUNE',      key : 'jun' },
+    { periodNum : 7,  label : 'PERIODS.NAME.JULY',      key : 'jul' },
+    { periodNum : 8,  label : 'PERIODS.NAME.AUGUST',    key : 'aug' },
+    { periodNum : 9,  label : 'PERIODS.NAME.SEPTEMBER', key : 'sep' },
+    { periodNum : 10, label : 'PERIODS.NAME.OCTOBER',   key : 'oct' },
+    { periodNum : 11, label : 'PERIODS.NAME.NOVEMBER',  key : 'nov' },
+    { periodNum : 12, label : 'PERIODS.NAME.DECEMBER',  key : 'dec' },
+  ],
+  /* eslint-enable */
+
 };
