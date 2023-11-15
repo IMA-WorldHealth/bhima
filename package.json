@@ -126,7 +126,7 @@
     "ioredis": "^5.3.2",
     "jaro-winkler": "^0.2.8",
     "jquery": "^3.7.1",
-    "jsbarcode": "^3.11.5",
+    "jsbarcode": "^3.11.6",
     "json-2-csv": "^5.0.1",
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
