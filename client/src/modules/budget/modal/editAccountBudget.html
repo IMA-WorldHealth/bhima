@@ -1,0 +1,65 @@
+<form name="ActionForm" bh-submit="ModalCtrl.submit(ActionForm)" novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate>FORM.LABELS.BUDGET</li>
+      <li class="title text-capitalize">{{ModalCtrl.breadcrumb}}</li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+
+    <p translate>BUDGET.EDIT_ACCOUNT_BUDGET.DESCRIPTION</p>
+    <p translate>BUDGET.EDIT_ACCOUNT_BUDGET.DESCRIPTION_NOTE</p>
+
+    <p class="text-bold"><span  translate>BUDGET.FY_BUDGET</span>: {{ModalCtrl.account.budget | currency: grid.appScope.enterprise.currency_id:0}}<span
+      ng-if="ModalCtrl.account.actuals">,
+          <span class="form-indent" translate>BUDGET.FY_ACTUALS</span>: {{ModalCtrl.account.actuals | currency: grid.appScope.enterprise.currency_id:0}}
+      </span>
+    </p>
+
+    <table class="table table-condensed">
+      <thead>
+        <tr>
+          <th translate>FORM.LABELS.MONTH</th>
+          <th>{{ModalCtrl.budget_column_label}}</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="period in ModalCtrl.account.period">
+          <td class="budget-edit-td" translate>{{period.label}}</td>
+          <td class="budget-edit-td" >
+            <div class="form-group" style="margin-bottom: 0">
+              <input name="budget-{{period.key}}"
+                type="number" min="0" class="form-control" style="width: 20em; padding-bottom: 4px"
+                ng-model="period.budget"
+                ng-blur="ModalCtrl.updateBudgets(period, 1)">
+            </div>
+          </td>
+          <td class="budget-edit-td" >
+            <label class="control-label">
+              <input name="lock-{{period.key}}" type="checkbox"
+                ng-model="period.locked"
+                ng-true-value="1" ng-false-value="0"
+                ng-change="ModalCtrl.updateBudgetPeriod(period)">
+              <span translate>BUDGET.EDIT_ACCOUNT_BUDGET.LOCK</span>
+            </label>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-method="cancel"
+      ng-click="ModalCtrl.cancel()">
+      <span translate>FORM.BUTTONS.CANCEL</span>
+    </button>
+
+    <bh-loading-button loading-state="ModalCtrl.loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>
