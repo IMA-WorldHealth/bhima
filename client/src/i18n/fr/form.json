@@ -360,6 +360,7 @@
             "BEGINNING_VIEW_BALANCE" : "Solde Début du Grid",
             "BILLING_DATE": "Date Facturation",
             "BREAK_EVEN": "Seuil de rentabilité",
+            "BUDGET": "Budget",
             "BULK_QUANTITY": "Quantité en vrac",
             "BY_ID": "Par id",
             "BY_NAME": "Par nom",

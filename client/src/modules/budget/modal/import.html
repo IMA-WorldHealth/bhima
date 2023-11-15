@@ -1,0 +1,43 @@
+<form name="ActionForm" bh-submit="ModalCtrl.submit(ActionForm)" novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate>FORM.LABELS.BUDGET</li>
+      <li class="title text-capitalize">{{ModalCtrl.breadcrumb}}</li>
+    </ol>
+  </div>
+
+  <div class="modal-body" data-import-modal>
+    <p translate>BUDGET.IMPORT.DESCRIPTION</p>
+
+    <a href="/budget/download_template_file" target="_blank" class="form-indent" href>
+      <i class="fa fa-cloud-download"></i>
+      <span translate>BUDGET.IMPORT.DOWNLOAD</span>
+    </a>
+
+    <div class="form-group marginTop1ex"
+      ng-class="{ 'has-error' : ModalCtrl.noSelectedFile }">
+      <label translate>BUDGET.IMPORT.LOAD_FROM_FILE</label>
+      <input
+        id="import-input"
+        accept=".csv"
+        class="form-control"
+        type="file"
+        name="file"
+        ng-model="ModalCtrl.file"
+        ngf-select="ModalCtrl.select(ModalCtrl.file)">
+      <div class="help-block" data-error-message ng-show="ModalCtrl.noSelectedFile">
+        <i class="fa fa-warning"></i> <span translate>BUDGET.IMPORT.NO_FILE_SELECTED</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-method="cancel"
+      ng-click="ModalCtrl.cancel()">
+      <span translate>FORM.BUTTONS.CANCEL</span>
+    </button>
+
+    <bh-loading-button disabled="!ModalCtrl.file" loading-state="ActionForm.$loading">
+    </bh-loading-button>
+  </div>
+</form>

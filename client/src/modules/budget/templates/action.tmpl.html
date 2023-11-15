@@ -1,0 +1,18 @@
+<div class="ui-grid-cell-contents text-right"
+  ng-if="row.entity.budget && (!row.entity.isTitle)"
+  uib-dropdown dropdown-append-to-body uib-dropdown-toggle>
+  <a href data-action="open-dropdown-menu">
+    <span data-method="action" translate>FORM.BUTTONS.ACTIONS</span>
+    <span class="caret"></span>
+  </a>
+
+  <ul class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
+    <li class="bh-dropdown-header">{{row.entity.acctNum}}</li>
+    <li ng-if="row.entity.budget">
+      <a data-method="edit-record" ng-click="grid.appScope.editAccountBudget(row.entity)" href>
+        <span class="fa fa-edit"></span> <span translate>BUDGET.EDIT_ACCOUNT_BUDGET.ACTION</span>
+      </a>
+    </li>
+  </ul>
+</div>
+
