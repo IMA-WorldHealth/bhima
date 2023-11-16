@@ -29,7 +29,7 @@ function AccountStatementService(Modal, $http, util, AppCache, Filters, Periods,
    * @param {object} params - { uuids: An array of uuid, string: comment }
    */
   function commentAccountStatement(params) {
-    return $http.put(baseUrl.concat('comments'), { params : params })
+    return $http.put(baseUrl.concat('comments'), { params })
       .then(util.unwrapHttpResponse);
   }
 
@@ -72,7 +72,6 @@ function AccountStatementService(Modal, $http, util, AppCache, Filters, Periods,
     { key : 'project_id', label : 'FORM.LABELS.PROJECT' },
     { key : 'description', label : 'FORM.LABELS.DESCRIPTION' },
     { key : 'transaction_type_id', label : 'FORM.LABELS.TRANSACTION_TYPE' }]);
-
 
   if (filterCache.filters) {
     // load cached filter definition if it exists
