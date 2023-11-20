@@ -31,12 +31,12 @@ function UserService(Api, $uibModal, Filters, bhConstants, AppCache, Periods) {
   filters.registerDefaultFilters(bhConstants.defaultFilters);
 
   filters.registerCustomFilters([
-    { key: 'uuid', label: 'FORM.LABELS.NAME' },
-    { key: 'project_id', label: 'FORM.LABELS.PROJECT' },
-    { key: 'role_uuid', label: 'FORM.LABELS.ROLES' },
-    { key: 'cashbox_id', label: 'FORM.LABELS.CASHBOX' },
-    { key: 'depot_uuid', label: 'FORM.LABELS.DEPOT' },
-    { key: 'display_name', label: 'FORM.LABELS.USERNAME' },
+    { key : 'uuid', label : 'FORM.LABELS.NAME' },
+    { key : 'project_id', label : 'FORM.LABELS.PROJECT' },
+    { key : 'role_uuid', label : 'FORM.LABELS.ROLES' },
+    { key : 'cashbox_id', label : 'FORM.LABELS.CASHBOX' },
+    { key : 'depot_uuid', label : 'FORM.LABELS.DEPOT' },
+    { key : 'display_name', label : 'FORM.LABELS.USERNAME' },
   ]);
 
   if (filterCache.filters) {

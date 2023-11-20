@@ -2,7 +2,8 @@ angular.module('bhima.controllers')
   .controller('UsersController', UsersController);
 
 UsersController.$inject = [
-  '$state', '$uibModal', 'UserService', 'NotifyService', 'ModalService', 'uiGridConstants', 'GridStateService', 'appcache',
+  '$state', '$uibModal', 'UserService', 'NotifyService', 'ModalService', 'uiGridConstants',
+  'GridStateService', 'appcache',
 ];
 
 /**
@@ -40,8 +41,8 @@ function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstant
         headerCellFilter : 'translate',
         cellClass : muteDisabledCells,
         enableFiltering : true,
-        sort: { priority: 1, direction: 'asc' },
-        aggregationType: uiGridConstants.aggregationTypes.count,
+        sort : { priority : 1, direction : 'asc' },
+        aggregationType : uiGridConstants.aggregationTypes.count,
         aggregationHideLabel : true,
         footerCellClass : 'text-center',
       },
