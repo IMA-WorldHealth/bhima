@@ -60,6 +60,7 @@ blocks:
             - npx playwright install
             - 'yarn build:db'
             - yarn build
+            - mkdir results
             - 'yarn test:server-unit'
             - 'yarn test:client-unit'
             - 'yarn test:integration'
