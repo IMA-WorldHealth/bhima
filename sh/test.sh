@@ -29,7 +29,7 @@ SUITE=${SUITE:-"ALL"}
 # run karma (client unit) tests
 if [ $SUITE = "client-unit" ] || [ $SUITE = "ALL" ] ; then
   startfold "Running Client Unit Tests..." "test-client-unit";
-  ./node_modules/.bin/karma start --single-run --no-auto-watch karma.conf.js 2>&1 | tee ./test/client-unit/report
+  ./node_modules/.bin/karma start --single-run --no-auto-watch karma.conf.js 2>&1 | tee ./results/client-unit-report
   endfold "test-client-unit" ;
 fi
 
@@ -43,7 +43,7 @@ fi
 # run server-unit test
 if [ $SUITE = "server-unit" ] || [ $SUITE = "ALL" ] ; then
   startfold "Running server Unit Tests ......" "server-unit"
-  ./node_modules/.bin/mocha --recursive --exit test/server-unit 2>&1 | tee ./test/server-unit/report
+  ./node_modules/.bin/mocha --recursive --exit test/server-unit 2>&1 | tee ./results/server-unit-report
   endfold "server-unit" ;
 fi
 
