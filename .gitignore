@@ -42,6 +42,7 @@ nbproject/
 
 # Ignore test files
 sh/build-database-test.sh
+results/
 
 # Ignore local temporary files
 temp/
@@ -56,10 +57,6 @@ docs/_site/
 docs/.sass-cache/
 
 client/upload/
-
-test/*/report
-test/*/report-stock
-test/*/report-account
 
 migration-*.sql
 yarn-error.log
