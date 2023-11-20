@@ -42,7 +42,14 @@ module.exports = defineConfig({
   workers : 1,
 
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter : [['html', { outputFolder : 'temp/playwright-report' }]],
+  reporter : [
+    ['html', { outputFolder : 'results/playwright-report' }],
+    ['junit', {
+      outputFile : process.env.E2E_DIR
+        ? `results/end-to-end-${process.env.E2E_DIR}-results.xml`
+        : 'results/end-to-end-results.xml',
+    }],
+  ],
 
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use : {

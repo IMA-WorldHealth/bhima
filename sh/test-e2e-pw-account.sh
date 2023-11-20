@@ -37,7 +37,7 @@ sleep "$TIMEOUT"
 
 echo "[test] Running end-to-end account tests using playwright."
 cd ..
-E2E_DIR=account npx playwright test 2>&1 | tee ./test/end-to-end/report-account
+E2E_DIR=account npx playwright test 2>&1 | tee ./results/end-to-end-account-report
 
 # FYI: Use --workers=1  to limit number of workers
 

@@ -1,9 +1,9 @@
 #!/bin/bash
 
-rm -f ./test/client-unit/report
-rm -f ./test/integration/report
-rm -f ./test/server-unit/report
-rm -f ./test/integration-stock/report
-rm -f ./test/end-to-end/report
-rm -f ./test/end-to-end/report-account
-rm -f ./test/end-to-end/report-stock
+rm -f ./results/client-unit-report
+rm -f ./results/integration-report
+rm -f ./results/server-unit-report
+rm -f ./results/integration-stock-report
+rm -f ./results/end-to-end-report
+rm -f ./results/end-to-end-account-report
+rm -f ./results/end-to-end-stock-report
