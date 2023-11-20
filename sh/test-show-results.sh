@@ -2,44 +2,44 @@
 
 echo "TEST RESULTS SUMMARY"
 echo
-if test -f "./test/client-unit/report"; then
+if test -f "./results/client-unit-report"; then
   echo "Client Unit Tests"
-  echo "   " `grep "TOTAL" ./test/client-unit/report`
+  echo "   " `grep "TOTAL" ./results/client-unit-report`
   echo
 fi
-if test -f "./test/server-unit/report"; then
+if test -f "./results/server-unit-report"; then
   echo "Server Unit Tests"
-  echo "   " `grep 'passing' ./test/server-unit/report`
-  echo "   " `grep 'failing' ./test/server-unit/report`
+  echo "   " `grep 'passing' ./results/server-unit-report`
+  echo "   " `grep 'failing' ./results/server-unit-report`
   echo
 fi
-if test -f "./test/integration/report"; then
+if test -f "./results/integration-report"; then
   echo "Integration Tests"
-  echo "   " `grep passing ./test/integration/report`
-  echo "   " `egrep -e '(failing|pending)' ./test/integration/report`
+  echo "   " `grep passing ./results/integration-report`
+  echo "   " `egrep -e '(failing|pending)' ./results/integration-report`
   echo
 fi
-if test -f "./test/integration-stock/report"; then
+if test -f "./results/integration-stock-report"; then
   echo "Stock Integration Tests"
-  echo "   " `grep passing ./test/integration-stock/report`
-  echo "   " `egrep -e '(failing|pending)' ./test/integration-stock/report`
+  echo "   " `grep passing ./results/integration-stock-report`
+  echo "   " `egrep -e '(failing|pending)' ./results/integration-stock-report`
   echo
 fi
-if test -f "./test/end-to-end/report-account"; then
+if test -f "./results/end-to-end-account-report"; then
   echo "End-to-end account tests (Playwright)"
-  echo "   " `grep passed ./test/end-to-end/report-account`
-  echo "   " `egrep -e '([0-9]+ failing|[0-9]+ failed|[0-9]+ pending|[0-9]+ skipped|[0-9]+ flakey)' ./test/end-to-end/report-account`
+  echo "   " `grep passed ./results/end-to-end-account-report`
+  echo "   " `egrep -e '([0-9]+ failing|[0-9]+ failed|[0-9]+ pending|[0-9]+ skipped|[0-9]+ flakey)' ./results/end-to-end-account-report`
   echo
 fi
-if test -f "./test/end-to-end/report-stock"; then
+if test -f "./results/end-to-end-stock-report"; then
   echo "End-to-end stock tests (Playwright)"
-  echo "   " `grep passed ./test/end-to-end/report-stock`
-  echo "   " `egrep -e '([0-9]+ failing|[0-9]+ failed|[0-9]+ pending|[0-9]+ skipped|[0-9]+ flakey)' ./test/end-to-end/report-stock`
+  echo "   " `grep passed ./results/end-to-end-stock-report`
+  echo "   " `egrep -e '([0-9]+ failing|[0-9]+ failed|[0-9]+ pending|[0-9]+ skipped|[0-9]+ flakey)' ./results/end-to-end-stock-report`
   echo
 fi
-if test -f "./test/end-to-end/report"; then
+if test -f "./results/end-to-end-report"; then
   echo "End-to-end tests without stock or account tests (Playwright)"
-  echo "   " `grep passed ./test/end-to-end/report`
-  echo "   " `egrep -e '([0-9]+ failing|[0-9]+ failed|[0-9]+ pending|[0-9]+ skipped|[0-9]+ flakey)' ./test/end-to-end/report`
+  echo "   " `grep passed ./results/end-to-end-report`
+  echo "   " `egrep -e '([0-9]+ failing|[0-9]+ failed|[0-9]+ pending|[0-9]+ skipped|[0-9]+ flakey)' ./results/end-to-end-report`
   echo
 fi
