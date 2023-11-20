@@ -19,9 +19,11 @@ function AccountService(Api, bhConstants, HttpCache) {
   // debounce the read() method by 250 milliseconds to avoid needless GET requests service.read = read;
   service.read = read;
   service.label = label;
+  service.typeToken = typeToken;
 
   service.getBalance = getBalance;
   service.getAnnualBalance = getAnnualBalance;
+  service.getAllAnnualBalances = getAllAnnualBalances;
   service.getOpeningBalanceForPeriod = getOpeningBalanceForPeriod;
   service.filterTitleAccounts = filterTitleAccounts;
   service.filterAccountByType = filterAccountsByType;
@@ -81,6 +83,12 @@ function AccountService(Api, bhConstants, HttpCache) {
     return String(account.number).concat(' - ', account.label);
   }
 
+  function typeToken(typeId) {
+    const typeName = Object.keys(bhConstants.accounts).find(key => bhConstants.accounts[key] === typeId);
+    const token = typeName ? `ACCOUNT.TYPES.${typeName}` : '';
+    return token;
+  }
+
   function getBalance(accountId, opt) {
     const url = baseUrl.concat(accountId, '/balance');
     return service.$http.get(url, opt)
@@ -90,6 +98,12 @@ function AccountService(Api, bhConstants, HttpCache) {
   function getAnnualBalance(accountId, fiscalYearId, opt) {
     const url = baseUrl.concat(accountId, '/balance/', fiscalYearId);
     return service.$http.get(url, opt)
+      .then(service.util.unwrapHttpResponse);
+  }
+
+  function getAllAnnualBalances(fiscalYearId) {
+    const url = baseUrl.concat(fiscalYearId, '/all_balances');
+    return service.$http.get(url)
       .then(service.util.unwrapHttpResponse);
   }
 
