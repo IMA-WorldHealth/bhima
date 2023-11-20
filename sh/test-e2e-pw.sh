@@ -38,7 +38,7 @@ sleep "$TIMEOUT"
 
 echo "[test] Running end-to-end tests using playwright (without stock tests)."
 cd ..
-npx playwright test 2>&1 | tee ./test/end-to-end/report
+npx playwright test 2>&1 | tee ./results/end-to-end-report
 
 # FYI: Use --workers=1  to limit number of workers
 
