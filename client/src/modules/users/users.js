@@ -3,17 +3,21 @@ angular.module('bhima.controllers')
 
 UsersController.$inject = [
   '$state', '$uibModal', 'UserService', 'NotifyService', 'ModalService', 'uiGridConstants',
+  'GridStateService', 'appcache',
 ];
 
 /**
  * Users Controller
  * This module is responsible for handling the CRUD operation on the user
  */
-function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstants) {
+function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstants, GridState) {
   const vm = this;
+  const cacheKey = 'usersGrid';
+
   vm.gridApi = {};
   vm.toggleFilter = toggleFilter;
   vm.editRoles = editRoles;
+  vm.search = search;
 
   // this function selectively applies the muted cell classes to
   // disabled user entities
@@ -24,6 +28,7 @@ function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstant
   // options for the UI grid
   vm.gridOptions = {
     appScopeProvider  : vm,
+    showColumnFooter : true,
     enableColumnMenus : false,
     fastWatch         : true,
     flatEntityAccess  : true,
@@ -37,6 +42,9 @@ function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstant
         cellClass : muteDisabledCells,
         enableFiltering : true,
         sort : { priority : 1, direction : 'asc' },
+        aggregationType : uiGridConstants.aggregationTypes.count,
+        aggregationHideLabel : true,
+        footerCellClass : 'text-center',
       },
       {
         field : 'username',
@@ -83,6 +91,9 @@ function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstant
       },
     ],
   };
+
+  const state = new GridState(vm.gridOptions, cacheKey);
+  vm.saveGridState = state.saveGridState;
 
   function onRegisterApiFn(gridApi) {
     vm.gridApi = gridApi;
@@ -167,6 +178,19 @@ function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstant
 
   function toggleLoadingIndicator() {
     vm.loading = !vm.loading;
+  }
+
+  function search() {
+    const filtersSnapshot = Users.filters.formatHTTP();
+
+    Users.openSearchModal(filtersSnapshot)
+      .then((changes) => {
+        if (!changes) { return null; }
+        Users.filters.replaceFilters(changes);
+        Users.cacheFilters();
+        vm.latestViewFilters = Users.filters.formatView();
+        return load(Users.filters.formatHTTP(true));
+      });
   }
 
   startup();
