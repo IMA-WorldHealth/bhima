@@ -1,7 +1,7 @@
 angular.module('bhima.services')
   .service('UserService', UserService);
 
-UserService.$inject = ['PrototypeApiService', 'FilterService', 'bhConstants', 'AppCache', 'PeriodService'];
+UserService.$inject = ['PrototypeApiService', '$uibModal', 'FilterService', 'bhConstants', 'AppCache', 'PeriodService'];
 
 /**
  * User Service
@@ -9,7 +9,7 @@ UserService.$inject = ['PrototypeApiService', 'FilterService', 'bhConstants', 'A
  * @description
  * This service implements CRUD on the /users endpoint on the client.
  */
-function UserService(Api, Filters, bhConstants, AppCache, Periods) {
+function UserService(Api, $uibModal, Filters, bhConstants, AppCache, Periods) {
   const service = new Api('/users/');
 
   service.update = update;
@@ -23,6 +23,7 @@ function UserService(Api, Filters, bhConstants, AppCache, Periods) {
   service.updateDepots = updateDepots;
   service.updateDepotsSupervision = updateDepotsSupervision;
   service.cashBoxManagement = cashBoxManagement;
+  service.openSearchModal = openSearchModal;
 
   const filters = new Filters();
   const filterCache = new AppCache('users-filters');
@@ -35,6 +36,8 @@ function UserService(Api, Filters, bhConstants, AppCache, Periods) {
     { key : 'role_uuid', label : 'FORM.LABELS.ROLES' },
     { key : 'cashbox_id', label : 'FORM.LABELS.CASHBOX' },
     { key : 'depot_uuid', label : 'FORM.LABELS.DEPOT' },
+    { key : 'display_name', label : 'FORM.LABELS.USERNAME' },
+    { key : 'id', label : 'FORM.LABELS.USERNAME' },
   ]);
 
   if (filterCache.filters) {
@@ -165,5 +168,25 @@ function UserService(Api, Filters, bhConstants, AppCache, Periods) {
     return passwordA && passwordA.length && passwordA === passwordB;
   }
 
+  /**
+   * @method openSearchModal
+   *
+   * @param {Object} params - an object of filter parameters to be passed to
+   *   the modal.
+   * @returns {Promise} modalInstance
+   */
+  function openSearchModal(params) {
+    return $uibModal.open({
+      templateUrl : 'modules/users/search.modal.html',
+      size : 'md',
+      keyboard : false,
+      animation : false,
+      backdrop : 'static',
+      controller : 'UserRegistryModalController as $ctrl',
+      resolve : {
+        filters : () => params,
+      },
+    }).result;
+  }
   return service;
 }
