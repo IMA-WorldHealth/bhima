@@ -87,7 +87,7 @@
   "dependencies": {
     "@ima-worldhealth/coral": "^2.13.0",
     "@ima-worldhealth/tree": "^2.6.0",
-    "@types/angular": "^1.8.8",
+    "@types/angular": "^1.8.9",
     "@uirouter/angularjs": "^1.0.29",
     "accounting-js": "^1.1.1",
     "adm-zip": "^0.5.10",
@@ -193,7 +193,7 @@
     "release-it": "^17.0.0",
     "sinon": "^17.0.1",
     "standard-version": "^9.5.0",
-    "typescript": "^5.2.2"
+    "typescript": "^5.3.2"
   },
   "homepage": "https://docs.bhi.ma",
   "engines": {
