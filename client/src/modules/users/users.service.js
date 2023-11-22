@@ -37,6 +37,7 @@ function UserService(Api, $uibModal, Filters, bhConstants, AppCache, Periods) {
     { key : 'cashbox_id', label : 'FORM.LABELS.CASHBOX' },
     { key : 'depot_uuid', label : 'FORM.LABELS.DEPOT' },
     { key : 'display_name', label : 'FORM.LABELS.USERNAME' },
+    { key : 'id', label : 'FORM.LABELS.USERNAME' },
   ]);
 
   if (filterCache.filters) {

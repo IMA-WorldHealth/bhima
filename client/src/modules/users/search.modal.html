@@ -15,15 +15,14 @@
     <uib-tabset>
       <uib-tab index="0" heading="{{ 'FORM.LABELS.SEARCH_QUERIES' | translate }}" data-custom-filter-tab>
         <div class="tab-body">
-          <!--user name-->
-          <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.display_name.$invalid }">
-            <label class="control-label" translate> FORM.LABELS.USERNAME </label>
-            <bh-clear on-clear="$ctrl.clear('display_name')"></bh-clear>
-            <input type="text" class="form-control" name="display_name" ng-model="$ctrl.searchQueries.display_name">
-            <div class="help-block" ng-messages="ModalForm.display_name.$error" ng-show="ModalForm.$submitted">
-              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-            </div>
-          </div>
+          <!-- user -->
+          <bh-user-select
+             user-id="$ctrl.searchQueries.id"
+             label="FORM.LABELS.USERNAME"
+             require="false"
+             on-select-callback="$ctrl.onSelectUser(user)">
+            <bh-clear on-clear="$ctrl.clear('id')"></bh-clear>
+          </bh-user-select>
 
           <!-- depot -->
          <bh-depot-select
@@ -32,6 +31,15 @@
           on-select-callback="$ctrl.onSelectDepot(depot)">
           <bh-clear on-clear="$ctrl.clear('depot_uuid')"></bh-clear>
          </bh-depot-select>
+         
+         <!-- cashbox -->
+          <bh-cashbox-select
+            cashbox-id="$ctrl.searchQueries.cashbox_id"
+            name="cashbox_id"
+            restrict-to-user="false"
+            on-select-callback="$ctrl.onSelectCashbox(cashbox)">
+            <bh-clear on-clear="$ctrl.clear('cashbox_id')"></bh-clear>
+          </bh-cashbox-select>
 
         </div>
       </uib-tab>

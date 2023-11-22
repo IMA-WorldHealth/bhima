@@ -22,7 +22,7 @@ function UserRegistryModalController(ModalInstance, filters, Store, util, Period
   const displayValues = {};
 
   const searchQueryOptions = [
-    'display_name', 'depot_uuid',
+    'display_name', 'depot_uuid', 'id', 'cashbox_id',
   ];
 
   vm.filters = filters;
@@ -63,6 +63,17 @@ function UserRegistryModalController(ModalInstance, filters, Store, util, Period
     });
   };
 
+  // custom filter user - assign the value to the params object
+  vm.onSelectUser = function onSelectUser(user) {
+    vm.searchQueries.id = user.id;
+    displayValues.id = user.display_name;
+  };
+
+  // custom filter cashbox
+  vm.onSelectCashbox = function onSelectCashbox(cash) {
+    vm.searchQueries.cashbox_id = cash.id;
+    displayValues.cashbox_id = cash.label;
+  };
   // custom filter depot_uuid - assign the value to the params object
   vm.onSelectDepot = function onSelectDepot(depot) {
     vm.searchQueries.depot_uuid = depot.uuid;
