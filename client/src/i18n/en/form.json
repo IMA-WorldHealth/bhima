@@ -1075,6 +1075,7 @@
             "RENDERER" : "Select a Renderer",
             "REPORT_TYPE": "Select a Report Type",
             "RESULT_ACCOUNT_SCT": "Select a Result Account section",
+            "ROLE": "Select a role",
             "ROOM":"Select a Room",
             "ROOM_TYPE":"Select a Room Type",
             "ROOT_ACCOUNT": "Select a Root Account",

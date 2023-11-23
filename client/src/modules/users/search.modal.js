@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 UserRegistryModalController.$inject = [
   '$uibModalInstance', 'filters', 'Store', 'util', 'PeriodService', 'UserService',
-  'SearchModalUtilService', 'CashboxService', 'NotifyService',
+  'SearchModalUtilService', 'CashboxService', 'NotifyService', 'RolesService',
 ];
 
 /**
@@ -16,7 +16,7 @@ UserRegistryModalController.$inject = [
  */
 function UserRegistryModalController(
   ModalInstance, filters, Store, util, Periods,
-  Users, SearchModal, CashBox, Notify) {
+  Users, SearchModal, CashBox, Notify, RolesService) {
   const vm = this;
   const changes = new Store({ identifier : 'key' });
 
@@ -25,6 +25,7 @@ function UserRegistryModalController(
 
   const searchQueryOptions = [
     'display_name', 'depot_uuid', 'id', 'cashbox_id',
+    'role_uuid',
   ];
 
   vm.filters = filters;
@@ -77,6 +78,12 @@ function UserRegistryModalController(
     displayValues.cashbox_id = cash.label;
   };
 
+  // custom filter cashbox
+  vm.onSelectRole = function onSelectRole(role) {
+    vm.searchQueries.role_uuid = role.uuid;
+    displayValues.role_uuid = role.label;
+  };
+
   // custom filter depot_uuid - assign the value to the params object
   vm.onSelectDepot = function onSelectDepot(depot) {
     vm.searchQueries.depot_uuid = depot.uuid;
@@ -96,7 +103,14 @@ function UserRegistryModalController(
         vm.cashboxes = data;
       }).catch(Notify.handleError);
   }
-
+  // load all roles
+  function loadRoles() {
+    return RolesService.read()
+      .then(role => {
+        vm.roles = role;
+      })
+      .catch(Notify.handleError);
+  }
   function clear(value) {
     delete vm.searchQueries[value];
   }
@@ -107,4 +121,5 @@ function UserRegistryModalController(
   }
 
   loadCashBoxes();
+  loadRoles();
 }
