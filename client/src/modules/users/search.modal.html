@@ -1,0 +1,82 @@
+<form
+  name="ModalForm"
+  ng-submit="$ctrl.submit(ModalForm)"
+  data-modal="user-search"
+  novalidate>
+
+  <div class="modal-header search-modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.USERS</li>
+      <li class="title" translate>FORM.INFO.SEARCH</li>
+    </ol>
+  </div>
+
+  <div class="modal-body search-modal">
+    <uib-tabset>
+      <uib-tab index="0" heading="{{ 'FORM.LABELS.SEARCH_QUERIES' | translate }}" data-custom-filter-tab>
+        <div class="tab-body">
+          <!-- user -->
+          <bh-user-select
+             user-id="$ctrl.searchQueries.id"
+             label="FORM.LABELS.USERNAME"
+             require="false"
+             on-select-callback="$ctrl.onSelectUser(user)">
+            <bh-clear on-clear="$ctrl.clear('id')"></bh-clear>
+          </bh-user-select>
+
+          <!-- depot -->
+         <bh-depot-select
+          depot-uuid="$ctrl.searchQueries.depot_uuid"
+          required="false"
+          on-select-callback="$ctrl.onSelectDepot(depot)">
+          <bh-clear on-clear="$ctrl.clear('depot_uuid')"></bh-clear>
+         </bh-depot-select>
+         
+         <!-- cashbox -->
+         <div class="form-group has-feedback">
+            <label class="control-label" translate>FORM.SELECT.CASHBOX_OPTIONAL</label>
+            <bh-clear on-clear="$ctrl.clear('cashbox_id')"></bh-clear>
+            <ui-select name="cashbox_id"
+            ng-model="$ctrl.searchQueries.cashbox_id"
+            on-select="$ctrl.onSelectCashbox($item, $model)"
+            required>
+            <ui-select-match placeholder="{{ 'FORM.SELECT.CASHBOX' | translate }}"><span translate>{{$select.selected.label}}</span></ui-select-match>
+            <ui-select-choices ui-select-focus-patch repeat="cashbox.id as cashbox in ($ctrl.cashboxes | filter:$select.search) track by cashbox.id">
+              <span ng-bind-html="cashbox.label | highlight:$select.search"></span>
+            </ui-select-choices>
+          </ui-select>
+          </div>
+
+        </div>
+      </uib-tab>
+
+      <uib-tab index="1" heading="{{ 'FORM.LABELS.DEFAULTS' | translate }}" data-default-filter-tab>
+        <div class="tab-body">
+          <!-- period selection -->
+          <bh-period-select
+            default-period="{{$ctrl.filters.period}}"
+            on-select-callback="$ctrl.onSelectPeriod(period)">
+          </bh-period-select>
+
+          <div class="form-group" ng-class="{ 'has-error' : ModalForm.limit.$invalid }">
+            <label class="control-label" translate>FORM.LABELS.LIMIT</label>
+            <input name="limit" type="number" min="0" bh-integer bh-max-integer class="form-control" ng-model="$ctrl.defaultQueries.limit" ng-change="$ctrl.onSelectLimit($ctrl.defaultQueries.limit)">
+
+            <div class="help-block" ng-messages="ModalForm.limit.$error">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+        </div>
+      </uib-tab>
+    </uib-tabset>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()" data-method="cancel" translate>
+      FORM.BUTTONS.CLOSE
+    </button>
+    <button type="submit" class="btn btn-primary" data-method="submit" translate>
+      FORM.BUTTONS.SUBMIT
+    </button>
+  </div>
+</form>
