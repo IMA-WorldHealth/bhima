@@ -5,21 +5,16 @@
       <li class="title" translate>USERS.TITLE</li>
     </ol>
 
-    <div class="toolbar">
-      <div class="toolbar-item">
-        <button
-          type="button"
-          class="btn btn-default text-capitalize"
-          ui-sref="users.create"
-          data-method="create">
-          <i class="fa fa-plus"></i> <span translate>USERS.ADD_USER</span>
-        </button>
-      </div>
-
-      <bh-filter-toggle
-        on-toggle="UsersCtrl.toggleFilter()">
-      </bh-filter-toggle>
-    </div>
+        <div class="toolbar">
+          <bh-search-button on-click="UsersCtrl.search()"></bh-search-button>
+          <bh-filter-toggle on-toggle="UsersCtrl.toggleFilter()">
+          </bh-filter-toggle>
+          <div class="toolbar-item">
+            <button type="button" class="btn btn-success text-capitalize" ui-sref="users.create" data-method="create">
+              <i class="fa fa-plus"></i> <span translate>USERS.ADD_USER</span>
+            </button>
+          </div>
+        </div>
   </div>
 </div>
 
@@ -36,9 +31,11 @@
     <div id="users-grid"
       class="grid-full-height-with-filters"
       ui-grid="UsersCtrl.gridOptions"
+      ui-grid-save-state
+      ui-grid-auto-resize
       ui-grid-resize-columns
       ui-grid-move-columns
-      ui-grid-auto-resize>
+      ui-grid-resize-columns>
 
       <bh-grid-loading-indicator
         loading-state="UsersCtrl.loading"
