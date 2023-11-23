@@ -103,7 +103,7 @@ function UserRegistryModalController(
         vm.cashboxes = data;
       }).catch(Notify.handleError);
   }
-  // loa all roles
+  // load all roles
   function loadRoles() {
     return RolesService.read()
       .then(role => {
