@@ -36,6 +36,7 @@ exports.detail = detail;
 exports.update = update;
 exports.remove = remove;
 exports.getPeriods = getPeriods;
+exports.getPeriodZero = getPeriodZero;
 
 exports.lookupFiscalYear = lookupFiscalYear;
 
@@ -732,6 +733,20 @@ function getPeriods(req, res, next) {
   getPeriodByFiscal(req.params.id)
     .then(periods => {
       res.status(200).json(periods);
+    })
+    .catch(next)
+    .done();
+}
+
+/**
+ * Get the "zero" period for the fiscal year (where period.number = 0)
+ */
+function getPeriodZero(req, res, next) {
+  const fiscalYearId = req.params.id;
+  const sql = 'SELECT id FROM period WHERE period.number = 0 AND period.fiscal_year_id = ?';
+  return db.one(sql, [fiscalYearId])
+    .then(resPeriodZero => {
+      res.status(200).json(resPeriodZero);
     })
     .catch(next)
     .done();
