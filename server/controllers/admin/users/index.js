@@ -116,6 +116,7 @@ async function list(req, res, next) {
     filters.equals('id');
     filters.equals('role_uuid', 'role_uuid', 'ur');
     filters.equals('depot_uuid', 'depot_uuid', 'dp');
+    filters.equals('cashbox_id', 'id', 'cb');
     filters.fullText('display_name');
 
     filters.setGroup('GROUP BY user.id');
