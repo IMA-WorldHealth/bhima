@@ -34,7 +34,7 @@ function UserService(Api, $uibModal, Filters, bhConstants, AppCache, Periods) {
     { key : 'uuid', label : 'FORM.LABELS.NAME' },
     { key : 'project_id', label : 'FORM.LABELS.PROJECT' },
     { key : 'role_uuid', label : 'FORM.LABELS.ROLES' },
-    { key : 'cashbox_id', label : 'FORM.LABELS.CASHBOX' },
+    { key : 'cashbox_id', label : 'FORM.LABELS.CASHBOXES' },
     { key : 'depot_uuid', label : 'FORM.LABELS.DEPOT' },
     { key : 'display_name', label : 'FORM.LABELS.USERNAME' },
     { key : 'id', label : 'FORM.LABELS.USERNAME' },

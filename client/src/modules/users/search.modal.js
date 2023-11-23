@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 UserRegistryModalController.$inject = [
   '$uibModalInstance', 'filters', 'Store', 'util', 'PeriodService', 'UserService',
-  'SearchModalUtilService',
+  'SearchModalUtilService', 'CashboxService', 'NotifyService',
 ];
 
 /**
@@ -14,7 +14,9 @@ UserRegistryModalController.$inject = [
  * search functionality on the user registry page.  Filters that are already
  * applied to the grid can be passed in via the filters inject.
  */
-function UserRegistryModalController(ModalInstance, filters, Store, util, Periods, Users, SearchModal) {
+function UserRegistryModalController(
+  ModalInstance, filters, Store, util, Periods,
+  Users, SearchModal, CashBox, Notify) {
   const vm = this;
   const changes = new Store({ identifier : 'key' });
 
@@ -74,6 +76,7 @@ function UserRegistryModalController(ModalInstance, filters, Store, util, Period
     vm.searchQueries.cashbox_id = cash.id;
     displayValues.cashbox_id = cash.label;
   };
+
   // custom filter depot_uuid - assign the value to the params object
   vm.onSelectDepot = function onSelectDepot(depot) {
     vm.searchQueries.depot_uuid = depot.uuid;
@@ -86,6 +89,14 @@ function UserRegistryModalController(ModalInstance, filters, Store, util, Period
     return ModalInstance.close(loggedChanges);
   }
 
+  // load cahsboxes
+  function loadCashBoxes() {
+    CashBox.read()
+      .then((data) => {
+        vm.cashboxes = data;
+      }).catch(Notify.handleError);
+  }
+
   function clear(value) {
     delete vm.searchQueries[value];
   }
@@ -94,4 +105,6 @@ function UserRegistryModalController(ModalInstance, filters, Store, util, Period
   function cancel() {
     ModalInstance.close();
   }
+
+  loadCashBoxes();
 }

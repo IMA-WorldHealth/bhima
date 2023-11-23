@@ -33,13 +33,19 @@
          </bh-depot-select>
          
          <!-- cashbox -->
-          <bh-cashbox-select
-            cashbox-id="$ctrl.searchQueries.cashbox_id"
-            name="cashbox_id"
-            restrict-to-user="false"
-            on-select-callback="$ctrl.onSelectCashbox(cashbox)">
+         <div class="form-group has-feedback">
+            <label class="control-label" translate>FORM.SELECT.CASHBOX_OPTIONAL</label>
             <bh-clear on-clear="$ctrl.clear('cashbox_id')"></bh-clear>
-          </bh-cashbox-select>
+            <ui-select name="cashbox_id"
+            ng-model="$ctrl.searchQueries.cashbox_id"
+            on-select="$ctrl.onSelectCashbox($item, $model)"
+            required>
+            <ui-select-match placeholder="{{ 'FORM.SELECT.CASHBOX' | translate }}"><span translate>{{$select.selected.label}}</span></ui-select-match>
+            <ui-select-choices ui-select-focus-patch repeat="cashbox.id as cashbox in ($ctrl.cashboxes | filter:$select.search) track by cashbox.id">
+              <span ng-bind-html="cashbox.label | highlight:$select.search"></span>
+            </ui-select-choices>
+          </ui-select>
+          </div>
 
         </div>
       </uib-tab>
