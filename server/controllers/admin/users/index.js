@@ -118,6 +118,11 @@ async function list(req, res, next) {
     filters.equals('depot_uuid', 'depot_uuid', 'dp');
     filters.equals('cashbox_id', 'id', 'cb');
     filters.fullText('display_name');
+    filters.period('period', 'created_at');
+    filters.dateFrom('custom_period_start', 'created_at');
+    filters.dateTo('custom_period_end', 'created_at');
+    filters.dateFrom('login_date_from', 'last_login');
+    filters.dateTo('login_date_to', 'last_login');
 
     filters.setGroup('GROUP BY user.id');
     filters.setOrder('ORDER BY user.display_name DESC');

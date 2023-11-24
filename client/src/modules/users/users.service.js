@@ -37,7 +37,13 @@ function UserService(Api, $uibModal, Filters, bhConstants, AppCache, Periods) {
     { key : 'cashbox_id', label : 'FORM.LABELS.CASHBOXES' },
     { key : 'depot_uuid', label : 'FORM.LABELS.DEPOT' },
     { key : 'display_name', label : 'FORM.LABELS.USERNAME' },
-    { key : 'id', label : 'FORM.LABELS.USERNAME' },
+    { key: 'id', label: 'FORM.LABELS.USERNAME' },
+    {
+      key : 'login_date_from', label : 'USERS.LAST_LOGIN', comparitor : '>', valueFilter : 'date',
+    },
+    {
+      key : 'login_date_to', label : 'USERS.LAST_LOGIN', comparitor : '<', valueFilter : 'date',
+    },
   ]);
 
   if (filterCache.filters) {
