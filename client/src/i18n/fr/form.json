@@ -1075,6 +1075,7 @@
             "RENDERER" : "Sélectionner un rendu",
             "REPORT_TYPE": "Sélectionner le type de rapport",
             "RESULT_ACCOUNT_SCT": "Sélectionnez une section de compte de résultats",
+            "ROLE": "Sélectionner un role",
             "ROOM":"Sélectionner une chambre",
             "ROOM_TYPE":"Sélectionner un type de lit",
             "ROOT_ACCOUNT": "Sélectionner le compte titre",
