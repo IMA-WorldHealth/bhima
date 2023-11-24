@@ -64,6 +64,15 @@
            </ui-select>
          </div>
 
+          <!-- login date -->
+          <bh-date-interval
+            label="USERS.LAST_LOGIN"
+            date-id="login-date"
+            date-from="$ctrl.searchQueries.login_date_from"
+            date-to="$ctrl.searchQueries.login_date_to"
+            on-change="$ctrl.onLoginDate(dateFrom, dateTo)">
+          </bh-date-interval>
+
         </div>
       </uib-tab>
 

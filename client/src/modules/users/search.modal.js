@@ -25,7 +25,7 @@ function UserRegistryModalController(
 
   const searchQueryOptions = [
     'display_name', 'depot_uuid', 'id', 'cashbox_id',
-    'role_uuid',
+    'role_uuid', 'login_date_from', 'login_date_to',
   ];
 
   vm.filters = filters;
@@ -90,6 +90,13 @@ function UserRegistryModalController(
     displayValues.depot_uuid = depot.text;
   };
 
+  // Save the login dates
+  vm.onLoginDate = (dateFrom, dateTo) => {
+    vm.searchQueries.login_date_from = dateFrom;
+    displayValues.login_date_from = dateFrom;
+    vm.searchQueries.login_date_to = dateTo;
+    displayValues.login_date_to = dateTo;
+  };
   // returns the parameters to the parent controller
   function submit() {
     const loggedChanges = SearchModal.getChanges(vm.searchQueries, changes, displayValues, lastDisplayValues);
