@@ -51,6 +51,7 @@
         "cp package.json bin/",
         "cp yarn.lock bin/",
         "cp .env.sample bin/.env",
+        "cp -R server/models/ bin/server/",
         "mkdir bhima-${version}",
         "mv bin bhima-${version}/",
         "cross-env tar -czvf ${version}.tar.gz bhima-${version}"
