@@ -1,4 +1,4 @@
-# Production Deployment with SystemD
+# Production Deployment with Systemd
 
 This guide will walk through deploying BHIMA using systemd for process and log management and a nginx to load balance between multiple nodejs instances.  These instructions have been tested on Ubuntu 20.04.
 
