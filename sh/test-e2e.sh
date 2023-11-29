@@ -1,13 +1,19 @@
 #!/bin/bash
 
 echo ""
-echo "====================================================="
-echo "Running the end-to-end account tests using playwright"
-echo "====================================================="
+echo "==============================================="
+echo "Running the end-to-end test $TEST_NUM using playwright"
+echo "==============================================="
 echo ""
 
 # bash script mode
 set -euo pipefail
+
+# Make sure results directory exists
+if [[ ! -d results ]]; then
+  echo "Creating 'results' directory"
+  mkdir results
+fi
 
 # # Kill the BHIMA server when the test is finished
 if [[ -z "${CI:-}" ]]
@@ -25,6 +31,7 @@ echo "[test]"
 TIMEOUT=${BUILD_TIMEOUT:-5}
 
 echo "[test] Spawning BHIMA server process..."
+
 # build and start the server
 ./node_modules/.bin/gulp build
 cd bin
@@ -35,10 +42,12 @@ echo "[test] Spawned node process."
 echo "[test] Sleeping for $TIMEOUT seconds."
 sleep "$TIMEOUT"
 
-echo "[test] Running end-to-end account tests using playwright."
+echo "[test] Running end-to-end tests using playwright (without stock tests)."
 cd ..
-E2E_DIR=account npx playwright test 2>&1 | tee ./results/end-to-end-account-report
 
+npx playwright test $TESTS 2>&1 | tee "./results/end-to-end-report-$TEST_NUM"
+
+# FYI: Use PWTEST_SKIP_TEST_OUTPUT=1 to skip interactive web debug at the end
 # FYI: Use --workers=1  to limit number of workers
 
 # Clean up any left-over zombie node processes (if not CI)

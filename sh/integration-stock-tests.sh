@@ -1,6 +1,12 @@
 # bash strict mode
 set -euo pipefail
 
+# Make sure results directory exists
+if [[ ! -d results ]]; then
+  echo "Creating 'results' directory"
+  mkdir results
+fi
+
 ./sh/build-stock-database.sh || { echo 'failed to build DB' ; exit 1; }
 
 echo "[test]"

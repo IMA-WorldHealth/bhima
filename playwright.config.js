@@ -11,11 +11,11 @@ const { defineConfig, devices } = require('@playwright/test');
  */
 module.exports = defineConfig({
 
-  testDir : process.env.E2E_DIR
-    ? `./test/end-to-end/${process.env.E2E_DIR}`
-    : './test/end-to-end',
+  // testDir : process.env.E2E_DIR
+  //   ? `./test/end-to-end/${process.env.E2E_DIR}`
+  //   : './test/end-to-end',
 
-  testIgnore : process.env.E2E_DIR ? '' : /\/stock\/|\/account\//,
+  // testIgnore : process.env.E2E_DIR ? '' : /\/stock\/|\/account\//,
 
   /* Maximum time one test can run for. */
   timeout : 40 * 1000, // Need longer value for CI
@@ -45,8 +45,8 @@ module.exports = defineConfig({
   reporter : [
     ['html', { outputFolder : 'results/playwright-report' }],
     ['junit', {
-      outputFile : process.env.E2E_DIR
-        ? `results/end-to-end-${process.env.E2E_DIR}-results.xml`
+      outputFile : process.env.TEST_NUM
+        ? `results/end-to-end-${process.env.TEST_NUM}-results.xml`
         : 'results/end-to-end-results.xml',
     }],
   ],
