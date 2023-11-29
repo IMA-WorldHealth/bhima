@@ -19,7 +19,7 @@ Before you begin the installation process, please make sure you have all the bhi
 
 ### Detailed dependency installation instructions for Ubuntu
 
-Some of the following instructions assume Ubuntu 22.04 and Node.js 18.17.1 LTS.  Update these versions as needed.
+Some of the following instructions assume Ubuntu 22.04 and Node.js 20 LTS.  Update these versions as needed.
 
 ```bash
 # Run the following command to update the package lists:
@@ -37,25 +37,28 @@ sudo apt-get install redis-server
 # Run the following commands to install curl:
 sudo apt-get install curl
 
-# To find the latest LTS version of nodejs, visit https://nodejs.
-# Then visit https://github.com/nodesource/distributions to find the
-# setup/installer for your OS and the desired version of nodejs.
-curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash
-sudo apt-get install -y nodejs
+# To find the latest LTS version of nodejs, visit https://nodejs.  For latest install
+# directions, see https://github.com/nodesource/distributions#debian-and-ubuntu-based-distributions
+sudo apt-get install -y ca-certificates curl gnupg
+sudo mkdir -p /etc/apt/keyrings
+curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+NODE_MAJOR=20
+echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
+sudo apt-get update
+sudo apt-get install nodejs
+```
 
 # Verify that nodejs and npm are installed as expected
 npm --version
 node --version
 
+```bash
 # Installs yarn without re-installing NodeJS
 curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
 echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
 sudo apt-get update && sudo apt-get install yarn --no-install-recommends
-```
 
-### Install chromium browser ('chrome' on Debian)
-
-```bash
+### Install chromium browser ('chrome' below on Debian)
 sudo apt install chromium-browser
 
 # Install extra needed dependencies
@@ -65,13 +68,13 @@ sudo apt-get install libx11-xcb1 libxcomposite1 libasound2 libatk1.0-0 libatk-br
 We suggest putting the follwing line into your .bashrc file and restarting your shell session:
 
 ```bash
-export CHROME_BIN=`which chrome-browser`
+export CHROME_BIN=`which chromium`
 export CHROME_OPTIONS="--headless"
 ```
 
 ```bash
-# Verify that chrome and chromedriver have the same version
-chrome --version
+# Verify that chromium and chromedriver have the same version
+chromium --version
 chromedriver --version
 ```
 
@@ -121,6 +124,7 @@ nano .env
 sudo mysql -u root -p
 CREATE USER 'bhima'@'localhost' IDENTIFIED WITH 'mysql_native_password' BY 'password';
 GRANT ALL PRIVILEGES ON * . * TO 'bhima'@'localhost';
+FLUSH PRIVILEGES;
 # Use ctrl + z to get back to the main terminal prompt
 ```
 
@@ -218,8 +222,8 @@ Our tests are broken into unit tests, end to end tests, and integration tests. T
 2. **Server Unit Tests** - Server libraries are unit tested with mocha and chai, similar to the integration tests. To run them, type
    `yarn test:server-unit.`
 3. **Client Unit Tests** - Client components are unit tested with karma which you should have installed if you installed all dependencies. Karma launches a chrome browser to execute the tests. To run them, type `yarn test:client-unit`.
-4. **End to End Tests** - The entire stack is tested with \(often flaky\) end to end tests using [playwright](https://playwright.dev/).  You can run these tests with `yarn test:e2e`.
+4. **End to End Tests** - The entire stack is tested with end to end tests using [playwright](https://playwright.dev/).  You can run these tests with `yarn test:e2e-account`, `yarn test:e2e-stock`, and `yarn test:e2e-?`.
 
-You can run all tests by simply typing `yarn test`.
+You can run all non-end-to-end tests by simply typing `yarn test`.
 
 Enjoy using bhima!
