@@ -1,13 +1,19 @@
 #!/bin/bash
 
 echo ""
-echo "==================================================="
-echo "Running the end-to-end stock tests using playwright"
-echo "==================================================="
+echo "====================================================="
+echo "Running the end-to-end account tests using playwright"
+echo "====================================================="
 echo ""
 
 # bash script mode
 set -euo pipefail
+
+# Make sure results directory exists
+if [[ ! -d results ]]; then
+  echo "Creating 'results' directory"
+  mkdir results
+fi
 
 # # Kill the BHIMA server when the test is finished
 if [[ -z "${CI:-}" ]]
@@ -35,9 +41,9 @@ echo "[test] Spawned node process."
 echo "[test] Sleeping for $TIMEOUT seconds."
 sleep "$TIMEOUT"
 
-echo "[test] Running end-to-end stock tests using playwright."
+echo "[test] Running end-to-end account tests using playwright."
 cd ..
-E2E_DIR=stock npx playwright test 2>&1 | tee ./results/end-to-end-stock-report
+E2E_DIR=account npx playwright test 2>&1 | tee ./results/end-to-end-account-report
 
 # FYI: Use --workers=1  to limit number of workers
 
