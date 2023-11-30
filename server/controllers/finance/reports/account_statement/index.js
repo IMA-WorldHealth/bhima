@@ -39,10 +39,10 @@ async function report(req, res, next) {
     const aggregateSql = `
       SELECT SUM(debit_equiv) AS debit_equiv, SUM(credit_equiv) AS credit_equiv
       FROM general_ledger
-      WHERE uuid = ?;
+      WHERE uuid IN (?);
     `;
 
-    const [transactionUuids] = rows.map(row => db.bid(row.uuid));
+    const transactionUuids = rows.map(row => db.bid(row.uuid));
     const aggregateData = await db.one(aggregateSql, [transactionUuids]);
     let aggregate;
     if (aggregateData) {
