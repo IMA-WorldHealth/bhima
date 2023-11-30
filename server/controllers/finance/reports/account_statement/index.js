@@ -45,6 +45,7 @@ async function report(req, res, next) {
     const transactionUuids = rows.map(row => db.bid(row.uuid));
     const aggregateData = await db.one(aggregateSql, [transactionUuids]);
     let aggregate;
+
     if (aggregateData) {
       aggregate = { ...aggregateData };
       aggregate.balance = aggregateData.debit_equiv - aggregateData.credit_equiv;
