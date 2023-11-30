@@ -37,15 +37,23 @@ async function report(req, res, next) {
     const rows = await generalLedger.findTransactions(options);
 
     const aggregateSql = `
-      SELECT SUM(debit_equiv) AS debit_equiv, SUM(credit_equiv) AS credit_equiv,
-        SUM(debit_equiv - credit_equiv) AS balance
+      SELECT SUM(debit_equiv) AS debit_equiv, SUM(credit_equiv) AS credit_equiv
       FROM general_ledger
       WHERE uuid IN (?);
     `;
 
     const transactionUuids = rows.map(row => db.bid(row.uuid));
-    const aggregate = await db.one(aggregateSql, [transactionUuids]);
+    const aggregateData = await db.one(aggregateSql, [transactionUuids]);
+    let aggregate;
 
+    if (aggregateData) {
+      aggregate = { ...aggregateData };
+      aggregate.balance = aggregateData.debit_equiv - aggregateData.credit_equiv;
+    } else {
+      aggregate.debit_equiv = 0;
+      aggregate.credit_equiv = 0;
+      aggregate.balance = 0;
+    }
     const result = await rm.render({ rows, aggregate, filters });
     res.set(result.headers).send(result.report);
   } catch (e) {
