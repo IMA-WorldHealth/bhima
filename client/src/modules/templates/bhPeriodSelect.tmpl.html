@@ -1,7 +1,8 @@
 <div class="form-group" data-bh-period-select>
 <label class="form-label">
-  <span ng-if="$ctrl.required" translate>PERIODS.PERIOD_LIMIT</span>
-  <span ng-if="!$ctrl.required" translate>PERIODS.PERIOD_LIMIT_OPTIONAL</span>
+  <span ng-if="$ctrl.label==='FORM.LABELS.PERIOD' && $ctrl.required" translate>FORM.LABELS.PERIOD</span>
+  <span ng-if="$ctrl.label==='FORM.LABELS.PERIOD' && !$ctrl.required" translate>FORM.LABELS.PERIOD_OPTIONAL</span>
+  <span ng-if="$ctrl.label!=='FORM.LABELS.PERIOD'" translate>{{ $ctrl.label }}</span>
 </label>
 <p class="form-static">
   <span translate>{{$ctrl.period.translateKey}}</span>

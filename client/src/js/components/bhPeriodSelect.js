@@ -3,6 +3,7 @@ angular.module('bhima.components')
     bindings : {
       defaultPeriod : '@',
       onSelectCallback : '&',
+      label  : '@?',
     },
     templateUrl : 'modules/templates/bhPeriodSelect.tmpl.html',
     controller : PeriodSelect,
@@ -30,6 +31,7 @@ function PeriodSelect(Periods, bhConstants) {
   ctrl.dateFormat = bhConstants.dates.format;
 
   ctrl.$onInit = function onInit() {
+    ctrl.label = ctrl.label || 'FORM.LABELS.PERIOD';
     ctrl.periodKey = ctrl.defaultPeriod || DEFAULT_PERIOD;
     ctrl.period = Periods.definition(ctrl.periodKey);
 
