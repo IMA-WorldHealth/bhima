@@ -37,6 +37,25 @@ class AccountStatementCorePage {
     return TU.waitForSelector('[ui-grid-grid-footer]');
   }
 
+  async setPeriodAccount(periodName, accountNumber) {
+    await this.openSearchModal();
+    const defaultTab = await TU.locator('ul.nav-tabs li[data-default-filter-tab] > a');
+    await defaultTab.click();
+    const account = await TU.locator('[bh-account-select]');
+    account.click();
+    TU.uiSelect('$ctrl.accountId', accountNumber, account);
+    await this.setAccount(accountNumber);
+    await TU.waitForSelector('[data-bh-period-select] > a');
+    const periodSelect = await TU.locator('[data-bh-period-select] > a');
+    await periodSelect.click();
+    const period = await TU.locator(`[data-bh-period-select] a[data-link="${periodName}"]`);
+    await period.click();
+    TU.modal.submit();
+
+    // Wait for the grid to be refilled
+    return TU.waitForSelector('[ui-grid-grid-footer]');
+  }
+
   async tabulate(tabIndex) {
     const index = tabIndex || 0;
     const indexTab = await TU.locator(`[index="${index}"]`);
