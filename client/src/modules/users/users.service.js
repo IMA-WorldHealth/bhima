@@ -29,6 +29,9 @@ function UserService(Api, $uibModal, Filters, bhConstants, AppCache, Periods) {
   const filterCache = new AppCache('users-filters');
 
   filters.registerDefaultFilters(bhConstants.defaultFilters);
+  filters.registerDefaultFilters([
+    'date_created',
+  ]);
 
   filters.registerCustomFilters([
     { key : 'uuid', label : 'FORM.LABELS.NAME' },

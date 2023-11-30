@@ -3,14 +3,16 @@ angular.module('bhima.controllers')
 
 UsersController.$inject = [
   '$state', '$uibModal', 'UserService', 'NotifyService', 'ModalService', 'uiGridConstants',
-  'GridStateService', 'appcache',
+  'GridStateService', 'appcache', 'GridExportService', 'GridColumnService', 'LanguageService',
+  '$httpParamSerializer',
 ];
 
 /**
  * Users Controller
  * This module is responsible for handling the CRUD operation on the user
  */
-function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstants, GridState) {
+function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstants, GridState,
+  GridExport, Columns, Languages, $httpParamSerializer) {
   const vm = this;
   const cacheKey = 'usersGrid';
 
@@ -41,6 +43,7 @@ function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstant
         headerCellFilter : 'translate',
         cellClass : muteDisabledCells,
         enableFiltering : true,
+        visible : true,
         sort : { priority : 1, direction : 'asc' },
         aggregationType : uiGridConstants.aggregationTypes.count,
         aggregationHideLabel : true,
@@ -52,12 +55,14 @@ function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstant
         headerCellFilter : 'translate',
         cellClass : muteDisabledCells,
         enableFiltering : true,
+        visible : true,
       },
       {
         field : 'roles',
         displayName : 'FORM.LABELS.ROLES',
         headerCellFilter : 'translate',
         enableFiltering : true,
+        visible : true,
         cellClass : muteDisabledCells,
       },
       {
@@ -65,6 +70,7 @@ function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstant
         displayName : 'FORM.LABELS.DEPOT',
         headerCellFilter : 'translate',
         enableFiltering : true,
+        visible : true,
         cellClass : muteDisabledCells,
       },
       {
@@ -72,6 +78,7 @@ function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstant
         displayName : 'FORM.LABELS.CASHBOXES',
         headerCellFilter : 'translate',
         enableFiltering : true,
+        visible : true,
         cellClass : muteDisabledCells,
       },
       {
@@ -80,6 +87,7 @@ function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstant
         displayName : 'USERS.LAST_LOGIN',
         cellFilter : 'date:"dd/MM/yyyy HH:mm:ss"',
         headerCellFilter : 'translate',
+        visible : true,
         cellClass : muteDisabledCells,
       },
       {
@@ -93,6 +101,8 @@ function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstant
   };
 
   const state = new GridState(vm.gridOptions, cacheKey);
+  const columnConfig = new Columns(vm.gridOptions, cacheKey);
+  const exportation = new GridExport(vm.gridOptions, 'selected', 'visible');
   vm.saveGridState = state.saveGridState;
 
   function onRegisterApiFn(gridApi) {
@@ -103,6 +113,11 @@ function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstant
     vm.gridOptions.enableFiltering = !vm.gridOptions.enableFiltering;
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
+
+  // This function opens a modal through column service to let the user show or Hide columns
+  vm.openColumnConfigModal = function openColumnConfigModal() {
+    columnConfig.openConfigurationModal();
+  };
 
   // bind methods
   vm.activatePermissions = activatePermissions;
@@ -155,6 +170,36 @@ function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstant
     vm.latestViewFilters = Users.filters.formatView();
     return load(Users.filters.formatHTTP(true));
   }
+
+  vm.saveGridState = state.saveGridState;
+  vm.clearGridState = function clearGridState() {
+    state.clearGridState();
+    $state.reload();
+  };
+  // exports zone =====================================================================
+
+  vm.download = function download(type) {
+    const filterOpts = Users.filters.formatHTTP();
+    const defaultOpts = {
+      renderer : type,
+      lang : Languages.key,
+    };
+      // combine options
+    const options = angular.merge(defaultOpts, filterOpts);
+    // return  serialized options
+    return $httpParamSerializer(options);
+  };
+
+  // export csv
+  vm.exportCsv = function exportCsv() {
+    exportation.run();
+  };
+  // end exports zone =================================================================
+
+  // export csv
+  vm.exportCsv = function exportCsv() {
+    exportation.run();
+  };
 
   function startup() {
     if ($state.params.filters && $state.params.filters.length) {
