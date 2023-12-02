@@ -66,7 +66,7 @@ function UserRegistryModalController(
     if (periodeKey) {
       periodeKey.key = 'date_created';
       changes.post(periodeKey);
-      changes.post({ key: 'period', value: null });
+      changes.post({ key : 'period', value : null });
     }
   };
 
