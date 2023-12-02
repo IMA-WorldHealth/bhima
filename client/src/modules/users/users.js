@@ -3,16 +3,14 @@ angular.module('bhima.controllers')
 
 UsersController.$inject = [
   '$state', '$uibModal', 'UserService', 'NotifyService', 'ModalService', 'uiGridConstants',
-  'GridStateService', 'appcache', 'GridExportService', 'GridColumnService', 'LanguageService',
-  '$httpParamSerializer',
+  'GridStateService', 'appcache',
 ];
 
 /**
  * Users Controller
  * This module is responsible for handling the CRUD operation on the user
  */
-function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstants, GridState,
-  GridExport, Columns, Languages, $httpParamSerializer) {
+function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstants, GridState) {
   const vm = this;
   const cacheKey = 'usersGrid';
 
@@ -20,7 +18,6 @@ function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstant
   vm.toggleFilter = toggleFilter;
   vm.editRoles = editRoles;
   vm.search = search;
-
   // this function selectively applies the muted cell classes to
   // disabled user entities
   function muteDisabledCells(grid, row) {
@@ -101,8 +98,6 @@ function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstant
   };
 
   const state = new GridState(vm.gridOptions, cacheKey);
-  const columnConfig = new Columns(vm.gridOptions, cacheKey);
-  const exportation = new GridExport(vm.gridOptions, 'selected', 'visible');
   vm.saveGridState = state.saveGridState;
 
   function onRegisterApiFn(gridApi) {
@@ -113,11 +108,6 @@ function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstant
     vm.gridOptions.enableFiltering = !vm.gridOptions.enableFiltering;
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
-
-  // This function opens a modal through column service to let the user show or Hide columns
-  vm.openColumnConfigModal = function openColumnConfigModal() {
-    columnConfig.openConfigurationModal();
-  };
 
   // bind methods
   vm.activatePermissions = activatePermissions;
@@ -172,34 +162,21 @@ function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstant
   }
 
   vm.saveGridState = state.saveGridState;
-  vm.clearGridState = function clearGridState() {
-    state.clearGridState();
-    $state.reload();
-  };
+
   // exports zone =====================================================================
 
   vm.download = function download(type) {
     const filterOpts = Users.filters.formatHTTP();
-    const defaultOpts = {
-      renderer : type,
-      lang : Languages.key,
-    };
-      // combine options
-    const options = angular.merge(defaultOpts, filterOpts);
-    // return  serialized options
-    return $httpParamSerializer(options);
+    return Users.exportToQueryString(type, filterOpts);
   };
 
-  // export csv
-  vm.exportCsv = function exportCsv() {
-    exportation.run();
+  // export excel
+  vm.exportExcel = function exportExecl() {
+    const filterOpts = Users.filters.formatHTTP();
+    return Users.downloadExcelQueryString(filterOpts);
   };
+
   // end exports zone =================================================================
-
-  // export csv
-  vm.exportCsv = function exportCsv() {
-    exportation.run();
-  };
 
   function startup() {
     if ($state.params.filters && $state.params.filters.length) {

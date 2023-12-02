@@ -57,13 +57,17 @@ function UserRegistryModalController(
     }
   };
 
-  // default filter period - directly write to changes list
+  // default filter date_created - directly write to changes list
   vm.onSelectPeriod = function onSelectPeriod(period) {
     const periodFilters = Periods.processFilterChanges(period);
+    const [periodeKey] = periodFilters.filter((item) => item.key === 'period');
 
-    periodFilters.forEach((filterChange) => {
-      changes.post(filterChange);
-    });
+    // change the key in date_created
+    if (periodeKey) {
+      periodeKey.key = 'date_created';
+      changes.post(periodeKey);
+      changes.post({ key: 'period', value: null });
+    }
   };
 
   // custom filter user - assign the value to the params object

@@ -15,7 +15,7 @@ const REPORT_TEMPLATE = './server/controllers/admin/users/reports/report.handleb
 exports.report = report;
 
 /**
- * GET users/report
+ * GET reports/user
  *
  * @method report
  */
@@ -27,11 +27,9 @@ async function report(req, res, next) {
     suppressDefaultFiltering : true,
     suppressDefaultFormatting : false,
   });
-  console.log('USER :', options);
   try {
     const rm = new ReportManager(REPORT_TEMPLATE, req.session, options);
     const rows = await userCtrl.fetchUser(options);
-
     const result = await rm.render({ rows });
     res.set(result.headers).send(result.report);
   } catch (e) {
