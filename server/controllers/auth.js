@@ -35,7 +35,7 @@ function loginRoute(req, res, next) {
     .then(session => {
       // bind the session variables
       _.merge(req.session, session);
-      session.token = JWTConfig.create(session);
+      session.token = JWTConfig.create({ ...session.user });
       // send the session data back to the client
       res.status(200).json(session);
     })

@@ -2,6 +2,7 @@ const _ = require('lodash');
 const debug = require('debug')('app');
 const JWTConfig = require('./jwt');
 const { Unauthorized } = require('../lib/errors');
+const { loadSessionInformation } = require('../controllers/auth');
 
 const publicRoutes = [
   '/auth/login',
@@ -16,36 +17,26 @@ const publicRoutes = [
 
 module.exports = (app) => {
   // eslint-disable-next-line consistent-return
-  app.use((req, res, next) => {
+  app.use(async (req, res, next) => {
     const token = req.headers['x-access-token'];
-    let sessionExists = true;
+    try {
 
-    if (token) {
-      JWTConfig.verify(req, (session) => {
-        if (!session) {
-          sessionExists = false;
-          return;
-        }
+      if (token) {
+        const user = await JWTConfig.verify(token);
+        const session = await loadSessionInformation(user);
         _.merge(req.session, session);
-      }, (error) => {
-        sessionExists = false;
-        debug(error);
-      });
+      }
+
+      if (_.isUndefined(req.session.user) && !within(req.path, publicRoutes)) {
+        debug(`Rejecting unauthorized access to ${req.path} from ${req.ip}`);
+        next(new Unauthorized('You are not logged into the system.'));
+      }
+
+      // go to the next middleware
+      next();
+    } catch (err) {
+      next(err);
     }
-
-    if (!sessionExists) {
-      debug(`Rejecting due to invalid session token`);
-      next(new Unauthorized('The session token is not valid'));
-    }
-
-    if (_.isUndefined(req.session.user) && !within(req.path, publicRoutes)) {
-      debug(`Rejecting unauthorized access to ${req.path} from ${req.ip}`);
-      next(new Unauthorized('You are not logged into the system.'));
-    }
-
-    // go to the next middleware
-    next();
-
   });
 
 };
