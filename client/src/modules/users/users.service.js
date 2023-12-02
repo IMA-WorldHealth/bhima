@@ -1,7 +1,8 @@
 angular.module('bhima.services')
   .service('UserService', UserService);
 
-UserService.$inject = ['PrototypeApiService', '$uibModal', 'FilterService', 'bhConstants', 'AppCache', 'PeriodService'];
+UserService.$inject = ['PrototypeApiService', '$uibModal', 'FilterService', 'bhConstants', 'AppCache',
+  'PeriodService', '$httpParamSerializer', 'LanguageService'];
 
 /**
  * User Service
@@ -9,7 +10,8 @@ UserService.$inject = ['PrototypeApiService', '$uibModal', 'FilterService', 'bhC
  * @description
  * This service implements CRUD on the /users endpoint on the client.
  */
-function UserService(Api, $uibModal, Filters, bhConstants, AppCache, Periods) {
+function UserService(Api, $uibModal, Filters, bhConstants, AppCache, Periods, $httpParamSerializer,
+  Languages) {
   const service = new Api('/users/');
 
   service.update = update;
@@ -62,11 +64,18 @@ function UserService(Api, $uibModal, Filters, bhConstants, AppCache, Periods) {
 
     // assign default period filter
     const periodDefined = service.util.arrayIncludes(assignedKeys, [
-      'period', 'custom_period_start', 'custom_period_end',
+      'period', 'date_created', 'custom_period_start', 'custom_period_end',
     ]);
 
     if (!periodDefined) {
       filters.assignFilters(Periods.defaultFilters());
+    }
+
+    // assign default date_created filter
+    if (assignedKeys.indexOf('date_created') === -1) {
+      const defaultPeriod = Periods.index.today;
+      filters.assignFilter('date_created', defaultPeriod.key, defaultPeriod.translateKey);
+      filters.assignFilter('period', null, null);
     }
 
     // assign default limit filter
@@ -88,6 +97,36 @@ function UserService(Api, $uibModal, Filters, bhConstants, AppCache, Periods) {
     filters.loadCache(filterCache.filters || {});
   };
 
+  /**
+   * Construct the http query stgring for the GET URL
+   * @param {string} renderer - name of report renderer (pdf, csv, xlsx)
+   * @param {Array} params - parameters for rendering (must include: fiscal_year_id, filename)
+   * @returns {string} - http query string for http GET call
+   */
+  service.exportToQueryString = function exportToQueryString(renderer, params) {
+    const defaultOpts = {
+      renderer,
+      lang : Languages.key,
+    };
+    const options = angular.merge(defaultOpts, params);
+    return $httpParamSerializer(options);
+  };
+
+  /**
+   * Construct the http parameter string for the GET URL
+   *
+   * @param {Array} params - parameters for report rendering
+   * @returns {string} - http query string for http GET call
+   */
+  service.downloadExcelQueryString = function downloadExcelQueryString(params) {
+    const defaultOpts = {
+      renderer : 'xlsx',
+      lang : Languages.key,
+      // renameKeys : true,
+    };
+    const options = angular.merge(defaultOpts, params);
+    return $httpParamSerializer(options);
+  };
   /* ------------------------------------------------------------------------ */
 
   // updates a user with id

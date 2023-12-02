@@ -1,0 +1,44 @@
+{{> head }}
+
+<body>
+
+  {{> header }}
+
+  <!-- body  -->
+
+  <!-- list of data  -->
+  <table class="table table-condensed table-report">
+    <thead>
+      <tr>
+        <th>{{translate 'FORM.LABELS.USERNAME'}}</th>
+        <th>{{translate 'FORM.LABELS.LOGIN'}}</th>
+        <th>{{translate 'FORM.LABELS.ROLES'}}</th>
+        <th>{{translate 'FORM.LABELS.DEPOT'}}</th>
+        <th>{{translate 'FORM.LABELS.CASHBOXES'}}</th>
+        <th>{{translate 'USERS.LAST_LOGIN'}}</th>
+        <th>{{translate 'FORM.LABELS.DATE_CREATED'}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each rows}}
+        <tr>
+          <td>{{display_name}}</td>
+          <td {{#if deactivated}}class="text-muted strike"{{/if}}>{{username}}</td>
+          <td {{#if deactivated}}class="text-muted strike"{{/if}}>{{roles}}</td>
+          <td {{#if deactivated}}class="text-muted strike"{{/if}}>{{depots}}</td>
+          <td {{#if deactivated}}class="text-muted strike"{{/if}}>{{cashboxes}}</td>
+          <td {{#if deactivated}}class="text-muted strike"{{/if}}>{{date last_login}}</td>
+          <td>{{date created_at}}</td>
+        </tr>
+      {{else}}
+        {{> emptyTable columns=7}}
+      {{/each}}
+    </tbody>
+    <tfoot>
+     <tr style="font-weight: bold;">
+       <td colspan="6">{{rows.length}} {{translate 'FORM.LABELS.USER'}}</td>
+      </tr>
+    </tfoot>
+  </table>
+
+</body>
