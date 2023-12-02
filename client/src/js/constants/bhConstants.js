@@ -167,7 +167,7 @@ function constantConfig() {
     defaultFilters : [
       { key : 'period', label : 'TABLE.COLUMNS.PERIOD', valueFilter : 'translate' },
       { key : 'includeEmptyLot', label : 'STOCK.INCLUDE_EMPTY_LOTS', valueFilter : 'boolean' },
-      { key : 'showPendingTransfers', label: 'STOCK.INCLUDE_PENDING_TRANSFERT', valueFilter: 'boolean' },
+      { key : 'showPendingTransfers', label : 'STOCK.INCLUDE_PENDING_TRANSFERT', valueFilter : 'boolean' },
       { key : 'date_created', label : 'FORM.LABELS.DATE_CREATED', valueFilter : 'translate' },
       {
         key : 'custom_period_start',
