@@ -43,7 +43,9 @@ module.exports = defineConfig({
 
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter : [
-    ['html', { outputFolder : 'results/playwright-report' }],
+    ['html', process.env.E2E_TEST_SERVER
+      ? { open : 'never' }
+      : { outputFolder : 'results/playwright-report' }],
     ['junit', {
       outputFile : process.env.TEST_NUM
         ? `results/end-to-end-${process.env.TEST_NUM}-results.xml`

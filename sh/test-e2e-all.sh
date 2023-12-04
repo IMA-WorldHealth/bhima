@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # bash strict mode
-set -eo pipefail
+set +e
+set -o pipefail
 
 # Make sure results directory exists
 if [[ ! -d results ]]; then
