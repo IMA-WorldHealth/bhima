@@ -35,8 +35,16 @@ SUITE=${SUITE:-"ALL"}
 # run karma (client unit) tests
 if [ $SUITE = "client-unit" ] || [ $SUITE = "ALL" ] ; then
   startfold "Running Client Unit Tests..." "test-client-unit";
-  ./node_modules/.bin/karma start --single-run --no-auto-watch karma.conf.js 2>&1 | tee ./results/client-unit-report
+  KARMA_FILENAME="client-unit-report.xml" ./node_modules/.bin/karma start karma.conf.js --single-run --no-auto-watch 2>&1 | tee ./results/client-unit-report
   endfold "test-client-unit" ;
+fi
+
+# run server-unit test
+if [ $SUITE = "server-unit" ] || [ $SUITE = "ALL" ] ; then
+  startfold "Running server Unit Tests ......" "server-unit"
+  SUITE_NAME="BHIMA Server Unit Tests" MOCHA_OUTPUT="results/server-unit-report.xml" ./node_modules/.bin/mocha test/server-unit \
+    --reporter mocha-multi-reporters --reporter-options configFile="mocha-reporter-options.js" 2>&1 | tee ./results/server-unit-report
+  endfold "server-unit" ;
 fi
 
 # run integration tests
@@ -44,13 +52,6 @@ if [ $SUITE = "integration" ] || [ $SUITE = "ALL" ] ; then
   startfold "Running Integration Tests..." "test-integration";
   ./sh/integration-tests.sh
   endfold "test-integration" ;
-fi
-
-# run server-unit test
-if [ $SUITE = "server-unit" ] || [ $SUITE = "ALL" ] ; then
-  startfold "Running server Unit Tests ......" "server-unit"
-  ./node_modules/.bin/mocha --recursive --exit test/server-unit 2>&1 | tee ./results/server-unit-report
-  endfold "server-unit" ;
 fi
 
 if [ $SUITE = "integration-stock" ] || [ $SUITE = "ALL" ] ; then
