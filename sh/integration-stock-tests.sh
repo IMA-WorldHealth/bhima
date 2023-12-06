@@ -17,7 +17,7 @@ echo "[test] Spawning server process..."
 
 echo "[test] running tests using mocha"
 # run the tests
-SUITE_NAME="BHIMA Integration Stock Tests" MOCHA_OUTPUT="results/integration-stock-report.xml" ./node_modules/.bin/mocha test/integration-stock --timeout 20000 \
+SUITE_NAME="BHIMA Stock Integration Tests" MOCHA_OUTPUT="results/integration-stock-report.xml" ./node_modules/.bin/mocha test/integration-stock --timeout 20000 \
   --reporter mocha-multi-reporters --reporter-options configFile="mocha-reporter-options.js" 2>&1 | tee ./results/integration-stock-report
 
 echo "[/test]"
