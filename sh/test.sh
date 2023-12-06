@@ -42,8 +42,7 @@ fi
 # run server-unit test
 if [ $SUITE = "server-unit" ] || [ $SUITE = "ALL" ] ; then
   startfold "Running server Unit Tests ......" "server-unit"
-  SUITE_NAME="BHIMA Server Unit Tests" MOCHA_OUTPUT="results/server-unit-report.xml" ./node_modules/.bin/mocha test/server-unit \
-    --reporter mocha-multi-reporters --reporter-options configFile="mocha-reporter-options.js" 2>&1 | tee ./results/server-unit-report
+  ./sh/server-unit-tests.sh
   endfold "server-unit" ;
 fi
 
