@@ -1,7 +1,8 @@
 /* eslint global-require:off */
 const { expect } = require('chai');
 
-function DatabaseUnitTests() {
+describe('test/server-unit/lib/db/function.sql.js', () => {
+
   let db;
   before(() => {
     db = require('../../server/lib/db');
@@ -127,6 +128,5 @@ function DatabaseUnitTests() {
     await db.exec(`DROP TABLE IF EXISTS ${tableName1};`);
     await db.exec(`DROP TABLE IF EXISTS ${tableName2};`);
   });
-}
 
-describe('test/server-unit/lib/db/function.sql.js', DatabaseUnitTests);
+});

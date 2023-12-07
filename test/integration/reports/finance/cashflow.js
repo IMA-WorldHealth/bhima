@@ -21,4 +21,4 @@ const keys = [
   'totalPeriodColumn',
 ];
 
-describe(`(${target}) Cashflow Reports`, RenderingTests(target, keys, parameters));
+describe(`test/integration (${target}) Rendering`, RenderingTests(target, keys, parameters));

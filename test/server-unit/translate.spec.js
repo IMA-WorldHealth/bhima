@@ -12,7 +12,8 @@ const dictionaries = {
 const translate = rewire('../../server/lib/helpers/translate');
 translate.__set__('dictionaries', dictionaries);
 
-function TranslateUnitTests() {
+describe('test/server-unit/lib/helpers/translate.js', () => {
+
   it('#translate() should return a compiler function', () => {
     const compiler = translate('fr');
     expect(compiler).to.be.a('function');
@@ -46,6 +47,5 @@ function TranslateUnitTests() {
     const compiled = translate('en')(undefined);
     expect(compiled).to.equal(undefined);
   });
-}
 
-describe('test/server-unit/lib/helpers/translate.js', TranslateUnitTests);
+});

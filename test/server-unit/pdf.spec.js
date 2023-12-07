@@ -18,7 +18,6 @@ const nodeModulesPath = path.resolve(__dirname, '../../', 'node_modules');
 const pdf = rewire('../../server/lib/renderers/pdf');
 pdf.__set__('html', { render : mockHTMLRenderer });
 
-
 // mock handlebars template file
 const template = 'test/fixtures/file.handlebars';
 const templateWithBarcode = 'pdf-template-with-barcode.handlebars';
@@ -33,10 +32,10 @@ const data = {
 
 const fixturesPath = path.resolve('test/fixtures');
 
-function PDFRenderUnitTest() {
-  this.timeout(5000);
+describe('test/server-unit/PDF renderer', () => {
 
   it('#pdf.render() renders a valid PDF file', async () => {
+    // ??? this.timeout(5000);
     const htmlString = await fs.readFile(template, 'utf8');
     const result = await pdf.render(data, htmlString, {});
     const hasValidVersion = hasValidPdfVersion(result.toString());
@@ -45,6 +44,7 @@ function PDFRenderUnitTest() {
   });
 
   it('#pdf.render() templates in a barcode to the pdf file', async () => {
+    // this.timeout(5000);
     const tmpl = await fs.readFile(path.join(fixturesPath, templateWithBarcode), 'utf8');
 
     // since we removed the actual html templating, this is a poor man's templating
@@ -58,7 +58,8 @@ function PDFRenderUnitTest() {
     const isBuffer = isBufferInstance(result);
     expect(isBuffer && hasValidVersion).to.be.equal(true);
   });
-}
+
+});
 
 
 /**
@@ -81,4 +82,3 @@ function isBufferInstance(file) {
   return file instanceof Buffer;
 }
 
-describe('test/server-unit/PDF renderer', PDFRenderUnitTest);

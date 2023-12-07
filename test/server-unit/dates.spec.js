@@ -1,7 +1,8 @@
 const { expect } = require('chai');
 const dates = require('../../server/lib/template/helpers/dates');
 
-const DateHelperUnitTests = function () {
+describe('test/server-unit/dates', () => {
+
   it('#date() should format a date is "DD/MM/YYYY" format.', () => {
     const date = new Date('2015-03-25 12:00:00');
     const expected = '25/03/2015';
@@ -45,7 +46,6 @@ const DateHelperUnitTests = function () {
     expect(formated).to.equal(expected);
   });
 
-
   it('#age() should return 3 for the current date.', () => {
     const current = new Date();
     const dob = new Date((current.getFullYear() - 3), current.getMonth());
@@ -60,6 +60,5 @@ const DateHelperUnitTests = function () {
     const expected = 'March';
     expect(formated).to.equal(expected);
   });
-};
 
-describe('test/server-unit/lib/template/helpers/dates.js', DateHelperUnitTests);
+});

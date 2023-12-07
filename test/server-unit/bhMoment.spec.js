@@ -19,7 +19,8 @@ function evaluate(startDate, endDate, dateBhMoment) {
   expect(formated).to.deep.equal(expected);
 }
 
-const bhMomentUnitTest = () => {
+describe('test/server-unit bhMoment', () => {
+
   it('#day() should return the start and stop dates of the given date', () => {
     const startDate = '2019-08-24';
     const endDate = '2019-08-24';
@@ -43,6 +44,5 @@ const bhMomentUnitTest = () => {
     const endDate = '2019-12-31';
     evaluate(startDate, endDate, date.year());
   });
-};
 
-describe('test/server-unit bhMoment', bhMomentUnitTest);
+});

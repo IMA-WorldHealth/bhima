@@ -4,4 +4,4 @@ const options = {
   currencyId : 1,
 };
 
-describe(`(${target}) Open Debtors`, RenderingTests(target, null, options));
+describe(`test/integration  (${target}) Rendering`, RenderingTests(target, null, options));
