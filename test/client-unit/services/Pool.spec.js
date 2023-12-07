@@ -1,5 +1,5 @@
 /* global inject, expect */
-describe('Pool', () => {
+describe('test/client-unit/services/Pool', () => {
 
 
   let Pool;

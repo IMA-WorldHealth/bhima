@@ -8,7 +8,7 @@ const helpers = require('./helpers');
  *
  * This test suite implements full CRUD on the /projects HTTP API endpoint.
  */
-describe('(/tags) The tags API endpoint', () => {
+describe('test/integration (/tags) The tags API endpoint', () => {
   // project we will add during this test suite.
   const uuid = '5b7dd0d692734955a703126fbd504b61';
   const uuid2 = '7b7dd0d692734955a703126fbd504b61';

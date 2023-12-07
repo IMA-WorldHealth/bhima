@@ -8,7 +8,7 @@ const helpers = require('./helpers');
  *
  * This test suite implements full CRUD on the /employees HTTP API endpoint.
  */
-describe('(/employees) the employees API endpoint', () => {
+describe('test/integration (/employees) the employees API endpoint', () => {
 
   const testService = 'AFF85BDCD7C64047AFE71724F8CD369E';
   // custom dates

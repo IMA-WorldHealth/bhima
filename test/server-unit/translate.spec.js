@@ -48,4 +48,4 @@ function TranslateUnitTests() {
   });
 }
 
-describe('lib/helpers/translate.js', TranslateUnitTests);
+describe('test/server-unit/lib/helpers/translate.js', TranslateUnitTests);

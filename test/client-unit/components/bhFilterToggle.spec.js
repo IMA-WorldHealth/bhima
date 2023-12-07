@@ -1,6 +1,6 @@
 /* eslint no-unused-expressions:off */
 /* global inject, expect, chai */
-describe('bhFilterToggle', bhFilterToggleTests);
+describe('test/client-unit/components/bhFilterToggle', bhFilterToggleTests);
 
 function bhFilterToggleTests() {
   let $scope;

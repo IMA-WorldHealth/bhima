@@ -1,7 +1,7 @@
 /* eslint no-unused-expressions:off */
 /* global inject, expect */
 
-describe('bhHiddenField', bhHiddenFieldTests);
+describe('test/client-unit/components/bhHiddenField', bhHiddenFieldTests);
 
 function bhHiddenFieldTests() {
   const template = `

@@ -4,7 +4,7 @@ const helpers = require('../helpers');
 const shared = require('./shared');
 const xlsx = require('../../../server/lib/renderers/xlsx.js');
 
-describe('(/inventory/metadata) The inventory metadata http API', () => {
+describe('test/integration (/inventory/metadata) The inventory metadata http API', () => {
   let inventoryList;
 
   // inventory list items
