@@ -1,0 +1,46 @@
+{{> head }}
+
+<body>
+
+  {{> header }}
+
+  <!-- body  -->
+  <!-- filters  -->
+  {{> filterbar filters=filters }}
+
+  <!-- list of data  -->
+  <table class="table table-condensed table-report">
+    <thead>
+      <tr>
+        <th>{{translate 'FORM.LABELS.USERNAME'}}</th>
+        <th>{{translate 'FORM.LABELS.LOGIN'}}</th>
+        <th>{{translate 'FORM.LABELS.ROLES'}}</th>
+        <th>{{translate 'FORM.LABELS.DEPOT'}}</th>
+        <th>{{translate 'FORM.LABELS.CASHBOXES'}}</th>
+        <th>{{translate 'USERS.LAST_LOGIN'}}</th>
+        <th>{{translate 'FORM.LABELS.DATE_CREATED'}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each rows}}
+        <tr>
+          <td class="text-muted" {{#if deactivated}} style="text-decoration:line-through;" {{/if}}>{{display_name}}</td>
+          <td class="text-muted" {{#if deactivated}} style="text-decoration:line-through;" {{/if}}>{{username}}</td>
+          <td class="text-muted" {{#if deactivated}} style="text-decoration:line-through;" {{/if}}>{{roles}}</td>
+          <td class="text-muted" {{#if deactivated}} style="text-decoration:line-through;" {{/if}}>{{depots}}</td>
+          <td class="text-muted" {{#if deactivated}} style="text-decoration:line-through;" {{/if}}>{{cashboxes}}</td>
+          <td class="text-muted" {{#if deactivated}} style="text-decoration:line-through;" {{/if}}>{{date last_login}}</td>
+          <td class="text-muted" {{#if deactivated}} style="text-decoration:line-through;" {{/if}}>{{date created_at}}</td>
+        </tr>
+      {{else}}
+        {{> emptyTable columns=7}}
+      {{/each}}
+    </tbody>
+    <tfoot>
+     <tr style="font-weight: bold;">
+       <td colspan="6">{{rows.length}} {{translate 'FORM.LABELS.USER'}}</td>
+      </tr>
+    </tfoot>
+  </table>
+
+</body>
