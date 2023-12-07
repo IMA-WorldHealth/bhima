@@ -1,6 +1,6 @@
 /* global inject, expect, chai */
 /* eslint no-unused-expressions:off */
-describe('PatientInvoiceForm', () => {
+describe('test/client-unit/services/PatientInvoiceForm', () => {
   let PatientInvoiceForm;
   let httpBackend;
   let Session;

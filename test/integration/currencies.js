@@ -3,7 +3,7 @@
 
 const helpers = require('./helpers');
 
-describe('(/currencies) currencies API routes', () => {
+describe('test/integration (/currencies) currencies API routes', () => {
   const currencyIdFc = 1;
   const currencyIdEur = 3;
   const keys = [

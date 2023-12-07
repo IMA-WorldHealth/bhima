@@ -3,7 +3,7 @@
 
 const helpers = require('./helpers');
 
-describe('(/accounts/categories) Account Categories', () => {
+describe('test/integration (/accounts/categories) Account Categories', () => {
   const newAccountCategory = {
     category : 'Test Account Category 1',
   };

@@ -1,7 +1,7 @@
 /* eslint no-unused-expressions:off */
 /* global inject, expect */
 
-describe('bhModalNotify', bhModalNotifyTests);
+describe('test/client-unit/components/bhModalNotify', bhModalNotifyTests);
 
 function bhModalNotifyTests() {
   const template = `

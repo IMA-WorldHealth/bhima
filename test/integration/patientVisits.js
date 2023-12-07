@@ -2,7 +2,7 @@
 
 const helpers = require('./helpers');
 
-describe('(/patients/:uuid/visits) Patient Visits', () => {
+describe('test/integration (/patients/:uuid/visits) Patient Visits', () => {
 
   const { services } = helpers.data;
   const patientUuid = '81af634f-321a-40de-bc6f-ceb1167a9f65';

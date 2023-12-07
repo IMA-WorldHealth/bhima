@@ -13,7 +13,7 @@ const genuuid = () => uuid.v4().toUpperCase().replace(/-/g, '');
  */
 
 /* The /invoices API endpoint */
-describe('(/invoices) Patient Invoices', () => {
+describe('test/integration (/invoices) Patient Invoices', () => {
   const numInvoices = 5;
   const numCreatedInvoices = 3;
   const numDeletedInvoices = 1;

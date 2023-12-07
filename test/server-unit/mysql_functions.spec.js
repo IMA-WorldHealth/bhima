@@ -129,4 +129,4 @@ function DatabaseUnitTests() {
   });
 }
 
-describe('lib/db/function.sql.js', DatabaseUnitTests);
+describe('test/server-unit/lib/db/function.sql.js', DatabaseUnitTests);

@@ -45,4 +45,4 @@ const bhMomentUnitTest = () => {
   });
 };
 
-describe('/lib/bhMoment.spec.js', bhMomentUnitTest);
+describe('test/server-unit bhMoment', bhMomentUnitTest);

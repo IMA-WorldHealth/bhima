@@ -3,7 +3,7 @@
 
 const helpers = require('./helpers');
 
-describe('(/barcode) Barcode Reverse Lookup', () => {
+describe('test/integration (/barcode) Barcode Reverse Lookup', () => {
   const validPatientBarcode = 'PA81af634f';
   const invalidPatientBarcode = 'PAnotvalid';
   const validLotBarcode = 'LT064ab1d9';

@@ -3,7 +3,7 @@ const moment = require('moment');
 const helpers = require('../helpers');
 const shared = require('./shared');
 
-describe('(/stock/) The Stock HTTP API', () => {
+describe('test/integration (/stock/) The Stock HTTP API', () => {
 
   // create new stock lots
   it('POST /stock/lots create a new stock lots entry', async () => {

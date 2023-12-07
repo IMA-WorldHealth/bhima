@@ -1,6 +1,6 @@
 /* global inject, expect */
 /* eslint no-unused-expressions:off */
-describe('SessionService', () => {
+describe('test/client-unit/services/SessionService', () => {
   // shared services
   let Session;
   let rootScope;
