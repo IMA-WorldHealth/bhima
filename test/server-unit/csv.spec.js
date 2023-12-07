@@ -54,7 +54,6 @@ id,name,score,dob
     expect(rendered).to.equal(output);
   });
 
-
   it('#render() does not remove empty rows', async () => {
     const cloned = [...data, {}];
     const renderedRaw = await csv.render({ csv : cloned });
