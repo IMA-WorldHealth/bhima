@@ -22,14 +22,14 @@ const equalItem = 'developer';
 const gtItem = 17;
 const ltItem = 7;
 
-function HanldebarsRenderUnitTest() {
+describe('test/server-unit/handlebars renderer', () => {
+
   it('#handlebars.render() renders correctly template with corresponding data', async () => {
     let result;
 
     // check for defined `developer` return the developer's message
     result = await hbs.render(template, data);
     expect(result).to.equal(`<html>${data.developer_message}</html>`);
-
 
     // check for undefined `developer` return the tourist's message
     delete data.developer;
@@ -100,6 +100,5 @@ function HanldebarsRenderUnitTest() {
     value = 'false';
     expect(out).to.equal(value);
   });
-}
 
-describe('test/server-unit/handlebars renderer', HanldebarsRenderUnitTest);
+});

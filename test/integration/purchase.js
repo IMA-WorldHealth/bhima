@@ -333,24 +333,23 @@ describe('test/integration (/purchases) Purchases', () => {
 
   describe('/purchases/search', SearchTests);
 
-  describe('deletion tests', DeletionTests);
+  describe('deletion tests', () => {
+
+    it('DELETE /purchases/:uuid removes a purchase order', () => {
+      return agent.delete(`/purchases/${puid}`)
+        .then(res => {
+          expect(res).to.have.status(201);
+        })
+        .catch(helpers.handler);
+    });
+
+    it('DELETE /purchases/:uuid should return 404 if the purchase order does not exist', () => {
+      return agent.delete(`/purchases/${puid}`)
+        .then(res => {
+          helpers.api.errored(res, 404);
+        })
+        .catch(helpers.handler);
+    });
+  });
 
 });
-
-function DeletionTests() {
-  it('DELETE /purchases/:uuid removes a purchase order', () => {
-    return agent.delete(`/purchases/${puid}`)
-      .then(res => {
-        expect(res).to.have.status(201);
-      })
-      .catch(helpers.handler);
-  });
-
-  it('DELETE /purchases/:uuid should return 404 if the purchase order does not exist', () => {
-    return agent.delete(`/purchases/${puid}`)
-      .then(res => {
-        helpers.api.errored(res, 404);
-      })
-      .catch(helpers.handler);
-  });
-}

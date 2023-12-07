@@ -1,7 +1,8 @@
 /* eslint global-require:off */
 const { expect } = require('chai');
 
-function DatabaseUnitTests() {
+describe('test/server-unit/lib/db/index.js', () => {
+
   let db;
   before(() => {
     db = require('../../server/lib/db');
@@ -33,6 +34,5 @@ function DatabaseUnitTests() {
         done(error);
       });
   });
-}
 
-describe('test/server-unit/lib/db/index.js', DatabaseUnitTests);
+});

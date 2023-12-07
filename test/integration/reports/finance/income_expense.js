@@ -16,7 +16,7 @@ describe.skip(`(${target}) Income Expense Reports`, () => {
     type : 1,
   };
 
-  describe(`${target} Rendering`, RenderingTests(target, null, parameters));
+  describe(`test/integration ${target} Rendering`, RenderingTests(target, null, parameters));
 
   it(`GET ${target} returns the correct JSON keys`, () => {
     parameters.renderer = 'json';
