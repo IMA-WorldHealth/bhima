@@ -8,7 +8,7 @@ const shared = require('./shared');
  *
  * This test suite implements full CRUD on the /beds HTTP API endpoint.
  */
-describe('(/beds) The bed API endpoint', () => {
+describe('test/integration (/beds) The bed API endpoint', () => {
   // beds we will add during this test suite.
   const { bed1, bed2 } = shared;
   let id1;

@@ -3,7 +3,7 @@
 const helpers = require('./helpers');
 
 // The /depots API endpoint
-describe('(/depots) The depots API ', () => {
+describe('test/integration (/depots) The depots API ', () => {
   const principalDepotUuid = 'F9CAEB16168443C5A6C447DBAC1DF296';
   const secondaryDepotUuid = 'D4BB1452E4FA4742A281814140246877';
   // new depot object

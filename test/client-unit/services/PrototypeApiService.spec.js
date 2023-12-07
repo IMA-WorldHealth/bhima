@@ -1,5 +1,5 @@
 /* global inject, expect */
-describe('PrototypeApiService', () => {
+describe('test/client-unit/services/PrototypeApiService', () => {
 
 
   // shared common data

@@ -3,7 +3,7 @@
 const helpers = require('../helpers');
 const shared = require('./shared');
 
-describe('(/inventory/groups) The inventory groups HTTP API', () => {
+describe('test/integration (/inventory/groups) The inventory groups HTTP API', () => {
   const NUM_GROUPS = 34;
 
   it(`GET /inventory/groups finds ${NUM_GROUPS} inventory groups`, () => {

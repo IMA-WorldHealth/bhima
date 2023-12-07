@@ -3,7 +3,7 @@
 const helpers = require('../helpers');
 const shared = require('./shared');
 
-describe('(/inventory/types) The inventory types http API', () => {
+describe('test/integration (/inventory/types) The inventory types http API', () => {
   const NUM_TYPES = 3;
 
   it(`GET /inventory/types finds ${NUM_TYPES} inventory types`, () => {

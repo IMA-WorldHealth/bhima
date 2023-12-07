@@ -3,7 +3,7 @@
 
 const helpers = require('./helpers');
 
-describe('(/Journal) Credit Notes to reverse invoice transactions', () => {
+describe('test/integration (/Journal) Credit Notes to reverse invoice transactions', () => {
 
   const fetchableInvoiceUuid = '957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6';
 

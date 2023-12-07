@@ -5,7 +5,7 @@ const helpers = require('./helpers');
 /*
  * The /journal API endpoint
  */
-describe('(/journal) API endpoint', () => {
+describe('test/integration (/journal) API endpoint', () => {
   const RECORD_UUID = 'A5A5F950-A4C9-47F0-9A9A-2BFC3123E534';
   const MISSING_RECORD_UUID = 'A5A5F950-A4C9-47F0-9A9A-2BFC3123E635';
 
@@ -36,9 +36,9 @@ describe('(/journal) API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  describe('Search', SearchTests);
+  describe('(/journal) Search', SearchTests);
 
-  describe('Corrections', CorrectionTests);
+  describe('(/journal) Corrections', CorrectionTests);
 });
 
 function SearchTests() {

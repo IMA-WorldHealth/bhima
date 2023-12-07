@@ -35,4 +35,4 @@ function DatabaseUnitTests() {
   });
 }
 
-describe('lib/db/index.js', DatabaseUnitTests);
+describe('test/server-unit/lib/db/index.js', DatabaseUnitTests);

@@ -1,6 +1,6 @@
 /* global inject, expect, chai */
 /* eslint no-unused-expressions:off */
-describe('VoucherForm', () => {
+describe('test/client-unit/services/VoucherForm', () => {
   let VoucherForm;
   let httpBackend;
   let Session;

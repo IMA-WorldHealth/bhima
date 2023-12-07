@@ -1,7 +1,7 @@
 /* global expect, agent */
 const helpers = require('./helpers');
 
-describe('(/accounts/references) Accounts References', () => {
+describe('test/integration (/accounts/references) Accounts References', () => {
   const numAccountReference = 14;
 
   const newAccountReference = {

@@ -8,7 +8,7 @@ const helpers = require('./helpers');
  *
  * This test suite implements full CRUD on the /roles HTTP API endpoint.
  */
-describe('(/roles) The roles API endpoint', () => {
+describe('test/integration (/roles) The roles API endpoint', () => {
 
   // role we will add during this test suite.
   const newRole = {

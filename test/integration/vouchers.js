@@ -11,7 +11,7 @@ const genuuid = () => uuid.v4().toUpperCase().replace(/-/g, '');
  *
  * This test suit is about the vouchers table
  */
-describe('(/vouchers) The vouchers HTTP endpoint', () => {
+describe('test/integration (/vouchers) The vouchers HTTP endpoint', () => {
   const date = new Date();
 
   const vUuid = 'B140C1446CA847B099BA94732CF6EFDE';

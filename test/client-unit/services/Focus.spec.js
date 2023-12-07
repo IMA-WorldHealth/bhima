@@ -1,5 +1,5 @@
 /* global inject, expect, chai */
-describe('Focus', () => {
+describe('test/client-unit/services/Focus', () => {
 
   let $scope;
   let $compile;

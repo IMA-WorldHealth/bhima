@@ -1,6 +1,6 @@
 /* global inject, expect */
 /* eslint no-unused-expressions:off */
-describe('BaseReportService', () => {
+describe('test/client-unit/services/BaseReportService', () => {
   // shared services
   let SavedReports;
 

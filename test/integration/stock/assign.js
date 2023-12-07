@@ -3,7 +3,7 @@
 const helpers = require('../helpers');
 const shared = require('./shared');
 
-describe('(/stock/assign) The Stock Assign HTTP API', () => {
+describe('test/integration (/stock/assign) The Stock Assign HTTP API', () => {
   const variables = {};
   const keys = [
     'uuid', 'lot_uuid', 'depot_uuid', 'entity_uuid',
