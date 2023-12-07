@@ -2,7 +2,8 @@
 const { expect } = require('chai');
 const uuid = require('uuid').v4;
 
-function PurchaseUnitTests() {
+describe('test/server-unit/purchases/Purchase Orders', () => {
+
   let db;
   before(() => {
     db = require('../../../server/lib/db');
@@ -39,6 +40,4 @@ function PurchaseUnitTests() {
     expect(items).to.have.length(0);
   });
 
-}
-
-describe('test/server-unit/purchases/Purchase Orders', PurchaseUnitTests);
+});

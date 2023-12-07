@@ -3,7 +3,8 @@ const { expect } = require('chai');
 
 const dataset = require('./stepdown.data');
 
-function StepdownMethodUnitTests() {
+describe('test/server-unit/lib/db/stepdown.js', () => {
+
   let Stepdown;
   before(() => {
     Stepdown = require('../../server/lib/stepdown');
@@ -61,6 +62,5 @@ function StepdownMethodUnitTests() {
 
     done();
   });
-}
 
-describe('test/server-unit/lib/db/stepdown.js', StepdownMethodUnitTests);
+});
