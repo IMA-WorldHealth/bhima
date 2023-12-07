@@ -81,4 +81,4 @@ function isBufferInstance(file) {
   return file instanceof Buffer;
 }
 
-describe('PDF renderer', PDFRenderUnitTest);
+describe('test/server-unit/PDF renderer', PDFRenderUnitTest);

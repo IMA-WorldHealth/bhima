@@ -1,6 +1,6 @@
 /* eslint no-unused-expressions:off */
 /* global inject expect */
-describe('bhCardList', bhCardListTests);
+describe('test/client-unit/components/bhCardList', bhCardListTests);
 
 function bhCardListTests() {
   let $compile;

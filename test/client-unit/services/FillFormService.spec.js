@@ -1,5 +1,5 @@
 /* global expect inject */
-describe('FillFormService', () => {
+describe('test/client-unit/services/FillFormService', () => {
   let FillFormService;
   let $httpBackend;
 

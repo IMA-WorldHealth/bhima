@@ -1,5 +1,5 @@
 /* global inject, expect */
-describe('(directive) bhUnique', () => {
+describe('test/client-unit/directives/(directive) bhUnique', () => {
   let $scope;
   let form;
 

@@ -8,7 +8,7 @@ const helpers = require('./helpers');
  *
  * This test suite implements full CRUD on the /cost_center_allocation_basis HTTP API endpoint.
  */
-describe('(/cost_center_allocation_basis) The cost center step-down allocation basis API endpoint', () => {
+describe('test/integration (/cost_center_allocation_basis) The cost center step-down allocation basis API endpoint', () => {
 
   const basis = {
     name : 'Laundry Processed',

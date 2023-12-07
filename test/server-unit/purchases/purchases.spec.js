@@ -41,4 +41,4 @@ function PurchaseUnitTests() {
 
 }
 
-describe('Purchase Orders', PurchaseUnitTests);
+describe('test/server-unit/purchases/Purchase Orders', PurchaseUnitTests);

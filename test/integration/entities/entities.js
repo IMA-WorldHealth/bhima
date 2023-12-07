@@ -1,7 +1,7 @@
 /* global expect, agent */
 const helpers = require('../helpers');
 
-describe('(/entities) Entities', () => {
+describe('test/integration (/entities) Entities', () => {
   const types = {
     PERSON : 1,
     SERVICE : 2,

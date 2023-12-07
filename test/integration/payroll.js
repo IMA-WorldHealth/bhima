@@ -8,7 +8,7 @@ const helpers = require('./helpers');
  *
  * This test suite implements Payroll Process Managere.
  */
-describe('(/multiplePayroll ) the Payroll API endpoint', () => {
+describe('test/integration (/multiplePayroll ) the Payroll API endpoint', () => {
 
   const params = {
     periodPaie : 1,

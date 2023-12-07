@@ -1,5 +1,5 @@
 /* global inject, expect */
-describe('StockExitFormHelper', () => {
+describe('test/client-unit/services/StockExitFormHelper', () => {
 
   let Helper;
   let $rootScope;

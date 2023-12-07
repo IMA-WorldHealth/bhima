@@ -3,7 +3,7 @@ const moment = require('moment');
 const helpers = require('../helpers');
 const shared = require('./shared');
 
-describe('(/stock/requisition) The Stock Assign HTTP API', () => {
+describe('test/integration (/stock/requisition) The Stock Assign HTTP API', () => {
   const variables = {};
   const keys = [
     'uuid', 'requestor_uuid', 'requestor_type_id', 'description', 'date',

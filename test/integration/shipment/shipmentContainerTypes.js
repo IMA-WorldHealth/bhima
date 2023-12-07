@@ -4,7 +4,7 @@
 const helpers = require('../helpers');
 
 // the /shipment_container_types API endpoint
-describe('(/shipment_container_types) the shipments API', () => {
+describe('test/integration (/shipment_container_types) the shipments API', () => {
 
   it('/shipment_container_types', () => {
     return agent.get('/shipment_container_types')

@@ -1,5 +1,5 @@
 /* global inject expect */
-describe('TrialBalanceService', () => {
+describe('test/client-unit/services/TrialBalanceService', () => {
   let TrialBalance;
 
   beforeEach(module('bhima.services', 'bhima.mocks', 'angularMoment', 'bhima.constants'));

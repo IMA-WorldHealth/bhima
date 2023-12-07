@@ -1,7 +1,7 @@
 /* eslint no-unused-expressions:off */
 /* global inject, expect, chai */
 
-describe('bhDateEditor', bhDateEditorTests);
+describe('test/client-unit/components/bhDateEditor', bhDateEditorTests);
 
 function bhDateEditorTests() {
   const template = `

@@ -4,7 +4,7 @@ const moment = require('moment');
 const helpers = require('./helpers');
 
 // the /shipments API endpoint
-describe('(/shipments) the shipments API', () => {
+describe('test/integration-stock (/shipments) the shipments API', () => {
   const SHIPMENT_AT_DEPOT = 2;
   const SHIPMENT_READY = 3;
 

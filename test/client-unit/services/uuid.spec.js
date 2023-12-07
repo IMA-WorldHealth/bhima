@@ -1,5 +1,5 @@
 /* global inject, expect */
-describe('uuid', () => {
+describe('test/client-unit/services/uuid', () => {
 
   let UUID;
   beforeEach(module('bhima.services'));

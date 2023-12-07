@@ -1,5 +1,5 @@
 /* global inject, expect */
-describe('(directive) bhMaxInteger', () => {
+describe('test/client-unit/directives/(directive) bhMaxInteger', () => {
   let $scope;
   let form;
 

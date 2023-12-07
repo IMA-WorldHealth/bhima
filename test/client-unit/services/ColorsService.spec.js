@@ -1,5 +1,5 @@
 /* global inject, expect */
-describe('ColorService', () => {
+describe('test/client-unit/services/ColorService', () => {
 
   let ColorService;
   beforeEach(module(

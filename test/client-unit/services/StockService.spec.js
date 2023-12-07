@@ -1,6 +1,6 @@
 /* global inject, expect */
 
-describe('StockService', StockServiceTests);
+describe('test/client-unit/services/StockService', StockServiceTests);
 
 function StockServiceTests() {
   // define modules

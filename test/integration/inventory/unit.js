@@ -3,7 +3,7 @@
 const helpers = require('../helpers');
 const shared = require('./shared');
 
-describe('(/inventory/units) The inventory units HTTP API', () => {
+describe('test/integration (/inventory/units) The inventory units HTTP API', () => {
 
   const NUM_UNITS = 42; // Only 41, but a new one is created in import test
 

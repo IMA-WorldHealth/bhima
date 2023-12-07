@@ -1,7 +1,7 @@
 /* global expect, agent */
 const helpers = require('./helpers');
 
-describe('(/account_reference_type) Account Reference Type', () => {
+describe('test/integration (/account_reference_type) Account Reference Type', () => {
   const numAccountReferenceType = 5;
 
   const newAccountReferenceType = {

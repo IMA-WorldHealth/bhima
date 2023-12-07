@@ -1,6 +1,6 @@
 /* global inject, expect, chai */
 /* eslint no-unused-expressions:off, no-restricted-properties:off */
-describe('PurchaseOrderForm', () => {
+describe('test/client-unit/services/PurchaseOrderForm', () => {
   let PurchaseOrderForm;
   let Mocks;
   let Session;
@@ -67,7 +67,7 @@ describe('PurchaseOrderForm', () => {
     httpBackend.verifyNoOutstandingRequest();
   });
 
-  describe('calls #setup() in the constructor()', () => {
+  describe('#setup() in the constructor()', () => {
     let setupSpy;
 
     before(() => {

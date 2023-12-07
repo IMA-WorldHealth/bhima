@@ -44,7 +44,7 @@ const mockPatients = [
   [uuid(), 'Lynn Black', 'F', '1981-06-01', 'TRUE', uuid()],
 ];
 
-describe('(/patients) Find matching patients', () => {
+describe('test/integration (/patients) Find matching patients', () => {
 
   // prior to tests, create default patients.
   before('add mock patients', () => {

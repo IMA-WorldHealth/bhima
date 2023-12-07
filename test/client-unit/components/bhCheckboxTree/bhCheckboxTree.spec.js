@@ -1,7 +1,7 @@
 /* eslint no-unused-expressions:off */
 /* global inject, expect, chai */
 
-describe('bhCheckboxTree', bhCheckboxTree);
+describe('test/client-unit/components/bhCheckboxTree', bhCheckboxTree);
 
 function bhCheckboxTree() {
   beforeEach(module(

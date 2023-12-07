@@ -3,7 +3,7 @@
 
 const helpers = require('./helpers');
 
-describe('(/services) The Service API', () => {
+describe('test/integration (/services) The Service API', () => {
   const newService = {
     enterprise_id : 1,
     name : 'tested Service',

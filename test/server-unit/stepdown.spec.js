@@ -63,4 +63,4 @@ function StepdownMethodUnitTests() {
   });
 }
 
-describe('lib/db/stepdown.js', StepdownMethodUnitTests);
+describe('test/server-unit/lib/db/stepdown.js', StepdownMethodUnitTests);

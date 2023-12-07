@@ -6,7 +6,7 @@ const helpers = require('./helpers');
 /*
  * The /invoicing_fees API endpoint
  */
-describe('(/invoicing_fees) Invoicing Fee API', () => {
+describe('test/integration (/invoicing_fees) Invoicing Fee API', () => {
   const invoicingFeeA = {
     account_id :  260, // 75881010 - Autres revenus
     label :       'Test Invoicing Fee A',
