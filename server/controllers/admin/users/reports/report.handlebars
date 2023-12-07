@@ -5,6 +5,8 @@
   {{> header }}
 
   <!-- body  -->
+  <!-- filters  -->
+  {{> filterbar filters=filters }}
 
   <!-- list of data  -->
   <table class="table table-condensed table-report">
@@ -22,13 +24,13 @@
     <tbody>
       {{#each rows}}
         <tr>
-          <td>{{display_name}}</td>
-          <td {{#if deactivated}}class="text-muted strike"{{/if}}>{{username}}</td>
-          <td {{#if deactivated}}class="text-muted strike"{{/if}}>{{roles}}</td>
-          <td {{#if deactivated}}class="text-muted strike"{{/if}}>{{depots}}</td>
-          <td {{#if deactivated}}class="text-muted strike"{{/if}}>{{cashboxes}}</td>
-          <td {{#if deactivated}}class="text-muted strike"{{/if}}>{{date last_login}}</td>
-          <td>{{date created_at}}</td>
+          <td class="text-muted" {{#if deactivated}} style="text-decoration:line-through;" {{/if}}>{{display_name}}</td>
+          <td class="text-muted" {{#if deactivated}} style="text-decoration:line-through;" {{/if}}>{{username}}</td>
+          <td class="text-muted" {{#if deactivated}} style="text-decoration:line-through;" {{/if}}>{{roles}}</td>
+          <td class="text-muted" {{#if deactivated}} style="text-decoration:line-through;" {{/if}}>{{depots}}</td>
+          <td class="text-muted" {{#if deactivated}} style="text-decoration:line-through;" {{/if}}>{{cashboxes}}</td>
+          <td class="text-muted" {{#if deactivated}} style="text-decoration:line-through;" {{/if}}>{{date last_login}}</td>
+          <td class="text-muted" {{#if deactivated}} style="text-decoration:line-through;" {{/if}}>{{date created_at}}</td>
         </tr>
       {{else}}
         {{> emptyTable columns=7}}

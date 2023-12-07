@@ -9,6 +9,7 @@
 const _ = require('lodash');
 const ReportManager = require('../../../../lib/ReportManager');
 const userCtrl = require('../index');
+const shared = require('../../../finance/reports/shared');
 
 const REPORT_TEMPLATE = './server/controllers/admin/users/reports/report.handlebars';
 
@@ -27,10 +28,11 @@ async function report(req, res, next) {
     suppressDefaultFiltering : true,
     suppressDefaultFormatting : false,
   });
+  const filters = shared.formatFilters(options);
   try {
     const rm = new ReportManager(REPORT_TEMPLATE, req.session, options);
     const rows = await userCtrl.fetchUser(options);
-    const result = await rm.render({ rows });
+    const result = await rm.render({ rows, filters });
     res.set(result.headers).send(result.report);
   } catch (e) {
     next(e);

@@ -88,6 +88,15 @@ function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstant
         cellClass : muteDisabledCells,
       },
       {
+        field : 'created_at',
+        type : 'date',
+        displayName : 'FORM.LABELS.DATE_CREATED',
+        cellFilter : 'date:"dd/MM/yyyy HH:mm:ss"',
+        headerCellFilter : 'translate',
+        visible : true,
+        cellClass : muteDisabledCells,
+      },
+      {
         field : 'action',
         displayName : '',
         cellTemplate : '/modules/users/templates/grid/action.cell.html',

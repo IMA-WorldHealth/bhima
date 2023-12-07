@@ -62,6 +62,10 @@ const filters = [{
   field : 'user_id',
   displayName : 'FORM.LABELS.USER',
 }, {
+  field : 'date_created',
+  displayName : 'FORM.LABELS.DATE_CREATED',
+  isPeriod : true,
+}, {
   field : 'invoiceReference',
   displayName : 'FORM.LABELS.INVOICE',
 }, {
