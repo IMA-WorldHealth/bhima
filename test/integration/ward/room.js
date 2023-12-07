@@ -8,7 +8,7 @@ const shared = require('./shared');
  *
  * This test suite implements full CRUD on the /rooms HTTP API endpoint.
  */
-describe('(/rooms) The room API endpoint', () => {
+describe('test/integration (/rooms) The room API endpoint', () => {
   const EXISTING_ROOMS_IN_DB = 2;
   // rooms we will add during this test suite.
   const room1 = {

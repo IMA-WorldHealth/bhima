@@ -62,4 +62,4 @@ const DateHelperUnitTests = function () {
   });
 };
 
-describe('lib/template/helpers/dates.js', DateHelperUnitTests);
+describe('test/server-unit/lib/template/helpers/dates.js', DateHelperUnitTests);

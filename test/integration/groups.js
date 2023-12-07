@@ -3,7 +3,7 @@
 
 const helpers = require('./helpers');
 
-describe('(/groups) Group subscriptions API', () => {
+describe('test/integration (/groups) Group subscriptions API', () => {
 
   const invalidKey = 'notakey';
   const validKey = 'debtor_group_invoicing_fee';

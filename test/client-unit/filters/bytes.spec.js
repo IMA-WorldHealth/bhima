@@ -1,5 +1,5 @@
 /* global inject, expect */
-describe('Bytes Filter', () => {
+describe('test/client-unit/filters/Bytes Filter', () => {
 
   let bytes;
 

@@ -1,7 +1,7 @@
 /* eslint no-unused-expressions:off */
 /* global inject, expect, chai */
 
-describe('bhBarcodeScanner', bhBarcodeScannerTests);
+describe('test/client-unit/components/bhBarcodeScanner', bhBarcodeScannerTests);
 
 function bhBarcodeScannerTests() {
   const template = `

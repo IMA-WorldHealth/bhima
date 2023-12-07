@@ -1,6 +1,6 @@
 /* global inject expect */
 
-describe('AccountService', () => {
+describe('test/client-unit/services/AccountService', () => {
   let Accounts;
   let $httpBackend;
   let $interval;

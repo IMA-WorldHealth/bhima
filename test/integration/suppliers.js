@@ -8,7 +8,7 @@ const helpers = require('./helpers');
  *
  * This test suite implements full CRUD on the /supplier HTTP API endpoint.
  */
-describe('(/suppliers) The supplier API endpoint', () => {
+describe('test/integration (/suppliers) The supplier API endpoint', () => {
 
   // supplier we will add during this test suite.
   const supplier = {

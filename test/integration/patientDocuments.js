@@ -7,7 +7,7 @@ const helpers = require('./helpers');
 
 const fixtures = path.resolve(__dirname, '../fixtures');
 
-describe('(patients/:uuid/documents) Patient Documents', () => {
+describe('test/integration (patients/:uuid/documents) Patient Documents', () => {
 
 
   const patientUuid = '81af634f-321a-40de-bc6f-ceb1167a9f65';

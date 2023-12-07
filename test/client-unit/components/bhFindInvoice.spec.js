@@ -1,7 +1,7 @@
 /* eslint no-unused-expressions:off */
 /* global inject, expect, chai */
 
-describe('bhFindInvoice', bhFindInvoiceTests);
+describe('test/client-unit/components/bhFindInvoice', bhFindInvoiceTests);
 
 function bhFindInvoiceTests() {
   const patient = {

@@ -2,7 +2,7 @@ const { expect } = require('chai');
 
 const Filter = require('../../server/lib/filter');
 
-describe('filter.js', () => {
+describe('test/server-unit/filter.js', () => {
   const object1 = {
     id : 1,
     name : 'Unit Test',

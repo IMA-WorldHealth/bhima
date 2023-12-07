@@ -8,7 +8,7 @@ const helpers = require('./helpers');
  *
  * This test suite implements full CRUD on the /payroll/employee_configuration  HTTP API endpoint.
  */
-describe('(/payroll/account_configuration) The /payroll/employee_configuration  API endpoint', () => {
+describe('test/integration (/payroll/account_configuration) The /payroll/employee_configuration  API endpoint', () => {
   // Employee Payroll Configuration we will add during this test suite.
 
   const employeeConfig = {

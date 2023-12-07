@@ -6,7 +6,7 @@
  * and the server.
  */
 
-describe('TreeService', () => {
+describe('test/client-unit/services/TreeService', () => {
   beforeEach(module(
     'bhima.services',
   ));

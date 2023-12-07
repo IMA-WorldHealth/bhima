@@ -102,4 +102,4 @@ function HanldebarsRenderUnitTest() {
   });
 }
 
-describe('handlebars renderer', HanldebarsRenderUnitTest);
+describe('test/server-unit/handlebars renderer', HanldebarsRenderUnitTest);

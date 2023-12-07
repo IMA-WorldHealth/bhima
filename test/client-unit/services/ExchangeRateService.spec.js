@@ -1,5 +1,5 @@
 /* global expect inject */
-describe('ExchangeRateService', () => {
+describe('test/client-unit/services/ExchangeRateService', () => {
   let Exchange;
   let $httpBackend;
   let Session;

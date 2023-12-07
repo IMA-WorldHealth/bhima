@@ -4,7 +4,7 @@ const chai = require('chai');
 const sinon = require('sinon');
 const rewire = require('@ima-worldhealth/rewire');
 
-describe('cronEmailReport', () => {
+describe('test/server-unit/cron/cronEmailReport', () => {
   describe('cron timers', () => {
     let CURRENT_JOBS;
     let addJob;
