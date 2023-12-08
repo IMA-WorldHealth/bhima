@@ -12,7 +12,7 @@ const dictionaries = {
 const translate = rewire('../../server/lib/helpers/translate');
 translate.__set__('dictionaries', dictionaries);
 
-describe('test/server-unit/lib/helpers/translate.js', () => {
+describe('test/server-unit/translate, () => {
 
   it('#translate() should return a compiler function', () => {
     const compiler = translate('fr');

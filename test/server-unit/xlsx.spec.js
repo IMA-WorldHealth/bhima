@@ -8,7 +8,8 @@ const xlsx = rewire('../../server/lib/renderers/xlsx');
 // mock the translation as a no-op function
 xlsx.__set__('i18n', () => (() => {}));
 
-describe('test/server-unit/xlsx.js', () => {
+describe('test/server-unit/xlsx, () => {
+
   it('Should return a xlsx buffer', (done) => {
     const data = {
       rows : [{ Firstname : 'Alice', Lastname : 'Bob' }],

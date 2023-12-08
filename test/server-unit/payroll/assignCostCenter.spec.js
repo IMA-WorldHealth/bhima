@@ -3,7 +3,7 @@ const chai = require('chai');
 const { expect } = chai;
 const CostCenter = require('../../../server/controllers/finance/cost_center');
 
-describe('test/server-unit/payroll/payroll/multiplePayroll/datelogic.js', () => {
+describe('test/server-unit/payroll/assignCostCenters, () => {
   const accountsCostCenter = [
     {
       account_id : 215,

@@ -1,7 +1,7 @@
 /* eslint global-require:off */
 const { expect } = require('chai');
 
-describe('test/server-unit/lib/db/index.js', () => {
+describe('test/server-unit/db, () => {
 
   let db;
   before(() => {
