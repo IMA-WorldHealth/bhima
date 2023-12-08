@@ -5,7 +5,7 @@ const helpers = require('../helpers');
  *
  * This test suite implements full CRUD on the /cost_center  HTTP API endpoint.
  */
-describe('test/integration (/cost_center) The /cost_center  API endpoint', () => {
+describe('test/integration/cost-centers/index The /cost_center API endpoint', () => {
   // Cost Center we will add during this test suite.
 
   const { services } = helpers.data;

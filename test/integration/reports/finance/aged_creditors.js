@@ -8,4 +8,4 @@ const options = {
   enterprise_id : 1,
 };
 
-describe(`test/integration (${target}) Aged Creditors`, RenderingTests(target, null, options));
+describe(`test/integration${target}) Aged Creditors Report`, RenderingTests(target, null, options));
