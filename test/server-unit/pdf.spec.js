@@ -32,10 +32,11 @@ const data = {
 
 const fixturesPath = path.resolve('test/fixtures');
 
-describe('test/server-unit/PDF renderer', () => {
+describe('test/server-unit/pdf.spec.js', function () { // eslint-disable-line
+  this.timeout(5000);
 
   it('#pdf.render() renders a valid PDF file', async () => {
-    // ??? this.timeout(5000);
+
     const htmlString = await fs.readFile(template, 'utf8');
     const result = await pdf.render(data, htmlString, {});
     const hasValidVersion = hasValidPdfVersion(result.toString());
@@ -44,7 +45,6 @@ describe('test/server-unit/PDF renderer', () => {
   });
 
   it('#pdf.render() templates in a barcode to the pdf file', async () => {
-    // this.timeout(5000);
     const tmpl = await fs.readFile(path.join(fixturesPath, templateWithBarcode), 'utf8');
 
     // since we removed the actual html templating, this is a poor man's templating
