@@ -62,6 +62,10 @@ const filters = [{
   field : 'user_id',
   displayName : 'FORM.LABELS.USER',
 }, {
+  field : 'date_created',
+  displayName : 'FORM.LABELS.DATE_CREATED',
+  isPeriod : true,
+}, {
   field : 'invoiceReference',
   displayName : 'FORM.LABELS.INVOICE',
 }, {
@@ -142,6 +146,19 @@ const filters = [{
 }, {
   field : 'display_name',
   displayName : 'FORM.LABELS.NAME',
+}, {
+  field : 'login_date_from',
+  displayName : 'USERS.LAST_LOGIN',
+  comparitor : '>',
+  isDate : true,
+}, {
+  field : 'login_date_from',
+  displayName : 'USERS.LAST_LOGIN',
+  comparitor : '<',
+  isDate : true,
+}, {
+  field : 'role_uuid',
+  displayName : 'FORM.LABELS.ROLES',
 }, {
   field : 'sex',
   displayName : 'FORM.LABELS.GENDER',
