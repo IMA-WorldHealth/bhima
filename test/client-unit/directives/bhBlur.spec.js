@@ -1,7 +1,7 @@
 /* eslint no-unused-expressions:off, no-continue: off */
 /* global inject, expect, chai */
 
-describe('test/client-unit/directives/(directive) bhBlur', () => {
+describe('test/client-unit/directives/bhBlur directive', () => {
   let $compile;
   let $scope;
   let element;

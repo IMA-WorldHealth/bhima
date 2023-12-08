@@ -1,7 +1,8 @@
 /* global expect, agent */
 const helpers = require('./helpers');
 
-describe('test/integration (/account_reference_type) Account Reference Type', () => {
+describe('test/integration/accountReferenceType Account Reference Type API endpoint', () => {
+
   const numAccountReferenceType = 5;
 
   const newAccountReferenceType = {
@@ -63,4 +64,5 @@ describe('test/integration (/account_reference_type) Account Reference Type', ()
       })
       .catch(helpers.handler);
   });
+
 });
