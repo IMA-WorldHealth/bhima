@@ -1,6 +1,7 @@
 /* eslint no-unused-expressions:off */
 /* global inject expect */
-describe('test/client-unit/components/bhCardList', () => {
+describe('test/client-unit. /components/bhCardList', () => {
+
   let $compile;
   let $rootScope;
   let $templateCache;

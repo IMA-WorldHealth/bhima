@@ -1,6 +1,6 @@
 /* global inject, expect, chai */
 
-describe('test/client-unit/services/LotItemService', () => {
+describe('test/client-unit. /services/LotItemService', () => {
 
   const expireInOneYear = (new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)).toISOString();
 

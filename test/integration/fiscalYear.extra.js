@@ -3,7 +3,7 @@
 const moment = require('moment');
 const helpers = require('./helpers');
 
-describe('test/integration (/fiscal) Fiscal Year extra operations', () => {
+describe('test/integration. /fiscalYear Fiscal Year extra operations', () => {
   const url = '/fiscal';
   const date = new Date('2017-08-24 12:00:00');
 

@@ -2,7 +2,7 @@
 
 const helpers = require('./helpers');
 
-describe('test/integration /remote access APIs', () => {
+describe('test/integration. /remoteAccess access APIs', () => {
 
   const port = process.env.PORT || 8080;
   const url = `http://localhost:${port}`;

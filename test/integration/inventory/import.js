@@ -3,7 +3,7 @@
 const fs = require('fs');
 const helpers = require('../helpers');
 
-describe('test/integration (/inventory/import) The inventory import http API', () => {
+describe('test/integration. /inventory/import The inventory import http API', () => {
   const templateCsvContent = 'inventory_group_name, inventory_code, inventory_text, inventory_type, inventory_unit, '
     + 'inventory_unit_price, inventory_consumable, inventory_is_asset, depreciation_rate, inventory_brand, '
     + 'inventory_model';

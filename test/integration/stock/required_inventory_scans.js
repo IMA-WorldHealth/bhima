@@ -14,7 +14,7 @@ const newRequiredInventoryScan1 = {
   reference_number : null,
 };
 
-describe('test/integration (/inventory/required/scan) The Stock Asset Inventory Scans HTTP API', () => {
+describe('test/integration. /stock/required_inventory_scans The Stock Asset Inventory Scans HTTP API', () => {
   const variables = {};
   const keys = ['uuid', 'title', 'description', 'start_date', 'end_date', 'is_asset',
     'reference_number', 'created_at', 'updated_at',

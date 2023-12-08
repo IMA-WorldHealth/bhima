@@ -1,6 +1,6 @@
 /* global inject, expect */
 
-describe('test/client-unit/services/StockService', () => {
+describe('test/client-unit. /services/StockService', () => {
 
   // define modules
   beforeEach(module(

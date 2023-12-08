@@ -1,6 +1,6 @@
 /* global inject, expect, chai */
 /* eslint no-unused-expressions:off, no-restricted-properties:off */
-describe('test/client-unit/services/StockEntryModalForm', () => {
+describe('test/client-unit. /services/StockEntryModalForm', () => {
   beforeEach(module('bhima.services'));
 
   let StockForm;

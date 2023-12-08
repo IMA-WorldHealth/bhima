@@ -2,7 +2,7 @@
 
 const helpers = require('../helpers');
 
-describe('Test the stock statification rate REST API', () => {
+describe('test/integration. /stock Test the stock satisfaction rate REST API', () => {
 
   it('GET /stock/satisfication_rate', () => {
     const options = {

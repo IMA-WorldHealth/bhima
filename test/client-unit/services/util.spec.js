@@ -1,5 +1,5 @@
 /* global inject, expect, chai */
-describe('test/client-unit/services/util', () => {
+describe('test/client-unit. /services/util', () => {
   let util;
 
   beforeEach(module('angularMoment', 'bhima.services'));

@@ -1,7 +1,7 @@
 /* global expect, agent */
 const helpers = require('./helpers');
 
-describe('test/integration (/choices_list_management) Choice List Management', () => {
+describe('test/integration. /choiceListManagement Choice List Management', () => {
   const numListElement = 28;
 
   const newElementList = {

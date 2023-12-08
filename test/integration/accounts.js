@@ -8,7 +8,7 @@ function clone(array) {
   return array.slice();
 }
 
-describe('test/integration (/accounts) Accounts', () => {
+describe('test/integration. /accounts Accounts', () => {
   const newAccount = {
     type_id : 1,
     enterprise_id : 1,

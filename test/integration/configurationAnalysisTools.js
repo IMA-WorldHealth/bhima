@@ -1,7 +1,7 @@
 /* global expect, agent */
 const helpers = require('./helpers');
 
-describe('test/integration (/configuration_analysis_tools) Configuration Analysis Tools', () => {
+describe('test/integration. /configurationAnalysisTools Configuration Analysis Tools', () => {
   const numConfiguration = 5;
 
   const newConfiguration = {

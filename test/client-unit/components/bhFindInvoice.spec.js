@@ -1,7 +1,7 @@
 /* eslint no-unused-expressions:off */
 /* global inject, expect, chai */
 
-describe('test/client-unit/components/bhFindInvoice', () => {
+describe('test/client-unit. /components/bhFindInvoice', () => {
 
   const patient = {
     uuid              : '234c51ae-efcc-4238-98c6-f402bfb39866',

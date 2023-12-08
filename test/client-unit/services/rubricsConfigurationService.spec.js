@@ -1,5 +1,5 @@
 /* global expect inject */
-describe('test/client-unit/services/RubricsConfigurationService', () => {
+describe('test/client-unit. /services/RubricsConfigurationService', () => {
   let RubricsConfigs;
   let $httpBackend;
   let configs;

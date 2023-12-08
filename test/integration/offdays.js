@@ -7,7 +7,7 @@ const helpers = require('./helpers');
  *
  * This test suite implements full CRUD on the /offdays  HTTP API endpoint.
  */
-describe('test/integration (/offdays) The /offdays  API endpoint', () => {
+describe('test/integration. /offdays The /offdays  API endpoint', () => {
 
   // Offday we will add during this test suite.
 

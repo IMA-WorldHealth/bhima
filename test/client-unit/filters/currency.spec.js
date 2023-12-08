@@ -1,5 +1,5 @@
 /* global inject, expect */
-describe('test/client-unit/filters/Currency Filter', () => {
+describe('test/client-unit. /filters/currency filter', () => {
 
   const FC = 1;
   const USD = 2;

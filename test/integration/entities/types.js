@@ -1,7 +1,7 @@
 /* global expect, agent */
 const helpers = require('../helpers');
 
-describe('test/integration (/entities/types) Entities', () => {
+describe('test/integration. /entities/types Entity Types API', () => {
   const type = { label : 'Super Human' };
 
   const responseKeys = [

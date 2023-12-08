@@ -2,7 +2,7 @@
 
 const helpers = require('./helpers');
 
-describe('test/integration (/debtors) The /debtors API', () => {
+describe('test/integration. /debtors The /debtors API', () => {
   const debtorKeys = ['uuid', 'group_uuid', 'text'];
   const debtorUuid = '3BE232F9A4B94AF6984C5D3F87D5C107';
   const emptyDebtorUuid = 'A11E6B7FFBBB432EAC2A5312A66DCCF4';

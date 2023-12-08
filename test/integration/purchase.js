@@ -10,7 +10,7 @@ const puid = helpers.uuid();
  * The /purchases API endpoint
  * This test suite implements full CRUD on the /purchases HTTP API endpoint.
  */
-describe('test/integration (/purchases) Purchases', () => {
+describe('test/integration. /purchases Purchases API', () => {
   const datePurchaseFormat1 = moment().subtract(1725, 'days').toDate();
   const datePurchaseFormat2 = moment().subtract(1665, 'days').toDate();
   const datePurchaseFormat3 = moment().subtract(1543, 'days').toDate();

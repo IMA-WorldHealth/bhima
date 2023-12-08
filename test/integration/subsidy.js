@@ -5,7 +5,7 @@ const helpers = require('./helpers');
 
 // FIXME(@jniles) - make a subventions/subsidy account
 
-describe('test/integration (/subsidies) Subsidies', () => {
+describe('test/integration. /subsidy Subsidies API', () => {
   const newSubsidy = {
     account_id : 211, // 60310012 - Achat Médicaments en crème
     label :       'tested subsidy',

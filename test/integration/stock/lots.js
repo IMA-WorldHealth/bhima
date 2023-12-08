@@ -4,7 +4,7 @@ const moment = require('moment');
 const helpers = require('../helpers');
 const shared = require('./shared');
 
-describe('test/integration (/lots/) The lots HTTP API', () => {
+describe('test/integration. /stock/lots The stock lots HTTP API', () => {
   it('GET /lots/:uuid returns details of a lot', () => {
     return agent.get(`/lots/${shared.lotQuinineUuid}`)
       .then((res) => {

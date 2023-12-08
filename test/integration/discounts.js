@@ -6,7 +6,7 @@ const helpers = require('./helpers');
 /*
  * The /discounts API endpoint
  */
-describe('test/integration (/discounts) Discounts Interface', () => {
+describe('test/integration. /discounts Discounts Interface', () => {
   // FIXME(@jniles) - make a discount account.
   const ACCOUNT_ID = 220; // 66110011 - Remunération Personnel
 

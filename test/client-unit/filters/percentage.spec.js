@@ -1,5 +1,5 @@
 /* global inject, expect */
-describe('test/client-unit/filters/Percentage Filter', () => {
+describe('test/client-unit. /filters/percentage filter', () => {
 
   let percentage;
 
