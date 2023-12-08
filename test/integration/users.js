@@ -8,7 +8,7 @@ const helpers = require('./helpers');
  *
  * This test suite implements full CRUD on the /users HTTP API endpoint.
  */
-describe('test/integration (/users) Users and Permissions', () => {
+describe('test/integration/users Users and Permissions', () => {
   const newUser = {
     username      : 'newUser',
     password      : 'newUser',
