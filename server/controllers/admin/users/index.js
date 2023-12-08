@@ -105,6 +105,7 @@ async function fetchUser(params) {
 `.trim();
 
   filters.equals('id');
+  filters.equals('user_id', 'id');
   filters.equals('role_uuid', 'role_uuid', 'ur');
   filters.equals('depot_uuid', 'depot_uuid', 'dp');
   filters.equals('cashbox_id', 'id', 'cb');

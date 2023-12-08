@@ -147,6 +147,19 @@ const filters = [{
   field : 'display_name',
   displayName : 'FORM.LABELS.NAME',
 }, {
+  field : 'login_date_from',
+  displayName : 'USERS.LAST_LOGIN',
+  comparitor : '>',
+  isDate : true,
+}, {
+  field : 'login_date_from',
+  displayName : 'USERS.LAST_LOGIN',
+  comparitor : '<',
+  isDate : true,
+}, {
+  field : 'role_uuid',
+  displayName : 'FORM.LABELS.ROLES',
+}, {
   field : 'sex',
   displayName : 'FORM.LABELS.GENDER',
 }, {

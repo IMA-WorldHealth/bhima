@@ -24,7 +24,7 @@ function UserRegistryModalController(
   const displayValues = {};
 
   const searchQueryOptions = [
-    'display_name', 'depot_uuid', 'id', 'cashbox_id',
+    'display_name', 'depot_uuid', 'user_id', 'cashbox_id',
     'role_uuid', 'login_date_from', 'login_date_to',
   ];
 
@@ -72,8 +72,8 @@ function UserRegistryModalController(
 
   // custom filter user - assign the value to the params object
   vm.onSelectUser = function onSelectUser(user) {
-    vm.searchQueries.id = user.id;
-    displayValues.id = user.display_name;
+    vm.searchQueries.user_id = user.id;
+    displayValues.user_id = user.display_name;
   };
 
   // custom filter cashbox
