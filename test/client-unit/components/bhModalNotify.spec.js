@@ -66,7 +66,6 @@ describe('test/client-unit/components/bhModalNotify', () => {
     expect(closeIcon).to.equal(null);
   });
 
-
   it('removes the error message when the $timeout TTL expires', () => {
     $scope.someError = {
       data : { code : 404, message : 'NotFound' },
