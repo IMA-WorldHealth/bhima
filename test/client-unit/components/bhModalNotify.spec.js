@@ -1,9 +1,8 @@
 /* eslint no-unused-expressions:off */
 /* global inject, expect */
 
-describe('test/client-unit/components/bhModalNotify', bhModalNotifyTests);
+describe('test/client-unit/components/bhModalNotify', () => {
 
-function bhModalNotifyTests() {
   const template = `
     <bh-modal-notify error="someError"></bh-modal-notify>
   `;
@@ -178,4 +177,5 @@ function bhModalNotifyTests() {
     const successComponentLoaded = find(dangerComponentAsked, '.notification-success');
     expect(successComponentLoaded).to.equal(null);
   });
-}
+
+});

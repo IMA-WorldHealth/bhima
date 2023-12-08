@@ -1,9 +1,8 @@
 /* eslint no-unused-expressions:off */
 /* global inject, expect, chai */
 
-describe('test/client-unit/components/bhBarcodeScanner', bhBarcodeScannerTests);
+describe('test/client-unit/components/bhBarcodeScanner', () => {
 
-function bhBarcodeScannerTests() {
   const template = `
     <bh-barcode-scanner on-scan-callback="callback(record)">
     </bh-barcode-scanner>
@@ -143,4 +142,5 @@ function bhBarcodeScannerTests() {
     const span = find(element, '.text-danger');
     expect(angular.element(span).attr('data-error')).to.equal('READ_ERROR');
   });
-}
+
+});

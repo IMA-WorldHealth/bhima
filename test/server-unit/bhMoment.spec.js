@@ -19,34 +19,30 @@ function evaluate(startDate, endDate, dateBhMoment) {
   expect(formated).to.deep.equal(expected);
 }
 
-describe('test/server-unit', () => {
+describe('test/server-unit bhMoment', () => {
 
-  describe('bhMoment', () => {
+  it('#day() should return the start and stop dates of the given date', () => {
+    const startDate = '2019-08-24';
+    const endDate = '2019-08-24';
+    evaluate(startDate, endDate, date.day());
+  });
 
-    it('#day() should return the start and stop dates of the given date', () => {
-      const startDate = '2019-08-24';
-      const endDate = '2019-08-24';
-      evaluate(startDate, endDate, date.day());
-    });
+  it('#week() should return the start and stop dates of the week for the given date', () => {
+    const startDate = '2019-08-18';
+    const endDate = '2019-08-24';
+    evaluate(startDate, endDate, date.week());
+  });
 
-    it('#week() should return the start and stop dates of the week for the given date', () => {
-      const startDate = '2019-08-18';
-      const endDate = '2019-08-24';
-      evaluate(startDate, endDate, date.week());
-    });
+  it('#month() should return the start and stop dates of the month for the given date', () => {
+    const startDate = '2019-08-01';
+    const endDate = '2019-08-31';
+    evaluate(startDate, endDate, date.month());
+  });
 
-    it('#month() should return the start and stop dates of the month for the given date', () => {
-      const startDate = '2019-08-01';
-      const endDate = '2019-08-31';
-      evaluate(startDate, endDate, date.month());
-    });
-
-    it('#year() should return the start and stop dates of the year for the given date', () => {
-      const startDate = '2019-01-01';
-      const endDate = '2019-12-31';
-      evaluate(startDate, endDate, date.year());
-    });
-
+  it('#year() should return the start and stop dates of the year for the given date', () => {
+    const startDate = '2019-01-01';
+    const endDate = '2019-12-31';
+    evaluate(startDate, endDate, date.year());
   });
 
 });

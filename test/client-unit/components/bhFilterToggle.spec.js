@@ -1,8 +1,6 @@
 /* eslint no-unused-expressions:off */
 /* global inject, expect, chai */
-describe('test/client-unit/components/bhFilterToggle', bhFilterToggleTests);
-
-function bhFilterToggleTests() {
+describe('test/client-unit/components/bhFilterToggle', () => {
   let $scope;
   let element;
 
@@ -29,4 +27,5 @@ function bhFilterToggleTests() {
     angular.element(btn).click();
     expect($scope.callback).to.have.been.called.once;
   });
-}
+
+});

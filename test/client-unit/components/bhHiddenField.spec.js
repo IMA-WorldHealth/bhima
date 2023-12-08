@@ -1,9 +1,8 @@
 /* eslint no-unused-expressions:off */
 /* global inject, expect */
 
-describe('test/client-unit/components/bhHiddenField', bhHiddenFieldTests);
+describe('test/client-unit/components/bhHiddenField', () => {
 
-function bhHiddenFieldTests() {
   const template = `
     <bh-hidden-field show-text="OPEN" hide-text="CLOSE">
       <p id="test">TEST</p>
@@ -70,4 +69,5 @@ function bhHiddenFieldTests() {
     transclusion = find(element, '[bh-hidden-field-transclude]');
     expect(transclusion).not.to.exist;
   });
-}
+
+});
