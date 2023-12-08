@@ -78,8 +78,8 @@ const mockDoublonRequest = {
   medical : mockPatientDoublon,
 };
 
-describe('test/integration (/patients) Patients', () => {
-  // HTTP API Test for /patients/  routes
+describe('test/integration/patients Patients API', () => {
+  // API Test for /patients/  routes
   describe('Patient Search', () => {
 
     it('GET /patients with missing necessary parameters should succeed', () => {
@@ -291,17 +291,17 @@ describe('test/integration (/patients) Patients', () => {
   });
 
   // merge patients
-  describe('merge patients', MergePatients);
+  describe('Merge Patients', MergePatients);
 
   // hospital number uniqueness tests
-  describe('/hospital_number/:id/exists', HospitalNumber);
+  describe('Hospital Number uniqueness', HospitalNumber);
 
   // patient group tests
-  describe('patient groups (/patient/:uuid/groups)', PatientGroups);
+  describe('Patient Groups', PatientGroups);
 
-  describe('patient billing service', billingServices);
+  describe('Patient Billing Service', billingServices);
 
-  describe('patient subsidies', subsidies);
+  describe('Patient Subsidies', subsidies);
 });
 
 // patients merge

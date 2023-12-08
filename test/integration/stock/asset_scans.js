@@ -10,7 +10,7 @@ const newAssetScan1 = {
   notes : 'Test scan 1',
 };
 
-describe('test/integration (/asset/scan) The Stock Asset Scan HTTP API', () => {
+describe('test/integration/asset_scans The Stock Asset Scan API', () => {
   const variables = {};
   const keys = [
     'asset_label', 'asset_uuid', 'assigned_to_name', 'condition_id',

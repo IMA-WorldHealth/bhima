@@ -6,10 +6,10 @@ const helpers = require('./helpers');
 const fixtures = path.resolve(__dirname, '../fixtures');
 
 /*
- * The /enterprises API endpoint
- * This test suite implements full CRUD on the /enterprises HTTP API endpoint.
+ * The /enterprises API
+ * This test suite implements full CRUD on the /enterprises API.
  */
-describe('test/integration (/enterprises) Enterprises API', () => {
+describe('test/integration/enterprises Enterprises API', () => {
   const defaultEnterpriseId = 1;
 
   const enterprise = {

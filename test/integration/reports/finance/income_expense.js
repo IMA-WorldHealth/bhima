@@ -4,7 +4,7 @@ const helpers = require('../../helpers');
 
 const target = '/reports/finance/income_expense';
 
-describe.skip(`(${target}) Income Expense Reports`, () => {
+describe.skip(`test/integration${target} Income Expense Report`, () => {
   const keys = [
     'incomes', 'expenses', 'dateFrom', 'dateTo', 'isEmpty', 'isLost', 'overallBalance', 'type_id',
   ];
@@ -16,7 +16,7 @@ describe.skip(`(${target}) Income Expense Reports`, () => {
     type : 1,
   };
 
-  describe(`test/integration ${target} Rendering`, RenderingTests(target, null, parameters));
+  describe(`Income Expense Report`, RenderingTests(target, null, parameters));
 
   it(`GET ${target} returns the correct JSON keys`, () => {
     parameters.renderer = 'json';

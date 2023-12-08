@@ -2,7 +2,7 @@
 
 const helpers = require('../helpers');
 
-describe('test/integration (/budget) basic budget operations http API', () => {
+describe('test/integration/budget/budget Basic Budget Operations API', () => {
 
   const accountTotal = 100000;
   const accountNum = 70611012; // Hospitalisation (income)

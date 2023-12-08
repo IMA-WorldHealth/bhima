@@ -3,9 +3,9 @@
 const helpers = require('./helpers');
 
 /*
- * The /journal API endpoint
+ * The /journal API
  */
-describe('test/integration (/journal) API endpoint', () => {
+describe('test/integration/journal Journal Basic API', () => {
   const RECORD_UUID = 'A5A5F950-A4C9-47F0-9A9A-2BFC3123E534';
   const MISSING_RECORD_UUID = 'A5A5F950-A4C9-47F0-9A9A-2BFC3123E635';
 
@@ -36,12 +36,10 @@ describe('test/integration (/journal) API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  describe('(/journal) Search', SearchTests);
-
-  describe('(/journal) Corrections', CorrectionTests);
 });
 
-function SearchTests() {
+describe('test/integration/journal Journal Search API', () => {
+
   const description = 'Sample voucher data one';
   const accountId = 187;
   const amount = 100;
@@ -114,9 +112,11 @@ function SearchTests() {
       })
       .catch(helpers.handler);
   });
-}
 
-function CorrectionTests() {
+});
+
+describe('test/integration/journal Journal Corrections API', () => {
+
   const REVERSE_UUID = 'A5A5F950A4C947F09A9A2BFC3123E534';
   const CORRECT_UUID = '19B4D28CCBB311E8BF7E7F323238856C';
 
@@ -201,4 +201,5 @@ function CorrectionTests() {
       })
       .catch(helpers.handler);
   });
-}
+
+});

@@ -4,11 +4,11 @@ const helpers = require('../helpers');
 const shared = require('./shared');
 
 /*
- * The /rooms API endpoint
+ * The /rooms API
  *
- * This test suite implements full CRUD on the /rooms HTTP API endpoint.
+ * This test suite implements full CRUD on the /rooms API.
  */
-describe('test/integration (/rooms) The room API endpoint', () => {
+describe('test/integration/ward/rooms The Ward Room API', () => {
   const EXISTING_ROOMS_IN_DB = 2;
   // rooms we will add during this test suite.
   const room1 = {

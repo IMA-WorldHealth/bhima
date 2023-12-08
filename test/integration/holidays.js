@@ -3,11 +3,11 @@
 const helpers = require('./helpers');
 
 /*
- * The /holidays  API endpoint
+ * The /holidays  API
  *
- * This test suite implements full CRUD on the /holidays  HTTP API endpoint.
+ * This test suite implements full CRUD on the /holidays  API.
  */
-describe('test/integration (/holidays) The /holidays  API endpoint', () => {
+describe('test/integration/holidays The /holidays  API', () => {
 
   // Holiday we will add during this test suite.
 

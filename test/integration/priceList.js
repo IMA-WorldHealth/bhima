@@ -4,9 +4,9 @@
 const helpers = require('./helpers');
 
 /*
- * The /prices API endpoint
+ * The /prices API
  */
-describe('test/integration (/prices ) Price List', () => {
+describe('test/integration/priceList Price List', () => {
   // constants
   const emptyPriceList = {
     uuid : 'DA4BE62A4310408897A457C14CAB49C8',

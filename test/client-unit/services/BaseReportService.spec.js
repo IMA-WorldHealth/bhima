@@ -23,8 +23,8 @@ describe('test/client-unit/services/BaseReportService', () => {
     parseIcon = SavedReports.parseFileUrlToIcon;
   }));
 
-  describe('#parseUrlToExtension()', () => {
-    it('correctly parses simple paths', () => {
+  context('#parseUrlToExtension()', () => {
+    it('#parseUrlToExtension() correctly parses simple paths', () => {
       expect(parseExtension('image.jpg')).to.equal('jpg');
       expect(parseExtension('image.svg')).to.equal('svg');
       expect(parseExtension('doc.docx')).to.equal('docx');
@@ -34,19 +34,19 @@ describe('test/client-unit/services/BaseReportService', () => {
 
     });
 
-    it('handles error cases', () => {
+    it('#parseUrlToExtension() handles error cases', () => {
       expect(parseExtension('')).to.equal('');
       expect(parseExtension()).to.equal('');
     });
 
-    it('correctly parses complex paths', () => {
+    it('#parseUrlToExtension() correctly parses complex paths', () => {
       expect(parseExtension('a.file.with.decimals.pdf')).to.equal('pdf');
       expect(parseExtension('/more/complex/file.with/decimals.gz')).to.equal('gz');
     });
   });
 
-  describe('#parseUrlToIcon()', () => {
-    it('correctly parses paths to guess their icons', () => {
+  context('#parseUrlToIcon()', () => {
+    it('#parseUrlToIcon() correctly parses paths to guess their icons', () => {
       expect(parseIcon('icon.png')).to.equal('fa-file-image-o');
       expect(parseIcon('icon.svg')).to.equal('fa-file-image-o');
 
