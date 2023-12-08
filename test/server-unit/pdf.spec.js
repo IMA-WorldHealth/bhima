@@ -32,7 +32,7 @@ const data = {
 
 const fixturesPath = path.resolve('test/fixtures');
 
-describe('test/server-unit/PDF renderer', () => {
+describe('test/server-unit/pdf', () => {
 
   it('#pdf.render() renders a valid PDF file', async () => {
     // ??? this.timeout(5000);
