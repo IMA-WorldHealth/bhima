@@ -22,7 +22,7 @@ const StockAggregateConsumptionTests = require('./stock.aggregate_consumption');
 const StockImportTests = require('./stock.import');
 
 test.describe('Stock E2E', () => {
-  test.describe('Stock Import', StockImportTests);
+  test.describe('test/end-to-end/stock/stock_import Stock Import', StockImportTests);
   test.describe('Stock Aggregate Consumption', StockAggregateConsumptionTests);
   // ??? test.describe('Stock Assign', StockAssignTests);
   test.describe('Stock Entry', StockEntryTests);

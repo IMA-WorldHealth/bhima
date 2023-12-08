@@ -1,5 +1,5 @@
 /* global inject, expect, chai */
-describe('test/client-unit/directives/(directive) bhSubmit', () => {
+describe('test/client-unit/directives/bhSubmit directive', () => {
   let $scope;
   let element;
   let deferred;

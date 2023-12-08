@@ -8,7 +8,7 @@ const helpers = require('./helpers');
  *
  * This test suite implements full CRUD on the /functions  HTTP API endpoint.
  */
-describe('test/integration (/functions) The /functions  API endpoint', () => {
+describe('test/integration/functions The /functions  API endpoint', () => {
 
   // Function we will add during this test suite.
   const fonction = {
