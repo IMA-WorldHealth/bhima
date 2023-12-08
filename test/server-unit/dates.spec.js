@@ -1,7 +1,7 @@
 const { expect } = require('chai');
 const dates = require('../../server/lib/template/helpers/dates');
 
-describe('test/server-unit', () => {
+context('test/server-unit', () => {
 
   describe('dates', () => {
 
