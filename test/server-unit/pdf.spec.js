@@ -61,7 +61,6 @@ describe('test/server-unit/PDF renderer', () => {
 
 });
 
-
 /**
  * hasValidPdfVersion
  * @description check if the pdf version is valid
@@ -81,4 +80,3 @@ function hasValidPdfVersion(fileInString) {
 function isBufferInstance(file) {
   return file instanceof Buffer;
 }
-
