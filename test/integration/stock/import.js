@@ -4,7 +4,7 @@ const fs = require('fs');
 const helpers = require('../helpers');
 const shared = require('./shared');
 
-describe.skip('(/stock/import) The stock import http API', () => {
+describe.skip('test/integration/stock/import The stock import API', () => {
   const templateCsvHeader = 'inventory_group_name,inventory_code,inventory_text,inventory_type,inventory_unit,inventory_unit_price,inventory_cmm,stock_lot_label,stock_lot_quantity,stock_lot_expiration';
   const templateCsvContent = '"Comprimé", "00001", "Quinine sulfate 500mg", "article", "comprimé", "0.02", "300", "QNN2020", "24000", "2020-12-31"';
 

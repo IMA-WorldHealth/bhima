@@ -4,11 +4,11 @@
 const helpers = require('./helpers');
 
 /*
- * The /grades API endpoint
+ * The /grades API
  *
- * This test suite implements full CRUD on the /grades   HTTP API endpoint.
+ * This test suite implements full CRUD on the /grades   API.
  */
-describe('test/integration (/grades) API endpoint', () => {
+describe('test/integration/grades The grades API', () => {
 
   // grade we will add during this test suite.
   const grade = {

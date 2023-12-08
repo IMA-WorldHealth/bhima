@@ -3,8 +3,8 @@
 
 const helpers = require('./helpers');
 
-// the /shipments API endpoint
-describe('test/integration-stock (/shipment_containers) the shipments containers API', () => {
+// the /shipments API
+describe('test/integration-stock/shipmentContainers The Shipments Containers API', () => {
   const SHIPMENT_AT_DEPOT = 2;
 
   const shipment1 = {
