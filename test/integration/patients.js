@@ -78,7 +78,7 @@ const mockDoublonRequest = {
   medical : mockPatientDoublon,
 };
 
-describe('test/integration (/patients) Patients', () => {
+describe('test/integration/patients Patients API', () => {
   // HTTP API Test for /patients/  routes
   describe('Patient Search', () => {
 

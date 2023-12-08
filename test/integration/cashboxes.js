@@ -4,7 +4,7 @@
 const helpers = require('./helpers');
 
 /* The /cashboxes API endpoint */
-describe('test/integration (/cashboxes) The Cashboxes API endpoint', () => {
+describe('test/integration/cashboxes The Cashboxes API endpoint', () => {
   const numCashboxes = 2;
   const numAuxCashboxes = 1;
   const NUMBER_OF_CASHBOX_CURRENCIES = 2;
