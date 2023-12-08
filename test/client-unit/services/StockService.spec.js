@@ -80,4 +80,5 @@ describe('test/client-unit/services/StockService', () => {
     expect(query).to.include(`renderer=${FILE_TYPE_CSV}`);
     expect(query).to.include('limit=');
   });
-}
+
+});
