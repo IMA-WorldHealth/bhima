@@ -1,9 +1,8 @@
 /* eslint no-unused-expressions:off */
 /* global inject, expect, chai */
 
-describe('test/client-unit/components/bhCheckboxTree', bhCheckboxTree);
+describe('test/client-unit/components/bhCheckboxTree', () => {
 
-function bhCheckboxTree() {
   beforeEach(module(
     'pascalprecht.translate',
     'bhima.services',
@@ -96,4 +95,5 @@ function bhCheckboxTree() {
 
     expect($scope.callback).to.have.been.called();
   });
-}
+
+});
