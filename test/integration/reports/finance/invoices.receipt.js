@@ -1,11 +1,11 @@
-/* global expect, chai, agent */
+/* global expect, agent */
 
 const helpers = require('../../helpers');
 const RenderingTests = require('../rendering');
 
 const target = '/reports/finance/invoices/';
 
-describe(`(${target}) Invoice Receipt`, () => {
+describe(`test/integration${target} Invoice Receipt`, () => {
 
   const validInvoice = '957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6';
 
@@ -27,7 +27,7 @@ describe(`(${target}) Invoice Receipt`, () => {
       .query({ renderer : 'json' })
       .then((result) => {
         expect(result).to.have.status(200);
-        expect(result).to.be.json;
+        expect(result).to.be.json; // eslint-disable-line
         expect(result.body.items).to.have.length(invoiceItemLength);
       })
       .catch(helpers.handler);
