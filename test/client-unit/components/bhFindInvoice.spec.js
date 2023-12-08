@@ -1,9 +1,8 @@
 /* eslint no-unused-expressions:off */
 /* global inject, expect, chai */
 
-describe('test/client-unit/components/bhFindInvoice', bhFindInvoiceTests);
+describe('test/client-unit/components/bhFindInvoice', () => {
 
-function bhFindInvoiceTests() {
   const patient = {
     uuid              : '234c51ae-efcc-4238-98c6-f402bfb39866',
     reference         : 'TPA17',
@@ -206,4 +205,5 @@ function bhFindInvoiceTests() {
     btn.click();
     $scope.$digest();
   }
-}
+
+});

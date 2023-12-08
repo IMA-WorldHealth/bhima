@@ -311,7 +311,6 @@ function InvoicingFeeScenario() {
       .catch(helpers.handler);
   });
 
-
   /*
    * This scenario tests that subsidies work properly.  The simple subsidy will
    * absorb some of a patient's cost into a subsidy account.  The API only

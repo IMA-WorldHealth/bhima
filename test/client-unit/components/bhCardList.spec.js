@@ -1,8 +1,6 @@
 /* eslint no-unused-expressions:off */
 /* global inject expect */
-describe('test/client-unit/components/bhCardList', bhCardListTests);
-
-function bhCardListTests() {
+describe('test/client-unit/components/bhCardList', () => {
   let $compile;
   let $rootScope;
   let $templateCache;
@@ -172,4 +170,5 @@ function bhCardListTests() {
     firstCardTitle = find(firstCard, '[data-test-card-title]');
     expect(firstCardTitle).to.contain.text('A: Test Card');
   });
-}
+
+});

@@ -1,8 +1,7 @@
 /* global inject, expect */
 
-describe('test/client-unit/services/StockService', StockServiceTests);
+describe('test/client-unit/services/StockService', () => {
 
-function StockServiceTests() {
   // define modules
   beforeEach(module(
     'bhima.services',
