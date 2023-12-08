@@ -3,7 +3,7 @@
 
 const helpers = require('./helpers');
 
-describe('test/integration (/debtor_groups) The debtor groups API', () => {
+describe('test/integration/debtorGroups The debtor groups API', () => {
   const numDebtorGroups = 7;
 
   const debtorGroup = {
@@ -301,22 +301,20 @@ describe('test/integration (/debtor_groups) The debtor groups API', () => {
    * @todo: Need to be implemented at the server side in
    * /server/controllers/debtors/groups/index.js  #function invoices
    */
-  describe('/debtor_groups/:uuid/invoices', () => {
-    it('GET /debtor_groups/:uuid/invoices returns all invoices for a debtor group', () => {
-      return agent.get(`/debtor_groups/${debtorGroup.uuid}/invoices`)
-        .then(res => {
-          expect(res).to.have.status(200);
-        })
-        .catch(helpers.handler);
-    });
+  it('GET /debtor_groups/:uuid/invoices returns all invoices for a debtor group', () => {
+    return agent.get(`/debtor_groups/${debtorGroup.uuid}/invoices`)
+      .then(res => {
+        expect(res).to.have.status(200);
+      })
+      .catch(helpers.handler);
+  });
 
-    it('GET /debtor_groups/:uuid/invoices returns only balanced invoices for a debtor group', () => {
-      return agent.get(`/debtor_groups/${debtorGroup.uuid}/invoices`).query({ balanced : 1 })
-        .then(res => {
-          helpers.api.listed(res, 0);
-        })
-        .catch(helpers.handler);
-    });
+  it('GET /debtor_groups/:uuid/invoices returns only balanced invoices for a debtor group', () => {
+    return agent.get(`/debtor_groups/${debtorGroup.uuid}/invoices`).query({ balanced : 1 })
+      .then(res => {
+        helpers.api.listed(res, 0);
+      })
+      .catch(helpers.handler);
   });
 
   /**

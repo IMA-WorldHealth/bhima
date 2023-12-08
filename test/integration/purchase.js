@@ -2,15 +2,14 @@
 /* eslint-disable no-unused-expressions */
 const moment = require('moment');
 const helpers = require('./helpers');
-const SearchTests = require('./purchase.search');
 
 const puid = helpers.uuid();
 
 /*
- * The /purchases API endpoint
- * This test suite implements full CRUD on the /purchases HTTP API endpoint.
+ * The /purchases API
+ * This test suite implements full CRUD on the /purchases HTTP API.
  */
-describe('test/integration (/purchases) Purchases', () => {
+describe('test/integration/purchases Purchases API', () => {
   const datePurchaseFormat1 = moment().subtract(1725, 'days').toDate();
   const datePurchaseFormat2 = moment().subtract(1665, 'days').toDate();
   const datePurchaseFormat3 = moment().subtract(1543, 'days').toDate();
@@ -331,9 +330,42 @@ describe('test/integration (/purchases) Purchases', () => {
     expect(hasCorrectQuantities).to.equal(true);
   });
 
-  describe('/purchases/search', SearchTests);
+  context('test/integration/purchases Purchases Search API', () => {
+    const NUM_PURCHASE_ORDERS = 7;
 
-  describe('deletion tests', () => {
+    // this is a quick querying function to reduce LOC
+    const SendHTTPQuery = (parameters, numResults) => {
+      return agent.get('/purchases/search')
+        .query(parameters)
+        .then((res) => {
+          helpers.api.listed(res, numResults);
+        })
+        .catch(helpers.handler);
+    };
+
+    it('GET /purchases/search returns all purchase orders', () => {
+      return SendHTTPQuery({}, NUM_PURCHASE_ORDERS);
+    });
+
+    // TODO - implement limit query
+    it('GET /purchases/search?limit=1 returns a single purchase order', () => {
+      const options = { limit : 1 };
+      return SendHTTPQuery(options, 1);
+    });
+
+    it('GET /purchases/search?dateFrom={date} returns a single purchase order from today', () => {
+      const date = new Date('2016-02-19');
+      const options = { dateFrom : date };
+      return SendHTTPQuery(options, NUM_PURCHASE_ORDERS);
+    });
+
+    it('GET /purchases/search?reference=PO.TPA.1  returns a single purchase order', () => {
+      const options = { reference : 'PO.TPA.1' };
+      return SendHTTPQuery(options, 1);
+    });
+  });
+
+  context('test/integration/purchases Purchases Deletion API', () => {
 
     it('DELETE /purchases/:uuid removes a purchase order', () => {
       return agent.delete(`/purchases/${puid}`)

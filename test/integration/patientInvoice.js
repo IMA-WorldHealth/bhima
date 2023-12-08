@@ -12,8 +12,8 @@ const genuuid = () => uuid.v4().toUpperCase().replace(/-/g, '');
  * should be fixed and verified with tests
  */
 
-/* The /invoices API endpoint */
-describe('test/integration (/invoices) Patient Invoices', () => {
+/* The /invoices API */
+describe('test/integration/patientInvoice Patient Invoices API', () => {
   const numInvoices = 5;
   const numCreatedInvoices = 3;
   const numDeletedInvoices = 1;
@@ -21,7 +21,7 @@ describe('test/integration (/invoices) Patient Invoices', () => {
   const fetchableInvoiceUuid = '957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6';
 
   // run the 'InvoicingFeeScenario' test suite
-  describe('(POST /invoices)', InvoicingFeeScenario);
+  describe('test/integration/patientInvoice Creating Patient Invoices API', InvoicingFeeScenario);
 
   it('GET /invoices returns a list of patient invoices', () => {
     return agent.get('/invoices')
@@ -63,7 +63,7 @@ describe('test/integration (/invoices) Patient Invoices', () => {
       .catch(helpers.handler);
   });
 
-  describe('(/invoices) Search interface for the invoices table', () => {
+  context('test/integration/patientInvoice Search interface for the patient invoices table', () => {
 
     // no parameters provided
     it('GET /invoices/ should return all invoices if no query string provided', () => {

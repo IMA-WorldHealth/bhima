@@ -4,11 +4,11 @@
 const helpers = require('./helpers');
 
 /*
- * The /staffing_indices API endpoint
+ * The /staffing_indices API
  *
- * This test suite implements full CRUD on the /staffing_indices HTTP API endpoint.
+ * This test suite implements full CRUD on the /staffing_indices HTTP API.
  */
-describe('test/integration (/staffing_indices) The staffing indices API endpoint', () => {
+describe('test/integration/staffingIndices The staffing indices API', () => {
   const newIndice = {
     uuid : 'd2f7ef71-6f3e-44bd-8056-378c5ca26e20',
     grade_uuid : '9EE06E4A7B5948E6812CC0F8A00CF7D3',

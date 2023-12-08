@@ -4,11 +4,11 @@
 const helpers = require('./helpers');
 
 /*
- * The /creditors/groups API endpoint
+ * The /creditors/groups API
  *
- * This test suite implements full CRUD on the /creditors/groups HTTP API endpoint.
+ * This test suite implements full CRUD on the /creditors/groups HTTP API.
  */
-describe('test/integration (/creditors/groups) Creditor Groups', () => {
+describe('test/integration/creditorGroups Creditor Groups', () => {
   // creditor group we will add during this test suite.
   const creditorGroup = {
     enterprise_id : 1,

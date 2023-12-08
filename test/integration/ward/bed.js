@@ -4,11 +4,11 @@ const helpers = require('../helpers');
 const shared = require('./shared');
 
 /*
- * The /beds API endpoint
+ * The /beds API
  *
- * This test suite implements full CRUD on the /beds HTTP API endpoint.
+ * This test suite implements full CRUD on the /beds HTTP API.
  */
-describe('test/integration (/beds) The bed API endpoint', () => {
+describe('test/integration/war/beds The Ward Bed API', () => {
   // beds we will add during this test suite.
   const { bed1, bed2 } = shared;
   let id1;
