@@ -1,5 +1,5 @@
 /* global inject, expect */
-describe('test/client-unit/filters/Telephone Filter', () => {
+describe('test/client-unit/filters/telephone filter', () => {
 
   let telephone;
 

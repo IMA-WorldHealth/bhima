@@ -99,7 +99,7 @@ function addStockMovementSQL(params) {
     + `  '${createdAt}', ${isExit}, ${userId}, 9, '${createdAt}', '${periodId}');`;
 }
 
-describe('Test merging lots', () => {
+describe('test/integration/mergeLots Test merging lots', () => {
 
   before('Note original counts of lots, tags, etc', () => {
     return preTestInfo.reduce((chain, item) => {

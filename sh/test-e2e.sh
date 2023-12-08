@@ -48,6 +48,9 @@ cd ..
 
 npx playwright test $TESTS 2>&1 | tee "./results/end-to-end-report-$TEST_NUM"
 
+# Adjust formatting for Jenkins
+sed -i 's/.spec.js//g' "./results/end-to-end-$TEST_NUM-results.xml"
+
 # FYI: Use PWTEST_SKIP_TEST_OUTPUT=1 to skip interactive web debug at the end
 # FYI: Use --workers=1  to limit number of workers
 

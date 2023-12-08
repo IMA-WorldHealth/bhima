@@ -3,7 +3,7 @@
 
 const helpers = require('./helpers');
 
-describe('test/integration (/debtor_groups) The debtor groups API', () => {
+describe('test/integration/debtorGroups The debtor groups API', () => {
   const numDebtorGroups = 7;
 
   const debtorGroup = {
