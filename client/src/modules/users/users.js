@@ -18,7 +18,6 @@ function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstant
   vm.toggleFilter = toggleFilter;
   vm.editRoles = editRoles;
   vm.search = search;
-
   // this function selectively applies the muted cell classes to
   // disabled user entities
   function muteDisabledCells(grid, row) {
@@ -41,6 +40,7 @@ function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstant
         headerCellFilter : 'translate',
         cellClass : muteDisabledCells,
         enableFiltering : true,
+        visible : true,
         sort : { priority : 1, direction : 'asc' },
         aggregationType : uiGridConstants.aggregationTypes.count,
         aggregationHideLabel : true,
@@ -52,12 +52,14 @@ function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstant
         headerCellFilter : 'translate',
         cellClass : muteDisabledCells,
         enableFiltering : true,
+        visible : true,
       },
       {
         field : 'roles',
         displayName : 'FORM.LABELS.ROLES',
         headerCellFilter : 'translate',
         enableFiltering : true,
+        visible : true,
         cellClass : muteDisabledCells,
       },
       {
@@ -65,6 +67,7 @@ function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstant
         displayName : 'FORM.LABELS.DEPOT',
         headerCellFilter : 'translate',
         enableFiltering : true,
+        visible : true,
         cellClass : muteDisabledCells,
       },
       {
@@ -72,6 +75,7 @@ function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstant
         displayName : 'FORM.LABELS.CASHBOXES',
         headerCellFilter : 'translate',
         enableFiltering : true,
+        visible : true,
         cellClass : muteDisabledCells,
       },
       {
@@ -80,6 +84,16 @@ function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstant
         displayName : 'USERS.LAST_LOGIN',
         cellFilter : 'date:"dd/MM/yyyy HH:mm:ss"',
         headerCellFilter : 'translate',
+        visible : true,
+        cellClass : muteDisabledCells,
+      },
+      {
+        field : 'created_at',
+        type : 'date',
+        displayName : 'FORM.LABELS.DATE_CREATED',
+        cellFilter : 'date:"dd/MM/yyyy HH:mm:ss"',
+        headerCellFilter : 'translate',
+        visible : true,
         cellClass : muteDisabledCells,
       },
       {
@@ -155,6 +169,23 @@ function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstant
     vm.latestViewFilters = Users.filters.formatView();
     return load(Users.filters.formatHTTP(true));
   }
+
+  vm.saveGridState = state.saveGridState;
+
+  // exports zone =====================================================================
+
+  vm.download = function download(type) {
+    const filterOpts = Users.filters.formatHTTP();
+    return Users.exportToQueryString(type, filterOpts);
+  };
+
+  // export excel
+  vm.exportExcel = function exportExecl() {
+    const filterOpts = Users.filters.formatHTTP();
+    return Users.downloadExcelQueryString(filterOpts);
+  };
+
+  // end exports zone =================================================================
 
   function startup() {
     if ($state.params.filters && $state.params.filters.length) {

@@ -23,6 +23,8 @@ exports.depots = require('./depots');
 exports.depotsSupervision = require('./depotsSupervision');
 exports.cashboxes = require('./cashboxes');
 
+exports.fetchUser = fetchUser;
+
 // expose API routes
 exports.list = list;
 exports.detail = detail;
@@ -82,6 +84,48 @@ async function lookupUser(id) {
   return user;
 }
 
+async function fetchUser(params) {
+  const options = params;
+  db.convert(options, ['role_uuid', 'depot_uuid']);
+  const filters = new FilterParser(options, { tableAlias : 'user' });
+
+  const sql = `
+  SELECT user.id, user.display_name, user.username, user.deactivated, user.last_login,
+    user.enable_external_access, user.created_at,
+    GROUP_CONCAT(DISTINCT role.label ORDER BY role.label DESC SEPARATOR ', ') AS roles,
+    GROUP_CONCAT(DISTINCT depot.text ORDER BY depot.text DESC SEPARATOR ', ') AS depots,
+    GROUP_CONCAT(DISTINCT cb.label ORDER BY cb.label DESC SEPARATOR ', ') AS cashboxes
+  FROM user
+    LEFT JOIN user_role ur ON user.id = ur.user_id
+    LEFT JOIN role ON role.uuid = ur.role_uuid
+    LEFT JOIN depot_permission dp ON dp.user_id = user.id
+    LEFT JOIN depot ON dp.depot_uuid = depot.uuid
+    LEFT JOIN cashbox_permission ON user.id = cashbox_permission.user_id
+    LEFT JOIN cash_box cb ON cashbox_permission.cashbox_id = cb.id
+`.trim();
+
+  filters.equals('id');
+  filters.equals('user_id', 'id');
+  filters.equals('role_uuid', 'role_uuid', 'ur');
+  filters.equals('depot_uuid', 'depot_uuid', 'dp');
+  filters.equals('cashbox_id', 'id', 'cb');
+  filters.fullText('display_name');
+  filters.period('period', 'created_at');
+  filters.period('date_created', 'created_at');
+  filters.dateFrom('custom_period_start', 'created_at');
+  filters.dateTo('custom_period_end', 'created_at');
+  filters.dateFrom('login_date_from', 'last_login');
+  filters.dateTo('login_date_to', 'last_login');
+
+  filters.setGroup('GROUP BY user.id');
+  filters.setOrder('ORDER BY user.display_name DESC');
+
+  const query = filters.applyQuery(sql);
+  const parameters = filters.parameters();
+
+  return db.exec(query, parameters);
+}
+
 /**
  * @function list
  *
@@ -93,44 +137,9 @@ async function lookupUser(id) {
  * GET /users
  */
 async function list(req, res, next) {
-  const options = req.query;
-  db.convert(options, ['role_uuid', 'depot_uuid']);
-  const filters = new FilterParser(options, { tableAlias : 'user' });
 
   try {
-    const sql = `
-      SELECT user.id, user.display_name, user.username, user.deactivated, user.last_login,
-        user.enable_external_access,
-        GROUP_CONCAT(DISTINCT role.label ORDER BY role.label DESC SEPARATOR ', ') AS roles,
-        GROUP_CONCAT(DISTINCT depot.text ORDER BY depot.text DESC SEPARATOR ', ') AS depots,
-        GROUP_CONCAT(DISTINCT cb.label ORDER BY cb.label DESC SEPARATOR ', ') AS cashboxes
-      FROM user
-        LEFT JOIN user_role ur ON user.id = ur.user_id
-        LEFT JOIN role ON role.uuid = ur.role_uuid
-        LEFT JOIN depot_permission dp ON dp.user_id = user.id
-        LEFT JOIN depot ON dp.depot_uuid = depot.uuid
-        LEFT JOIN cashbox_permission ON user.id = cashbox_permission.user_id
-        LEFT JOIN cash_box cb ON cashbox_permission.cashbox_id = cb.id
-    `.trim();
-
-    filters.equals('id');
-    filters.equals('role_uuid', 'role_uuid', 'ur');
-    filters.equals('depot_uuid', 'depot_uuid', 'dp');
-    filters.equals('cashbox_id', 'id', 'cb');
-    filters.fullText('display_name');
-    filters.period('period', 'created_at');
-    filters.dateFrom('custom_period_start', 'created_at');
-    filters.dateTo('custom_period_end', 'created_at');
-    filters.dateFrom('login_date_from', 'last_login');
-    filters.dateTo('login_date_to', 'last_login');
-
-    filters.setGroup('GROUP BY user.id');
-    filters.setOrder('ORDER BY user.display_name DESC');
-
-    const query = filters.applyQuery(sql);
-    const parameters = filters.parameters();
-
-    const users = await db.exec(query, parameters);
+    const users = await fetchUser(req.query);
     res.status(200).json(users);
   } catch (error) {
     next(error);

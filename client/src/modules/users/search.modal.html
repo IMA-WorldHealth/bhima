@@ -17,11 +17,11 @@
         <div class="tab-body">
           <!-- user -->
           <bh-user-select
-             user-id="$ctrl.searchQueries.id"
+             user-id="$ctrl.searchQueries.user_id"
              label="FORM.LABELS.USERNAME"
              require="false"
              on-select-callback="$ctrl.onSelectUser(user)">
-            <bh-clear on-clear="$ctrl.clear('id')"></bh-clear>
+            <bh-clear on-clear="$ctrl.clear('user_id')"></bh-clear>
           </bh-user-select>
 
           <!-- depot -->
@@ -81,7 +81,7 @@
           <!-- period selection -->
           <bh-period-select
             label="FORM.LABELS.DATE_CREATED"
-            default-period="{{$ctrl.filters.period}}"
+            default-period="{{$ctrl.filters.date_created}}"
             on-select-callback="$ctrl.onSelectPeriod(period)">
           </bh-period-select>
 

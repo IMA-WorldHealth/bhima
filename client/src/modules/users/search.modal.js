@@ -24,7 +24,7 @@ function UserRegistryModalController(
   const displayValues = {};
 
   const searchQueryOptions = [
-    'display_name', 'depot_uuid', 'id', 'cashbox_id',
+    'display_name', 'depot_uuid', 'user_id', 'cashbox_id',
     'role_uuid', 'login_date_from', 'login_date_to',
   ];
 
@@ -57,19 +57,23 @@ function UserRegistryModalController(
     }
   };
 
-  // default filter period - directly write to changes list
+  // default filter date_created - directly write to changes list
   vm.onSelectPeriod = function onSelectPeriod(period) {
     const periodFilters = Periods.processFilterChanges(period);
+    const [periodeKey] = periodFilters.filter((item) => item.key === 'period');
 
-    periodFilters.forEach((filterChange) => {
-      changes.post(filterChange);
-    });
+    // change the key in date_created
+    if (periodeKey) {
+      periodeKey.key = 'date_created';
+      changes.post(periodeKey);
+      changes.post({ key : 'period', value : null });
+    }
   };
 
   // custom filter user - assign the value to the params object
   vm.onSelectUser = function onSelectUser(user) {
-    vm.searchQueries.id = user.id;
-    displayValues.id = user.display_name;
+    vm.searchQueries.user_id = user.id;
+    displayValues.user_id = user.display_name;
   };
 
   // custom filter cashbox

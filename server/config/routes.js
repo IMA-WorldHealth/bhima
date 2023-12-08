@@ -25,6 +25,7 @@ const install = require('../controllers/install');
 // admin routes
 const rolesCtrl = require('../controllers/admin/roles');
 const users = require('../controllers/admin/users');
+const reportUser = require('../controllers/admin/users/reports');
 const projects = require('../controllers/admin/projects');
 const enterprises = require('../controllers/admin/enterprises');
 const helpdesk = require('../controllers/admin/helpdesk');
@@ -595,6 +596,7 @@ exports.configure = function configure(app) {
   app.post('/users/:id/depots', users.depots.create);
   app.get('/users/:id/depotsSupervision', users.depotsSupervision.list);
   app.post('/users/:id/depotsSupervision', users.depotsSupervision.create);
+  app.get('/reports/user', reportUser.report);
 
   // depotsSupervision
   app.post('/users/:uuid/depotUsersManagment', users.depotUsersManagment);
