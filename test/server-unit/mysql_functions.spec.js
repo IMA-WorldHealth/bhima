@@ -1,7 +1,7 @@
 /* eslint global-require:off */
 const { expect } = require('chai');
 
-describe('test/server-unit/lib/db/function.sql.js', () => {
+describe('test/server-unit/mysql_functions, () => {
 
   let db;
   before(() => {
