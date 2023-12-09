@@ -3,7 +3,7 @@ const { expect } = require('chai');
 
 const dataset = require('./stepdown.data');
 
-describe('test/server-unit/lib/db/stepdown.js', () => {
+describe('test/server-unit/stepdown', () => {
 
   let Stepdown;
   before(() => {

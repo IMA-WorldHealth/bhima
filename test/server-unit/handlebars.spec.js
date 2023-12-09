@@ -22,7 +22,7 @@ const equalItem = 'developer';
 const gtItem = 17;
 const ltItem = 7;
 
-describe('test/server-unit/handlebars renderer', () => {
+describe('test/server-unit/handlebars.spec', () => {
 
   it('#handlebars.render() renders correctly template with corresponding data', async () => {
     let result;
