@@ -7,7 +7,7 @@ const helpers = require('./helpers');
 /*
  * The /locations API endpoint
  */
-describe('test/integration (/locations) Locations Interface', () => {
+describe('test/integration/locations Locations Interface', () => {
   /*
    * number of test villages, sectors, provinces, and countries in the test
    * dataset.
