@@ -54,7 +54,7 @@ describe('test/client-unit/services/VoucherForm', () => {
       setupSpy = chai.spy.on(constructorForm, 'setup');
     });
 
-    it('calls #setup() on initialization', () => {
+    it('calls #setup() on initialization (in constructor)', () => {
       expect(setupSpy).to.have.been.called;
     });
 
@@ -87,7 +87,6 @@ describe('test/client-unit/services/VoucherForm', () => {
     form.addItems(13);
     expect(form.store.data).to.have.length(15);
   });
-
 
   it('#clear() removes all data from the internal store', () => {
     form.clear();
