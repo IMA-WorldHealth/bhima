@@ -1,4 +1,5 @@
 const RenderingTests = require('../rendering');
+
 const target = '/reports/medical/patients';
 
-describe(`(${target}) Patient Registrations`, RenderingTests(target));
+describe(`test/integration${target} Patients Registration Report`, RenderingTests(target));

@@ -1,7 +1,7 @@
 /* global expect, agent */
 const helpers = require('./helpers');
 
-describe('test/integration (/survey_form) Survey Form', () => {
+describe('test/integration/surveyForm Survey Form API', () => {
   const numListElement = 17;
 
   const formElement = {
