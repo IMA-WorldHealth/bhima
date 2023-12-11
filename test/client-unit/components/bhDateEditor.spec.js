@@ -1,7 +1,7 @@
 /* eslint no-unused-expressions:off */
 /* global inject, expect, chai */
 
-describe('test/client-unit/components/bhDateEditor', () => {
+describe('test/client-unit. /components/bhDateEditor', () => {
 
   const template = `
     <bh-date-editor date-value="date" on-change="callback(date)">

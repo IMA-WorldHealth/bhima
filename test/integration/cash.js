@@ -6,7 +6,7 @@ const CashInvoicePayments = require('./cash.invoices');
 const CashCautionPayments = require('./cash.cautions');
 const CashSearch = require('./cash.search');
 
-describe('test/integration (/cash) Cash Payments', () => {
+describe('test/integration. /cash Cash Payments', () => {
   const NUM_CASH_PAYMENTS = 2;
   const TO_DELETE_UUID = '25b69e1d-c9bc-46f2-98a5-5dd948de3636';
 

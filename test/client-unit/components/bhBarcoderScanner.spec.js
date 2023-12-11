@@ -1,7 +1,7 @@
 /* eslint no-unused-expressions:off */
 /* global inject, expect, chai */
 
-describe('test/client-unit/components/bhBarcodeScanner', () => {
+describe('test/client-unit. /components/bhBarcodeScanner', () => {
 
   const template = `
     <bh-barcode-scanner on-scan-callback="callback(record)">

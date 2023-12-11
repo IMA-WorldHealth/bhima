@@ -1,6 +1,6 @@
 /* global inject, expect, chai */
 /* eslint no-unused-expressions:off, no-restricted-properties:off */
-describe('test/client-unit/services/PurchaseOrderForm', () => {
+describe('test/client-unit. /services/PurchaseOrderForm', () => {
   let PurchaseOrderForm;
   let Mocks;
   let Session;
@@ -74,7 +74,7 @@ describe('test/client-unit/services/PurchaseOrderForm', () => {
       setupSpy = chai.spy.on(form, 'setup');
     });
 
-    it('calls #setup() on initialization', () => {
+    it('calls #setup() on initialization in the constructor', () => {
       expect(setupSpy).to.have.been.called;
     });
 

@@ -3,7 +3,7 @@
 const moment = require('moment');
 const helpers = require('../helpers');
 
-describe('test/integration/stock Stock Depot RUMER data REST API', () => {
+describe('test/integration. /stock Stock Depot RUMER data REST API', () => {
   it('GET /stock/rumer: test the RUMER data for a given depot', () => {
     const depotUuid = helpers.data.depots.principal;
     const startDate = '2022-01-01';

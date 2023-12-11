@@ -1,6 +1,6 @@
 /* eslint no-unused-expressions:off */
 /* global inject, expect, chai */
-describe('test/client-unit/components/bhFilterToggle', () => {
+describe('test/client-unit. /components/bhFilterToggle', () => {
   let $scope;
   let element;
 

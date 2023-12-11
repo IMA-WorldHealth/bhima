@@ -2,7 +2,7 @@
 
 const helpers = require('./helpers');
 
-describe('test/integration (/system) System Information', () => {
+describe('test/integration. /system System Information API', () => {
   it('GET /system/information downloads the system architecture', () => {
     return agent.get('/system/information')
       .then((res) => {

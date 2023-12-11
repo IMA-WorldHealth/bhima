@@ -3,7 +3,7 @@
 
 const helpers = require('./helpers');
 
-describe('test/integration (/patients/groups) Patient Group API', () => {
+describe('test/integration. /patientsGroups Patient Group API', () => {
 
   const newPatientGroup = {
     enterprise_id : 1,

@@ -8,7 +8,7 @@ const helpers = require('./helpers');
  *
  * This test suite implements full CRUD on the /projects HTTP API endpoint.
  */
-describe('test/integration (/projects) The projects API endpoint', () => {
+describe('test/integration. /projects The projects API endpoint', () => {
 
   // project we will add during this test suite.
   const project = {

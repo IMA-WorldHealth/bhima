@@ -2,7 +2,7 @@
 
 const helpers = require('./helpers');
 
-describe('test/integration (/auth/login) The login API', () => {
+describe('test/integration. /login The login authorization API', () => {
 
   const port = process.env.PORT || 8080;
   const url = `http://localhost:${port}`;

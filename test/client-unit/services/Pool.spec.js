@@ -1,6 +1,5 @@
 /* global inject, expect */
-describe('test/client-unit/services/Pool', () => {
-
+describe('test/client-unit. /services/Pool', () => {
 
   let Pool;
   let data;
@@ -18,7 +17,7 @@ describe('test/client-unit/services/Pool', () => {
 
   it('#constructor() runs with sane defaults', () => {
     let pool = new Pool();
-    expect(pool).to.exist;
+    expect(pool).to.exist; // eslint-disable-line
     expect(pool.available.identifier).to.equal('id');
     expect(pool.available.data).to.have.length(0);
 

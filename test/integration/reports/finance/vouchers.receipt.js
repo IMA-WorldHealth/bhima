@@ -1,11 +1,12 @@
-/* global expect, chai, agent */
+/* global expect, agent */
+/* eslint-disable no-unused-expressions */
 
 const helpers = require('../../helpers');
 const RenderingTests = require('../rendering');
 
 const target = '/reports/finance/vouchers/';
 
-describe(`(${target}) Voucher Receipt`, function () {
+describe(`test/integration${target} Voucher Receipt`, () => {
 
   const validVoucher = 'a5a5f950-a4c9-47f0-9a9a-2bfc3123e534';
 
@@ -14,21 +15,21 @@ describe(`(${target}) Voucher Receipt`, function () {
   suite();
 
   // known data for requests and assertions
-  const invalidVoucher      = 'unknown';
+  const invalidVoucher = 'unknown';
 
-  it(`GET ${target}:uuid should return JSON data for a valid voucher uuid`, function () {
+  it(`GET ${target}:uuid should return JSON data for a valid voucher uuid`, () => {
     return agent.get(target.concat(validVoucher))
       .query({ renderer : 'json' })
-      .then(function (result) {
+      .then((result) => {
         expect(result).to.have.status(200);
         expect(result).to.be.json;
       })
       .catch(helpers.handler);
   });
 
-  it(`GET ${target}:uuid should return not found for invalid uuid`, function () {
+  it(`GET ${target}:uuid should return not found for invalid uuid`, () => {
     return agent.get(target.concat(invalidVoucher))
-      .then(function (result) {
+      .then((result) => {
         helpers.api.errored(result, 404);
       })
       .catch(helpers.handler);

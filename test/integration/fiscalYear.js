@@ -3,7 +3,7 @@
 
 const helpers = require('./helpers');
 
-describe('test/integration (/fiscal) Fiscal Year', () => {
+describe('test/integration. /fiscalYear Fiscal Year', () => {
   const newFiscalYear = {
     label : 'A New Fiscal Year 2024',
     start_date : new Date('2024-01-01 01:00'),

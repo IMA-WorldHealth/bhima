@@ -2,7 +2,7 @@
 const helpers = require('../helpers');
 
 // The /cron_email_reports API endpoint
-describe('test/integration (/cron_email_reports) The cron_email_reports API ', () => {
+describe('test/integration. /cronEmailReport The /cron_email_reports API ', () => {
   // new cron_email_report object
   const record = {
     cron :

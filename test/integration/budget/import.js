@@ -3,7 +3,7 @@
 const fs = require('fs');
 const helpers = require('../helpers');
 
-describe('test/integration (/budget/import) The budget import http API', () => {
+describe('test/integration. /budget/import The budget import http API', () => {
   const file = './test/fixtures/budget-to-import.csv';
   const filename = 'budget-to-import.csv';
 

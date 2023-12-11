@@ -1,5 +1,5 @@
 /* global inject, expect */
-describe('test/client-unit/services/Store', () => {
+describe('test/client-unit. /services/Store', () => {
 
   let Store;
   let data;

@@ -1,7 +1,7 @@
 /* eslint no-unused-expressions:off */
 /* global inject, expect */
 
-describe('test/client-unit/components/bhModalNotify', () => {
+describe('test/client-unit. /components/bhModalNotify', () => {
 
   const template = `
     <bh-modal-notify error="someError"></bh-modal-notify>

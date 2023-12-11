@@ -1,5 +1,5 @@
 /* global inject, expect */
-describe('test/client-unit/filters/Bytes Filter', () => {
+describe('test/client-unit. /filters/bytes filter', () => {
 
   let bytes;
 
@@ -48,4 +48,5 @@ describe('test/client-unit/filters/Bytes Filter', () => {
     expect(bytes(null, 100)).to.equal('-');
     expect(bytes(undefined, 33)).to.equal('-');
   });
+
 });

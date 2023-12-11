@@ -1,7 +1,7 @@
 /* eslint no-unused-expressions:off */
 /* global inject, expect, chai */
 
-describe('test/client-unit/components/bhCheckboxTree', () => {
+describe('test/client-unit. /components/bhCheckboxTree', () => {
 
   beforeEach(module(
     'pascalprecht.translate',

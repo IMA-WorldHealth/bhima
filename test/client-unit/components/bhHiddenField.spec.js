@@ -1,7 +1,7 @@
 /* eslint no-unused-expressions:off */
 /* global inject, expect */
 
-describe('test/client-unit/components/bhHiddenField', () => {
+describe('test/client-unit. /components/bhHiddenField', () => {
 
   const template = `
     <bh-hidden-field show-text="OPEN" hide-text="CLOSE">
