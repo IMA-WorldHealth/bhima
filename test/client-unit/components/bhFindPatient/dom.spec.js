@@ -1,6 +1,6 @@
 /* global inject, expect, chai */
 
-describe.skip('bhFindPatient DOM bindings', DomTests);
+describe.skip('test/client-unit/components/bhFindPatient DOM bindings', DomTests);
 
 /**
  * @todo(@jniles) - finish this test suite. At the moment, it is incomplete and

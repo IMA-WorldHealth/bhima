@@ -9,7 +9,7 @@ function compareDate(date1, date2, msg) {
   expect(date1.getDate(), `${msg} (day does not match)`).to.equal(date2.getDate());
 }
 
-describe('test/integration Inventory lots schedule HTML REST API', () => {
+describe('test/integration/inventory/lot_schedule Inventory lots schedule HTML REST API', () => {
 
   it('GET /inventory/:uuid/schedule: test usage schedule for QUININE (DORA_QUIN1S-_0)', () => {
     const uuid = helpers.data.QUININE;
