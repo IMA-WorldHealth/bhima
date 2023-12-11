@@ -7,7 +7,7 @@ const helpers = require('./helpers');
  *
  * This test suite implements full CRUD on the all cost center allocations  HTTP API endpoint.
  */
-describe('test/integration (/cost_center_allocation) The /cost_center  API endpoint', () => {
+describe('test/integration/allocationCostCenters Cost Centers REST API', () => {
   const allocationKey1 = {
     data : {
       auxiliary_cost_center_id : 6,
