@@ -1,10 +1,12 @@
 /* global expect, agent */
+/* eslint-disable no-unused-expressions */
 
 const helpers = require('../../helpers');
 
 const target = '/reports/finance/account_report';
 
-describe(`(${target}) Report Account`, () => {
+describe(`test/integration${target} Report Account`, () => {
+
   const parameters = {
     account_id : 171, // 41111000 - SNEL
     dateFrom : '2016-01-01',
@@ -40,4 +42,5 @@ describe(`(${target}) Report Account`, () => {
       })
       .catch(helpers.handler);
   });
+
 });

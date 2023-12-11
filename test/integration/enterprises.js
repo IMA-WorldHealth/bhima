@@ -9,7 +9,7 @@ const fixtures = path.resolve(__dirname, '../fixtures');
  * The /enterprises API endpoint
  * This test suite implements full CRUD on the /enterprises HTTP API endpoint.
  */
-describe('test/integration (/enterprises) Enterprises API', () => {
+describe('test/integration/enterprises Enterprises API', () => {
   const defaultEnterpriseId = 1;
 
   const enterprise = {
