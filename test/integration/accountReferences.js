@@ -1,7 +1,8 @@
 /* global expect, agent */
 const helpers = require('./helpers');
 
-describe('test/integration (/accounts/references) Accounts References', () => {
+describe('test/integration/accountReferences Accounts References API endpoint', () => {
+
   const numAccountReference = 14;
 
   const newAccountReference = {
@@ -118,4 +119,5 @@ describe('test/integration (/accounts/references) Accounts References', () => {
       })
       .catch(helpers.handler);
   });
+
 });
