@@ -4,11 +4,11 @@
 const helpers = require('./helpers');
 
 /*
- * The /payroll/weekend_configuration  API endpoint
+ * The /payroll/weekend_configuration  API
  *
- * This test suite implements full CRUD on the /payroll/weekend_configuration  HTTP API endpoint.
+ * This test suite implements full CRUD on the /payroll/weekend_configuration  HTTP API.
  */
-describe('test/integration (/payroll/weekend_configuration) The /payroll/weekend_configuration  API endpoint', () => {
+describe('test/integration/weekEndConfig The /payroll/weekend_configuration  API', () => {
   const weekEndConfig = {
     label : 'Configuration Week end 2013',
     daysChecked : [0, 5, 6],

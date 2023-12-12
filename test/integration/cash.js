@@ -6,7 +6,7 @@ const CashInvoicePayments = require('./cash.invoices');
 const CashCautionPayments = require('./cash.cautions');
 const CashSearch = require('./cash.search');
 
-describe('test/integration (/cash) Cash Payments', () => {
+describe('test/integration/cash Cash Payments', () => {
   const NUM_CASH_PAYMENTS = 2;
   const TO_DELETE_UUID = '25b69e1d-c9bc-46f2-98a5-5dd948de3636';
 
@@ -40,11 +40,11 @@ describe('test/integration (/cash) Cash Payments', () => {
   });
 
   // Tests for the Caution Payment Interface
-  describe('Caution Payments ', CashCautionPayments);
+  describe('test/integration/cash Caution Payments ', CashCautionPayments);
 
   // Tests for the Payment Invoice Payment Interface
-  describe('Patient Invoice Payments ', CashInvoicePayments);
+  describe('test/integration/cash Patient Invoice Payments ', CashInvoicePayments);
 
   // test for cash search
-  describe('Search', CashSearch);
+  describe('test/integration/cash Search', CashSearch);
 });

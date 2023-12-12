@@ -5,9 +5,9 @@ const _ = require('lodash');
 const helpers = require('./helpers');
 
 /*
- * The /locations API endpoint
+ * The /locations API
  */
-describe('test/integration (/locations) Locations Interface', () => {
+describe('test/integration/locations Locations Interface', () => {
   /*
    * number of test villages, sectors, provinces, and countries in the test
    * dataset.

@@ -1,7 +1,7 @@
 /* eslint no-unused-expressions:"off" */
 /* global inject, expect, chai */
 
-describe.skip('bhFindPatient Controller Tests', ControllerTests);
+describe.skip('test/client-unit/components/bhFindPatient Controller Tests', ControllerTests);
 
 /**
  * @todo - finish the DOM tests to compliment this controller test suite.

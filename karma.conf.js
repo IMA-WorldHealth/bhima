@@ -55,6 +55,12 @@ module.exports = (config) => {
       outputFile : process.env.KARMA_FILENAME || 'test.xml',
       suite : 'BHIMA-Tests',
       useBrowserName : false,
+      nameFormatter : (browser, result) => {
+        return result.description;
+      },
+      classNameFormatter : (browser, result) => {
+        return result.suite[0];
+      },
     },
 
     // web server port

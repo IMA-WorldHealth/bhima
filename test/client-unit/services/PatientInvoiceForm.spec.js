@@ -73,7 +73,7 @@ describe('test/client-unit/services/PatientInvoiceForm', () => {
     httpBackend.verifyNoOutstandingRequest();
   });
 
-  describe('#constructor()', () => {
+  context('#constructor()', () => {
     let constructorForm;
     let setupSpy;
     let inventorySpy;
@@ -84,21 +84,21 @@ describe('test/client-unit/services/PatientInvoiceForm', () => {
       inventorySpy = chai.spy.on(constructorForm.inventory, 'initialize');
     });
 
-    it('calls #setup() on initialization', () => {
+    it('#constructor() calls #setup() on initialization', () => {
       expect(setupSpy).to.have.been.called;
     });
 
-    it('creates a new, empty store for the grid', () => {
+    it('#constructor() creates a new, empty store for the grid', () => {
       expect(constructorForm.store).to.exist;
       expect(constructorForm.store.identifier).to.equal('uuid');
       expect(constructorForm.store.data).to.have.length(0);
     });
 
-    it('initializes the inventory', () => {
+    it('#constructor() initializes the inventory', () => {
       expect(inventorySpy).to.have.been.called;
     });
 
-    it('sets the form to be invalid by default', () => {
+    it('#constructor() sets the form to be invalid by default', () => {
       expect(constructorForm._invalid).to.equal(true);
       expect(constructorForm._valid).to.equal(false);
     });

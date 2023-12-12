@@ -3,11 +3,11 @@
 const helpers = require('./helpers');
 
 /*
- * The /offdays  API endpoint
+ * The /offdays  API
  *
- * This test suite implements full CRUD on the /offdays  HTTP API endpoint.
+ * This test suite implements full CRUD on the /offdays  HTTP API.
  */
-describe('test/integration (/offdays) The /offdays  API endpoint', () => {
+describe('test/integration/offdays The /offdays  API', () => {
 
   // Offday we will add during this test suite.
 

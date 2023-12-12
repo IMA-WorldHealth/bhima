@@ -4,11 +4,11 @@
 const helpers = require('./helpers');
 
 /*
- * The /users API endpoint
+ * The /users API
  *
- * This test suite implements full CRUD on the /users HTTP API endpoint.
+ * This test suite implements full CRUD on the /users HTTP API.
  */
-describe('test/integration (/users) Users and Permissions', () => {
+describe('test/integration/users Users and Permissions', () => {
   const newUser = {
     username      : 'newUser',
     password      : 'newUser',

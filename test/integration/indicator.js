@@ -4,11 +4,11 @@
 const helpers = require('./helpers');
 
 /*
- * The /roles API endpoint
+ * The /roles API
  *
- * This test suite implements full CRUD on the /indicators_file HTTP API endpoint.
+ * This test suite implements full CRUD on the /indicators_file HTTP API.
  */
-describe('test/integration (/indicators_file) The indicators API endpoint', () => {
+describe('test/integration/indicators The indicators file API', () => {
   const { services } = helpers.data;
 
   const HOSPITALIZATION_TYPE = 1;

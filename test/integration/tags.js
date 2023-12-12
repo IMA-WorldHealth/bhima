@@ -4,11 +4,11 @@
 const helpers = require('./helpers');
 
 /*
- * The /tags API endpoint
+ * The /tags API
  *
- * This test suite implements full CRUD on the /projects HTTP API endpoint.
+ * This test suite implements full CRUD on the /projects HTTP API.
  */
-describe('test/integration (/tags) The tags API endpoint', () => {
+describe('test/integration/tags The tags API', () => {
   // project we will add during this test suite.
   const uuid = '5b7dd0d692734955a703126fbd504b61';
   const uuid2 = '7b7dd0d692734955a703126fbd504b61';
