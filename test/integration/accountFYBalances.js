@@ -1,6 +1,6 @@
 /* global expect, agent */
 
-describe('Test getting all accounts balances for an FY http API', () => {
+describe('test/integration/accountFYBalances Accounts FY balances API', () => {
 
   const fiscalYearId = 4; // 2018
 

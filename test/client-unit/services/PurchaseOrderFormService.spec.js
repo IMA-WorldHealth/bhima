@@ -74,7 +74,7 @@ describe('test/client-unit/services/PurchaseOrderForm', () => {
       setupSpy = chai.spy.on(form, 'setup');
     });
 
-    it('calls #setup() on initialization', () => {
+    it('calls #setup() on initialization in the constructor', () => {
       expect(setupSpy).to.have.been.called;
     });
 

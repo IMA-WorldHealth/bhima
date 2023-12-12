@@ -3,7 +3,8 @@
 
 const helpers = require('./helpers');
 
-describe('test/integration (/accounts/categories) Account Categories', () => {
+describe('test/integration/accountsCategories Account Categories API', () => {
+
   const newAccountCategory = {
     category : 'Test Account Category 1',
   };
@@ -71,4 +72,5 @@ describe('test/integration (/accounts/categories) Account Categories', () => {
       })
       .catch(helpers.handler);
   });
+
 });

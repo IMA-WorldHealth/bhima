@@ -18,7 +18,7 @@ module.exports = defineConfig({
   // testIgnore : process.env.E2E_DIR ? '' : /\/stock\/|\/account\//,
 
   /* Maximum time one test can run for. */
-  timeout : 40 * 1000, // Need longer value for CI
+  timeout : 50 * 1000, // Need longer value for CI
 
   expect : {
     /**

@@ -2,11 +2,11 @@
 const helpers = require('../helpers');
 
 /*
- * The /wards API endpoint
+ * The /wards API
  *
- * This test suite implements full CRUD on the /wards HTTP API endpoint.
+ * This test suite implements full CRUD on the /wards API.
  */
-describe('test/integration (/wards) The ward API endpoint', () => {
+describe('test/integration/ward/wards The ward API', () => {
   const EXISTING_WARDS_IN_DB = 2;
   // wards we will add during this test suite.
   const uuid = '5b7dd0d6-9273-4955-a703-126fbd504b61';
