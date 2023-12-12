@@ -4,9 +4,9 @@
 const helpers = require('./helpers');
 
 /*
- * The /exchange API endpoint
+ * The /exchange API
  */
-describe('test/integration (/exchange) The /exchange API endpoint', () => {
+describe('test/integration/exchange The Exchange API', () => {
 
   // constants
   const FcRATE = {

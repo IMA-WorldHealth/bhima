@@ -2,8 +2,8 @@
 
 const helpers = require('./helpers');
 
-// The /depots API endpoint
-describe('test/integration-stock (/depots) The depots API ', () => {
+// The /depots API
+describe('test/integration-stock/depots The depots API ', () => {
   const { principal } = helpers.data.depots;
 
   /**

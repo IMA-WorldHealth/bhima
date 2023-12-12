@@ -45,7 +45,7 @@ describe('test/client-unit/services/VoucherForm', () => {
     httpBackend.verifyNoOutstandingRequest();
   });
 
-  describe('#constructor()', () => {
+  context('#constructor()', () => {
     let constructorForm;
     let setupSpy;
 
@@ -54,11 +54,11 @@ describe('test/client-unit/services/VoucherForm', () => {
       setupSpy = chai.spy.on(constructorForm, 'setup');
     });
 
-    it('calls #setup() on initialization', () => {
+    it('#constructor() calls #setup() on initialization', () => {
       expect(setupSpy).to.have.been.called;
     });
 
-    it('creates a new store with two items in it', () => {
+    it('#constructor() creates a new store with two items in it', () => {
       expect(constructorForm.store).to.exist;
       expect(constructorForm.store.identifier).to.equal('uuid');
 
@@ -66,7 +66,7 @@ describe('test/client-unit/services/VoucherForm', () => {
       expect(constructorForm.store.data).to.have.length(2);
     });
 
-    it('sets default data based on Session', () => {
+    it('#constructor() sets default data based on Session', () => {
       expect(constructorForm.details).to.exist;
       expect(constructorForm.details.project_id).to.be.equal(Session.project.id);
       expect(constructorForm.details.currency_id).to.be.equal(Session.enterprise.currency_id);
@@ -87,7 +87,6 @@ describe('test/client-unit/services/VoucherForm', () => {
     form.addItems(13);
     expect(form.store.data).to.have.length(15);
   });
-
 
   it('#clear() removes all data from the internal store', () => {
     form.clear();
