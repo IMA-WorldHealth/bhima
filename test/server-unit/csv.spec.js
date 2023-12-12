@@ -1,7 +1,7 @@
 const { expect } = require('chai');
 const csv = require('../../server/lib/renderers/csv');
 
-describe('test/server-unit renderers/csv.js', () => {
+describe('test/sever-unit/csv', () => {
 
   const data = [
     { id : 1, name : 'jniles', score : 12 },

@@ -2,10 +2,10 @@
 const helpers = require('../helpers');
 
 /*
- * The /stock/setting API endpoint
- * This test suite implements the Read-Update functions on the /stock_setting HTTP API endpoint.
+ * The /stock/setting API
+ * This test suite implements the Read-Update functions on the /stock_setting API.
  */
-describe('test/integration (/stock/setting) Stock Settings API', () => {
+describe('test/integration/stock/stockSetting Stock Settings API', () => {
   const defaultEnterpriseId = 1;
   const defaultValuemonthAverageConsumption = 6;
 

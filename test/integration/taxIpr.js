@@ -3,11 +3,11 @@
 const helpers = require('./helpers');
 
 /*
- * The /ipr_tax  API endpoint
+ * The /ipr_tax  API
  *
- * This test suite implements full CRUD on the /ipr_tax  HTTP API endpoint.
+ * This test suite implements full CRUD on the /ipr_tax  API.
  */
-describe('test/integration (/ipr_tax) The /ipr_tax  API endpoint', () => {
+describe('test/integration/taxIpr The /ipr_tax  API', () => {
   // IPR TAX we will add during this test suite.
 
   const iprTax = {

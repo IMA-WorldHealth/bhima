@@ -4,11 +4,11 @@ const { it } = require('mocha');
 const helpers = require('./helpers');
 
 /*
- * The /fee_center  API endpoint
+ * The /fee_center  API
  *
- * This test suite implements full CRUD on the /cost_center_allocation_basis HTTP API endpoint.
+ * This test suite implements full CRUD on the /cost_center_allocation_basis API.
  */ /* eslint-disable-next-line max-len */
-describe('test/integration (/cost_center_allocation_basis) The cost center step-down allocation basis API endpoint', () => {
+describe('test/integration/costCenterAllocationBasis The cost center step-down allocation basis API', () => {
 
   const basis = {
     name : 'Laundry Processed',

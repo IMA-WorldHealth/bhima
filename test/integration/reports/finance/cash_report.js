@@ -5,7 +5,7 @@ const RenderingTests = require('../rendering');
 const target = '/reports/finance/cash_report';
 const helpers = require('../../helpers');
 
-describe(`(${target}) cash Reports`, () => {
+describe(`test/integration${target} Cash Report`, () => {
   const keys = [
     'account', 'cashbox', 'footer', 'dateFrom', 'dateTo', 'hasUnpostedRecords', 'header',
     'metadata', 'transactions',
@@ -19,7 +19,7 @@ describe(`(${target}) cash Reports`, () => {
     format : 2,
   };
 
-  describe(`test/integration ${target} Rendering`, RenderingTests(target, null, parameters));
+  describe('Cash Report', RenderingTests(target, null, parameters));
 
   it(`GET ${target} returns the correct JSON keys`, () => {
     parameters.renderer = 'json';
@@ -27,7 +27,7 @@ describe(`(${target}) cash Reports`, () => {
       .query(parameters)
       .then(res => {
         expect(res).to.have.status(200);
-        expect(res).to.be.json;
+        expect(res).to.be.json; // eslint-disable-line
         expect(res.body).to.contain.all.keys(keys);
       })
       .catch(helpers.handler);
