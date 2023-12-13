@@ -28,6 +28,7 @@ async function report(req, res, next) {
     suppressDefaultFiltering : true,
     suppressDefaultFormatting : false,
   });
+  delete options?.displayValues;
   const filters = shared.formatFilters(options);
   try {
     const rm = new ReportManager(REPORT_TEMPLATE, req.session, options);

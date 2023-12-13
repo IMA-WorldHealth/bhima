@@ -152,7 +152,7 @@ const filters = [{
   comparitor : '>',
   isDate : true,
 }, {
-  field : 'login_date_from',
+  field : 'login_date_to',
   displayName : 'USERS.LAST_LOGIN',
   comparitor : '<',
   isDate : true,
