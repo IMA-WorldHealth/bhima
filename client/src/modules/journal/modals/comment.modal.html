@@ -1,6 +1,9 @@
 <form name="ModalForm" bh-submit="$ctrl.submit(ModalForm)" novalidate>
-  <div class="modal-header" translate>
-    ACCOUNT_STATEMENT.COMMENT
+  <div class="modal-header">
+    <ol class="headercrumb clearfix">
+      <li class="static" translate>POSTING_JOURNAL.TRANSACTION</li>
+      <li class="title" translate>ACCOUNT_STATEMENT.COMMENT</li>
+    </ol>
   </div>
 
   <div class="modal-body">
@@ -10,7 +13,12 @@
     </div>
 
     <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.comment.$invalid }">
-      <input type="text" class="form-control" name="comment" ng-model="$ctrl.comment">
+      <label class="control-label" translate>FORM.LABELS.COMMENT</label>
+      <textarea
+        class="form-control"
+        name="comment"
+        ng-model="$ctrl.comment">
+      </textarea>
 
       <div class="help-block" ng-messages="ModalForm.comment.$error" ng-show="ModalForm.$submitted">
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
