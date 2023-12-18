@@ -14,8 +14,8 @@ describe('test/integration/stock Stock Depot RUMER data REST API', () => {
       .get(`/stock/rumer`)
       .query({
         depot_uuid : depotUuid,
-        start_date : startDate,
-        end_date : endDate,
+        start_date : `${startDate}T00:00:01`, //  Hack to avoid roundoff changing the date
+        end_date : `${endDate}T00:00:01`, // Hack to avoid roundoff changing the date
       })
       .then((res) => {
         const data = res.body;

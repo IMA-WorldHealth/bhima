@@ -23,6 +23,7 @@ const DEFAULT_PARAMS = {
  */
 async function getData(reqQuery) {
   const params = reqQuery;
+
   params.depotUuid = params.depotUuid || params.depot_uuid;
   params.exclude_out_stock = parseInt(params.exclude_out_stock, 10);
   params.include_daily_balances = parseInt(params.include_daily_balances, 10);
@@ -31,7 +32,6 @@ async function getData(reqQuery) {
   const data = {};
   const headerReport = [];
   const configurationData = [];
-
   params.start_date = moment(new Date(params.start_date)).format('YYYY-MM-DD');
   params.end_date = moment(new Date(params.end_date)).format('YYYY-MM-DD');
 
