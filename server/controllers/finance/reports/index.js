@@ -18,7 +18,6 @@ exports.reportAccounts = require('./reportAccounts');
 exports.reportAccountsMultiple = require('./reportAccountsMultiple');
 exports.generalLedger = require('./general_ledger');
 exports.creditors = require('./creditors');
-exports.accountStatement = require('./account_statement');
 exports.cashReport = require('./cashReport');
 exports.purchases = require('./purchases');
 exports.employee = require('./financial.employee').report;
