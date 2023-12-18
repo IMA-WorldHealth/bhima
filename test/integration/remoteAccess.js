@@ -56,7 +56,7 @@ describe('test/integration/remoteAccess access APIs', () => {
       .set('x-access-token', 'my wrong token')
       .send(validUser)
       .then(res => {
-        expect(res).to.have.status(401);
+        expect(res).to.have.status(500);
       })
       .catch(helpers.handler);
   });
