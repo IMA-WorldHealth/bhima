@@ -15,9 +15,9 @@ const REPORT_TEMPLATE = './server/controllers/payroll/multiplePayrollIndice/repo
 exports.document = multipayIndiceExport;
 
 /**
- * GET reports/finance/journal
+ * GET reports/finance/multiplepayrollIndice
  *
- * @method postingJournalExport
+ * @method multipayIndiceExport
  */
 function multipayIndiceExport(req, res, next) {
 
@@ -39,7 +39,7 @@ function multipayIndiceExport(req, res, next) {
 
   return multipayIndice.lookUp(options).then(indices => {
     const { employees, rubrics } = indices;
-    const rows = setGridData(employees, rubrics);
+    const rows = getEmployeeRubricMatrix(employees, rubrics);
     return report.render({ rows });
   })
     .then((result) => {
@@ -48,20 +48,30 @@ function multipayIndiceExport(req, res, next) {
     .catch(next);
 }
 
-function setGridData(employees, rubrics) {
-  const data = [];
-  const headers = { display_name : '' };
-  rubrics.forEach(r => {
-    headers[r.abbr] = '';
-  });
+/**
+ * @function getEmployeeRubricMatrix
+ *
+ * @description
+ * This function takes a list of employees and their assigned rubrics and returns
+ * a matrix of the employees by rubrics for display in a grid.
+ */
+function getEmployeeRubricMatrix(employees, rubrics) {
+  const headers = { display_name : '', service : '' };
 
-  employees.forEach(employee => {
-    const row = _.clone(headers);
-    row.display_name = employee.display_name;
+  rubrics.forEach(r => { headers[r.abbr] = ''; });
+
+  // return a matrix of employees by rubrics
+  return employees.map(employee => {
+    const row = {
+      display_name : employee.display_name,
+      service : employee.service_name,
+    };
+
+    // map each rubric into columns
     employee.rubrics.forEach(r => {
       row[r.rubric_abbr] = r.rubric_value;
     });
-    data.push(row);
+
+    return row;
   });
-  return data;
 }
