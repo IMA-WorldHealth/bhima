@@ -14,7 +14,7 @@ exports.parameters = require('./paramter.config');
 exports.reports = require('./report');
 
 // retrieve indice's value for employee(s)
-async function read(req, res, next) {
+function read(req, res, next) {
   lookUp(req.query).then(rows => {
     res.status(200).json(rows);
   }).catch(next);
@@ -68,11 +68,10 @@ function create(req, res, next) {
 
 // retrieve indice's value for employee(s)
 async function lookUp(options) {
-
   const payConfigId = options.payroll_configuration_id;
   const employeeUuid = options.employee_uuid;
 
-  const employeSql = `
+  const employeeSql = `
     SELECT BUID(emp.uuid) as uuid,UPPER(pt.display_name) AS display_name, pt.sex, service.name as service_name
     FROM payroll_configuration pc
       JOIN config_employee ce ON ce.id = pc.config_employee_id
@@ -111,7 +110,7 @@ async function lookUp(options) {
     employeeParams.push(db.bid(employeeUuid));
   }
 
-  const employees = await db.exec(employeSql, employeeParams);
+  const employees = await db.exec(employeeSql, employeeParams);
   const employeesMap = {};
   employees.forEach(employee => {
     employeesMap[employee.uuid] = employee;
