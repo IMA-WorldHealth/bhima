@@ -15,38 +15,33 @@ CommentModalController.$inject = [
  * unposted records.
  */
 function CommentModalController(Instance, ModalParameters, Transactions, Notify) {
-  var vm = this;
-  var comments;
+  const vm = this;
 
   vm.cancel = Instance.dismiss;
   vm.submit = submit;
   vm.rows = ModalParameters.rows;
 
-  // get the unique comments
-  comments = vm.rows
-    .map(function (row) {
-      return row.entity.comment;
-    })
-    .filter(function (comment, index, array) {
-      return array.indexOf(comment) === index;
-    });
+  // get the unique comments using a map-filter
+  const comments = vm.rows
+    .map(row => row.entity.comment)
+    .filter((comment, index, array) => (array.indexOf(comment) === index));
 
   // if the comments are homogenous, set the model to be the previous comment
   if (comments.length === 1) {
-    vm.comment = comments[0];
+    [vm.comment] = comments;
   }
 
   // submit the comment
   function submit(form) {
     if (form.$invalid) { return; }
 
-    var params = {
-      uuids : getRowsUuid(vm.rows),
+    const params = {
+      uuids : vm.rows.map(row => row.entity.uuid),
       comment : vm.comment,
     };
 
     Transactions.comment(params)
-      .then(function (res) {
+      .then((res) => {
         if (!res) { return; }
         Instance.close(vm.comment);
       })
@@ -54,10 +49,4 @@ function CommentModalController(Instance, ModalParameters, Transactions, Notify)
       .finally(Instance.close);
   }
 
-  // get rows uuid
-  function getRowsUuid(rows) {
-    return rows.map(function (row) {
-      return row.entity.uuid;
-    });
-  }
 }
