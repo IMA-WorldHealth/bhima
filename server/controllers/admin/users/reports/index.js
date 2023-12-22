@@ -25,10 +25,9 @@ async function report(req, res, next) {
     filename : 'USERS.TITLE',
     orientation : 'landscape',
     csvKey : 'rows',
-    suppressDefaultFiltering : true,
+    suppressDefaultFiltering : false,
     suppressDefaultFormatting : false,
   });
-  delete options?.displayValues;
   const filters = shared.formatFilters(options);
   try {
     const rm = new ReportManager(REPORT_TEMPLATE, req.session, options);

@@ -150,12 +150,10 @@ const filters = [{
   field : 'login_date_from',
   displayName : 'USERS.LAST_LOGIN',
   comparitor : '>',
-  isDate : true,
 }, {
   field : 'login_date_to',
   displayName : 'USERS.LAST_LOGIN',
   comparitor : '<',
-  isDate : true,
 }, {
   field : 'role_uuid',
   displayName : 'FORM.LABELS.ROLES',
