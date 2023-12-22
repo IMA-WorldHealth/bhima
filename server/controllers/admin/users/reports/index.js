@@ -25,7 +25,7 @@ async function report(req, res, next) {
     filename : 'USERS.TITLE',
     orientation : 'landscape',
     csvKey : 'rows',
-    suppressDefaultFiltering : true,
+    suppressDefaultFiltering : false,
     suppressDefaultFormatting : false,
   });
   const filters = shared.formatFilters(options);
