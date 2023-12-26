@@ -2,10 +2,9 @@ angular.module('bhima.controllers')
   .controller('ComplexJournalVoucherController', ComplexJournalVoucherController);
 
 ComplexJournalVoucherController.$inject = [
-  'VoucherService', 'CurrencyService', 'SessionService', 'FindEntityService',
-  'FindReferenceService', 'NotifyService', 'VoucherToolkitService',
-  'ReceiptModal', 'bhConstants', 'uiGridConstants', 'VoucherForm', '$timeout',
-  'ExchangeRateService', 'TransactionTypeService',
+  'VoucherService', 'CurrencyService', 'SessionService', 'NotifyService',
+  'VoucherToolkitService', 'ReceiptModal', 'bhConstants', 'uiGridConstants',
+  'VoucherForm', '$timeout', 'ExchangeRateService', 'TransactionTypeService',
 ];
 
 /**
@@ -18,8 +17,8 @@ ComplexJournalVoucherController.$inject = [
  * @constructor
  */
 function ComplexJournalVoucherController(
-  Vouchers, Currencies, Session, FindEntity, FindReference, Notify, Toolkit,
-  Receipts, bhConstants, uiGridConstants, VoucherForm, $timeout, Rates, TransactionTypes,
+  Vouchers, Currencies, Session, Notify, Toolkit, Receipts, bhConstants,
+  uiGridConstants, VoucherForm, $timeout, Rates, TransactionTypes,
 ) {
   const vm = this;
 
