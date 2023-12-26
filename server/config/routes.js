@@ -81,7 +81,6 @@ const assets = require('../controllers/asset_management/assets');
 const shipment = require('../controllers/asset_management/shipment');
 const shipmentContainer = require('../controllers/asset_management/shipment/shipment_containers');
 
-
 // finance routes
 const trialBalance = require('../controllers/finance/trialBalance');
 const fiscal = require('../controllers/finance/fiscal');

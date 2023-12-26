@@ -92,9 +92,7 @@ function PaymentEmployeeKitController(
       row.account_id = payment.account_id;
       row.document_uuid = payment.payment_uuid;
       row.debit = payment.balance;
-
-      // this is needed for a nice display in the grid
-      row.entity = { label : payment.display_name, type : 'C', uuid : payment.creditor_uuid };
+      row.entity_uuid = payment.creditor_uuid;
 
       // add the row in to the
       rows.push(row);
