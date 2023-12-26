@@ -79,7 +79,6 @@ async function lookupVoucher(vUuid) {
       v.description, v.user_id, v.type_id,  u.display_name, transaction_type.text,
       dm.text AS reference, reversed, v.posted
     FROM voucher v
-    JOIN document_map dm ON dm.uuid = v.uuid
     JOIN project p ON p.id = v.project_id
     JOIN user u ON u.id = v.user_id
     JOIN document_map dm ON dm.uuid = v.uuid
@@ -138,7 +137,6 @@ function find(options) {
       dm.text AS reference, v.edited, BUID(v.reference_uuid) AS reference_uuid,
       p.name AS project_name, v.reversed, v.created_at
     FROM voucher v
-    JOIN document_map dm ON v.uuid = dm.uuid
     JOIN project p ON p.id = v.project_id
     JOIN user u ON u.id = v.user_id
     LEFT JOIN document_map dm ON v.uuid = dm.uuid
