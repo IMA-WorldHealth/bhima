@@ -129,8 +129,6 @@ function VoucherItemService(uuid, Constants, util) {
       this.account_id = item.account_id;
     }
 
-    console.log('item:', item);
-
     this._initialized = true;
 
     if (angular.isDefined(item.debit)) {
