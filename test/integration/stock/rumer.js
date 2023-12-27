@@ -14,8 +14,8 @@ describe('test/integration/stock Stock Depot RUMER data REST API', () => {
       .get(`/stock/rumer`)
       .query({
         depot_uuid : depotUuid,
-        start_date : startDate,
-        end_date : endDate,
+        start_date : `${startDate}T00:00:00`, // Forces treating it as local time, not UTC
+        end_date : `${endDate}T00:00:00`, // Forces treating it as local time, not UTC
       })
       .then((res) => {
         const data = res.body;
