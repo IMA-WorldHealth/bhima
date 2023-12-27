@@ -15,3 +15,7 @@ CALL add_column_if_missing('budget', 'updated_at', 'TIMESTAMP NOT NULL DEFAULT C
 -- Add the Finance > Budget page
 INSERT INTO unit VALUES
   (319, 'Budget Management', 'TREE.BUDGET', '', 5, '/budget');
+
+-- remove the account_statement report
+DELETE FROM role_unit where unit_id = 170;
+DELETE FROM unit where id = 170;
