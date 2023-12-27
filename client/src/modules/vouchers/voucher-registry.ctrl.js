@@ -87,10 +87,6 @@ function VoucherController(
     cellTemplate : 'modules/journal/templates/created_at.cell.html',
     visible : false,
   }, {
-    name : 'patientName',
-    displayName : 'TABLE.COLUMNS.PATIENT',
-    headerCellFilter : 'translate',
-  }, {
     field : 'description',
     displayName : 'TABLE.COLUMNS.DESCRIPTION',
     headerCellFilter : 'translate',
