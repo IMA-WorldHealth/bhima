@@ -249,7 +249,7 @@ function StockAggregateConsumptionTests() {
     await page.setLotsError(lots);
   });
 
-  test(`Prevent that we consume quantities greater than those defined ${DEPOT_PRINCIPAL}`, async () => {
+  test(`Prevent that we consume quantities greater than those defined in ${DEPOT_PRINCIPAL}`, async () => {
     const getMovementDate = moment(new Date(), 'YYYY-MM-DD').subtract(60, 'days');
     const getMovementMonth = moment(getMovementDate).month();
     const getMovementYear = moment(getMovementDate).year();
@@ -286,7 +286,6 @@ function StockAggregateConsumptionTests() {
   // @TODO : fix this test - lomamech 2021-05-24
   // You will need to provide data in the test database to be able
   // to perform this test with the current data the repositories are empty
-
   test.skip(`Prevent negative stock quantities when Aggregate Consumption greater than the
       quantity available on current depot ${DEPOT_TERTIAIRE}`, async () => {
     const getMovementDate = moment(new Date(), 'YYYY-MM-DD').subtract(80, 'days');
