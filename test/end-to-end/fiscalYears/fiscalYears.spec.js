@@ -1,7 +1,9 @@
 const moment = require('moment');
 const { chromium } = require('@playwright/test');
 const { test, expect } = require('@playwright/test');
+
 const TU = require('../shared/TestUtils');
+const { by } = require('../shared/TestUtils');
 
 test.beforeAll(async () => {
   const browser = await chromium.launch();
@@ -26,9 +28,8 @@ test.describe('Fiscal Year', () => {
 
   const fiscalYear = {
     label    : 'A Special Fiscal Year',
-    note     : 'Note for the new fiscal Year',
-    // previous : currentYear.toString(),
-    previous : `Fiscal Year 2023(01 Jan 2023 - 31 Dec 2023`,
+    note     : `Note for the new fiscal Year ${newFY}`,
+    previous : `Fiscal Year ${currentYear} (01 Jan ${currentYear} - 31 Dec ${currentYear})`,
   };
 
   test('blocks invalid form submission with relevant error classes', async () => {
@@ -54,19 +55,25 @@ test.describe('Fiscal Year', () => {
   test('creates a new Fiscal Year', async () => {
     // switch to the create form
     await TU.buttons.create();
+    console.debug("1: ", fiscalYear, newFY);
     await TU.waitForSelector('form[name="FiscalForm"]');
+    console.debug("2");
 
     await TU.input('FiscalManageCtrl.fiscal.label', fiscalYear.label);
-
+    console.debug("3");
     // select the proper date
     await components.dateInterval.range(`01/01/${newFY}`, `31/12/${newFY}`);
+    console.debug("4");
+    await TU.locator(by.model('FiscalManageCtrl.fiscal.previous_fiscal_year_id')).click();
     await TU.select('FiscalManageCtrl.fiscal.previous_fiscal_year_id', fiscalYear.previous);
-
+    console.debug("5");
     // model, label, anchor
     await TU.input('FiscalManageCtrl.fiscal.note', fiscalYear.note);
+    console.debug("6");
     await TU.buttons.submit();
-
+    console.debug("7");
     await components.notification.hasSuccess();
+    console.debug("8");
   });
 
   test('edits a fiscal year', async () => {
