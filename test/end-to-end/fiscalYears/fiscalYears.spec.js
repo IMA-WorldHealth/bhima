@@ -19,6 +19,8 @@ test.describe('Fiscal Year', () => {
   // Compute the current year
   const currentYear = (moment(Date.now()).year()).toString();
   const newFY = (parseInt(currentYear, 10) + 1).toString();
+  console.debug("CY: ", currentYear);
+  console.debug("NFY: ", newFY);
 
   test.beforeEach(async () => {
     await TU.navigate(path);
@@ -28,7 +30,7 @@ test.describe('Fiscal Year', () => {
     label    : 'A Special Fiscal Year',
     note     : 'Note for the new fiscal Year',
     // previous : currentYear.toString(),
-    previous : `Fiscal Year 2023(01 Jan 2023 - 31 Dec 2023`,
+    previous : `Fiscal Year 2023(01 Jan 2023 - 31 Dec 2023)`,
   };
 
   test('blocks invalid form submission with relevant error classes', async () => {
@@ -54,19 +56,24 @@ test.describe('Fiscal Year', () => {
   test('creates a new Fiscal Year', async () => {
     // switch to the create form
     await TU.buttons.create();
+    console.debug("1");
     await TU.waitForSelector('form[name="FiscalForm"]');
+    console.debug("2");
 
     await TU.input('FiscalManageCtrl.fiscal.label', fiscalYear.label);
-
+    console.debug("3");
     // select the proper date
     await components.dateInterval.range(`01/01/${newFY}`, `31/12/${newFY}`);
+    console.debug("4");
     await TU.select('FiscalManageCtrl.fiscal.previous_fiscal_year_id', fiscalYear.previous);
-
+    console.debug("5");
     // model, label, anchor
     await TU.input('FiscalManageCtrl.fiscal.note', fiscalYear.note);
+    console.debug("6");
     await TU.buttons.submit();
-
+    console.debug("7");
     await components.notification.hasSuccess();
+    console.debug("8");
   });
 
   test('edits a fiscal year', async () => {

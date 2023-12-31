@@ -32,6 +32,9 @@ test.describe('Cashboxes', () => {
     // switch to the create form
     await TU.buttons.create();
 
+    // Wait for the create form to appear
+    await TU.waitForSelector(by.name('CreateForm'));
+
     await TU.input('UpdateCtrl.box.label', cashbox.label);
     await TU.radio('UpdateCtrl.box.is_auxiliary', cashbox.type);
     await TU.select('UpdateCtrl.box.project_id', 'Test Project A');
@@ -47,6 +50,9 @@ test.describe('Cashboxes', () => {
     // navigate to the update form for the second item
     await update('Caisse Principale');
 
+    // Wait for the update form to appear
+    await TU.waitForSelector(by.name('UpdateForm'));
+
     await TU.input('UpdateCtrl.box.label', 'New Cashbox Name');
     await TU.radio('UpdateCtrl.box.is_auxiliary', cashbox.type);
 
@@ -57,16 +63,20 @@ test.describe('Cashboxes', () => {
   });
 
   // @TODO : Fix; works fine alone and locally, but fails in CI
-  test.skip('allows the user to change currency accounts', async () => {
+  test('allows the user to change currency accounts', async () => {
     // navigate to the update form for the second item
     await update('New Cashbox Name');
+
+    // Wait for the update form to appear
+    await TU.waitForSelector(by.name('UpdateForm'));
 
     // get the "FC" (congolese francs) currency
     await TU.locator('[data-currency-id="1"]').click();
 
     // confirm that the modal appears
-    await TU.exists('[uib-modal-window]', true);
-    await TU.exists(by.name('CashboxModalForm'), true);
+    // ??? await TU.exists('[uib-modal-window]', true);
+    await TU.locator('[uib-modal-window]');
+    await TU.exists(by.name('CashboxModalForm'));
 
     await accountSelect.set('Gain de change', 'account-id');
     await accountSelect.set('Différences de change', 'transfer-account-id');
@@ -83,6 +93,10 @@ test.describe('Cashboxes', () => {
     const cashboxName = 'New Test Cashbox';
     // First create a new cashbox
     await TU.buttons.create();
+
+    // Wait for the create form to appear
+    await TU.waitForSelector(by.name('CreateForm'));
+
     await TU.input('UpdateCtrl.box.label', cashboxName);
     await TU.radio('UpdateCtrl.box.is_auxiliary', 1);
     await TU.select('UpdateCtrl.box.project_id', 'Test Project A');
@@ -94,11 +108,12 @@ test.describe('Cashboxes', () => {
     // Now edit it to set the currency and accoutns
     await update(cashboxName);
 
-    // get a locator for the currencies
+    // get a locator for the currencies (USD)
     await TU.locator('[data-currency-id="2"]').click();
 
     // confirm that the modal appears
-    await TU.exists('[uib-modal-window]', true);
+    // ??? await TU.exists('[uib-modal-window]', true);
+    await TU.waitForSelector('[uib-modal-window]');
 
     await accountSelect.set('60511010', 'account-id');
 
@@ -107,7 +122,10 @@ test.describe('Cashboxes', () => {
     await TU.modal.submit();
 
     // confirm that the modal did not disappear
-    await TU.waitForSelector('[uib-modal-window]');
+    await TU.exists('[uib-modal-window]');
+
+    // Verify that there is an error message
+    await TU.exists(by.containsText('This field cannot be empty'));
 
     // Now set the transfer account and submit again
     await accountSelect.set('NGO', 'transfer-account-id');
