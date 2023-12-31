@@ -19,8 +19,6 @@ test.describe('Fiscal Year', () => {
   // Compute the current year
   const currentYear = (moment(Date.now()).year()).toString();
   const newFY = (parseInt(currentYear, 10) + 1).toString();
-  console.debug("CY: ", currentYear);
-  console.debug("NFY: ", newFY);
 
   test.beforeEach(async () => {
     await TU.navigate(path);
@@ -28,9 +26,8 @@ test.describe('Fiscal Year', () => {
 
   const fiscalYear = {
     label    : 'A Special Fiscal Year',
-    note     : 'Note for the new fiscal Year',
-    // previous : currentYear.toString(),
-    previous : `Fiscal Year 2023(01 Jan 2023 - 31 Dec 2023`,
+    note     : `Note for the new fiscal Year ${newFY}`,
+    previous : `Fiscal Year ${currentYear} (01 Jan ${currentYear} - 31 Dec ${currentYear})`,
   };
 
   test('blocks invalid form submission with relevant error classes', async () => {
