@@ -30,7 +30,7 @@ test.describe('Fiscal Year', () => {
     label    : 'A Special Fiscal Year',
     note     : 'Note for the new fiscal Year',
     // previous : currentYear.toString(),
-    previous : `Fiscal Year 2023(01 Jan 2023 - 31 Dec 2023)`,
+    previous : `Fiscal Year 2023(01 Jan 2023 - 31 Dec 2023`,
   };
 
   test('blocks invalid form submission with relevant error classes', async () => {
@@ -56,7 +56,7 @@ test.describe('Fiscal Year', () => {
   test('creates a new Fiscal Year', async () => {
     // switch to the create form
     await TU.buttons.create();
-    console.debug("1");
+    console.debug("1: ", fiscalYear, newFY);
     await TU.waitForSelector('form[name="FiscalForm"]');
     console.debug("2");
 
