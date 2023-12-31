@@ -62,6 +62,8 @@ test.describe('Fiscal Year', () => {
     // select the proper date
     await components.dateInterval.range(`01/01/${newFY}`, `31/12/${newFY}`);
     console.debug("4");
+    const pfyi = await TU.locator(by.model('FiscalManageCtrl.fiscal.previous_fiscal_year_id'));
+    console.groupCollapseddebug(pfyi);
     await TU.select('FiscalManageCtrl.fiscal.previous_fiscal_year_id', fiscalYear.previous);
     console.debug("5");
     // model, label, anchor
