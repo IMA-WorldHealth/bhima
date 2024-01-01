@@ -43,7 +43,7 @@ echo "[test] Spawned node process."
 echo "[test] Sleeping for $TIMEOUT seconds."
 sleep "$TIMEOUT"
 
-echo "[test] Running end-to-end tests using playwright (without stock tests)."
+echo "[test] Running end-to-end tests using playwright."
 cd ..
 
 npx playwright test $TESTS 2>&1 | tee "./results/end-to-end-report-$TEST_NUM"
