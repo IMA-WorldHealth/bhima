@@ -121,7 +121,7 @@
     "debug": "^4.3.4",
     "delay": "^5.0.0",
     "dotenv": "^16.3.1",
-    "eslint-plugin-jsdoc": "^46.9.1",
+    "eslint-plugin-jsdoc": "^47.0.1",
     "excel4node": "^1.8.2",
     "express": "^4.18.2",
     "express-handlebars": "^7.1.2",
