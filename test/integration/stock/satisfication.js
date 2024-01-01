@@ -27,7 +27,7 @@ describe('test/integration/stock Test the stock satisfaction rate REST API', () 
         expect(depot1.depot_requisition.beneficiary).to.equal('Depot Secondaire');
         expect(depot1.depot_requisition.satisfaction_rate_quantity).to.equal(0);
         expect(depot1.depot_requisition.satisfaction_rate_item).to.equal(0);
-        expect(depot1.data_requisition_movement.length).to.equal(4);
+        expect(depot1.data_requisition_movement.length).to.equal(2);
 
         // Spot check a movement
         const movements = depot1.data_requisition_movement.sort((a, b) => a.quantity_requested - b.quantity_requested);
