@@ -1,4 +1,4 @@
-const moment = require('moment');
+const moment = require('moment-timezone'); // eslint-disable-line
 const { chromium } = require('@playwright/test');
 const { test, expect } = require('@playwright/test');
 
@@ -17,6 +17,8 @@ const components = require('../shared/components');
 test.describe('Fiscal Year', () => {
   const path = '/#!/fiscal';
   const pathNew = '/#!/fiscal/create';
+
+  moment.tz.setDefault('UTC');
 
   // Compute the current year
   const currentYear = (moment(Date.now()).year()).toString();
