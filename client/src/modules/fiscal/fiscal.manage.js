@@ -62,7 +62,7 @@ function FiscalManagementController($state, Fiscal, Notify, Modal, util, moment)
 
         vm.previous_fiscal_year = years.map(fy => {
           fy.hrLabel = fy.label
-            .concat(`(${fmt(fy.start_date)} - ${fmt(fy.end_date)}`);
+            .concat(` (${fmt(fy.start_date)} - ${fmt(fy.end_date)})`);
           return fy;
         });
       })

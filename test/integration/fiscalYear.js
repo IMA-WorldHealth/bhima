@@ -1,13 +1,19 @@
 /* global expect, agent */
 /* eslint-disable no-unused-expressions */
 
+const moment = require('moment');
 const helpers = require('./helpers');
 
 describe('test/integration/fiscalYear Fiscal Year', () => {
+
+  // Compute the current year and new FY
+  const currentYear = (moment(Date.now()).year()).toString();
+  const newFY = (parseInt(currentYear, 10) + 1);
+
   const newFiscalYear = {
-    label : 'A New Fiscal Year 2024',
-    start_date : new Date('2024-01-01 01:00'),
-    end_date : new Date('2024-12-31 01:00'),
+    label : `A New Fiscal Year ${newFY}`,
+    start_date : new Date(`${newFY}-01-01 01:00`),
+    end_date : new Date(`${newFY}-12-31 01:00`),
     number_of_months : 12,
     note : 'Fiscal Year for Integration Test',
     closing_account : 111, // 1311 - Résusltat net : Bénéfice *
@@ -47,17 +53,17 @@ describe('test/integration/fiscalYear Fiscal Year', () => {
   it('GET /fiscal returns a list of fiscal_years', () => {
     return agent.get('/fiscal')
       .then(res => {
-        helpers.api.listed(res, 10);
+        helpers.api.listed(res, 2036 - newFY);
         const firstYearPeriods = res.body[0].periods;
         expect(firstYearPeriods).to.be.equal(undefined);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /fiscal returns a list of fiscal_years width their periods', () => {
+  it('GET /fiscal returns a list of fiscal_years with their periods', () => {
     return agent.get('/fiscal?includePeriods=1')
       .then(res => {
-        helpers.api.listed(res, 10);
+        helpers.api.listed(res, 2036 - newFY);
         const firstYearPeriods = res.body[0].periods;
         expect(firstYearPeriods).to.not.be.empty;
       })
