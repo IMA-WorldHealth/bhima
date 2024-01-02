@@ -29,6 +29,7 @@ sudo apt-get update
 sudo apt-get install git
 
 # Install MySQL with the following command:
+# (On Debian 12, check [Installing MySQL on Debian](https://www.digitalocean.com/community/tutorials/how-to-install-the-latest-mysql-on-debian-10) )
 sudo apt-get install mysql-server
 
 # Run the following commands to install Redis:
@@ -58,10 +59,12 @@ curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
 echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
 sudo apt-get update && sudo apt-get install yarn --no-install-recommends
 
-### Install chromium browser ('chrome' below on Debian)
+# Install chromium browser
+# (On debian, you will also need to install 'chromium-driver' separately)
 sudo apt install chromium-browser
 
 # Install extra needed dependencies
+# (On Debian, check the `Dockerfile` for other dependencies)
 sudo apt-get install libx11-xcb1 libxcomposite1 libasound2 libatk1.0-0 libatk-bridge2.0-0 libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 libgbm1 libgcc1 libglib2.0-0 libgtk-3-0 libnspr4 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6
 ```
 
@@ -222,7 +225,13 @@ Our tests are broken into unit tests, end to end tests, and integration tests. T
 2. **Server Unit Tests** - Server libraries are unit tested with mocha and chai, similar to the integration tests. To run them, type
    `yarn test:server-unit.`
 3. **Client Unit Tests** - Client components are unit tested with karma which you should have installed if you installed all dependencies. Karma launches a chrome browser to execute the tests. To run them, type `yarn test:client-unit`.
-4. **End to End Tests** - The entire stack is tested with end to end tests using [playwright](https://playwright.dev/).  You can run these tests with `yarn test:e2e-account`, `yarn test:e2e-stock`, and `yarn test:e2e-?`.
+4. **End to End Tests** - The entire stack is tested with end to end tests using [playwright](https://playwright.dev/).  To enable the end-to-end tests, see [Running end-to-end tests](./end-to-end-tests.md).
+You can run the end-to-end tests with
+- `yarn test:e2e-account`  _or_
+- `yarn test:e2e-all` _or_
+- `yarn test:e2e-?` _(where ? varies from 1 to 8)_.
+
+Note: test:e2e-3 includes test:e2e-account.
 
 You can run all non-end-to-end tests by simply typing `yarn test`.
 
