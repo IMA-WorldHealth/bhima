@@ -29,6 +29,7 @@ sudo apt-get update
 sudo apt-get install git
 
 # Install MySQL with the following command:
+# (On Debian 12, check [Installing MySQL on Debian](https://www.digitalocean.com/community/tutorials/how-to-install-the-latest-mysql-on-debian-10) )
 sudo apt-get install mysql-server
 
 # Run the following commands to install Redis:
@@ -58,10 +59,12 @@ curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
 echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
 sudo apt-get update && sudo apt-get install yarn --no-install-recommends
 
-### Install chromium browser ('chrome' below on Debian)
+# Install chromium browser
+# (On debian, you will also need to install 'chromium-driver' separately)
 sudo apt install chromium-browser
 
 # Install extra needed dependencies
+# (On Debian, check the `Dockerfile` for other dependencies)
 sudo apt-get install libx11-xcb1 libxcomposite1 libasound2 libatk1.0-0 libatk-bridge2.0-0 libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 libgbm1 libgcc1 libglib2.0-0 libgtk-3-0 libnspr4 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6
 ```
 
