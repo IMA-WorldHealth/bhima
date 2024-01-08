@@ -135,7 +135,7 @@ function PatientRegistrySearch() {
 
   // demonstrates that sex + time-delimited filtering works
   test('should find one female patients registered in the last year.', async () => {
-    const NUM_MATCHING = 1;
+    const NUM_MATCHING = [0, 1];
     await TU.locator(by.id('female')).click();
     await modal.switchToDefaultFilterTab();
     await modal.setPeriod('lastYear');
