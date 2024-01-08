@@ -19,12 +19,29 @@ exports.create = create;
  * Lists all the user depots for user with :id
  */
 function list(req, res, next) {
-  const sql = `
+  let sql;
+
+  if (req.query.details) {
+    sql = `
+      SELECT BUID(depot_permission.depot_uuid) AS depot_uuid, d.text FROM depot_permission
+      JOIN depot d ON d.uuid = depot_permission.depot_uuid
+      WHERE depot_permission.user_id = ?;
+    `;
+
+    return db.exec(sql, [req.params.id])
+      .then((rows) => {
+        res.status(200).json(rows);
+      })
+      .catch(next)
+      .done();
+  }
+
+  sql = `
     SELECT BUID(depot_permission.depot_uuid) AS depot_uuid FROM depot_permission
     WHERE depot_permission.user_id = ?;
   `;
 
-  db.exec(sql, [req.params.id])
+  return db.exec(sql, [req.params.id])
     .then((rows) => {
       const data = rows.map(row => row.depot_uuid);
       res.status(200).json(data);
