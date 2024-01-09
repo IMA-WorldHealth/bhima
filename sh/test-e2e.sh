@@ -16,7 +16,16 @@ if [[ ! -d results ]]; then
   mkdir results
 fi
 
-# # Kill the BHIMA server when the test is finished
+# Delete any zombie server processes
+procs=`netstat -tulpn |& grep 8080`
+proc=`echo $procs | sed -r 's/.* ([0-9]+)\/node$/\1/g'`
+if [[ ! -z "$proc" ]]
+then
+    echo "Deleting zombie node Bhima process $proc"
+    kill -9 $proc
+fi
+
+# Kill the BHIMA server when the test is finished
 if [[ -z "${CI:-}" ]]
 then
   trap 'jobs -p | xargs -r kill' EXIT
@@ -43,7 +52,7 @@ echo "[test] Spawned node process."
 echo "[test] Sleeping for $TIMEOUT seconds."
 sleep "$TIMEOUT"
 
-echo "[test] Running end-to-end tests using playwright (without stock tests)."
+echo "[test] Running end-to-end tests using playwright."
 cd ..
 
 npx playwright test $TESTS 2>&1 | tee "./results/end-to-end-report-$TEST_NUM"
@@ -54,18 +63,18 @@ sed -i 's/.spec.js//g' "./results/end-to-end-$TEST_NUM-results.xml"
 # FYI: Use PWTEST_SKIP_TEST_OUTPUT=1 to skip interactive web debug at the end
 # FYI: Use --workers=1  to limit number of workers
 
-# Clean up any left-over zombie node processes (if not CI)
-set -o nounset
-if [[ -z "${CI:-}" ]]
-then
-    procs=`netstat -tulpn |& grep 8080`
-    proc=`echo $procs | sed -r 's/.* ([0-9]+)\/node$/\1/g'`
+# # Clean up any left-over zombie node processes (if not CI)
+# set -o nounset
+# if [[ -z "${CI:-}" ]]
+# then
+#     procs=`netstat -tulpn |& grep 8080`
+#     proc=`echo $procs | sed -r 's/.* ([0-9]+)\/node$/\1/g'`
 
-    if [[ ! -z "$proc" ]]
-    then
-        echo "Deleting zombie node Bhima process $proc"
-        kill -9 $proc
-    fi
-fi
+#     if [[ ! -z "$proc" ]]
+#     then
+#         echo "Deleting zombie node Bhima process $proc"
+#         kill -9 $proc
+#     fi
+# fi
 
 echo "[/test]"
