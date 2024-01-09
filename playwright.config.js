@@ -19,7 +19,7 @@ module.exports = defineConfig({
   // testIgnore : process.env.E2E_DIR ? '' : /\/stock\/|\/account\//,
 
   /* Maximum time one test can run for. */
-  timeout : 50 * 1000, // Need longer value for CI
+  timeout : 40 * 1000, // Need longer value for CI
 
   expect : {
     /**
@@ -36,7 +36,7 @@ module.exports = defineConfig({
   forbidOnly : !!process.env.CI,
 
   /* Retry on CI only */
-  retries : process.env.CI ? 2 : 0,
+  retries : process.env.CI ? 1 : 0,
 
   /* Opt out of parallel tests on CI. */
   // workers : process.env.CI ? 1 : undefined,
