@@ -1,5 +1,5 @@
 /* eslint no-unused-expressions:off */
-/* global inject expect */
+/* global inject, expect */
 describe('test/client-unit/components/bhCardList', () => {
 
   let $compile;
