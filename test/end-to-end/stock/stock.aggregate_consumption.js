@@ -75,7 +75,7 @@ function StockAggregateConsumptionTests() {
     await page.submit();
   });
 
-  test(`Create a complexe aggregate consumption on current depot ${DEPOT_TERTIAIRE}`, async () => {
+  test(`Create a complex aggregate consumption on current depot ${DEPOT_TERTIAIRE}`, async () => {
     const getMovementDate = moment(new Date(), 'YYYY-MM-DD').subtract(60, 'days');
     const getMovementMonth = moment(getMovementDate).month();
     const getMovementYear = moment(getMovementDate).year();
@@ -249,7 +249,7 @@ function StockAggregateConsumptionTests() {
     await page.setLotsError(lots);
   });
 
-  test(`Prevent that we consume quantities greater than those defined ${DEPOT_PRINCIPAL}`, async () => {
+  test(`Prevent that we consume quantities greater than those defined in ${DEPOT_PRINCIPAL}`, async () => {
     const getMovementDate = moment(new Date(), 'YYYY-MM-DD').subtract(60, 'days');
     const getMovementMonth = moment(getMovementDate).month();
     const getMovementYear = moment(getMovementDate).year();
