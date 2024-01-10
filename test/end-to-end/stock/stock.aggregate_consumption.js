@@ -1,5 +1,3 @@
-/* global expect */
-
 const moment = require('moment');
 
 const { test } = require('@playwright/test');
