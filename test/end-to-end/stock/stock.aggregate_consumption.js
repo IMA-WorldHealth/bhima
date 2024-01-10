@@ -1,3 +1,5 @@
+/* global expect */
+
 const moment = require('moment');
 
 const { test } = require('@playwright/test');
@@ -87,6 +89,9 @@ function StockAggregateConsumptionTests() {
     await page.setFiscalPeriod(fiscalYearLabel, `${month[getMovementMonth]} ${getMovementYear}`);
     await page.setDescription(`Aggregate consumption from current depot ${DEPOT_TERTIAIRE}`);
 
+    // Wait until the rows are loaded
+    await TU.waitForSelector('div.ui-grid-row');
+
     await page.setHeaderValue(0, 9, 5);
     await page.setQuantityConsumed(1, 7, 500);
     await page.setQuantityLost(1, 8, 250);
@@ -120,7 +125,6 @@ function StockAggregateConsumptionTests() {
 
     await page.setDetailed(1, 10);
     await page.setLots(lots);
-    // await page.setLotsDetailed(lots);
 
     await page.setQuantityConsumed(2, 7, 500);
     await page.setQuantityLost(2, 8, 250);

@@ -63,18 +63,4 @@ sed -i 's/.spec.js//g' "./results/end-to-end-$TEST_NUM-results.xml"
 # FYI: Use PWTEST_SKIP_TEST_OUTPUT=1 to skip interactive web debug at the end
 # FYI: Use --workers=1  to limit number of workers
 
-# # Clean up any left-over zombie node processes (if not CI)
-# set -o nounset
-# if [[ -z "${CI:-}" ]]
-# then
-#     procs=`netstat -tulpn |& grep 8080`
-#     proc=`echo $procs | sed -r 's/.* ([0-9]+)\/node$/\1/g'`
-
-#     if [[ ! -z "$proc" ]]
-#     then
-#         echo "Deleting zombie node Bhima process $proc"
-#         kill -9 $proc
-#     fi
-# fi
-
 echo "[/test]"
