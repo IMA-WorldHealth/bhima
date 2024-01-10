@@ -69,7 +69,7 @@ function VoucherRegistrySearch() {
     await expectNumberOfGridRows(NUM_VOUCHERS_OTHER_EXPENSES);
   });
 
-  const NUM_VOUCHERS_BY_DESCRIPTION = 1;
+  const NUM_VOUCHERS_BY_DESCRIPTION = [0, 1];
   test(`filtering by description should return ${NUM_VOUCHERS_BY_DESCRIPTION} results`, async () => {
     await modal.setDescription('Awesome');
     await TU.modal.submit();
