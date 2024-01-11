@@ -35,8 +35,10 @@ function StockAggregateConsumptionTests() {
     const fiscalYearLabel = `Fiscal Year ${getMovementYear}`;
 
     await page.setFiscalPeriod(fiscalYearLabel, `${month[getMovementMonth]} ${getMovementYear}`);
-
     await page.setDescription(`Aggregate consumption from current depot ${DEPOT_TERTIAIRE}`);
+
+    // Wait until the rows are loaded
+    await TU.waitForSelector('div.ui-grid-row');
 
     await page.setHeaderValue(0, 9, 0);
     await page.setQuantityConsumed(1, 7, 2000);
@@ -61,6 +63,9 @@ function StockAggregateConsumptionTests() {
     await page.setFiscalPeriod(fiscalYearLabel, `${month[getMovementMonth]} ${getMovementYear}`);
     await page.setDescription(`Aggregate consumption from current depot ${DEPOT_TERTIAIRE}`);
 
+    // Wait until the rows are loaded
+    await TU.waitForSelector('div.ui-grid-row');
+
     await page.setHeaderValue(0, 9, 0);
     await page.setQuantityConsumed(1, 7, 250);
     await page.setQuantityLost(1, 8, 0);
@@ -75,7 +80,7 @@ function StockAggregateConsumptionTests() {
     await page.submit();
   });
 
-  test(`Create a complexe aggregate consumption on current depot ${DEPOT_TERTIAIRE}`, async () => {
+  test(`Create a complex aggregate consumption on current depot ${DEPOT_TERTIAIRE}`, async () => {
     const getMovementDate = moment(new Date(), 'YYYY-MM-DD').subtract(60, 'days');
     const getMovementMonth = moment(getMovementDate).month();
     const getMovementYear = moment(getMovementDate).year();
@@ -86,6 +91,9 @@ function StockAggregateConsumptionTests() {
 
     await page.setFiscalPeriod(fiscalYearLabel, `${month[getMovementMonth]} ${getMovementYear}`);
     await page.setDescription(`Aggregate consumption from current depot ${DEPOT_TERTIAIRE}`);
+
+    // Wait until the rows are loaded
+    await TU.waitForSelector('div.ui-grid-row');
 
     await page.setHeaderValue(0, 9, 5);
     await page.setQuantityConsumed(1, 7, 500);
@@ -120,7 +128,6 @@ function StockAggregateConsumptionTests() {
 
     await page.setDetailed(1, 10);
     await page.setLots(lots);
-    // await page.setLotsDetailed(lots);
 
     await page.setQuantityConsumed(2, 7, 500);
     await page.setQuantityLost(2, 8, 250);
@@ -139,7 +146,6 @@ function StockAggregateConsumptionTests() {
 
     await page.setDetailed(2, 10);
     await page.setLots(lots2);
-    // await page.setLots2Detailed(lots2);
 
     await page.setHeaderValue(3, 9, 20);
     await page.setQuantityConsumed(4, 7, 550);
@@ -165,6 +171,9 @@ function StockAggregateConsumptionTests() {
 
     await page.setFiscalPeriod(fiscalYearLabel, `${month[getMovementMonth]} ${getMovementYear}`);
     await page.setDescription(`Aggregate consumption from current depot ${DEPOT_PRINCIPAL}`);
+
+    // Wait until the rows are loaded
+    await TU.waitForSelector('div.ui-grid-row');
 
     await page.setHeaderValue(0, 9, 5);
     await page.setQuantityConsumed(1, 7, 15);
@@ -194,6 +203,9 @@ function StockAggregateConsumptionTests() {
 
     await page.setFiscalPeriod(fiscalYearLabel, `${month[getMovementMonth]} ${getMovementYear}`);
     await page.setDescription(`Aggregate consumption from current depot ${DEPOT_PRINCIPAL}`);
+
+    // Wait until the rows are loaded
+    await TU.waitForSelector('div.ui-grid-row');
 
     await page.setHeaderValue(0, 9, 5);
     await page.setQuantityConsumed(1, 7, 15);
@@ -229,6 +241,9 @@ function StockAggregateConsumptionTests() {
     await page.setFiscalPeriod(fiscalYearLabel, `${month[getMovementMonth]} ${getMovementYear}`);
     await page.setDescription(`Aggregate consumption from current depot ${DEPOT_PRINCIPAL}`);
 
+    // Wait until the rows are loaded
+    await TU.waitForSelector('div.ui-grid-row');
+
     await page.setHeaderValue(0, 9, 5);
     await page.setQuantityConsumed(1, 7, 15);
     await page.setQuantityLost(1, 8, 5);
@@ -249,7 +264,7 @@ function StockAggregateConsumptionTests() {
     await page.setLotsError(lots);
   });
 
-  test(`Prevent that we consume quantities greater than those defined ${DEPOT_PRINCIPAL}`, async () => {
+  test(`Prevent that we consume quantities greater than those defined in ${DEPOT_PRINCIPAL}`, async () => {
     const getMovementDate = moment(new Date(), 'YYYY-MM-DD').subtract(60, 'days');
     const getMovementMonth = moment(getMovementDate).month();
     const getMovementYear = moment(getMovementDate).year();
@@ -262,6 +277,9 @@ function StockAggregateConsumptionTests() {
 
     await page.setFiscalPeriod(fiscalYearLabel, `${month[getMovementMonth]} ${getMovementYear}`);
     await page.setDescription(`Aggregate consumption from current depot ${DEPOT_PRINCIPAL}`);
+
+    // Wait until the rows are loaded
+    await TU.waitForSelector('div.ui-grid-row');
 
     await page.setHeaderValue(0, 9, 5);
     await page.setQuantityConsumed(1, 7, 15);
@@ -299,6 +317,9 @@ function StockAggregateConsumptionTests() {
 
     await page.setFiscalPeriod(fiscalYearLabel, `${month[getMovementMonth]} ${getMovementYear}`);
     await page.setDescription(`Aggregate consumption from current depot ${DEPOT_TERTIAIRE}`);
+
+    // Wait until the rows are loaded
+    await TU.waitForSelector('div.ui-grid-row');
 
     await page.setHeaderValue(0, 9, 0);
     await page.setQuantityConsumed(1, 7, 300);

@@ -54,7 +54,7 @@ sed -i 's/.spec.js//g' "./results/end-to-end-account-results.xml"
 set -o nounset
 if [[ -z "${CI:-}" ]]
 then
-    procs=`netstat -tulpn |& grep 8080`
+    procs=`netstat -tulpn |& grep 8080` || true
     proc=`echo $procs | sed -r 's/.* ([0-9]+)\/node$/\1/g'`
 
     if [[ ! -z "$proc" ]]

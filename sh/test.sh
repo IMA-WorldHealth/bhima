@@ -9,6 +9,15 @@ if [[ ! -d results ]]; then
   mkdir results
 fi
 
+# Delete any zombie server processes
+procs=`netstat -tulpn |& grep 8080` || true
+proc=`echo $procs | sed -r 's/.* ([0-9]+)\/node$/\1/g'`
+if [[ ! -z "$proc" ]]
+then
+    echo "Deleting zombie node Bhima process $proc"
+    kill -9 $proc
+fi
+
 # get DB settings
 set -a
 source .env || { echo '[test.sh] did not load .env, using variables from environment.' ; }
