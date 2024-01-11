@@ -16,7 +16,9 @@
 
 <div ng-class="{ 'col-md-9' : $ctrl.leftLabel, 'input-group': $ctrl.isCurrency }">
   <span ng-if="$ctrl.isCurrency" class="input-group-addon text-uppercase">{{ $ctrl.currency.symbol }}</span>
-  <input type="{{$ctrl.type}}"
+  <input 
+    ng-if="$ctrl.type != 'textarea'"
+    type="{{$ctrl.type}}"
     ng-class="{'required': $ctrl.required}",
     name ='inputTextElement'
     ng-model="$ctrl.textValue"
@@ -30,6 +32,23 @@
     ng-disabled="$ctrl.disabled"
     ng-maxlength="{{$ctrl.maxLength}}"
     ng-required="$ctrl.required"/>
+
+  <textarea 
+    ng-if="$ctrl.type == 'textarea'"
+    name="inputTextElement" 
+    id="{{ $ctrl.key }}"
+    ng-class="{'required': $ctrl.required}",
+    name ='inputTextElement'
+    ng-model="$ctrl.textValue"
+    title="{{ $ctrl.placeholder | translate}}"
+    placeholder = "{{ $ctrl.placeholder | translate}}"
+    id="{{ $ctrl.key }}"
+    ng-change="$ctrl.valueChange()"
+    input-text-field
+    class='form-control'
+    ng-required="$ctrl.required"
+    ng-disabled="$ctrl.disabled">
+   </textarea>
 
   <div class="help-block"
     ng-messages="textValueForm.inputTextElement.$error"

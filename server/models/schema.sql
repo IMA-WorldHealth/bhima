@@ -814,6 +814,7 @@ CREATE TABLE `inventory` (
   `manufacturer_brand` TEXT NULL,
   `manufacturer_model` TEXT NULL,
   `is_count_per_container` TINYINT(1) NOT NULL DEFAULT 0,
+  `updated_by` SMALLINT(5) UNSIGNED DEFAULT NULL,
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`uuid`),

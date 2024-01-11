@@ -14,7 +14,7 @@ function InventoryListActionsModalController(
   const cache = AppCache('InventoryList');
 
   // this is the model
-  vm.item = { sellable : 1, tags : [] };
+  vm.item = { sellable : 1, tags: [] };
   vm.stateParams = {};
   vm.currencySymbol = SessionService.enterprise.currencySymbol;
 
@@ -41,6 +41,8 @@ function InventoryListActionsModalController(
   vm.cancel = cancel;
   vm.onSelectTags = onSelectTags;
   vm.onChangeIsAsset = onChangeIsAsset;
+  vm.onTypePrice = onTypePrice;
+  vm.isNote = false;
 
   // startup
   startup();
@@ -56,6 +58,16 @@ function InventoryListActionsModalController(
     if (!isAsset) {
       vm.item.manufacturer_brand = null;
       vm.item.manufacturer_model = null;
+    }
+  }
+
+  function onTypePrice() {
+    if (vm.isUpdateState) {
+      if (vm.price !== vm.item.price) {
+        vm.isNote = true;
+      } else {
+        vm.isNote = false;
+      }
     }
   }
 
@@ -143,6 +155,7 @@ function InventoryListActionsModalController(
       Inventory.read(vm.identifier)
         .then((item) => {
           vm.item = item;
+          vm.price = item.price;
         })
         .catch(Notify.handleError);
     }
