@@ -58,6 +58,7 @@ test.describe('Inventory List', () => {
     unit_weight : 7,
     unit_volume : 7,
     tags : 'Virologie',
+    note : 'Price updated',
   };
 
   const metadataSearch = {
@@ -124,6 +125,7 @@ test.describe('Inventory List', () => {
     await TU.input('$ctrl.item.unit_weight', metadataUpdate.unit_weight);
     await TU.input('$ctrl.item.unit_volume', metadataUpdate.unit_volume);
     await components.tagSelect.set(metadataUpdate.tags);
+    await TU.input('$ctrl.item.note', metadataUpdate.note);
     await TU.modal.submit();
     await components.notification.hasSuccess();
   });

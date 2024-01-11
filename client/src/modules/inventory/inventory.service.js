@@ -159,6 +159,19 @@ function InventoryService(
   }, {
     key : 'tags',
     label : 'TAG.TAGS',
+  }, {
+    key : 'updated_by',
+    label : 'FORM.LABELS.LAST_USER_UPDATE',
+  }, {
+    key : 'updated_at_from',
+    label : 'FORM.LABELS.LAST_UPDATE',
+    comparitor : '>',
+    valueFilter : 'date',
+  }, {
+    key : 'updated_at_to',
+    label : 'FORM.LABELS.LAST_UPDATE',
+    comparitor : '<',
+    valueFilter : 'date',
   },
   ]);
 
