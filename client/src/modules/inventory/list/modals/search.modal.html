@@ -105,6 +105,15 @@
             on-select-callback="ModalCtrl.onSelectTags(tags)">
           </bh-tag-select>
 
+          <!-- user -->
+          <bh-user-select
+            user-id="ModalCtrl.searchQueries.updated_by"
+            label="FORM.LABELS.LAST_USER_UPDATE"
+            require="false"
+            on-select-callback="ModalCtrl.onSelectUserUpdate(user)">
+            <bh-clear on-clear="ModalCtrl.clear('updated_by')"></bh-clear>
+         </bh-user-select>
+
           <div class="form-group">
             <bh-clear on-clear="ModalCtrl.clear('consumable')"></bh-clear>
             <label class="control-label" translate>
@@ -156,6 +165,15 @@
               </label>
             </div>
           </div>
+
+          <!-- updated_at -->
+          <bh-date-interval
+            label="FORM.LABELS.LAST_UPDATE"
+            date-id="updated_at"
+            date-from="ModalCtrl.searchQueries.updated_at_from"
+            date-to="ModalCtrl.searchQueries.updated_at_to"
+            on-change="ModalCtrl.onUpdateAt(dateFrom, dateTo)">
+          </bh-date-interval>
         </div>
       </uib-tab>
 
