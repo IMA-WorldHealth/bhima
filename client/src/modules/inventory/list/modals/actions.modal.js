@@ -14,7 +14,7 @@ function InventoryListActionsModalController(
   const cache = AppCache('InventoryList');
 
   // this is the model
-  vm.item = { sellable: 1, tags: [] };
+  vm.item = { sellable : 1, tags: [] };
   vm.stateParams = {};
   vm.currencySymbol = SessionService.enterprise.currencySymbol;
 
