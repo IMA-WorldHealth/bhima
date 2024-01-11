@@ -144,6 +144,7 @@ async function updateItemsMetadata(record, identifier, session) {
   let tags;
   // remove the uuid if it exists
   delete record.uuid;
+  record.updated_by = session.user.id;
   const recordCopy = _.clone(record);
   if (record.group_uuid) {
     record.group_uuid = db.bid(record.group_uuid);
@@ -258,13 +259,14 @@ async function getItemsMetadata(params) {
       ig.sales_account, ig.stock_account, ig.donation_account, inventory.sellable,
       inventory.note, inventory.unit_weight, inventory.unit_volume, ig.sales_account, ig.stock_account,
       ig.donation_account, ig.cogs_account, inventory.default_quantity, ig.tracking_consumption, ig.tracking_expiration,
-      inventory.importance,
+      inventory.importance, inventory.updated_at,  u.display_name AS last_user_update,
       GROUP_CONCAT(BUID(t.uuid), ';', t.name, ';', t.color ORDER BY t.name) AS tag_details,
       ${usePreviousPrice ? previousPriceQuery : 'inventory.price'}
     FROM inventory JOIN inventory_type AS it
     JOIN inventory_unit AS iu JOIN inventory_group AS ig ON
       inventory.type_id = it.id AND inventory.group_uuid = ig.uuid AND inventory.unit_id = iu.id
     LEFT JOIN inventory_tag itag ON itag.inventory_uuid = inventory.uuid
+    LEFT JOIN user u ON u.id = inventory.updated_by
     LEFT JOIN tags t ON t.uuid = itag.tag_uuid`;
 
   // Note: The two 'LEFT JOINS' at the end of the query above are not normally
@@ -285,6 +287,9 @@ async function getItemsMetadata(params) {
   filters.equals('note');
   filters.equals('importance');
   filters.equals('is_asset');
+  filters.equals('updated_by');
+  filters.dateFrom('updated_at_from', 'updated_at');
+  filters.dateTo('updated_at_to', 'updated_at');
   filters.fullText('reference_number');
   filters.equals('manufacturer_brand');
   filters.equals('manufacturer_model');
