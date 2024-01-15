@@ -57,6 +57,12 @@ function SearchLotsModalController(data, util, Store, Instance, Periods, Stock, 
     displayValues.inventory_uuid = inventory.label;
   };
 
+  // select project
+  vm.onSelectProject = function onSelectProject(project) {
+    vm.searchQueries.project_id = project.id;
+    displayValues.project_id = project.name;
+  };
+
   vm.onExcludeAssets = function onExcludeAssets() {
     if (vm.excludeAssets) {
       vm.searchQueries.is_asset = 0;

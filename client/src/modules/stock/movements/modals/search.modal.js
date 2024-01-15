@@ -15,7 +15,7 @@ function SearchMovementsModalController(data, Instance, Periods, Store, util, St
   const searchQueryOptions = [
     'is_exit', 'depot_uuid', 'inventory_uuid', 'label', 'flux_id',
     'dateFrom', 'dateTo', 'user_id', 'patientReference', 'service_uuid', 'invoice_uuid',
-    'stock_requisition_uuid', 'voucherReference',
+    'stock_requisition_uuid', 'voucherReference', 'project_id',
   ];
 
   vm.hasAutoStockAccounting = Session.stock_settings.enable_auto_stock_accounting;
@@ -94,6 +94,12 @@ function SearchMovementsModalController(data, Instance, Periods, Store, util, St
     if (angular.isDefined(_value)) {
       changes.post({ key : 'limit', value : _value });
     }
+  };
+
+  // select project
+  vm.onSelectProject = function onSelectProject(project) {
+    vm.searchQueries.project_id = project.id;
+    displayValues.project_id = project.name;
   };
 
   // deletes a filter from the custom filter object,

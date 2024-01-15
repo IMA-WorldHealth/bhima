@@ -85,6 +85,7 @@ async function createStock(req, res, next) {
       description : params.description,
       reference_number : params.reference_number,
       serial_number : params.serial_number,
+      project_id : req.session.project.id,
     };
 
     // prepare lot insertion query
@@ -138,6 +139,7 @@ async function createStock(req, res, next) {
         user_id : document.user,
         description : document.description,
         period_id : periodId,
+        project_id : req.session.project.id,
       };
 
       if (params.entity_uuid) {
@@ -253,6 +255,7 @@ async function insertNewStock(session, params) {
       user_id : params.movement.user_id,
       description : params.movement.description,
       period_id : periodId,
+      project_id : session.project.id,
     });
   });
 
@@ -377,6 +380,7 @@ async function createInventoryAdjustment(req, res, next) {
         description : movement.description,
         user_id : req.session.user.id,
         period_id : periodId,
+        project_id : req.session.project.id,
       };
 
       const log = {
@@ -555,6 +559,7 @@ async function createMovement(req, res, next) {
     date : new Date(params.date),
     user : req.session.user.id,
     shipment_uuid : params.shipment_uuid,
+    project_id : req.session.project.id,
   };
 
   const metadata = {
@@ -732,6 +737,7 @@ async function normalMovement(document, params, metadata) {
       user_id : document.user,
       invoice_uuid : parameters.invoice_uuid,
       period_id : parameters.period_id,
+      project_id : document.project_id,
     };
 
     // transaction - add movement
@@ -797,6 +803,7 @@ async function depotMovement(document, params, metadata) {
       description : parameters.description,
       user_id : document.user,
       period_id : parameters.period_id,
+      project_id : document.project_id,
       stock_requisition_uuid : parameters.stock_requisition_uuid,
     };
     // Ignore duplicated value which can come from mobile during sync
@@ -1510,6 +1517,7 @@ async function createAggregatedConsumption(req, res, next) {
           description : movement.description,
           user_id : req.session.user.id,
           period_id : periodId,
+          project_id : req.session.user.project_id,
         };
 
         trx.addQuery('INSERT INTO stock_movement SET ?', consumptionMovementObject);
@@ -1529,6 +1537,7 @@ async function createAggregatedConsumption(req, res, next) {
           description : movement.description,
           user_id : req.session.user.id,
           period_id : periodId,
+          project_id : req.session.project.id,
         };
 
         trx.addQuery('INSERT INTO stock_movement SET ?', lossMovementObject);
@@ -1578,6 +1587,7 @@ async function createAggregatedConsumption(req, res, next) {
             description : `${movement.description} [${formatStartDate} - ${formatEndDate}]`,
             user_id : req.session.user.id,
             period_id : periodId,
+            project_id : req.session.project.id,
           };
 
           trx.addQuery('INSERT INTO stock_movement SET ?', consumptionMovementObject);
@@ -1597,6 +1607,7 @@ async function createAggregatedConsumption(req, res, next) {
             description : `${movement.description} [${formatStartDate} - ${formatEndDate}]`,
             user_id : req.session.user.id,
             period_id : periodId,
+            project_id : req.session.project.id,
           };
 
           trx.addQuery('INSERT INTO stock_movement SET ?', lossMovementObject);

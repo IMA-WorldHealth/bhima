@@ -94,7 +94,12 @@
             on-change="$ctrl.onFluxChange(flux)"
             flux-ids="$ctrl.searchQueries.flux_id">
           </bh-flux-select>
-
+          <!-- project  -->
+          <bh-project-select
+            on-select-callback="$ctrl.onSelectProject(project)"
+            project-id="$ctrl.searchQueries.project_id">
+            <bh-clear on-clear="$ctrl.clear('project_id')"></bh-clear>
+          </bh-project-select>
           <!-- user -->
           <bh-user-select
             on-select-callback="$ctrl.onSelectUser(user)"
