@@ -126,6 +126,10 @@ function StockMovementsController(
       type             : 'number',
       visible          : false,
     }, {
+      field            : 'project',
+      displayName      : 'FORM.LABELS.PROJECT',
+      headerCellFilter : 'translate',
+    }, {
       field : 'date',
       type : 'date',
       displayName : 'FORM.LABELS.DATE',

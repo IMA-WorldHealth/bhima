@@ -94,6 +94,10 @@ function LotsRegistryService(uiGridConstants, Session) {
       headerCellFilter : 'translate',
       cellTemplate : 'modules/stock/inventories/templates/unit.tmpl.html',
     }, {
+      field            : 'project',
+      displayName      : 'FORM.LABELS.PROJECT',
+      headerCellFilter : 'translate',
+    }, {
       field : 'entry_date',
       displayName : 'STOCK.ENTRY_DATE',
       headerTooltip : 'STOCK.ENTRY_DATE_TOOLTIP',

@@ -63,6 +63,13 @@
             </div>
           </div>
 
+          <!-- project  -->
+          <bh-project-select
+            on-select-callback="$ctrl.onSelectProject(project)"
+            project-id="$ctrl.searchQueries.project_id">
+            <bh-clear on-clear="$ctrl.clear('project_id')"></bh-clear>
+          </bh-project-select>
+
           <!-- expiration date -->
           <bh-date-interval
             label="STOCK.EXPIRATION_DATE"

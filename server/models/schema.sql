@@ -2119,6 +2119,7 @@ CREATE TABLE `stock_movement` (
   `invoice_uuid`            BINARY(16) NULL,
   `stock_requisition_uuid`  BINARY(16) NULL,
   `period_id`               MEDIUMINT(8) UNSIGNED NOT NULL,
+  `project_id`              SMALLINT(5) UNSIGNED NOT NULL,
   `created_at`              TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`uuid`),
   INDEX `document_uuid` (`document_uuid`),
