@@ -35,6 +35,7 @@ test.describe('transaction types', () => {
 
   test('successfully creates a transaction type', async () => {
     await TU.buttons.create();
+    await TU.locator('div.modal-dialog');
     await TU.input('$ctrl.transactionType.text', newType.text);
     await TU.select('$ctrl.transactionType.type', newType.type);
     await TU.buttons.submit();
@@ -42,7 +43,9 @@ test.describe('transaction types', () => {
   });
 
   test('successfully updates an existing transaction type', async () => {
-    await TU.locator(`[data-edit-type="${newType.text}"]`).click();
+    const editButton = `[data-edit-type="${newType.text}"]`;
+    await TU.waitForSelector(editButton);
+    await TU.locator(editButton).click();
     await TU.input('$ctrl.transactionType.text', updateType.text);
     await TU.select('$ctrl.transactionType.type', updateType.type);
     await TU.buttons.submit();
