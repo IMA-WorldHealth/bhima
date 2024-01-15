@@ -33,6 +33,7 @@ function MergePatientTest() {
     const reference = 'PA.TPA.2';
     await page.gridSelectRows(2, 3);
     await page.openMergeTool();
+    await TU.waitForSelector('.modal-dialog .modal-footer');
 
     // See if we are requesting a bad merge (of employees)
     const mergeable = await TU.getByRole('heading').innerText();
