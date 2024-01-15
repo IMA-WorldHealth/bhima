@@ -86,6 +86,9 @@ function StockEntryTests() {
     // select the movement
     await page.setTransfer(0);
 
+    // Wait for the transfer selection dialog to close
+    await TU.waitForSelector('textarea[name="description"]:visible');
+
     await page.setDate(new Date());
 
     await page.setDescription(DESCRIPTION.concat(' - Transfer reception'));
