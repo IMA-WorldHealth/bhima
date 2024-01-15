@@ -12,9 +12,6 @@ const { by } = require('./TestUtils');
  */
 function getGrid(gridId) {
   return TU.locator(by.id(gridId));
-
-  // ADAPTED FROM PROTRACTOR CODE:
-  // return element(by.id(gridId));
 }
 
 /**
