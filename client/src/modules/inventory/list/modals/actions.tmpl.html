@@ -101,7 +101,9 @@
         autocomplete="off"
         ng-model="$ctrl.item.price"
         translate-attr="{ placeholder : 'FORM.PLACEHOLDERS.PRICE' }"
-        required>
+        required
+        ng-change="$ctrl.onTypePrice()"
+        >
       <div class="help-block" ng-messages="ActionForm.price.$error" ng-show="ActionForm.$submitted">
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
       </div>
@@ -264,11 +266,16 @@
 
     <hr>
 
-    <div class="form-group">
+    <div class="form-group"
+      ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.note.$invalid }">
       <label class="control-label" translate>FORM.LABELS.NOTE</label>
-      <textarea class="form-control" name="note"  ng-model="$ctrl.item.note">
+      <textarea class="form-control" name="note"  ng-model="$ctrl.item.note" ng-required="$ctrl.isNote" >
       </textarea>
+      <div class="help-block" ng-messages="ActionForm.note.$error" ng-show="ActionForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
     </div>
+
   </div>
 
   <div class="modal-footer">
