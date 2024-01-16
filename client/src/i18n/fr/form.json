@@ -584,6 +584,8 @@
             "LANGUAGE": "Langue",
             "LAST_ENTRY_DATE": "Date de  la dernière entrée",
             "LAST_NAME": "Nom",
+            "LAST_USER_UPDATE" : "Dernière modification par",
+            "LAST_UPDATE" : "Dernière modification",
             "LAST_PAGE": "La dernière page visitée",
             "LATITUDE": "Latitude",
             "LEVEL_OF_STUDY" : "Niveau d'étude",

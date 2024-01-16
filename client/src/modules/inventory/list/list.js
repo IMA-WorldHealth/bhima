@@ -145,6 +145,15 @@ function InventoryListController(
     headerCellFilter : 'translate',
     cellTemplate     : 'modules/stock/lots/templates/tags.cell.html',
   }, {
+    field : 'last_user_update',
+    displayName : 'FORM.LABELS.LAST_USER_UPDATE',
+    headerCellFilter : 'translate',
+  }, {
+    field : 'updated_at',
+    displayName : 'FORM.LABELS.LAST_UPDATE',
+    headerCellFilter : 'translate',
+    cellFilter : 'date:"dd/MM/yyyy HH:mm:ss"',
+  }, {
     field : 'action',
     displayName : '',
     cellTemplate : '/modules/inventory/list/templates/action.cell.html',
