@@ -112,9 +112,7 @@ function AccountService(Api, bhConstants, HttpCache) {
   }
 
   function filterAccountsByType(accounts, type) {
-    return accounts.filter(account => {
-      return account.type_id !== type;
-    });
+    return accounts.filter(account => account.type_id !== type);
   }
 
   // return true if the account is an income or expense

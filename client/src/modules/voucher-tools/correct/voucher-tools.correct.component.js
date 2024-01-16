@@ -43,7 +43,7 @@ function bhVoucherToolsCorrect(VoucherTools, Transactions, $translate) {
     // should be passed through local tests to make sure things roughly balance
     VoucherTools.correctTransaction(
       formattedCorrectionRequest.transactionDetails.record_uuid,
-      formattedCorrectionRequest
+      formattedCorrectionRequest,
     )
       .then((result) => {
         $ctrl.output = result;
