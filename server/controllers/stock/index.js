@@ -747,15 +747,14 @@ async function normalMovement(document, params, metadata) {
     transaction.addQuery('CALL PostStockMovement(?, ?, ?);', postStockParameters);
   }
 
-  const result = await transaction.execute();
-
-  // update the quantity in stock as needed
-  await updateQuantityInStockAfterMovement(inventoryUuids, document.date, parameters.depot_uuid);
-
   // compute stock value after entry movements
   if (!parameters.is_exit) {
     transaction.addQuery('CALL RecomputeStockValue(NULL);');
   }
+  const result = await transaction.execute();
+
+  // update the quantity in stock as needed
+  await updateQuantityInStockAfterMovement(inventoryUuids, document.date, parameters.depot_uuid);
 
   return result;
 }
