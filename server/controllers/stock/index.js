@@ -457,7 +457,7 @@ async function movementsFromMobile(params) {
 
     // filter known lots of the movement initial movement
     // check that the quantity sent is less or equal to
-    // the inital quantity
+    // the initial quantity
     const validLots = mobileLots.filter(lot => {
       const bhimaLot = pickLot(lot.lotUuid);
       return bhimaLot && bhimaLot.quantity >= lot.quantity;
