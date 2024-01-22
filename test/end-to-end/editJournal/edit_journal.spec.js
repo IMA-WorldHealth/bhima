@@ -33,7 +33,9 @@ test.describe('Edit Posting Journal', () => {
   });
 
   test('edits a transaction to change an account', async () => {
+    await GU.clearRowSelections(gridId);
     await GU.selectRow(gridId, 0);
+    await TU.waitForSelector('button#editTransaction:not([disabled])');
     await openEditingModal();
 
     const accountNumberCell = await GU.getCell(editingGridId, 0, 1);
@@ -68,10 +70,11 @@ test.describe('Edit Posting Journal', () => {
   }
 
   test('edits a transaction to change the value of debit and credit', async () => {
+    await GU.clearRowSelections(gridId);
     await GU.selectRow(gridId, 0);
+    await TU.waitForSelector('button#editTransaction:not([disabled])');
     await openEditingModal();
 
-    // change the first row (index 0), debit and credit inputs (index 2 and 3)
     await editInput(0, 2, 99);
     await editInput(0, 3, 0);
 
@@ -84,7 +87,9 @@ test.describe('Edit Posting Journal', () => {
   });
 
   test('prevents an unbalanced transaction', async () => {
+    await GU.clearRowSelections(gridId);
     await GU.selectRow(gridId, 0);
+    await TU.waitForSelector('button#editTransaction:not([disabled])');
     await openEditingModal();
 
     await editInput(0, 2, 100);
@@ -102,7 +107,9 @@ test.describe('Edit Posting Journal', () => {
 
   // Test for validation
   test('prevents a single line transaction', async () => {
+    await GU.clearRowSelections(gridId);
     await GU.selectRow(gridId, 0);
+    await TU.waitForSelector('button#editTransaction:not([disabled])');
     await openEditingModal();
 
     await GU.selectRow(editingGridId, 0);
@@ -116,7 +123,9 @@ test.describe('Edit Posting Journal', () => {
 
   // @TODO: Fix.  Works alone but fails with other tests
   test.skip('preventing transaction who have debit and credit null', async () => {
+    await GU.clearRowSelections(gridId);
     await GU.selectRow(gridId, 0);
+    await TU.waitForSelector('button#editTransaction:not([disabled])');
     await openEditingModal();
 
     await editInput(0, 2, 0);
@@ -131,7 +140,9 @@ test.describe('Edit Posting Journal', () => {
   });
 
   test('preventing transaction who was debited and credited in a same line', async () => {
+    await GU.clearRowSelections(gridId);
     await GU.selectRow(gridId, 0);
+    await TU.waitForSelector('button#editTransaction:not([disabled])');
     await openEditingModal();
 
     await editInput(0, 2, 10);

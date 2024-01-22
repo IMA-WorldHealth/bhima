@@ -126,8 +126,12 @@ function StockAggregateConsumptionTests() {
       quantity_lost :  0,
     }];
 
+    console.debug('A');
     await page.setDetailed(1, 10);
+    console.debug('B');
+    TU.screenshot('results/setLots.png');
     await page.setLots(lots);
+    console.debug('C');
 
     await page.setQuantityConsumed(2, 7, 500);
     await page.setQuantityLost(2, 8, 250);
