@@ -89,6 +89,7 @@ test.describe('Employees', () => {
     await registrationPage.createEmployee();
     await TU.waitForSelector('#receipt-confirm-created');
     await registrationPage.isEmployeeCreated(true);
+    await TU.buttons.close(); // Close the receipt modal
   });
 
   test('register an employee from a patient', async () => {
