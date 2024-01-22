@@ -57,7 +57,7 @@ blocks:
             - checkout
             - 'echo "Testing node:$NODEJS_VERSION on mysql:$MYSQL_VERSION"'
             - yarn --ignore-engines
-            - npx playwright install
+            - npx playwright install chromium
             - 'yarn build:db'
             - yarn build
             - mkdir results
