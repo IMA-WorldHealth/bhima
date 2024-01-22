@@ -81,6 +81,7 @@
 
         <div class="toolbar-item">
           <button
+            id="editTransaction"
             ng-class="{ 'btn-success' : JournalCtrl.selection.selected.groups.length === 1 }"
             ng-disabled="JournalCtrl.selection.selected.groups.length === 0"
             ng-click="JournalCtrl.editTransactionModal()"
