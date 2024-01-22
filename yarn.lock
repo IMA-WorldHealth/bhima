@@ -663,17 +663,17 @@ angular-translate-loader-static-files@^2.19.0:
   dependencies:
     angular-translate "~2.19.0"
 
-angular-translate-loader-url@^2.19.0:
-  version "2.19.0"
-  resolved "https://registry.yarnpkg.com/angular-translate-loader-url/-/angular-translate-loader-url-2.19.0.tgz#3f6a96ebbb4176c5fd6ad5ab919a2d73439a70e1"
-  integrity sha512-PptW0ExcwWKroEnXjIYg8fvvfnhM1buhVep1vOIowLqQV+HyRyonxGauEbCuOsMqPJARGM24WJtPnk4X2blhSg==
+angular-translate-loader-url@^2.19.1:
+  version "2.19.1"
+  resolved "https://registry.yarnpkg.com/angular-translate-loader-url/-/angular-translate-loader-url-2.19.1.tgz#123f9c7a02b404f75773cb544956a0320f20ccc6"
+  integrity sha512-tHU4HcqdlIp97wlloc++8aGFYognbpZ2C0Ip9AL2ngEYkpwnQeYwAf4iTcFW+++Jzw6TGoYo+31n0rvhVdaCsg==
   dependencies:
-    angular-translate "~2.19.0"
+    angular-translate "~2.19.1"
 
-angular-translate@^2.19.0, angular-translate@~2.19.0:
-  version "2.19.0"
-  resolved "https://registry.yarnpkg.com/angular-translate/-/angular-translate-2.19.0.tgz#133c75ad64727b11d96bcbb8b53cf9c7c7a9fde4"
-  integrity sha512-Z/Fip5uUT2N85dPQ0sMEe1JdF5AehcDe4tg/9mWXNDVU531emHCg53ZND9Oe0dyNiGX5rWcJKmsL1Fujus1vGQ==
+angular-translate@^2.19.0, angular-translate@~2.19.0, angular-translate@~2.19.1:
+  version "2.19.1"
+  resolved "https://registry.yarnpkg.com/angular-translate/-/angular-translate-2.19.1.tgz#8636236f6a24d9dfbf11b88ad958c2246f72a3ce"
+  integrity sha512-SrU40ndnL422vXiVoqVveCmSnCzMcIXxQgnl7Cv9krOKUg6B8KZK3ddYzidHR/rxVuySezYHNDgRvzQNKwAdNQ==
   dependencies:
     angular "^1.8.0"
 
