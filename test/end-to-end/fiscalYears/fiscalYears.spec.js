@@ -91,7 +91,7 @@ test.describe('Fiscal Year', () => {
 
   test('set the opening balance for the first fiscal year', async () => {
     // the last in the list is the oldest
-    await TU.locator('.pagination-last > a').click();
+    await TU.locator('.pagination-last a').click();
     await TU.locator('[data-fiscal-entry] [data-method="update"]').last().click();
 
     // click on the opening balance button
@@ -111,12 +111,16 @@ test.describe('Fiscal Year', () => {
     await components.notification.hasSuccess();
   });
 
-  test('forbid not balanced submission', async () => {
-    // await TU.navigate(path);
-    await TU.navigate(path);
+  test('forbid unbalanced submission', async () => {
+    await TU.navigate(path); // Force reload (?)
+
+    // If we are not on the last page, go to it
+    const disabled = await TU.locator('li.pagination-last').isDisabled();
+    if (!disabled) {
+      await TU.locator('li.pagination-last a').click();
+    }
 
     // the last in the list is the oldest
-    await TU.locator('.pagination-last > a').click();
     await TU.locator('[data-fiscal-entry] [data-method="update"]').last().click();
 
     // click on the opening balance button
@@ -131,16 +135,23 @@ test.describe('Fiscal Year', () => {
     await TU.locator(`[data-debit-account="${account1}"]`).fill('150');
     await TU.locator(`[data-debit-account="${account2}"]`).fill('150');
     await TU.locator(`[data-credit-account="${account3}"]`).fill('200');
+
     await TU.buttons.submit();
+
     await components.notification.hasDanger();
     expect(await TU.isPresent('[data-status="not-balanced"]')).toBe(true);
   });
 
   test('closing a fiscal year in normal way', async () => {
-    await TU.navigate(path);
+    await TU.navigate(path); // Force reload (?)
+
+    // If we are not on the last page, go to it
+    const disabled = await TU.locator('li.pagination-last[disabled]');
+    if (disabled > 0) {
+      await TU.locator('li.pagination-last a').click();
+    }
 
     // the last in the list is the oldest
-    await TU.locator('.pagination-last > a').click();
     await TU.locator('[data-fiscal-entry] [data-method="update"]').last().click();
 
     // this fix multiple element found take first
