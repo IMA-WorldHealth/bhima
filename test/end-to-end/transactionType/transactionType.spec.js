@@ -45,6 +45,7 @@ test.describe('transaction types', () => {
   test('successfully updates an existing transaction type', async () => {
     const editButton = `[data-edit-type="${newType.text}"]`;
     console.debug('1: ', editButton);
+    TU.screenshot('results/transaction.png');
     await TU.waitForSelector(editButton);
     console.debug('2');
     await TU.locator(editButton).click();
