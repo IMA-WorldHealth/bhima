@@ -267,6 +267,30 @@ async function selectRow(gridId, rowNum) {
 }
 
 /**
+ * Unselect all rows
+ *
+ * @param {number} gridId - number of the desired row
+ */
+async function clearRowSelections(gridId) {
+  const grid = await getGrid(gridId);
+  const ports = await grid.locator('[ui-grid-viewport]');
+  const selPort = await ports.nth(0);
+  const selBtns = await selPort.locator('.ui-grid-selection-row-header-buttons').all();
+
+  if (selBtns) {
+    /* eslint-disable no-await-in-loop */
+    for (let j = 0; j < selBtns.length; j++) {
+      const elt = selBtns[j];
+      const checked = await elt.isChecked();
+      if (checked) {
+        await elt.setChecked(false);
+      }
+    }
+    /* eslint-enable no-await-in-loop */
+  }
+}
+
+/**
  * Selects all rows in the grid.
  *
  * @param {string} gridId - the id of the grid that you want to select
@@ -324,4 +348,5 @@ exports.expectHeaderColumns = expectHeaderColumns;
 exports.expectHeaderColumnsContained = expectHeaderColumnsContained;
 exports.selectRow = selectRow;
 exports.selectAll = selectAll;
+exports.clearRowSelections = clearRowSelections;
 exports.expectCellValueMatch = expectCellValueMatch;
