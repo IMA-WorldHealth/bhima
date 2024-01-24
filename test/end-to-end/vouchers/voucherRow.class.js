@@ -35,40 +35,25 @@ class VoucherRow {
   }
 
   // sets the entity
-  async entity(type, name) {
+  async entity(name) {
     const node = await GU.getRow('voucherGridId', this.index);
 
-    // click the 'open entity modal' button
-    await node.locator('[data-entity-button]').click();
+    // type in the value
+    await TU.input('$ctrl.entity', name, node);
 
-    // the modal is now open
-    const modal = await TU.locator('[uib-modal-window="modal-window"]');
-
-    // select the proper entity type (Debtor/Creditor)
-    await modal.locator('[data-dropdown-target="entity"]').click();
-    const entity = TU.locator('.modal-dialog [uib-dropdown-menu]').locator(by.linkContainsText(type));
-    await entity.click();
-
-    // select the entity
-    await TU.input('$ctrl.entity', name);
-
-    // click the 'submit' button
-    await TU.modal.submit();
+    // click the highlighted option in the dropdown
+    await TU.locator('.dropdown-menu > [role="option"].active').click();
   }
 
   // sets the reference
-  async reference(type, index) {
+  async reference(name) {
     const node = await GU.getRow('voucherGridId', this.index);
-    // click the 'open reference modal' button
-    await node.locator('[data-reference-button]').click();
 
-    // select the type
-    await TU.locator(`[data-button-${type}]`).click();
+    // fill in the reference on this row
+    await TU.input('$ctrl.record', name, node);
 
-    await GU.selectRow('referenceGrid', index);
-
-    // submit the modal
-    await TU.modal.submit();
+    // click the highlighted option in the dropdown
+    await TU.locator('.dropdown-menu > [role="option"].active').click();
   }
 }
 
