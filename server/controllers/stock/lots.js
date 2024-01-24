@@ -130,7 +130,9 @@ async function update(req, res, next) {
   const bid = db.bid(req.params.uuid);
 
   const allowedToEdit = [
-    'label', 'expiration_date', 'unit_cost', 'reference_number', 'serial_number', 'acquisition_date', 'package_size', 'project_id'];
+    'label', 'expiration_date', 'unit_cost', 'reference_number', 'serial_number', 'acquisition_date', 'package_size',
+    'project_id',
+  ];
 
   const params = _.pick(req.body, allowedToEdit);
   const { tags } = req.body;
