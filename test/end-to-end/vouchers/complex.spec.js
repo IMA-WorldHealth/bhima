@@ -39,22 +39,22 @@ test.describe('Complex Vouchers', () => {
       description : 'Complex voucher test e2e',
       rows : [
         {
-          account : 'CASH PAYMENT CLIENT', debit : 18, credit : 0, entity : { type : 'Debtor', name : 'Test 2 Patient' },
+          account : 'CASH PAYMENT CLIENT', debit : 18, credit : 0, entity : 'PA.TPA.2',
         },
         {
-          account : 'Caisse Principale USD', debit : 0, credit : 8, reference : { type : 'voucher', index : 0 },
+          account : 'Caisse Principale USD', debit : 0, credit : 8, reference : 'VO.TPA.1',
         },
         {
-          account : 'CASH PAYMENT CLIENT', debit : 0, credit : 5, reference : { type : 'voucher', index : 2 },
+          account : 'CASH PAYMENT CLIENT', debit : 0, credit : 5, reference : 'VO.TPA.2',
         },
         {
-          account : 'CASH PAYMENT CLIENT', debit : 0, credit : 5, reference : { type : 'voucher', index : 1 },
+          account : 'CASH PAYMENT CLIENT', debit : 0, credit : 5, reference : 'VO.TPB.1',
         },
         {
-          account : 'Caisse Principale USD', debit : 7, credit : 0, entity : { type : 'Creditor', name : 'SNEL' },
+          account : 'Caisse Principale USD', debit : 7, credit : 0, entity : 'PA.TPA.4',
         },
         {
-          account : 'CASH PAYMENT CLIENT', debit : 0, credit : 7, reference : { type : 'patient-invoice', index : 1 },
+          account : 'CASH PAYMENT CLIENT', debit : 0, credit : 7, reference : 'IV.TPA.4',
         },
       ],
     };
@@ -83,11 +83,13 @@ test.describe('Complex Vouchers', () => {
       await current.account(row.account);
       await current.debit(row.debit);
       await current.credit(row.credit);
+
       if (row.entity) {
-        await current.entity(row.entity.type, row.entity.name);
+        await current.entity(row.entity);
       }
+
       if (row.reference) {
-        await current.reference(row.reference.type, row.reference.index);
+        await current.reference(row.reference);
       }
 
       idx += 1;
