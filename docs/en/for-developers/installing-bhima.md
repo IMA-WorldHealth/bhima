@@ -94,7 +94,7 @@ cd bhima
 
 All our build scripts are found the `package.json` file. We use [gulpjs](http://www.gulpjs.com) internally, but you shouldn't ever need to call gulp explicitly.
 
-To execute the build scripts, you can use either `yarn` or `npm`. We'll use `yarn` for the remainder of this guide. Note that using `npm` may require you to use `npm run` where it says `yarn` below.
+To execute the build scripts, you can use either `yarn` or `npm`. We'll use `yarn` for the remainder of this guide. Note that using `npm` requires you to use `npm run` where it says `yarn` below.
 
 ```bash
 # Inside the bhima/ directory
