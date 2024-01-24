@@ -2,6 +2,7 @@ const moment = require('moment');
 
 const { test } = require('@playwright/test');
 const TU = require('../shared/TestUtils');
+const { by } = require('../shared/TestUtils');
 
 const components = require('../shared/components');
 
@@ -128,13 +129,18 @@ function StockAggregateConsumptionTests() {
 
     console.debug('A');
     await page.setDetailed(1, 10);
+    console.debug('B');
     // Wait until the modal is fully up
     await TU.waitForSelector('.modal-dialog');
-    await TU.waitForSelector('bh-date-picker[date="row.entity.end_date"] input');
-    console.debug('B');
-    TU.screenshot('results/setLots.png');
-    await page.setLots(lots);
     console.debug('C');
+    TU.screenshot('results/setLots1.png');
+    await TU.waitForSelector(by.repeater('(colRenderIndex, col) in colContainer.renderedColumns track by col.uid'));
+    console.debug('D');
+    await TU.waitForSelector('bh-date-picker[date="row.entity.end_date"] input');
+    console.debug('E');
+    TU.screenshot('results/setLots2.png');
+    await page.setLots(lots);
+    console.debug('F');
 
     await page.setQuantityConsumed(2, 7, 500);
     await page.setQuantityLost(2, 8, 250);
