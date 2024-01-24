@@ -126,8 +126,15 @@ function StockAggregateConsumptionTests() {
       quantity_lost :  0,
     }];
 
+    console.debug('A');
     await page.setDetailed(1, 10);
+    // Wait until the modal is fully up
+    await TU.waitForSelector('.modal-dialog');
+    await TU.waitForSelector('bh-date-picker[date="row.entity.end_date"] input');
+    console.debug('B');
+    TU.screenshot('results/setLots.png');
     await page.setLots(lots);
+    console.debug('C');
 
     await page.setQuantityConsumed(2, 7, 500);
     await page.setQuantityLost(2, 8, 250);
