@@ -1963,6 +1963,7 @@ CREATE TABLE `lot` (
   `serial_number`     VARCHAR(40) NULL,
   `acquisition_date`  DATE DEFAULT NULL,
   `package_size`      INT(11) NOT NULL DEFAULT 1,
+  `project_id`        SMALLINT(5) UNSIGNED DEFAULT 0,
   PRIMARY KEY (`uuid`),
   KEY `inventory_uuid` (`inventory_uuid`),
   CONSTRAINT `lot__inventory` FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`)

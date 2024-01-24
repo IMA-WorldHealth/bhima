@@ -20,6 +20,7 @@
         <th>{{translate 'STOCK.ENTRY_DATE'}}</th>
         <th>{{translate 'STOCK.EXPIRATION_DATE'}}</th>
         <th>{{translate 'STOCK.EXPIRATION'}}</th>
+        <th>{{translate 'FORM.LABELS.PROJECT'}}</th>
         <th>{{translate 'STOCK.CMM'}}</th>
         <th>{{translate 'STOCK.MSD'}}</th>
         <th>{{translate 'STOCK.LIFETIME'}}</th>
@@ -60,6 +61,7 @@
               <td class="text-center"> - </td>
               <td class="text-center"> - </td>
             {{/if}}
+            <td class="text-right">{{project}}</td>
             <td class="text-right">{{avg_consumption}}</td>
             <td class="text-right">{{S_MONTH}}</td>
             <td class="text-right">{{lifetime}}</td>
@@ -68,7 +70,7 @@
             <td class="text-right">{{S_RISK_QUANTITY}}</td>
           </tr>
         {{else}}
-            {{> emptyTable columns=15}}
+            {{> emptyTable columns=16}}
         {{/each}}
 
         <!-- blank row  -->

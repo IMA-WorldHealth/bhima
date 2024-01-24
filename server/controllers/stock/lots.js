@@ -32,13 +32,14 @@ const core = require('../../controllers/stock/core');
 const detailsQuery = `
   SELECT
     BUID(l.uuid) AS uuid, l.label, l.quantity, l.unit_cost, l.expiration_date,
-    l.reference_number, l.serial_number, l.acquisition_date, l.package_size,
+    l.reference_number, l.serial_number, l.project_id, l.acquisition_date, l.package_size,
     (SELECT MIN(sm.date) FROM stock_movement sm
      WHERE sm.lot_uuid = l.uuid) AS entry_date,
-    BUID(i.uuid) AS inventory_uuid, i.text as inventory_name,
-    i.code as inventory_code, i.is_asset, i.is_count_per_container
+    BUID(i.uuid) AS inventory_uuid, i.text as inventory_name, 
+    i.code as inventory_code, i.is_asset, i.is_count_per_container, p.name AS project
   FROM lot l
   JOIN inventory i ON i.uuid = l.inventory_uuid
+  LEFT JOIN project p ON p.id = l.project_id
   `;
 
 exports.create = create;
@@ -88,6 +89,7 @@ async function create(req, res, next) {
       serial_number : lot.serial_number || '',
       acquisition_date : lot.acquisition_date || null,
       package_size : lot.package_size || 1,
+      project_id : req.session.project.id,
     };
     tx.addQuery(sql, value);
   });
@@ -128,11 +130,10 @@ async function update(req, res, next) {
   const bid = db.bid(req.params.uuid);
 
   const allowedToEdit = [
-    'label', 'expiration_date', 'unit_cost', 'reference_number', 'serial_number', 'acquisition_date', 'package_size'];
+    'label', 'expiration_date', 'unit_cost', 'reference_number', 'serial_number', 'acquisition_date', 'package_size', 'project_id'];
 
   const params = _.pick(req.body, allowedToEdit);
   const { tags } = req.body;
-
   if (params.expiration_date) {
     params.expiration_date = moment(params.expiration_date).format('YYYY-MM-DD');
   }

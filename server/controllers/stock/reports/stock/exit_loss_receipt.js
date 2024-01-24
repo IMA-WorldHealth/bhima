@@ -37,7 +37,7 @@ async function stockExitLossReceipt(documentUuid, session, options) {
       dm.text AS document_reference,
       l.label, l.expiration_date, d.text AS depot_name, d.is_count_per_container,
       l.package_size, FLOOR(m.quantity / l.package_size) number_package,
-      IF(l.package_size <= 1, 0, 1) AS displayDetail
+      IF(l.package_size <= 1, 0, 1) AS displayDetail, pr.name AS project
     FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
@@ -45,6 +45,7 @@ async function stockExitLossReceipt(documentUuid, session, options) {
     JOIN depot d ON d.uuid = m.depot_uuid
     JOIN user u ON u.id = m.user_id
     LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
+    LEFT JOIN project pr ON pr.id = l.project_id
     WHERE m.is_exit = 1 AND m.flux_id = ${Stock.flux.TO_LOSS} AND m.document_uuid = ?
   `;
 

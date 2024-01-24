@@ -59,6 +59,7 @@
         <th>{{translate 'STOCK.QUANTITY'}}</th>
         <th>{{translate 'STOCK.UNIT_COST'}}</th>
         <th>{{translate 'TABLE.COLUMNS.TOTAL'}}</th>
+        <th>{{translate 'FORM.LABELS.PROJECT'}}</th>
       </tr>
     </thead>
     <tbody>
@@ -82,12 +83,13 @@
           <td class="text-right">{{quantity}}</td>
           <td class="text-right">{{currency unit_cost ../enterprise.currency_id 4}}</td>
           <td class="text-right">{{currency total ../enterprise.currency_id}}</td>
+          <td>{{project}}</td>
         </tr>
       {{else}}
         {{#if displayPackagingDetails}}
-          {{> emptyTable columns=10}}
+          {{> emptyTable columns=11}}
         {{else}}
-          {{> emptyTable columns=9}}
+          {{> emptyTable columns=10}}
         {{/if}}
       {{/each}}
     </tbody>
