@@ -52,8 +52,10 @@ if test -f "./results/end-to-end-report-account"; then
   echo "   " `grep passed ./results/end-to-end-report-account`
   pending=`egrep -e '([0-9]+ pending)' ./results/end-to-end-report-account`
   if [ "$pending" ]; then echo "   $pending"; fi
-  skipped=`egrep -e '([0-9]+ skipped|[0-9]+ flakey)' ./results/end-to-end-report-account`
+  skipped=`egrep -e '([0-9]+ skipped)' ./results/end-to-end-report-account`
   if [ "$skipped" ]; then echo "   $skipped"; fi
+  flaky=`egrep -e '([0-9]+ flakey|[0-9]+ flaky)' ./results/end-to-end-report-account`
+  if [ "$flaky" ]; then echo "   $flaky"; fi
   failed=`egrep -e '([0-9]+ failing|[0-9]+ failed)' ./results/end-to-end-report-account`
   if [ "$failed" ]; then echo "   $failed"; fi
   echo
@@ -67,8 +69,10 @@ for i in {1..8}; do
     echo "   " `grep passed ./results/end-to-end-report-$i`
     pending=`egrep -e '([0-9]+ pending)' ./results/end-to-end-report-$i`
     if [ "$pending" ]; then echo "   $pending"; fi
-    skipped=`egrep -e '([0-9]+ skipped|[0-9]+ flakey)' ./results/end-to-end-report-$i`
+    skipped=`egrep -e '([0-9]+ skipped)' ./results/end-to-end-report-$i`
     if [ "$skipped" ]; then echo "   $skipped"; fi
+    flaky=`egrep -e '([0-9]+ flakey|[0-9]+ flaky)' ./results/end-to-end-report-$i`
+    if [ "$flaky" ]; then echo "   $flaky"; fi
     failed=`egrep -e '([0-9]+ failing|[0-9]+ failed)' ./results/end-to-end-report-$i`
     if [ "$failed" ]; then echo "   $failed"; fi
     echo
