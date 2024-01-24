@@ -117,6 +117,7 @@ function getLotFilters(parameters) {
   filters.equals('tag_uuid', 'tags', 't');
   filters.equals('trackingExpiration', 'tracking_expiration');
   filters.equals('stock_requisition_uuid', 'stock_requisition_uuid', 'm');
+  filters.equals('project_id', 'project_id', 'l');
 
   // Asset-related filters (from join with stock_assign AS sa)
   filters.equals('is_assigned', 'is_assigned', 'sa');
@@ -229,7 +230,7 @@ function getLots(sqlQuery, parameters, finalClause = '', orderBy = '') {
         i.code, i.text, BUID(m.depot_uuid) AS depot_uuid, d.text AS depot_text,
         IF(ISNULL(iu.token), iu.text, CONCAT("INVENTORY.UNITS.",iu.token,".TEXT")) AS unit_type,
         BUID(ig.uuid) AS group_uuid, ig.name AS group_name,
-        dm.text AS documentReference, ser.name AS service_name, sv.wac
+        dm.text AS documentReference, ser.name AS service_name, sv.wac, p.name AS project
       FROM lot l
       JOIN inventory i ON i.uuid = l.inventory_uuid
       JOIN inventory_unit iu ON iu.id = i.unit_id
@@ -239,6 +240,7 @@ function getLots(sqlQuery, parameters, finalClause = '', orderBy = '') {
       LEFT JOIN service AS ser ON ser.uuid = m.entity_uuid
       JOIN depot d ON d.uuid = m.depot_uuid
       JOIN stock_value sv ON sv.inventory_uuid = i.uuid
+      LEFT JOIN project p ON p.id = l.project_id
   `;
 
   const filters = getLotFilters(parameters);
@@ -296,7 +298,7 @@ async function getAssets(params) {
       SUM(m.quantity * IF(m.is_exit = 1, -1, 1)) AS quantity,
       d.text AS depot_text, l.unit_cost, l.expiration_date,
       l.serial_number, l.reference_number, l.acquisition_date, l.package_size,
-      BUID(l.inventory_uuid) AS inventory_uuid,
+      BUID(l.inventory_uuid) AS inventory_uuid, p.name AS project,
       i.code AS inventory_code, i.text as inventory_label,
       BUID(m.depot_uuid) AS depot_uuid,
       i.is_asset, i.manufacturer_brand, i.manufacturer_model,
@@ -326,7 +328,7 @@ async function getAssets(params) {
       JOIN inventory_group ig ON ig.uuid = i.group_uuid
       JOIN depot d ON d.uuid = m.depot_uuid
       LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
-
+      LEFT JOIN project p ON = l.project_id
       LEFT JOIN lot_tag lt ON lt.lot_uuid = l.uuid
       LEFT JOIN tags t ON t.uuid = lt.tag_uuid
 
@@ -420,7 +422,7 @@ async function getLotsDepot(depotUuid, params, finalClause) {
   const sql = `
     SELECT BUID(l.uuid) AS uuid, l.label, l.description AS lot_description,
       SUM(m.quantity * IF(m.is_exit = 1, -1, 1)) AS quantity,
-      SUM(m.quantity) AS mvt_quantity,
+      SUM(m.quantity) AS mvt_quantity, p.name AS project,
       d.text AS depot_text, l.unit_cost, l.expiration_date,
       l.serial_number, l.reference_number, l.package_size,
       d.min_months_security_stock, d.default_purchase_interval,
@@ -444,6 +446,7 @@ async function getLotsDepot(depotUuid, params, finalClause) {
       LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
       LEFT JOIN lot_tag lt ON lt.lot_uuid = l.uuid
       LEFT JOIN tags t ON t.uuid = lt.tag_uuid
+      LEFT JOIN project p ON p.id = l.project_id
       ${assignmentJoin}
   `;
 
@@ -621,7 +624,7 @@ async function getLotsMovements(depotUuid, params) {
       m.flux_id, BUID(m.entity_uuid) AS entity_uuid, m.unit_cost,
       f.label AS flux_label, i.delay, BUID(m.invoice_uuid) AS invoice_uuid, idm.text AS invoice_reference,
       IF(ISNULL(iu.token), iu.text, CONCAT("INVENTORY.UNITS.",iu.token,".TEXT")) AS unit_type,
-      dm.text AS documentReference, sv.wac
+      dm.text AS documentReference, sv.wac, p.name AS project
     FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
@@ -629,6 +632,7 @@ async function getLotsMovements(depotUuid, params) {
     JOIN depot d ON d.uuid = m.depot_uuid
     JOIN flux f ON f.id = m.flux_id
     JOIN stock_value sv ON sv.inventory_uuid = i.uuid
+    LEFT JOIN project p ON p.id = l.project_id
     LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
     LEFT JOIN document_map idm ON idm.uuid = m.invoice_uuid
     LEFT JOIN service AS serv ON serv.uuid = m.entity_uuid
@@ -702,7 +706,7 @@ function listLostStock(params) {
       IFNULL((ex.quantity - dest.quantity), 0) AS quantityDifference,
       i.code AS inventory_code, i.text AS inventory_name,
       l.label AS lotLabel, l.expiration_date AS expirationDate, l.package_size,
-      dest.unit_cost, (dest.quantity * dest.unit_cost) AS total_cost
+      dest.unit_cost, (dest.quantity * dest.unit_cost) AS total_cost, p.name AS project
     FROM stock_movement dest
     JOIN depot dd ON dd.uuid = dest.depot_uuid
     JOIN depot od ON od.uuid = dest.entity_uuid
@@ -713,6 +717,7 @@ function listLostStock(params) {
       FROM stock_movement m
       WHERE m.is_exit = 1 AND m.flux_id = ${flux.TO_OTHER_DEPOT}
     ) ex ON ex.document_uuid = dest.document_uuid AND ex.lot_uuid = dest.lot_uuid
+    LEFT JOIN project p ON p.id = l.project.id
   `;
 
   db.convert(params, ['depot_uuid']);

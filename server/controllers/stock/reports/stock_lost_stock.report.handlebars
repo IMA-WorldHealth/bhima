@@ -32,6 +32,7 @@
               <th>{{translate 'STOCK.CODE'}}</th>
               <th>{{translate 'STOCK.INVENTORY'}}</th>
               <th>{{translate 'STOCK.LOT'}}</th>
+              <th>{{translate 'FORM.LABELS.PROJECT'}}</th>
               <th>{{translate 'STOCK.EXPIRATION'}}</th>
               <th>{{translate 'REPORT.LOST_STOCK_REPORT.DESTINATION_DEPOT'}}</th>
               <th>{{translate 'REPORT.LOST_STOCK_REPORT.SOURCE_DEPOT'}}</th>
@@ -49,6 +50,7 @@
               <td>{{inventory_code}}</td>
               <td>{{inventory_name}}</td>
               <td>{{lotLabel}}</td>
+              <td>{{project}}</td>
               <td class="text-right">{{date expirationDate}}</td>
               <td>{{destDepot}}</td>
               <td>{{srcDepot}}</td>
@@ -59,7 +61,7 @@
               <td class="text-right">{{currency loss ../currencyId 2}}</td>
             </tr>
             {{else}}
-              {{> emptyTable columns=12}}
+              {{> emptyTable columns=13}}
             {{/each}}
           </tbody>
           <tfoot>

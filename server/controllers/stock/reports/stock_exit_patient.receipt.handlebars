@@ -60,6 +60,7 @@
         <th>{{translate 'STOCK.EXPIRATION'}}</th>
         <th>{{translate 'STOCK.QUANTITY'}}</th>
         <th>{{translate 'STOCK.INVENTORY_UNIT'}}</th>
+        <th>{{translate 'FORM.LABELS.PROJECT'}}</th>
       </tr>
     </thead>
     <tbody>
@@ -71,9 +72,10 @@
           <td>{{date expiration_date}}</td>
           <td class="text-right">{{quantity}}</td>
           <td>{{ translate unit_type }}</td>
+          <td>{{project}}</td>
         </tr>
       {{else}}
-        {{> emptyTable columns=6}}
+        {{> emptyTable columns=7}}
       {{/each}}
     </tbody>
     <tfoot>

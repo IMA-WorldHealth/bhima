@@ -29,6 +29,7 @@ const lots = [
     expiration_date  : moment(new Date(), 'YYYY-MM-DD').subtract(923, 'days'),
     inventory_uuid   : helpers.data.QUININE,
     origin_uuid      : 'e07ceadc-82cf-4ae2-958a-6f6a78c87588',
+    project_id       : helpers.data.PROJECT,
   },
 
   {
@@ -38,6 +39,7 @@ const lots = [
     expiration_date  : moment(new Date(), 'YYYY-MM-DD').subtract(923, 'days'),
     inventory_uuid   : helpers.data.QUININE,
     origin_uuid      : 'e07ceadc-82cf-4ae2-958a-6f6a78c87588',
+    project_id       : helpers.data.PROJECT,
   },
 
   {
@@ -47,6 +49,7 @@ const lots = [
     expiration_date  : moment(new Date(), 'YYYY-MM-DD').subtract(1288, 'days'),
     inventory_uuid   : helpers.data.QUININE,
     origin_uuid      : 'e07ceadc-82cf-4ae2-958a-6f6a78c87588',
+    project_id       : helpers.data.PROJECT,
   },
 
   {
@@ -56,6 +59,7 @@ const lots = [
     expiration_date  : moment(new Date(), 'YYYY-MM-DD').subtract(1288, 'days'),
     inventory_uuid   : helpers.data.MULTIVITAMINE,
     origin_uuid      : 'e07ceadc-82cf-4ae2-958a-6f6a78c87588',
+    project_id       : helpers.data.PROJECT,
   },
 
   {
@@ -65,6 +69,7 @@ const lots = [
     expiration_date  : moment(new Date(), 'YYYY-MM-DD').subtract(192, 'days'),
     inventory_uuid   : helpers.data.MULTIVITAMINE,
     origin_uuid      : 'e07ceadc-82cf-4ae2-958a-6f6a78c87588',
+    project_id       : helpers.data.PROJECT,
   },
 ];
 
@@ -92,6 +97,7 @@ const movementFromDonation = {
       unit_cost : 1.5,
       origin_uuid : 'ae735e99-8faf-417b-aa63-9b404fca390d',
       expiration_date : moment(new Date(), 'YYYY-MM-DD').add(10685, 'days'),
+      project_id      : helpers.data.PROJECT,
     }, {
       inventory_uuid : helpers.data.MULTIVITAMINE,
       quantity  : 10,
@@ -99,6 +105,7 @@ const movementFromDonation = {
       label : 'don2',
       origin_uuid : 'ae735e99-8faf-417b-aa63-9b404fca390d',
       expiration_date : moment(new Date(), 'YYYY-MM-DD').add(10685, 'days'),
+      project_id      : helpers.data.PROJECT,
     },
   ],
 };

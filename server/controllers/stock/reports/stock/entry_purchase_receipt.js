@@ -27,7 +27,7 @@ async function stockEntryPurchaseReceipt(documentUuid, session, options) {
       m.quantity, m.unit_cost, (m.quantity * m.unit_cost) AS total , m.date, m.description,
       u.display_name AS user_display_name,
       l.label, l.expiration_date, d.text AS depot_name, d.is_count_per_container,
-      dm2.text AS purchase_reference,
+      dm2.text AS purchase_reference, pr.name AS project,
       p.note, p.cost, p.shipping_handling, p.currency_id, BUID(p.uuid) as po_uuid,
       p.date AS purchase_date, p.payment_method, s.display_name AS supplier_display_name,
       dm.text as document_reference, ig.tracking_expiration,
@@ -44,6 +44,7 @@ async function stockEntryPurchaseReceipt(documentUuid, session, options) {
       LEFT JOIN supplier s ON s.uuid = p.supplier_uuid
       LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
       LEFT JOIN document_map dm2 ON dm2.uuid = m.entity_uuid
+      LEFT JOIN project pr ON pr.id = l.project_id
     WHERE m.is_exit = 0 AND m.flux_id = ${Stock.flux.FROM_PURCHASE} AND m.document_uuid = ?
     ORDER BY i.text, l.label
   `;
@@ -158,7 +159,7 @@ async function stockEntryPurchaseReceipt(documentUuid, session, options) {
   data.details.order_complete = delivTotalQuantity >= poTotalQuantity;
 
   // For report table formatting
-  data.ncols = data.details.p_shipping_handling ? 7 : 6;
+  data.ncols = data.details.p_shipping_handling ? 8 : 7;
   data.ncols = data.displayPackagingDetails ? data.ncols + 1 : data.ncols;
 
   data.rows = rows;

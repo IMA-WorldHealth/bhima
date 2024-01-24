@@ -117,7 +117,8 @@ async function createStock(req, res, next) {
           reference_number : lot.reference_number,
           serial_number : lot.serial_number,
           acquisition_date : acquitionDate || null,
-          package_size : lot.package_size || 1,
+          package_size: lot.package_size || 1,
+          project_id : req.session.project.id,
         };
 
         // adding a lot insertion query into the transaction
@@ -236,6 +237,7 @@ async function insertNewStock(session, params) {
         inventory_uuid : db.bid(lot.inventory_uuid),
         serial_number : lot.serial_number,
         package_size : lot.package_size || 1,
+        project_id : session.project.id,
       });
     }
 

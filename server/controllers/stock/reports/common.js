@@ -97,7 +97,7 @@ async function getDepotMovement(documentUuid, enterprise, isExit) {
       IF(ISNULL(iu.token), iu.text, CONCAT("INVENTORY.UNITS.",iu.token,".TEXT")) AS unit_type,
       BUID(m.document_uuid) AS document_uuid,
       m.quantity, m.unit_cost, (m.quantity * m.unit_cost) AS total, m.date, m.description,
-      u.display_name AS user_display_name,
+      u.display_name AS user_display_name, p.name AS project,
       dm.text AS document_reference,
       l.label, l.expiration_date, d.text AS depot_name, d.is_count_per_container, dd.text as otherDepotName,
       dm.text as document_reference, l.package_size, FLOOR(m.quantity / l.package_size) number_package,
@@ -116,6 +116,7 @@ async function getDepotMovement(documentUuid, enterprise, isExit) {
       LEFT JOIN document_map sr_m ON sr_m.uuid = m.stock_requisition_uuid
       LEFT JOIN shipment s ON s.document_uuid = m.document_uuid
       LEFT JOIN document_map ship_dm ON ship_dm.uuid = s.uuid
+      LEFT JOIN project p ON p.id = l.project_id
       ${joinToExit}
     WHERE m.is_exit = ? AND m.flux_id = ? AND m.document_uuid = ?
     ORDER BY i.text, l.label, l.expiration_date DESC`;

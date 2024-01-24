@@ -20,7 +20,7 @@ function SearchLotsModalController(data, util, Store, Instance, Periods, Stock, 
     'is_asset', 'reference_number',
     'entry_date_from', 'entry_date_to',
     'expiration_date_from', 'expiration_date_to',
-    'is_expired', 'is_expiry_risk', 'tags',
+    'is_expired', 'is_expiry_risk', 'tags', 'project_id',
   ];
 
   // displayValues will be an id:displayValue pair
@@ -109,6 +109,11 @@ function SearchLotsModalController(data, util, Store, Instance, Periods, Stock, 
   vm.onSelectTags = tags => {
     vm.searchQueries.tags = tags;
     displayValues.tags = tags.map(t => t.name).join(',');
+  };
+  // select project
+  vm.onSelectProject = function onSelectProject(project) {
+    vm.searchQueries.project_id = project.id;
+    displayValues.project_id = project.name;
   };
 
   // deletes a filter from the custom filter object,
