@@ -93,7 +93,7 @@ function buildBudgetData(fiscalYearId) {
   const sql = `
     SELECT
       a.id, a.number, a.type_id, at.type AS acctType,
-      a.label, a.parent, a.locked AS acctLocked, a.hidden,
+      a.label, a.parent, a.locked, a.hidden,
       bdata.budget
     FROM account AS a
     JOIN account_type AS at ON at.id = a.type_id
