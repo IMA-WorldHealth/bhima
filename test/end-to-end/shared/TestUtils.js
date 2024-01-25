@@ -370,7 +370,7 @@ module.exports = {
     await this.input(model, label, anchor);
 
     // select the item of the dropdown menu matching the label
-    return anchor.locator(`.dropdown-menu > [role="option"] >> text="${label}"`).click();
+    await anchor.locator(`.dropdown-menu > [role="option"] >> text="${label}"`).click();
   },
 
   /**

@@ -122,27 +122,13 @@ function VoucherService(
     const v = angular.copy(voucher);
 
     // format items for posting, removing validation keys and unlinking old objects
-    v.items = v.items.map((item) => {
-      const escapedItem = stripInternalObjectKeys(item);
-
-      if (escapedItem.entity) {
-        escapedItem.entity_uuid = escapedItem.entity.uuid;
-      }
-
-      if (escapedItem.document) {
-        escapedItem.document_uuid = escapedItem.document.uuid;
-      }
-
-      return escapedItem;
-    });
+    v.items = v.items.map(stripInternalObjectKeys);
 
     // @FIXME(sfount) this uses javascript maths without using something like the
     //                BigNumber library. Our general default is to do maths in MySQL
     // we pick either the debit or the credit side to assign as the total amount
     // of the voucher
-    v.amount = v.items.reduce((sum, row) => {
-      return sum + row.debit;
-    }, 0);
+    v.amount = v.items.reduce((sum, row) => sum + row.debit, 0);
 
     return Api.create.call(service, { voucher : v });
   }
@@ -167,13 +153,7 @@ function VoucherService(
    * @return {object} Store transaction type store object { data: array, ...}
    */
   function transactionType() {
-    return TransactionTypeStore.load()
-      .then((transactionTypes) => {
-        return transactionTypes.data.map((item) => {
-          item.hrText = $translate.instant(item.text);
-          return item;
-        });
-      });
+    return TransactionTypeStore.load();
   }
 
   // downloads a type of report based on the
