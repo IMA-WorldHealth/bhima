@@ -50,6 +50,7 @@
           <th width="30%">{{translate 'STOCK.INVENTORY'}}</th>
           <th width="10%">{{translate 'STOCK.CODE'}}</th>
           <th width="10%">{{translate 'STOCK.LOT'}}</th>
+          <th width="10%">{{translate 'FORM.LABELS.PROJECT'}}</th>
           <th width="5%">{{translate 'STOCK.EXPIRATION'}}</th>
           <th width="5%">{{translate 'STOCK.CMM'}}</th>
           <th width="5%">{{translate 'STOCK.CURRENT_QUANTITY'}}</th>
@@ -58,6 +59,7 @@
           <th width="5%">{{translate 'REPORT.STOCK.UNIT_COST'}}</th>
           <th width="5%">{{translate 'STOCK.RISK_VALUE'}}</th>
           <th width="15%">{{translate 'STOCK.STATUS.LABEL'}}</th>
+          <th width="10%">{{translate 'FORM.LABELS.PROJECT'}}</th>
         </tr>
       </thead>
 
@@ -67,6 +69,7 @@
             <td>{{lot.text}}</td>
             <td>{{lot.code}}</td>
             <td>{{lot.label}}</td>
+            <td>{{lot.project}}</td>
             <td>{{date lot.expiration_date}}</td>
             <td class="text-right">{{lot.avg_consumption}}</td>
             <td class="text-right">{{lot.quantity}}</td>
@@ -75,6 +78,7 @@
             <td class="text-right">{{currency lot.unit_cost ../../currencyId}}</td>
             <td class="text-right">{{currency lot.value ../../currencyId}}</td>
             <td class="{{lot.classKey}}">{{translate lot.statusKey}}</td>
+            <td>{{project}}</td>
           </tr>
         {{/each}}
       </tbody>
@@ -89,7 +93,7 @@
     <br />
   {{else}}
     <table>
-      <tbody>{{> emptyTable columns=10}}</tbody>
+      <tbody>{{> emptyTable columns=11}}</tbody>
     </table>
   {{/each}}
 </body>

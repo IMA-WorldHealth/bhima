@@ -657,13 +657,13 @@ SET @multivitamine = HUID('f6556e72-9d05-4799-8cbd-0a03b1810185');
 SET @erythromycine = HUID('3cf8d982-eef9-11ea-8801-00155d871701');
 
 -- stock lots
-INSERT INTO `lot` (`uuid`, `label`, `quantity`, `unit_cost`, `expiration_date`, `inventory_uuid`) VALUES
-  (HUID('064ab1d9-5246-4402-ae8a-958fcdb07b35'), 'VITAMINE-A', 100, 1.2000, DATE_ADD(CURRENT_DATE, INTERVAL 2 YEAR), @multivitamine),
-  (HUID('5a0e06c2-6ca7-4633-8b17-92e2a59db44c'), 'VITAMINE-B', 20, 0.5000, DATE_ADD(CURRENT_DATE, INTERVAL 2 YEAR), @multivitamine),
-  (HUID('6f80748b-1d94-4247-804e-d4be99e827d2'), 'QUININE-B', 200, 0.8000, DATE_ADD(CURRENT_DATE, INTERVAL 1 MONTH),  @quinine),
-  (HUID('ae735e99-8faf-417b-aa63-9b404fca99ac'), 'QUININE-A', 100, 1.2000, '2017-04-30', @quinine),
-  (HUID('ef24cf1a-d5b9-4846-b70c-520e601c1ea6'), 'QUININE-C', 50, 2.0000, DATE_ADD(CURRENT_DATE, INTERVAL 2 YEAR), @quinine),
-  (HUID('aca917fe-5320-4c3c-bea6-590e48cfa26b'), 'ERYTHRO-A', 0,  3.1800, DATE_ADD(CURRENT_DATE, INTERVAL 3 MONTH), @erythromycine);
+INSERT INTO `lot` (`uuid`, `label`, `quantity`, `unit_cost`, `expiration_date`, `inventory_uuid`, `project_id`) VALUES
+  (HUID('064ab1d9-5246-4402-ae8a-958fcdb07b35'), 'VITAMINE-A', 100, 1.2000, DATE_ADD(CURRENT_DATE, INTERVAL 2 YEAR), @multivitamine, 1),
+  (HUID('5a0e06c2-6ca7-4633-8b17-92e2a59db44c'), 'VITAMINE-B', 20, 0.5000, DATE_ADD(CURRENT_DATE, INTERVAL 2 YEAR), @multivitamine, 1),
+  (HUID('6f80748b-1d94-4247-804e-d4be99e827d2'), 'QUININE-B', 200, 0.8000, DATE_ADD(CURRENT_DATE, INTERVAL 1 MONTH),  @quinine, 1),
+  (HUID('ae735e99-8faf-417b-aa63-9b404fca99ac'), 'QUININE-A', 100, 1.2000, '2017-04-30', @quinine, 1),
+  (HUID('ef24cf1a-d5b9-4846-b70c-520e601c1ea6'), 'QUININE-C', 50, 2.0000, DATE_ADD(CURRENT_DATE, INTERVAL 2 YEAR), @quinine, 1),
+  (HUID('aca917fe-5320-4c3c-bea6-590e48cfa26b'), 'ERYTHRO-A', 0,  3.1800, DATE_ADD(CURRENT_DATE, INTERVAL 3 MONTH), @erythromycine, 1);
 
 -- stock settings (go with defaults)
 INSERT INTO `stock_setting` (`enterprise_id`, `enable_auto_stock_accounting`, `month_average_consumption`, `average_consumption_algo`, `default_purchase_interval`) VALUES (1, 0, 6, 'algo_msh', 0);
@@ -687,9 +687,9 @@ INSERT INTO `stock_movement` (`uuid`, `document_uuid`, `depot_uuid`, `lot_uuid`,
   (0xA45397EC170B43D7A246947BFE40EE81, 0x63C5CBB248CE452B97FF0D6BD6B9120B, 0xF9CAEB16168443C5A6C447DBAC1DF296, 0x6F80748B1D944247804ED4BE99E827D2, 0xD1D7F856D41444008B948BA9445A2BC0, 'Distribution to the patient Employee Test 1', 9, DATE_ADD(NOW(), INTERVAL -2 WEEK), 5, 0.8000, 1, 1, NULL, DATE_ADD(NOW(), INTERVAL -2 WEEK), DATE_FORMAT(DATE_ADD(NOW(), INTERVAL -2 WEEK), '%Y%m'));
 
 -- Stock movement for aggregate-consumption-test
-INSERT INTO `lot` (`uuid`, `label`, `quantity`, `unit_cost`, `description`, `expiration_date`, `inventory_uuid`, `is_assigned`) VALUES (0xACAA9876EF834D9F84E1BB7C2AF22777, 'lot 2', 1000, 1.4600, NULL, DATE_ADD(CURRENT_DATE, INTERVAL 2 YEAR), 0x43F3DECBFCE9426E940AB2150E62186C,  0);
-INSERT INTO `lot` (`uuid`, `label`, `quantity`, `unit_cost`, `description`, `expiration_date`, `inventory_uuid`, `is_assigned`) VALUES (0xD080D354417D47F18E8B1561E98823D9, 'PL1', 1000, 9.5100, NULL, DATE_ADD(CURRENT_DATE, INTERVAL 2 YEAR),   0x43F3DECBFCE9940A426EE62186BC2150,  0);
-INSERT INTO `lot` (`uuid`, `label`, `quantity`, `unit_cost`, `description`, `expiration_date`, `inventory_uuid`, `is_assigned`) VALUES (0xE36AFF4F99C244A897B770E34A21E658, 'lot 1', 1000, 1.4600, NULL, DATE_ADD(CURRENT_DATE, INTERVAL 2 YEAR), 0x43F3DECBFCE9426E940AB2150E62186C,  0);
+INSERT INTO `lot` (`uuid`, `label`, `quantity`, `unit_cost`, `description`, `expiration_date`, `inventory_uuid`, `is_assigned`, `project_id`) VALUES (0xACAA9876EF834D9F84E1BB7C2AF22777, 'lot 2', 1000, 1.4600, NULL, DATE_ADD(CURRENT_DATE, INTERVAL 2 YEAR), 0x43F3DECBFCE9426E940AB2150E62186C,  0, 1);
+INSERT INTO `lot` (`uuid`, `label`, `quantity`, `unit_cost`, `description`, `expiration_date`, `inventory_uuid`, `is_assigned`, `project_id`) VALUES (0xD080D354417D47F18E8B1561E98823D9, 'PL1', 1000, 9.5100, NULL, DATE_ADD(CURRENT_DATE, INTERVAL 2 YEAR),   0x43F3DECBFCE9940A426EE62186BC2150,  0, 1);
+INSERT INTO `lot` (`uuid`, `label`, `quantity`, `unit_cost`, `description`, `expiration_date`, `inventory_uuid`, `is_assigned`, `project_id`) VALUES (0xE36AFF4F99C244A897B770E34A21E658, 'lot 1', 1000, 1.4600, NULL, DATE_ADD(CURRENT_DATE, INTERVAL 2 YEAR), 0x43F3DECBFCE9426E940AB2150E62186C,  0, 1);
 
 INSERT INTO `stock_movement` (`uuid`, `document_uuid`, `depot_uuid`, `lot_uuid`, `entity_uuid`, `description`, `flux_id`, `date`, `created_at`, `quantity`, `unit_cost`, `is_exit`, `user_id`, `reference`, `invoice_uuid`, `stock_requisition_uuid`, `period_id`) VALUES (0x32A81E1C81134CA5AA0A63ECF9B3435E, 0x957E34378E664E25B62E771C6443E209, 0xBD4B14524742E4FAA128246814140877, 0xACAA9876EF834D9F84E1BB7C2AF22777, NULL, 'Entrée de stock par intégration - agrege', 13, DATE_ADD(CURRENT_DATE, INTERVAL -12 WEEK), DATE_ADD(CURRENT_DATE, INTERVAL -12 WEEK), 1000, 1.4600, 0, 1, 9, NULL, NULL, DATE_FORMAT(DATE_ADD(CURRENT_DATE, INTERVAL -12 WEEK), '%Y%m'));
 INSERT INTO `stock_movement` (`uuid`, `document_uuid`, `depot_uuid`, `lot_uuid`, `entity_uuid`, `description`, `flux_id`, `date`, `created_at`, `quantity`, `unit_cost`, `is_exit`, `user_id`, `reference`, `invoice_uuid`, `stock_requisition_uuid`, `period_id`) VALUES (0x5AB8E771153449549A3EE2D7149ABB9D, 0x9985985CB9A549D4BF8C1E64B273724C, 0xBD4B14524742E4FAA128246814140877, 0xD080D354417D47F18E8B1561E98823D9, NULL, 'Entrée de stock par intégration - agrege', 13, DATE_ADD(CURRENT_DATE, INTERVAL -12 WEEK), DATE_ADD(CURRENT_DATE, INTERVAL -12 WEEK), 1000, 9.5100, 0, 1, 10, NULL, NULL, DATE_FORMAT(DATE_ADD(CURRENT_DATE, INTERVAL -12 WEEK), '%Y%m'));
@@ -1198,9 +1198,9 @@ INSERT INTO `inventory` (`enterprise_id`, `uuid`, `code`, `text`, `price`, `defa
  NULL, 'Honda', 'CRF250RX', '2022-02-25 09:12:32', NULL);
 
 -- Insert sample assets
-INSERT INTO `lot` (`uuid`, `label`, `quantity`, `unit_cost`, `description`, `expiration_date`, `inventory_uuid`, `is_assigned`, `serial_number`, `acquisition_date`) VALUES
-(@asset_mot1, 'MOT1', 1, 8500.0000, NULL, '2027-03-01', @inv_moto, 1, '12345', DATE_ADD(CURRENT_DATE, INTERVAL -2 YEAR)),
-(@asset_mot2, 'MOT2', 1, 8500.0000, NULL, '2027-03-01', @inv_moto, 0 , '12346', DATE_ADD(CURRENT_DATE, INTERVAL -2 YEAR));
+INSERT INTO `lot` (`uuid`, `label`, `quantity`, `unit_cost`, `description`, `expiration_date`, `inventory_uuid`, `is_assigned`, `serial_number`, `acquisition_date`, `project_id`) VALUES
+(@asset_mot1, 'MOT1', 1, 8500.0000, NULL, '2027-03-01', @inv_moto, 1, '12345', DATE_ADD(CURRENT_DATE, INTERVAL -2 YEAR), 1),
+(@asset_mot2, 'MOT2', 1, 8500.0000, NULL, '2027-03-01', @inv_moto, 0 , '12346', DATE_ADD(CURRENT_DATE, INTERVAL -2 YEAR), 1);
 
 -- Stock movements for the sample assets
 INSERT INTO `stock_movement` (`uuid`, `document_uuid`, `depot_uuid`, `lot_uuid`,

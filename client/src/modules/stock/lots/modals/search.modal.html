@@ -111,6 +111,13 @@
             <bh-clear on-clear="$ctrl.clear('tags')"></bh-clear>
           </bh-tag-select>
 
+          <!-- project  -->
+          <bh-project-select
+            on-select-callback="$ctrl.onSelectProject(project)"
+            project-id="$ctrl.searchQueries.project_id">
+           <bh-clear on-clear="$ctrl.clear('project_id')"></bh-clear>
+          </bh-project-select>
+
         </div>
       </uib-tab>
 
