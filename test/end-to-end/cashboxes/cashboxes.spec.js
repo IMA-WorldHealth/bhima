@@ -75,8 +75,8 @@ test.describe('Cashboxes', () => {
 
     // confirm that the modal appears
     // ??? await TU.exists('[uib-modal-window]', true);
-    await TU.locator('[uib-modal-window]');
-    await TU.exists(by.name('CashboxModalForm'));
+    await TU.waitForSelector('.modal-dialog');
+    await TU.waitForSelector(by.name('CashboxModalForm'));
 
     await accountSelect.set('Gain de change', 'account-id');
     await accountSelect.set('Différences de change', 'transfer-account-id');
