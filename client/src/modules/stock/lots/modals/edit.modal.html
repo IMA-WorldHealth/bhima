@@ -90,6 +90,12 @@
         enable-add-tag="true"
         on-select-callback="$ctrl.onSelectTags(tags)">
       </bh-tag-select>
+
+
+      <bh-project-select
+        on-select-callback="$ctrl.onSelectProject(project)"
+        project-id="$ctrl.model.project_id">
+      </bh-project-select>
     </div>
 
     <div class="modal-footer">

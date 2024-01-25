@@ -59,6 +59,9 @@ function StockFiltererService(Filters, AppCache, $httpParamSerializer, Languages
     {
       key : 'expiration_date_to', label : 'STOCK.EXPIRATION_DATE', comparitor : '<', valueFilter : 'date',
     },
+    {
+      key : 'project_id', label : 'FORM.LABELS.PROJECT', valueFilter : 'translate',
+    },
   ];
 
   class StockFilterer {

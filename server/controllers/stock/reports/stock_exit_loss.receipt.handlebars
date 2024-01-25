@@ -55,6 +55,7 @@
         {{/if}}
         <th>{{translate 'STOCK.QUANTITY'}}</th>
         <th>{{translate 'STOCK.INVENTORY_UNIT'}}</th>
+        <th>{{translate 'FORM.LABELS.PROJECT'}}</th>
       </tr>
     </thead>
     <tbody>
@@ -73,21 +74,22 @@
           {{/if}}
           <td class="text-right">{{quantity}}</td>
           <td>{{ translate unit_type }}</td>
+          <td>{{project}}</td>
         </tr>
       {{else}}
         {{#if displayPackagingDetails}}
-          {{> emptyTable columns=7}}
+          {{> emptyTable columns=8}}
         {{else}}
-          {{> emptyTable columns=6}}
+          {{> emptyTable columns=7}}
         {{/if}}
       {{/each}}
     </tbody>
     <tfoot>
       <tr style="font-weight: bold;">
         {{#if displayPackagingDetails}}
-          <td colspan="7">{{rows.length}} {{translate 'STOCK.ITEMS'}}</td>
+          <td colspan="8">{{rows.length}} {{translate 'STOCK.ITEMS'}}</td>
         {{else}}
-          <td colspan="6">{{rows.length}} {{translate 'STOCK.ITEMS'}}</td>
+          <td colspan="7">{{rows.length}} {{translate 'STOCK.ITEMS'}}</td>
         {{/if}}
       </tr>
     </tfoot>

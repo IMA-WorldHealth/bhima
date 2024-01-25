@@ -40,7 +40,7 @@ async function stockExitPatientReceipt(documentUuid, session, options) {
       u.display_name AS user_display_name, p.display_name AS patient_display_name,
       dm.text AS document_reference,  BUID(m.invoice_uuid) as invoice_uuid,
       CONCAT_WS('.', '${identifiers.PATIENT.key}', proj.abbr, p.reference) AS patient_reference, p.hospital_no,
-      l.label, l.expiration_date, d.text AS depot_name
+      l.label, l.expiration_date, d.text AS depot_name, pr.name AS project
     FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
@@ -50,6 +50,7 @@ async function stockExitPatientReceipt(documentUuid, session, options) {
     JOIN project proj ON proj.id = p.project_id
     JOIN user u ON u.id = m.user_id
     LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
+    LEFT JOIN project pr ON pr.id = l.project_id
     WHERE m.is_exit = 1 AND m.flux_id = ${Stock.flux.TO_PATIENT} AND m.document_uuid = ?
   `;
 
