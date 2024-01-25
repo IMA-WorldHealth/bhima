@@ -65,19 +65,22 @@ test.describe('Cashboxes', () => {
   // @TODO : Fix; works fine alone and locally, but fails in CI
   test('allows the user to change currency accounts', async () => {
     // navigate to the update form for the second item
+    console.debug('C1');
     await update('New Cashbox Name');
+    console.debug('C2');
 
     // Wait for the update form to appear
     await TU.waitForSelector(by.name('UpdateForm'));
-
+    console.debug('C3');
     // get the "FC" (congolese francs) currency
     await TU.locator('[data-currency-id="1"]').click();
-
+    console.debug('C4');
     // confirm that the modal appears
-    // ??? await TU.exists('[uib-modal-window]', true);
     await TU.waitForSelector('.modal-dialog');
+    console.debug('C5');
+    TU.screenshot('results/cashbox.png');
     await TU.waitForSelector(by.name('CashboxModalForm'));
-
+    console.debug('C6');
     await accountSelect.set('Gain de change', 'account-id');
     await accountSelect.set('Différences de change', 'transfer-account-id');
 
