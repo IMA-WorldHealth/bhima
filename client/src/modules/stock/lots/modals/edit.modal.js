@@ -38,6 +38,11 @@ function EditLotModalController(Data, Session, Lots, Inventory, Notify, Instance
     vm.model.tags = tags;
   }
 
+  // select project
+  vm.onSelectProject = function onSelectProject(project) {
+    vm.model.project_id = project.id;
+  };
+
   function submit(form) {
     if (form.$invalid) { return 0; }
 

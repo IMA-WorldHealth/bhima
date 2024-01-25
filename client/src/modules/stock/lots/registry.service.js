@@ -225,6 +225,10 @@ function LotsRegistryService(uiGridConstants, Session) {
       visible : false,
       width : 150,
     }, {
+      field : 'project',
+      displayName : 'FORM.LABELS.PROJECT',
+      headerCellFilter : 'translate',
+    }, {
       field : 'action',
       displayName : '',
       enableFiltering : false,
