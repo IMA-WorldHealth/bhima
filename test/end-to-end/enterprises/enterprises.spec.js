@@ -157,8 +157,11 @@ test.describe('Enterprises', () => {
 
   test('delete an existing project', async () => {
     // Pop up the project deletion dialog
-    await TU.locator(`[data-project="${projectUpdate.abbr}"] a[data-method="delete"]`).click();
-    await TU.input('$ctrl.text', projectUpdate.name);
+    const proj = await TU.locator(`#projectList li:has-text("${projectUpdate.abbr}")`);
+    // NB: Not sure why this work-around was necessary when the 'update' one above works fine
+    await proj.locator('a[data-method="delete"]').click();
+    await TU.input('$ctrl.text', projectUpdate.name); // Confirm deletion
+
     await TU.modal.submit();
 
     await components.notification.hasSuccess();
