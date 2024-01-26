@@ -44,11 +44,20 @@ test.describe('transaction types', () => {
 
   test('successfully updates an existing transaction type', async () => {
     const editButton = `[data-edit-type="${newType.text}"]`;
+    console.debug('1: ', editButton);
+    TU.screenshot('results/transaction1.png');
     await TU.waitForSelector(editButton);
+    TU.screenshot('results/transaction2.png');
+    console.debug('2');
     await TU.locator(editButton).click();
+    TU.screenshot('results/transaction3.png');
+    console.debug('3');
     await TU.input('$ctrl.transactionType.text', updateType.text);
+    console.debug('4');
     await TU.select('$ctrl.transactionType.type', updateType.type);
+    console.debug('5');
     await TU.buttons.submit();
+    console.debug('6');
     await components.notification.hasSuccess();
   });
 
