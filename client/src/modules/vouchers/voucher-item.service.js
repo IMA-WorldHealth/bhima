@@ -106,7 +106,7 @@ function VoucherItemService(uuid, Constants, util) {
       } else if (!hasSingleNumericValue) {
         this._error = 'VOUCHERS.COMPLEX.ERROR_AMOUNT';
       } else if (!hasPositiveValues) {
-        this._error = 'VOUCHERS.COMPLEX.ERRORS_NEGATIVE_NUMBERS';
+        this._error = 'VOUCHERS.COMPLEX.ERROR_NEGATIVE_NUMBERS';
       }
 
     // if not invalid, remove the error message
@@ -125,7 +125,6 @@ function VoucherItemService(uuid, Constants, util) {
    * the ui-select.
    */
   VoucherItem.prototype.configure = function configure(item) {
-
     if (item.account_id) {
       this.account_id = item.account_id;
     }
@@ -141,11 +140,15 @@ function VoucherItemService(uuid, Constants, util) {
     }
 
     if (angular.isDefined(item.entity)) {
-      this.entity = item.entity;
+      this.entity_uuid = item.entity.uuid;
+    }
+
+    if (angular.isDefined(item.entity_uuid)) {
+      this.entity_uuid = item.entity_uuid;
     }
 
     if (angular.isDefined(item.document)) {
-      this.document = item.document;
+      this.document_uuid = item.document.uuid;
     }
 
     if (angular.isDefined(item.document_uuid)) {
