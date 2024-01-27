@@ -131,7 +131,7 @@ function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstant
         }
 
         // user has confirmed activation or deactivation of debtor group
-        return Users.update(user.id, user)
+        return Users.update(user.id, { deactivated : user.deactivated })
           .then(() => {
             Notify.success('USERS.UPDATED');
             $state.go('users.list', null, { reload : true });
