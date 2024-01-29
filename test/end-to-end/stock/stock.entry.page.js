@@ -147,6 +147,7 @@ function StockEntryPage() {
   page.openLotsModal = async (inventoryRowNumber) => {
     const launchLots = await GU.getCell(gridId, inventoryRowNumber, 4);
     await launchLots.locator('[data-lots]').click();
+    return TU.waitForSelector('.modal-dialog');
   };
 
   /**
