@@ -209,7 +209,7 @@
               <b><i class="fa fa-cube"></i> <span translate>TREE.PROJECT</span></b>
             </div>
 
-            <ul class="list-group">
+            <ul class="list-group" id="projectList">
               <li class="list-group-item clearfix" data-project="{{ ::p.abbr }}" ng-repeat="p in EnterpriseCtrl.projects track by p.id">
                 <span>
                   <i class="fa fa-hospital-o"></i> {{ p.name }} ({{ p.abbr }})

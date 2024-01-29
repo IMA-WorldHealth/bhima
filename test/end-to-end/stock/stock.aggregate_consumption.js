@@ -2,6 +2,7 @@ const moment = require('moment');
 
 const { test } = require('@playwright/test');
 const TU = require('../shared/TestUtils');
+const { by } = require('../shared/TestUtils');
 
 const components = require('../shared/components');
 
@@ -127,6 +128,12 @@ function StockAggregateConsumptionTests() {
     }];
 
     await page.setDetailed(1, 10);
+
+    // Wait until the modal is fully up
+    await TU.waitForSelector('.modal-dialog');
+    await TU.waitForSelector(by.repeater('(colRenderIndex, col) in colContainer.renderedColumns track by col.uid'));
+    await TU.waitForSelector('bh-date-picker[date="row.entity.end_date"] input');
+
     await page.setLots(lots);
 
     await page.setQuantityConsumed(2, 7, 500);
@@ -145,6 +152,12 @@ function StockAggregateConsumptionTests() {
     }];
 
     await page.setDetailed(2, 10);
+
+    // Wait until the modal is fully up
+    await TU.waitForSelector('.modal-dialog');
+    await TU.waitForSelector(by.repeater('(colRenderIndex, col) in colContainer.renderedColumns track by col.uid'));
+    await TU.waitForSelector('bh-date-picker[date="row.entity.end_date"] input');
+
     await page.setLots(lots2);
 
     await page.setHeaderValue(3, 9, 20);
@@ -187,6 +200,12 @@ function StockAggregateConsumptionTests() {
     }];
 
     await page.setDetailed(1, 10);
+
+    // Wait until the modal is fully up
+    await TU.waitForSelector('.modal-dialog');
+    await TU.waitForSelector(by.repeater('(colRenderIndex, col) in colContainer.renderedColumns track by col.uid'));
+    await TU.waitForSelector('bh-date-picker[date="row.entity.end_date"] input');
+
     await page.setLotsError(lots);
   });
 
@@ -224,6 +243,12 @@ function StockAggregateConsumptionTests() {
     }];
 
     await page.setDetailed(1, 10);
+
+    // Wait until the modal is fully up
+    await TU.waitForSelector('.modal-dialog');
+    await TU.waitForSelector(by.repeater('(colRenderIndex, col) in colContainer.renderedColumns track by col.uid'));
+    await TU.waitForSelector('bh-date-picker[date="row.entity.end_date"] input');
+
     await page.setLotsError(lots);
   });
 
@@ -243,7 +268,6 @@ function StockAggregateConsumptionTests() {
 
     // Wait until the rows are loaded
     await TU.waitForSelector('div.ui-grid-row');
-
     await page.setHeaderValue(0, 9, 5);
     await page.setQuantityConsumed(1, 7, 15);
     await page.setQuantityLost(1, 8, 5);
@@ -261,6 +285,12 @@ function StockAggregateConsumptionTests() {
     }];
 
     await page.setDetailed(1, 10);
+
+    // Wait until the modal is fully up
+    await TU.waitForSelector('.modal-dialog');
+    await TU.waitForSelector(by.repeater('(colRenderIndex, col) in colContainer.renderedColumns track by col.uid'));
+    await TU.waitForSelector('bh-date-picker[date="row.entity.end_date"] input');
+
     await page.setLotsError(lots);
   });
 
@@ -298,6 +328,12 @@ function StockAggregateConsumptionTests() {
     }];
 
     await page.setDetailed(1, 10);
+
+    // Wait until the modal is fully up
+    await TU.waitForSelector('.modal-dialog');
+    await TU.waitForSelector(by.repeater('(colRenderIndex, col) in colContainer.renderedColumns track by col.uid'));
+    await TU.waitForSelector('bh-date-picker[date="row.entity.end_date"] input');
+
     await page.setLotsError(lots);
   });
 
