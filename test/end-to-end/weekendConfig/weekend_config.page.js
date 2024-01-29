@@ -6,7 +6,9 @@ const { notification } = require('../shared/components');
 class WeekendConfigPage {
 
   async create(label) {
+
     await TU.buttons.create();
+
     await TU.input('WeekendModalCtrl.weekend.label', label);
 
     await TU.locator('[data-label="FORM.LABELS.WEEK_DAYS.SUNDAY"]').click();
@@ -14,6 +16,7 @@ class WeekendConfigPage {
     await TU.locator('[data-label="FORM.LABELS.WEEK_DAYS.SATURDAY"]').click();
 
     await TU.modal.submit();
+
     return notification.hasSuccess();
   }
 

@@ -528,6 +528,16 @@ module.exports = {
     );
   },
 
+  /**
+   * Do a screen shot
+   *
+   * @param {string} path - name/path of the screen shot file
+   * @returns {Promise} for completion of the screen shot
+   */
+  screenshot : async (path) => {
+    return page.screenshot({ path });
+  },
+
   buttons,
   by,
   fill,
