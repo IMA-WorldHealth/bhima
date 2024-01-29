@@ -66,7 +66,8 @@ test.describe('Creditor Groups Management', () => {
     // click the "delete" button
     await TU.buttons.delete();
 
-    await TU.modal.submit();
+    await TU.modal.submit(); // Confirm the deletion
+
     await components.notification.hasSuccess();
   });
 
