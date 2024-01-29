@@ -86,14 +86,14 @@ function buildBudgetData(fiscalYearId) {
       a.id, a.number, a.label, a.locked, a.type_id,
       a.parent, a.locked, a.hidden
     FROM account AS a
-    WHERE a.type_id in (${allowedTypes});
+    WHERE a.type_id in (${allowedTypes}) AND a.locked = 0;
   `;
 
   // First get the basic account and FY budget data (if available)
   const sql = `
     SELECT
       a.id, a.number, a.type_id, at.type AS acctType,
-      a.label, a.parent, a.locked AS acctLocked, a.hidden,
+      a.label, a.parent, a.locked, a.hidden,
       bdata.budget
     FROM account AS a
     JOIN account_type AS at ON at.id = a.type_id
@@ -103,7 +103,7 @@ function buildBudgetData(fiscalYearId) {
     JOIN period AS p ON p.id = b.period_id
     WHERE p.number = 0 and p.fiscal_year_id = ?
     ) AS bdata ON bdata.account_id = a.id
-    WHERE a.type_id in (${INCOME}, ${EXPENSE});
+    WHERE a.type_id in (${INCOME}, ${EXPENSE}) AND a.locked = 0;
   `;
 
   const actualsSql = `
@@ -114,7 +114,7 @@ function buildBudgetData(fiscalYearId) {
     FROM period_total pt
     JOIN account AS a ON a.id = pt.account_id
     JOIN account_type AS at ON at.id = a.type_id
-    WHERE pt.fiscal_year_id = ? AND a.type_id in (${INCOME}, ${EXPENSE})
+    WHERE pt.fiscal_year_id = ? AND a.type_id in (${INCOME}, ${EXPENSE}) AND a.locked = 0
     GROUP BY a.id;
   `;
 
@@ -124,7 +124,7 @@ function buildBudgetData(fiscalYearId) {
     JOIN period AS p ON p.id = pt.period_id
     JOIN account AS a ON a.id = pt.account_id
     JOIN account_type AS at ON at.id = a.type_id
-    WHERE pt.fiscal_year_id = ? AND a.type_id in (${INCOME}, ${EXPENSE})
+    WHERE pt.fiscal_year_id = ? AND a.type_id in (${INCOME}, ${EXPENSE}) AND a.locked = 0;
   `;
 
   const months = constants.periods.filter(elt => elt.periodNum !== 0);
