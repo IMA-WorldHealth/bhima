@@ -61,12 +61,17 @@ test.describe('Creditor Groups Management', () => {
   });
 
   test('deletes a creditor group', async () => {
+    console.debug('G1: ', group.updated_name);
+    TU.screenshot('results/creditor1.png');
     await TU.locator(`[data-update="${group.updated_name}"]`).click();
+    console.debug('G2');
 
     // click the "delete" button
     await TU.buttons.delete();
+    console.debug('G3');
+    TU.screenshot('results/creditor2.png');
+    await TU.modal.submit(); // Confirm the deletion
 
-    await TU.modal.submit();
     await components.notification.hasSuccess();
   });
 
