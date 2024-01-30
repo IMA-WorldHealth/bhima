@@ -199,8 +199,8 @@ test.describe('Cash Payments', () => {
       await TU.exists('[data-open-invoices-btn]', true);
       await TU.locator('[data-open-invoices-btn]').click();
 
-      // be sure that the modal opened
-      await TU.exists('[data-debtor-invoice-modal]', true);
+      // make sure that the modal opened
+      await TU.waitForSelector('[data-debtor-invoice-modal]');
 
       // inside the modal, we want to select the first row to pay against
       await GU.selectRow(gridId, 2);
