@@ -12,6 +12,8 @@ const util = require('../../../lib/util');
 const constants = require('../../../config/constants');
 const BadRequest = require('../../../lib/errors/BadRequest');
 
+const i18n = require('../../../lib/helpers/translate');
+
 const Fiscal = require('../fiscal');
 const budgetReport = require('../reports/budget');
 
@@ -39,7 +41,7 @@ const periodsSql = 'SELECT * FROM period p WHERE fiscal_year_id = ?';
 const budgetSql = `
   SELECT
     b.id AS budgetId, b.period_id, b.budget, b.locked,
-    a.id, a.number AS acctNum, a.label AS acctLabel,
+    a.id, a.number AS acctNum, a.label AS acctLabel, a.locked AS acctLocked,
     a.type_id AS acctTypeId, at.type AS acctType, p.number AS periodNum
   FROM budget AS b
   JOIN period AS p ON p.id = b.period_id
@@ -93,7 +95,7 @@ function buildBudgetData(fiscalYearId) {
   const sql = `
     SELECT
       a.id, a.number, a.type_id, at.type AS acctType,
-      a.label, a.parent, a.locked, a.hidden,
+      a.label, a.parent, a.locked, a.hidden, a.locked AS acctLocked,
       bdata.budget
     FROM account AS a
     JOIN account_type AS at ON at.id = a.type_id
@@ -777,6 +779,7 @@ async function importBudget(req, res, next) {
       throw new BadRequest(`ERROR: Missing 'fiscal_year' ID parameter in POST /budget/import`);
     }
     const fiscalYearId = Number(req.params.fiscal_year);
+    const { lang } = req.query;
 
     if (!req.files || req.files.length === 0) {
       throw new BadRequest('Expected at least one file upload but did not receive any files.',
@@ -798,6 +801,17 @@ async function importBudget(req, res, next) {
       throw new BadRequest(`The given budget file has missing or invalid data on line ${lineNum + 1}`,
         errCode);
     }
+
+    // Get the basic account data to check imports
+    const accountsSql = 'SELECT a.locked, a.number, a.label FROM account AS a;';
+    const accounts = await db.exec(accountsSql);
+    data.forEach(importAccount => {
+      const acct = accounts.find(item => item.number === Number(importAccount.AcctNum));
+      if (acct && acct.locked) {
+        const errMsg = `${i18n(lang)('BUDGET.IMPORT_BUDGET_ERROR_LOCKED_ACCOUNT')} ${acct.number} - ${acct.label}`;
+        throw new BadRequest('The given budget file includes the locked account.', errMsg);
+      }
+    });
 
     // Clear any previously uploaded budget data
     db.exec('CALL DeleteBudget(?)', [fiscalYearId])
