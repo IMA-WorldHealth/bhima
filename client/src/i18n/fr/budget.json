@@ -23,6 +23,7 @@
     "IMPORT_BUDGET_ERROR_ACCT_TYPE": "ERREUR : L'importation du budget a échoué !  Vérifier si les valeurs de type sont incorrectes (elles devraient être 'title', 'income', ou 'expense').",
     "IMPORT_BUDGET_ERROR_ACCT_TYPE_INCORRECT": "ERREUR : L'importation du budget a échoué !  Le type de compte ne correspond pas au compte dans la base de données.",
     "IMPORT_BUDGET_ERROR_BAD_BUDGET_VALUE": "ERREUR : L'importation du budget a échoué !  La valeur du budget n'est pas un nombre.",
+    "IMPORT_BUDGET_ERROR_LOCKED_ACCOUNT": "ERREUR : L'importation du budget a échoué !  Les données d'importation du budget comprennent un compte bloqué. Veuillez le supprimer et réessayer :",
     "IMPORT_BUDGET_ERROR_NEGATIVE_BUDGET_VALUE": "ERREUR : L'importation du budget a échoué !  La valeur du budget est négative.",
     "IMPORT_BUDGET_WARN_TITLE_BUDGET_IGNORED": "ATTENTION : Les valeurs budgétaires des comptes titres sont ignorées.",
     "INCOME_TOTAL": "Revenu totales",
