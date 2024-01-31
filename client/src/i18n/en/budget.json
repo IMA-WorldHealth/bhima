@@ -23,6 +23,7 @@
     "IMPORT_BUDGET_ERROR_ACCT_TYPE": "ERROR: Budget import failed!  Check for incorrect Type values (should be 'title', 'income', or 'expense').",
     "IMPORT_BUDGET_ERROR_ACCT_TYPE_INCORRECT": "ERROR: Budget import failed!  Account type does not match account in the database.",
     "IMPORT_BUDGET_ERROR_BAD_BUDGET_VALUE": "ERROR: Budget import failed!  Budget value is not a number.",
+    "IMPORT_BUDGET_ERROR_LOCKED_ACCOUNT": "ERROR: Budget import failed!  The budget import data includes a locked account. Please remove it and try again : ",
     "IMPORT_BUDGET_ERROR_NEGATIVE_BUDGET_VALUE": "ERROR: Budget import failed!  Budget value is negative.",
     "IMPORT_BUDGET_WARN_TITLE_BUDGET_IGNORED": "WARNING: Budget values for title accounts are ignored",
     "INCOME_TOTAL": "Income Total",
