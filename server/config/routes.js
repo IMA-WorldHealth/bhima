@@ -584,7 +584,7 @@ exports.configure = function configure(app) {
   app.delete('/debtor_groups/:uuid', debtorGroups.delete);
 
   // users controller
-  app.get('/users', users.isAdmin, users.list);
+  app.get('/users', users.list);
   app.post('/users', users.isAdmin, users.create);
   app.get('/users/:id', users.detail);
   app.get('/users/:username/exists', users.isAdmin, users.exists);
