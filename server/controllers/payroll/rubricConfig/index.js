@@ -5,21 +5,16 @@
 */
 
 const db = require('../../../lib/db');
-const NotFound = require('../../../lib/errors/NotFound');
 
-// GET /RubricConfig
 function lookupRubricConfig(id) {
   const sql = `
-    SELECT c.id, c.label FROM config_rubric AS c WHERE c.id = ?`;
-
+    SELECT id, label FROM config_rubric WHERE id = ?`;
   return db.one(sql, [id]);
 }
 
 // Lists the Payroll RubricConfigs
 function list(req, res, next) {
-  const sql = `
-    SELECT c.id, c.label FROM config_rubric AS c
-  ;`;
+  const sql = `SELECT id, label FROM config_rubric;`;
 
   db.exec(sql)
     .then((rows) => {
@@ -57,7 +52,6 @@ function create(req, res, next) {
     .catch(next)
     .done();
 }
-
 
 // PUT /RubricConfig /:id
 function update(req, res, next) {
@@ -100,7 +94,6 @@ function listConfig(req, res, next) {
     .catch(next)
     .done();
 }
-
 
 /**
  * POST /rubric_config/:id/setting
