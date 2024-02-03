@@ -3,13 +3,13 @@
 *
 * This controller exposes an API to the client for reading and writing Rubric
 */
+
 const rubricsIndexes = require('./rubricsIndex');
 const db = require('../../../lib/db');
-const NotFound = require('../../../lib/errors/NotFound');
 const FilterParser = require('../../../lib/filter');
 const translate = require('../../../lib/helpers/translate');
 
-// GET /Rubric
+// GET /rubrics
 function lookupRubric(id) {
   const sql = `
     SELECT r.id, r.label, r.abbr, r.is_employee, r.is_percent, r.is_defined_employee, r.is_discount, r.is_social_care,
@@ -54,7 +54,7 @@ function list(req, res, next) {
 }
 
 /**
-* GET /Rubric/:ID
+ * GET /rubrics/:id
 *
 * Returns the detail of a single Rubric
 */
@@ -68,20 +68,23 @@ function detail(req, res, next) {
     .done();
 }
 
-// POST /Rubric
+// POST /rubrics
 function create(req, res, next) {
   const sql = `INSERT INTO rubric_payroll SET ?`;
   const data = req.body;
-  db.exec(sql, [data]).then(result => {
-    res.status(201).json({ id : result.insertId });
-  }).catch(next);
+  db.exec(sql, [data])
+    .then(result => {
+      res.status(201).json({ id : result.insertId });
+    })
+    .catch(next)
+    .done();
 }
-
 
 function importIndexes(req, res, next) {
   const { lang } = req.body;
   const transaction = db.transaction();
   const trslt = translate(lang);
+
   rubricsIndexes.forEach(rubric => {
     rubric.label = trslt(rubric.label);
     transaction.addQuery('INSERT INTO rubric_payroll SET ?', rubric);
@@ -89,22 +92,24 @@ function importIndexes(req, res, next) {
 
   transaction.execute().then(() => {
     res.sendStatus(201);
-  }).catch(next);
+  }).catch(next).done();
 }
 
-// PUT /Rubric /:id
+// PUT /rubrics/:id
 function update(req, res, next) {
   const sql = `UPDATE rubric_payroll SET ? WHERE id = ?;`;
   const rubricPayrollId = req.params.id;
-  db.exec(sql, [req.body, rubricPayrollId]).then(() => {
-    return lookupRubric(rubricPayrollId);
-  }).then(record => {
-    res.status(200).json(record);
-  })
-    .catch(next);
+  db.exec(sql, [req.body, rubricPayrollId])
+    .then(() => {
+      return lookupRubric(rubricPayrollId);
+    }).then(record => {
+      res.status(200).json(record);
+    })
+    .catch(next)
+    .done();
 }
 
-// DELETE /Rubric/:id
+// DELETE /rubrics/:id
 function del(req, res, next) {
   db.delete('rubric_payroll', 'id', req.params.id, res, next, `Could not find a Rubric with id ${req.params.id}`);
 }

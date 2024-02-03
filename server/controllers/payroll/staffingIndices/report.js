@@ -8,7 +8,7 @@
 
 const _ = require('lodash');
 const staffing = require('./index');
-const shared = require('../../finance/reports/shared.js');
+const shared = require('../../finance/reports/shared');
 const ReportManager = require('../../../lib/ReportManager');
 
 const REPORT_TEMPLATE = './server/controllers/payroll/staffingIndices/report.handlebars';
@@ -33,9 +33,7 @@ async function staffingIndicesExport(req, res, next) {
   try {
     const report = new ReportManager(REPORT_TEMPLATE, req.session, options);
     const filters = shared.formatFilters(options);
-
     const indices = await staffing.lookUp(options);
-
     const result = await report.render({ filters, indices });
     res.set(result.headers).send(result.report);
   } catch (e) {
