@@ -14,7 +14,7 @@ indexIdentifiers();
 
 // This function render a report in the browser
 // It search a saved entity
-// It requires a  reference code and language as paramters
+// It requires a  reference code and language as parameters
 // The reference code is a combination of table_key.project_abbr.reference
 // The table name is variable, it can be :invoice, cash or voucher
 async function getEntity(req, res, next) {
