@@ -82,7 +82,8 @@ exports.lookupFinancialEntity = (req, res, next) => {
   const options = req.query;
   db.convert(options, ['uuid']);
 
-  const { limit } = options;
+  // default limit is 100
+  const limit = options?.limit ?? 100;
   delete options.limit;
 
   const filters = new FilterParser(options);
