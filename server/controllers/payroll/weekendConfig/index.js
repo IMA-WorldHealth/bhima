@@ -5,9 +5,8 @@
 */
 
 const db = require('../../../lib/db');
-const NotFound = require('../../../lib/errors/NotFound');
 
-// GET /WEEKEND_CONFIG
+// GET /weekend_config
 function lookupWeekendConfig(id) {
   const sql = `
     SELECT w.id, w.label
@@ -33,7 +32,7 @@ function list(req, res, next) {
 }
 
 /**
-* GET /WEEKEND_CONFIG/:ID
+* GET /weekend_config/:id
 *
 * Returns the detail of a single Weekend
 */
@@ -48,7 +47,7 @@ function detail(req, res, next) {
     .done();
 }
 
-// POST /WEEKEND_CONFIG
+// POST /weekend_config
 async function create(req, res, next) {
   try {
     const sql = `INSERT INTO weekend_config SET ?`;
@@ -65,7 +64,7 @@ async function create(req, res, next) {
   }
 }
 
-// PUT /WEEKEND_CONFIG /:ID
+// PUT /weekend_config /:id
 function update(req, res, next) {
   const transaction = db.transaction();
   const data = req.body;
@@ -98,7 +97,7 @@ function update(req, res, next) {
 
 }
 
-// DELETE /WEEKEND_CONFIG /:ID
+// DELETE /weekend_config/:id
 function del(req, res, next) {
   db.delete(
     'weekend_config', 'id', req.params.id, res, next, `Could not find a Weekend configuration with id ${req.params.id}`,
@@ -122,7 +121,6 @@ function listConfig(req, res, next) {
     .catch(next)
     .done();
 }
-
 
 // get list of Weekend configuration
 exports.list = list;

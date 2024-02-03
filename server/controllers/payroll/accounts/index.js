@@ -5,7 +5,6 @@
 */
 
 const db = require('../../../lib/db');
-const NotFound = require('../../../lib/errors/NotFound');
 
 // GET /ACCOUNT_CONFIG
 function lookupAccountConfig(id) {
@@ -61,7 +60,6 @@ function create(req, res, next) {
     .catch(next)
     .done();
 }
-
 
 // PUT /ACCOUNT_CONFIG /:ID
 function update(req, res, next) {
