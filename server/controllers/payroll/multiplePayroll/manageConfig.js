@@ -16,7 +16,6 @@ const {
   createDateRange,
 } = require('./datelogic');
 
-
 function getValidHolidays(holidays, periodFrom, periodTo, weekEndDaysIndexArray, validOffDays) {
   const validHolidays = [];
 

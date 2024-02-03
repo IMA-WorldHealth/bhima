@@ -10,7 +10,7 @@ const db = require('../../../lib/db');
 exports.read = read;
 exports.create = create;
 exports.lookUp = lookUp;
-exports.parameters = require('./paramter.config');
+exports.parameters = require('./parameters.config');
 exports.reports = require('./report');
 
 // retrieve indice's value for employee(s)

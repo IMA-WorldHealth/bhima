@@ -5,24 +5,15 @@
 */
 
 const db = require('../../../lib/db');
-const NotFound = require('../../../lib/errors/NotFound');
 
-// GET /EMPLOYEE_CONFIG
 function lookupEmployeeConfig(id) {
-  const sql = `
-    SELECT c.id, c.label
-    FROM config_employee AS c
-    WHERE c.id = ?`;
-
+  const sql = `SELECT id, label FROM config_employee WHERE id = ?`;
   return db.one(sql, [id]);
 }
 
 // Lists the Payroll Employee configurations
 function list(req, res, next) {
-  const sql = `
-    SELECT c.id, c.label
-    FROM config_employee AS c
-  ;`;
+  const sql = ` SELECT c.id, c.label FROM config_employee AS c;`;
 
   db.exec(sql)
     .then((rows) => {
@@ -33,9 +24,9 @@ function list(req, res, next) {
 }
 
 /**
-* GET/EMPLOYEE_CONFIG/:ID
+* GET /employee_config/:id
 *
-* Returns the detail of a single Employee Configuration
+* Returns the detail of a single employee configuration
 */
 function detail(req, res, next) {
   const { id } = req.params;
@@ -86,9 +77,8 @@ function del(req, res, next) {
   );
 }
 
-
 /**
- * POST /EMPLOYEE_CONFIG/: ID/ SETTING
+ * POST /employee_config/:id/ setting
  *
  * Creates and updates an Employee Configuration.  This works by completely deleting
  * the week days' configuration and then replacing them with the new Employee set.
@@ -105,6 +95,7 @@ function createConfig(req, res, next) {
     .addQuery('DELETE FROM config_employee_item WHERE config_employee_id = ?;', [req.params.id]);
 
   // if an array of configuration has been sent, add them to an INSERT query
+  // otherwise, the previous config will be cleared.
   if (req.body.configuration.length) {
     transaction
       .addQuery('INSERT INTO config_employee_item (employee_uuid, config_employee_id) VALUES ?', [data]);
@@ -120,10 +111,13 @@ function createConfig(req, res, next) {
 
 /**
  * GET /weekend_config/:id/setting
+ *
+ * @description
+ * In this function, the `req.params.id` is the employee configuration id.
 */
 function listConfig(req, res, next) {
   const sql = `
-    SELECT id, config_employee_id, BUID(employee_uuid) AS employee_uuid  
+    SELECT id, config_employee_id, BUID(employee_uuid) AS employee_uuid
       FROM config_employee_item
     WHERE config_employee_item.config_employee_id = ?;
   `;
@@ -135,7 +129,6 @@ function listConfig(req, res, next) {
     .catch(next)
     .done();
 }
-
 
 // get list of Employee configuration
 exports.list = list;
