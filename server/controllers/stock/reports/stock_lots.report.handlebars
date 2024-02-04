@@ -19,7 +19,6 @@
         <th>{{translate 'STOCK.INVENTORY_UNIT'}}</th>
         <th>{{translate 'STOCK.ENTRY_DATE'}}</th>
         <th>{{translate 'STOCK.EXPIRATION_DATE'}}</th>
-        <th>{{translate 'STOCK.EXPIRATION'}}</th>
         <th>{{translate 'STOCK.CMM'}}</th>
         <th>{{translate 'STOCK.MSD'}}</th>
         <th>{{translate 'STOCK.LIFETIME'}}</th>
@@ -55,9 +54,7 @@
             <td class="text-right">{{date entry_date}}</td>
             {{#if item.tracking_expiration}}
               <td class="text-right">{{date expiration_date}}</td>
-              <td class="text-right">{{delay_expiration}}</td>
             {{else}}
-              <td class="text-center"> - </td>
               <td class="text-center"> - </td>
             {{/if}}
             <td class="text-right">{{avg_consumption}}</td>
@@ -68,7 +65,7 @@
             <td class="text-right">{{S_RISK_QUANTITY}}</td>
           </tr>
         {{else}}
-            {{> emptyTable columns=15}}
+            {{> emptyTable columns=14}}
         {{/each}}
 
         <!-- blank row  -->
