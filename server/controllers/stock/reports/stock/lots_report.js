@@ -1,3 +1,4 @@
+const moment = require('moment');
 const {
   _, ReportManager, Stock, formatFilters, STOCK_LOTS_REPORT_TEMPLATE, stockStatusLabelKeys,
 } = require('../common');
@@ -67,6 +68,9 @@ function stockLotsReport(req, res, next) {
   return Stock.getLotsDepot(null, options)
     .then((rows) => {
       rows.forEach(row => {
+        const current = new Date();
+        const delay = moment(new Date(row.expiration_date)).diff(current);
+        row.delay_expiration = moment.duration(delay).humanize(true);
         // Purge unneeded fields from the row
         purgeKeys.forEach(key => {
           delete row[key];

@@ -54,7 +54,9 @@
             <td class="text-right">{{date entry_date}}</td>
             {{#if item.tracking_expiration}}
               <td class="text-right">{{date expiration_date}}</td>
+              <td class="text-right">{{delay_expiration}}</td>
             {{else}}
+              <td class="text-center"> - </td>
               <td class="text-center"> - </td>
             {{/if}}
             <td class="text-right">{{avg_consumption}}</td>
