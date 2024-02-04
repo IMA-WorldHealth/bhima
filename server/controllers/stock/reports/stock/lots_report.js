@@ -60,8 +60,7 @@ function stockLotsReport(req, res, next) {
     'enterprisePurchaseInterval', 'exhausted', 'expired',
     'inventory_uuid', 'lifetime_lot', 'min_delay',
     'min_months_security_stock', 'mvt_quantity', 'near_expiration',
-    'purchase_interval', 'tag_name', 'tracking_consumption',
-    'tracking_expiration', 'wac'];
+    'purchase_interval', 'tag_name', 'tracking_consumption', 'wac'];
 
   const dateKeys = ['min_stock_date', 'max_stock_date'];
 
