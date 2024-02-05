@@ -19,7 +19,6 @@
         <th>{{translate 'STOCK.INVENTORY_UNIT'}}</th>
         <th>{{translate 'STOCK.ENTRY_DATE'}}</th>
         <th>{{translate 'STOCK.EXPIRATION_DATE'}}</th>
-        <th>{{translate 'STOCK.EXPIRATION'}}</th>
         <th>{{translate 'STOCK.CMM'}}</th>
         <th>{{translate 'STOCK.MSD'}}</th>
         <th>{{translate 'STOCK.LIFETIME'}}</th>
@@ -68,7 +67,7 @@
             <td class="text-right">{{S_RISK_QUANTITY}}</td>
           </tr>
         {{else}}
-            {{> emptyTable columns=15}}
+            {{> emptyTable columns=14}}
         {{/each}}
 
         <!-- blank row  -->
