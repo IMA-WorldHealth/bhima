@@ -6,6 +6,7 @@
  * filter.
  */
 const moment = require('moment');
+const debug = require('debug')('payroll:indice');
 const db = require('../../../lib/db');
 const util = require('../../../lib/util');
 
@@ -14,12 +15,15 @@ function detail(req, res, next) {
   const sql = `
     SELECT BUID(uuid) as uuid, pay_envelope, working_days, payroll_configuration_id
     FROM staffing_indice_parameters
-    WHERE payroll_configuration_id =?
+    WHERE payroll_configuration_id = ?
   `;
   const id = req.params.payroll_config_id;
-  db.one(sql, id).then(param => {
-    res.status(200).json(param);
-  }).catch(next);
+  db.one(sql, id)
+    .then(param => {
+      res.status(200).json(param);
+    })
+    .catch(next)
+    .done();
 }
 
 // settup staffing indice parameters
@@ -29,23 +33,43 @@ async function create(req, res, next) {
   data.uuid = db.uuid();
   const id = req.body.payroll_configuration_id;
 
+  debug(`beginning payroll for configuration id: ${id} (${data.uuid}).`);
+
   const transaction = db.transaction();
+
+  // FIXME(@jniles) - refresh these from the database rather
+  // than obtaining them for the session information
   const minMonentaryUnit = req.session.enterprise.min_monentary_unit;
   const percentageFixedBonus = req.session.enterprise.settings.percentage_fixed_bonus;
   const percentagePerformanceBonus = 100 - percentageFixedBonus;
 
+  debug(`the fixed percentage performance bonus is ${percentagePerformanceBonus}.`);
+
+  // TODO(@jniles) - document this action.  The pay envelope inserted by the user
+  // is going to be increased by the percentage_fixed_bonus.
+  //
+  // FIXME(@jniles) - what currency is this in?
   const payEnvelope = req.body.pay_envelope * (percentageFixedBonus / 100);
   const bonusPerformance = req.body.pay_envelope * (percentagePerformanceBonus / 100);
+
+  debug(`the computed pay envelope is ${payEnvelope}.`);
+  debug(`the computed bonus performance is ${bonusPerformance}.`);
 
   const workingDays = req.body.working_days;
   const requestsUpdateIndices = await stagePaymentIndice(id);
 
-  const paymentIndice = requestsUpdateIndices[0];
-  const employeesGradeIndice = requestsUpdateIndices[1];
-  const aggregateOtherProfits = requestsUpdateIndices[2];
-  const rubricMonetaryValue = requestsUpdateIndices[3];
-  const payrollPeriod = requestsUpdateIndices[4];
+  const [
+    paymentIndice,
+    employeesGradeIndice,
+    aggregateOtherProfits,
+    rubricMonetaryValue,
+    payrollPeriod,
+  ] = requestsUpdateIndices;
+
   const payrollPeriodDate = payrollPeriod[0].dateTo;
+
+  debug(`payment will be computed for ${employeesGradeIndice.length} employees.`);
+  debug(`the payroll period date is ${payrollPeriodDate}.`);
 
   let totalCode = 0;
   let rubricPayRateId;
@@ -69,44 +93,54 @@ async function create(req, res, next) {
   `;
 
   employeesGradeIndice.forEach(emp => {
+    debug(`computing payroll for ${emp.code} - ${emp.display_name}`);
+
     let totalDays = 0;
     let rubricTotalDaysId;
     let rubricReagisteredIndexId;
     let rubricTotalCodeId;
     let rubricDayIndexId;
 
+    // FIXME(@jniles) - we should make sure this can never be negative
+    // if it is negative, can it be zeroed out?
     const diff = moment(payrollPeriodDate).diff(moment(emp.date_embauche));
     const duration = moment.duration(diff, 'milliseconds');
     const yearOfSeniority = parseInt(duration.asYears(), 10);
 
     emp.totalBase = 0;
 
+    // remove all parameters in employee_advantage table related to this employee
     transaction.addQuery(`DELETE FROM employee_advantage WHERE employee_uuid = ?`, [emp.employee_buid]);
 
+    // get all of the indicies related to this employee.
     const employeePaymentIndice = paymentIndice.filter(ind => ind.employee_uuid === emp.employee_uuid);
 
+    debug(`[${emp.code}] processing ${employeePaymentIndice.length} indices for ${emp.name}.`);
+
     employeePaymentIndice.forEach(ind => {
-      // Calcul Total days for rubrics where type is 'is_day_worked' Or 'is_extra_day'
+      debug(`[${emp.code}] computing ${ind.indice_type} for ${emp.display_name}`);
+
+      // calculate total days for rubrics where type is 'is_day_worked' or 'is_extra_day'
       if (ind.indice_type === 'is_day_worked' || ind.indice_type === 'is_extra_day') {
         totalDays += ind.rubric_value;
       }
 
-      // Get Total Days Rubric Id
+      // get total days rubric id
       if (ind.indice_type === 'is_total_days') {
         rubricTotalDaysId = ind.rubric_id;
       }
 
-      // Get Reagistered Index Rubric Id
+      // get reagistered index rubric id
       if (ind.indice_type === 'is_reagistered_index') {
         rubricReagisteredIndexId = ind.rubric_id;
       }
 
-      // Get Total code Rubric Id
+      // get total code rubric id
       if (ind.indice_type === 'is_total_code') {
         rubricTotalCodeId = ind.rubric_id;
       }
 
-      // Get is base index
+      // get the base index
       if (ind.indice_type === 'is_base_index') {
         ind.rubric_value = emp.grade_indice;
         emp.totalBase += emp.grade_indice;
@@ -115,10 +149,12 @@ async function create(req, res, next) {
         }
       }
 
-      // Get is responsability
+      // Get the index of responsability
       if (ind.indice_type === 'is_responsability') {
         ind.rubric_value = emp.function_indice;
         emp.totalBase += emp.function_indice;
+        debug(`[${emp.code}] qualifies for a responsibility index of ${emp.function_indice}.`);
+
         if (ind.rubric_id) {
           transaction.addQuery(
             updateStaffingIndice,
@@ -127,10 +163,14 @@ async function create(req, res, next) {
         }
       }
 
-      // Get is seniority Bonus
+      // get the seniority bonus
+      // FIXME(@jniles) - can this ever be negative?
       if (ind.indice_type === 'is_seniority_index') {
         ind.rubric_value = yearOfSeniority;
         emp.totalBase += yearOfSeniority;
+
+        debug(`[${emp.code}] qualifies for the seniority index of ${yearOfSeniority}.`);
+
         if (ind.rubric_id) {
           transaction.addQuery(
             updateStaffingIndice,
@@ -139,7 +179,7 @@ async function create(req, res, next) {
         }
       }
 
-      //  get Relative point
+      //  get relative point
       if (ind.indice_type === 'is_individual_performance') {
         emp.performance = ind.rubric_value / 100;
       }
@@ -185,6 +225,9 @@ async function create(req, res, next) {
       }
     });
 
+    debug(`[${emp.code}] finished computing all indices for ${emp.display_name}.`);
+    debug(`[${emp.code}] they have a total base index of ${emp.totalBase}`);
+
     employeePaymentIndice.forEach(ind => {
       // Save relative point
       if (ind.indice_type === 'is_relative_point') {
@@ -199,6 +242,9 @@ async function create(req, res, next) {
       }
     });
 
+    // TODO(@jniles) - filter these first by employee for better debuggin
+    // employeeMonetaryRubrics = rubricMonetaryValue.filter(r => r.employee_uuid === emp.employee_uuid)
+    // employeeMonetaryRubrics.forEach(r => { /* blah */ });
     rubricMonetaryValue.forEach(money => {
       if (emp.employee_uuid === money.employee_uuid) {
         transaction.addQuery('INSERT INTO employee_advantage SET ?', {
@@ -209,6 +255,7 @@ async function create(req, res, next) {
       }
     });
 
+    // TODO(@jniles) - filter by employee before looping.
     aggregateOtherProfits.forEach(profit => {
       if (emp.employee_uuid === profit.employee_uuid) {
         emp.otherProfits = profit.rubric_value;
@@ -216,13 +263,14 @@ async function create(req, res, next) {
     });
 
     emp.otherProfits = emp.otherProfits || 0;
-
     if (workingDays && totalDays) {
       emp.dayIndex = (emp.totalBase / workingDays) || 0;
       emp.numberOfDays = workingDays;
       emp.totalDays = totalDays;
       emp.indiceReajust = util.roundDecimal((emp.dayIndex * totalDays), 5);
       emp.totalCode = emp.indiceReajust + emp.otherProfits;
+
+      debug(`[${emp.code}] after working days computation, totalDays: ${emp.totalDays}, totalCode: ${totalCode}`);
     } else {
       emp.totalCode = emp.totalBase + emp.otherProfits;
     }
@@ -231,7 +279,7 @@ async function create(req, res, next) {
     transaction.addQuery(updateStaffingIndice, [totalDays, id, emp.employee_buid, rubricTotalDaysId]);
 
     // Set Reagistered Index
-    if (rubricReagisteredIndexId) {
+    if (rubricReagisteredIndexId && emp.indiceReajust) {
       transaction.addQuery(
         updateStaffingIndice,
         [emp.indiceReajust, id, emp.employee_buid, rubricReagisteredIndexId],
@@ -330,8 +378,7 @@ async function create(req, res, next) {
   }).catch(next);
 }
 
-async function stagePaymentIndice(payrollConfigurationId) {
-
+function stagePaymentIndice(payrollConfigurationId) {
   const sqlGetStagePaymentIndice = `
     SELECT BUID(spi.employee_uuid) AS employee_uuid, rub.id AS rubric_id, rub.label,
     rub.label, spi.rubric_value, rub.indice_type
@@ -341,19 +388,20 @@ async function stagePaymentIndice(payrollConfigurationId) {
   `;
 
   const sqlGetEmployees = `
-     SELECT BUID(emp.uuid) AS employee_uuid, emp.uuid AS employee_buid, ind.grade_indice,
-     ind.function_indice, ind.created_at, emp.date_embauche
+     SELECT BUID(emp.uuid) AS employee_uuid, emp.uuid AS employee_buid, emp.code, ind.grade_indice,
+       ind.function_indice, ind.created_at, emp.date_embauche, patient.display_name
      FROM payroll_configuration AS pc
-     JOIN config_employee AS ce ON ce.id = pc.config_employee_id
-     JOIN config_employee_item AS cei ON cei.config_employee_id = ce.id
-     JOIN employee AS emp ON emp.uuid = cei.employee_uuid
-     JOIN staffing_indice AS ind ON ind.employee_uuid = emp.uuid
-     JOIN (
-       SELECT st.employee_uuid, MAX(st.created_at) AS created_at
-       FROM staffing_indice AS st
-       GROUP BY st.employee_uuid
-     ) st_ind ON (st_ind.employee_uuid = ind.employee_uuid AND st_ind.created_at = ind.created_at)
-     WHERE pc.id = ?;
+       JOIN config_employee AS ce ON ce.id = pc.config_employee_id
+       JOIN config_employee_item AS cei ON cei.config_employee_id = ce.id
+       JOIN employee AS emp ON emp.uuid = cei.employee_uuid
+       JOIN patient ON emp.patient_uuid = patient.uuid
+       JOIN staffing_indice AS ind ON ind.employee_uuid = emp.uuid
+       JOIN (
+         SELECT st.employee_uuid, MAX(st.created_at) AS created_at
+         FROM staffing_indice AS st
+         GROUP BY st.employee_uuid
+       ) st_ind ON (st_ind.employee_uuid = ind.employee_uuid AND st_ind.created_at = ind.created_at)
+       WHERE pc.id = ?;
   `;
 
   const sqlGetAggregateOtherProfits = `
@@ -363,7 +411,7 @@ async function stagePaymentIndice(payrollConfigurationId) {
     JOIN rubric_payroll AS rub ON rub.id = spi.rubric_id
     WHERE spi.payroll_configuration_id = ? AND rub.is_indice = 1 AND rub.is_monetary_value = 0
     AND rub.indice_type = 'is_other_profits'
-    GROUP BY spi.employee_uuid;  
+    GROUP BY spi.employee_uuid;
   `;
 
   const sqlGetRubricMonetaryValue = `
