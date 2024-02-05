@@ -131,8 +131,11 @@
     },
     "SATISFACTION_RATE_REPORT": {
       "TITLE": "Rapport des taux de satisfaction",
-      "INCLUDE_SUMMARY": "Inclure le resumé de la satisfaction",
-      "INCLUDE_QUANTITY_DETAILS": "Inclure les détails des quantités"
+      "INCLUDE_SUMMARY": "Inclure le resumé de la satisfaction par structures",
+      "INCLUDE_QUANTITY_DETAILS": "Inclure les détails de la satisfaction des quantités",
+      "NB_STRUCTURE": "Nombre des structures",
+      "NB_STRUCTURE_WITH_SATISFACTION": "Nombre des structures ayant satisfait (>= 80%)",
+      "SATISFACTION_BY_STRUCTURE": "Satisfaction par structures"
     },
     "SYSTEM_USAGE_STAT" : {
       "TITLE" : "Statistique d'utilisation du système",

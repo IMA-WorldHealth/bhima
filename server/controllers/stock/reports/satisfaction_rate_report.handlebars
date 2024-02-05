@@ -20,17 +20,17 @@
             <th>{{translate 'FORM.LABELS.SATISFACTION_RATE_BY_ITEMS_GRANTED'}}</th>
           </tr>
           <tr>
-            <td>Nombre des structures</td>
+            <td>{{translate 'REPORT.SATISFACTION_RATE_REPORT.NB_STRUCTURE'}}</td>
             {{#if option.includeQuantityDetails}}<td>{{ option.summary.totalBeneficiary}}</td>{{/if}}
             <td>{{ option.summary.totalBeneficiary}}</td>
           </tr>
           <tr>
-            <td>Nombre des structures ayant satisfait (>= 80%)</td>
+            <td>{{translate 'REPORT.SATISFACTION_RATE_REPORT.NB_STRUCTURE_WITH_SATISFACTION'}}</td>
             {{#if option.includeQuantityDetails}}<td>{{ option.summary.totalSatisfactionQuantity}}</td>{{/if}}
             <td>{{ option.summary.totalSatisfactionItem}}</td>
           </tr>
           <tr>
-            <td>Satisfaction des structures</td>
+            <td>{{translate 'REPORT.SATISFACTION_RATE_REPORT.SATISFACTION_BY_STRUCTURE'}}</td>
             {{#if option.includeQuantityDetails}}<td>{{percentage option.summary.totalSatisfactionQuantityRate}}</td>{{/if}}
             <td>{{percentage option.summary.totalSatisfactionItemRate}}</td>
           </tr>
