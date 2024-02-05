@@ -725,6 +725,7 @@
             "QUANTITY_ORDERED": "Quantity ordered",
             "QUANTITY": "Quantity",
             "QUANTITY_VALIDATED": "Quantity validated",
+            "QUANTITY_ORDERED_VALIDATED": "Validated order",
             "RANK": "Rank",
             "RATE": "Rate",
             "RECEIPT_RENDERER_SETTING": "Receipt Format",
