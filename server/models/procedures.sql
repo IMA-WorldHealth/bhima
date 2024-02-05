@@ -1245,7 +1245,7 @@ BEGIN
   CLOSE curse;
 
   -- if there is remainder cost, bill the debtor the full amount
-  IF icost > 0 THEN
+  IF icost >= 0 THEN
     INSERT INTO posting_journal (
       uuid, project_id, fiscal_year_id, period_id, trans_id, trans_id_reference_number, trans_date,
       record_uuid, description, account_id, debit, credit, debit_equiv,
