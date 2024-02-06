@@ -1,11 +1,10 @@
 <div class="ui-grid-cell-contents text-center"
-     ng-if="row.entity.budget && (row.entity.acctTitle != 'title')"
      ng-class="{
        'budget-total-income' : row.entity.acctType == 'total-income',
        'budget-total-expenses' : row.entity.acctType == 'total-expenses',
        'budget-total-summary' : row.entity.acctType == 'total-summary'
      }">
-  <span ng-if="row.entity.deviationYTDPct !== null">
+  <span ng-if="row.entity.differenceYTD && row.entity.deviationYTDPct">
   {{ row.entity.deviationYTDPct }} %
   </span>
 </div>
