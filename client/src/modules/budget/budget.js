@@ -15,6 +15,8 @@ function BudgetController(
   Budget, Session, Fiscal, Columns, GridState,
   Notify, $state, $translate, $uibModal, bhConstants,
 ) {
+  const { TITLE } = bhConstants.accounts;
+
   const vm = this;
   const cacheKey = 'budget-grid';
 
@@ -30,7 +32,7 @@ function BudgetController(
 
   vm.hideTitleAccount = false;
   vm.indentTitleSpace = 15;
-  const isNotTitleAccount = (account) => account.type_id !== bhConstants.accounts.TITLE;
+  const isNotTitleAccount = (account) => account.type_id !== TITLE;
 
   // Define exports
   vm.downloadExcelQueryString = downloadExcelQueryString;
@@ -184,53 +186,20 @@ function BudgetController(
     $state.reload();
   };
 
-  vm.getPeriodBudgetSign = function getPeriodBudgetSign(month, entity) {
-    // First get the amount (if absent, return no sign)
-    const periods = entity.period;
-    if (!angular.isDefined(periods) || periods === null) {
-      return '';
-    }
-    const info = periods.find(item => item.key === month);
-    if (!info || !angular.isDefined(info.budget) || info.budget === 0) {
-      return '';
-    }
-
-    if (entity.type_id === bhConstants.accounts.INCOME) {
-      return '+';
-    }
-    if (entity.type_id === bhConstants.accounts.EXPENSE) {
-      return '-';
-    }
-    return '';
+  vm.specialTitleRow = function specialTitleRow(entity) {
+    return ['total-income', 'total-expenses', 'total-summary'].includes(entity.acctType);
   };
 
-  vm.getPeriodActualsSign = function getPeriodActualsSign(month, entity) {
-    // First get the amount (if absent, return no sign)
+  vm.getPeriodActuals = function getPeriodActuals(month, entity) {
     const periods = entity.period;
-    if (!angular.isDefined(periods) || periods === null) {
-      return '';
-    }
-    const key = month.replace('_actuals', '');
-    const info = periods.find(item => item.key === key);
-    if (!info || !angular.isDefined(info.actuals) || info.actuals === 0) {
-      return '';
-    }
-
-    if (entity.type_id === bhConstants.accounts.INCOME) {
-      return '+';
-    }
-    if (entity.type_id === bhConstants.accounts.EXPENSE) {
-      return '-';
-    }
-    return '';
-  };
-
-  vm.getPeriodActuals = function getPeriodActuals(month, periods) {
     if (!angular.isDefined(periods) || periods === null) {
       return '';
     }
     const key = month.replace('_actuals', '');
     const info = periods.find(item => item.key === key) || '';
+    if (!info || !angular.isDefined(info.actuals) || info.actuals === null) {
+      return '';
+    }
     return info.actuals;
   };
 

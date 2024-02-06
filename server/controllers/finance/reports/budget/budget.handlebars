@@ -27,21 +27,18 @@
             <th class="text-center">{{translate 'BUDGET.DEVIATION_YTD'}}</th>
           </tr>
         </thead>
+
         <tbody>
           {{#each incomeRows}}
           <tr>
             <td>{{number}}</td>
             <td>{{translate label}}</td>
             <td>{{translate type}}</td>
-            {{#if isTitle}}
-            <td colspan="5"></td>
-            {{else}}
             <td style="text-align: right">{{#if budget}}{{currency budget ../currencyId}}{{/if}}</td>
             <td style="text-align: right">{{#if budgetYTD}}{{currency budgetYTD ../currencyId}}{{/if}}</td>
             <td style="text-align: right">{{#if actuals}}{{currency actuals ../currencyId}}{{/if}}</td>
             <td style="text-align: right">{{#if differenceYTD}}{{currency differenceYTD ../currencyId}}{{/if}}</td>
             <td style="text-align: right">{{#if deviationYTDPct}}{{deviationYTDPct}} %{{/if}}</td>
-            {{/if}}
           </tr>
           {{/each}}
 
@@ -64,15 +61,11 @@
             <td>{{number}}</td>
             <td>{{translate label}}</td>
             <td>{{translate type}}</td>
-            {{#if isTitle}}
-            <td colspan="5"></td>
-            {{else}}
             <td style="text-align: right">{{#if budget}}{{currency budget ../currencyId}}{{/if}}</td>
             <td style="text-align: right">{{#if budgetYTD}}{{currency budgetYTD ../currencyId}}{{/if}}</td>
             <td style="text-align: right">{{#if actuals}}{{currency actuals ../currencyId}}{{/if}}</td>
             <td style="text-align: right">{{#if differenceYTD}}{{currency differenceYTD ../currencyId}}{{/if}}</td>
             <td style="text-align: right">{{#if deviationYTDPct}}{{deviationYTDPct}} %{{/if}}</td>
-            {{/if}}
           </tr>
           {{/each}}
 
@@ -88,9 +81,9 @@
             <td style="text-align: right">{{#if deviationYTDPct}}{{deviationYTDPct}} %{{/if}}</td>
             {{/with}}
           </tr>
+
           <tr><td colspan="8">&nbsp;</td></tr> <!-- blank row -->
-        </tbody>
-        <tfoot style="margin-top: 1ex">
+
           <tr style="font-style: bold;background-color: #ddd">
             {{#with totalSummaryRow}}
             <td>{{number}}</td>
@@ -103,7 +96,7 @@
             <td style="text-align: right">{{#if deviationYTDPct}}{{deviationYTDPct}} %{{/if}}</td>
             {{/with}}
           </tr>
-        </tfoot>
+        </tbody>
       </table>
     </div>
   </div>
