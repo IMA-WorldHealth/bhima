@@ -6,7 +6,7 @@
      }"
      ng-if="row.entity.acctTitle != 'title'">
   <span ng-if="row.entity.actuals">
-    <span ng-if="(row.entity.acctType == 'income') || (row.entity.acctType == 'total-income')">+</span><span ng-if="(row.entity.acctType == 'expense') || (row.entity.acctType == 'total-expenses')">-</span>
+    <span ng-if="(row.entity.acctType == 'income') || (row.entity.acctType == 'total-income') || row.entity.isIncomeTitle">+</span><span ng-if="(row.entity.acctType == 'expense') || (row.entity.acctType == 'total-expenses') || row.entity.isExpenseTitle">-</span>
     {{ row.entity.actuals | currency: grid.appScope.enterprise.currency_id:0 }}
   </span>
 </div>

@@ -15,6 +15,8 @@ function BudgetController(
   Budget, Session, Fiscal, Columns, GridState,
   Notify, $state, $translate, $uibModal, bhConstants,
 ) {
+  const { TITLE, EXPENSE, INCOME } = bhConstants.accounts;
+
   const vm = this;
   const cacheKey = 'budget-grid';
 
@@ -30,7 +32,7 @@ function BudgetController(
 
   vm.hideTitleAccount = false;
   vm.indentTitleSpace = 15;
-  const isNotTitleAccount = (account) => account.type_id !== bhConstants.accounts.TITLE;
+  const isNotTitleAccount = (account) => account.type_id !== TITLE;
 
   // Define exports
   vm.downloadExcelQueryString = downloadExcelQueryString;
@@ -195,10 +197,10 @@ function BudgetController(
       return '';
     }
 
-    if (entity.type_id === bhConstants.accounts.INCOME) {
+    if ((entity.type_id === INCOME) || entity.isIncomeTitle) {
       return '+';
     }
-    if (entity.type_id === bhConstants.accounts.EXPENSE) {
+    if ((entity.type_id === EXPENSE) || entity.isExpenseTitle) {
       return '-';
     }
     return '';
@@ -216,10 +218,10 @@ function BudgetController(
       return '';
     }
 
-    if (entity.type_id === bhConstants.accounts.INCOME) {
+    if ((entity.type_id === INCOME) || ((entity.type_id === TITLE) && entity.isIncomeTitle)) {
       return '+';
     }
-    if (entity.type_id === bhConstants.accounts.EXPENSE) {
+    if ((entity.type_id === EXPENSE) || ((entity.type_id === TITLE) && entity.isExpenseTitle)) {
       return '-';
     }
     return '';
