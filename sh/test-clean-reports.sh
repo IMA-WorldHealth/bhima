@@ -1,6 +1,6 @@
 #!/bin/bash
 
 if [[ -d results ]]; then
-  rm -rf ./results/playwright-report
-  rm -f ./results/*
+  rm -rf ./results
+  rm -rf ./test-results
 fi
