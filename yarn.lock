@@ -4448,10 +4448,10 @@ gulp-merge-json@^2.1.2:
     through "^2.3.8"
     vinyl "^2.2.1"
 
-gulp-postcss@^9.1.0:
-  version "9.1.0"
-  resolved "https://registry.yarnpkg.com/gulp-postcss/-/gulp-postcss-9.1.0.tgz#0d317134d40d9565f265bd32c7f71605a54cadd8"
-  integrity sha512-a843mcKPApfeI987uqQbc8l50xXeWIXBsiVvYxtCI5XtVAMzTi/HnU2qzQpGwkB/PAOfsLV8OsqDv2iJZ9qvdw==
+gulp-postcss@^10.0.0:
+  version "10.0.0"
+  resolved "https://registry.yarnpkg.com/gulp-postcss/-/gulp-postcss-10.0.0.tgz#a88d7c6602f8a8c94aaa9f28ac3a68def00c7ada"
+  integrity sha512-z1RF2RJEX/BvFsKN11PXai8lRmihZTiHnlJf7Zu8uHaA/Q7Om4IeN8z1NtMAW5OiLwUY02H0DIFl9tHl0CNSgA==
   dependencies:
     fancy-log "^2.0.0"
     plugin-error "^2.0.1"
