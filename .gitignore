@@ -42,7 +42,6 @@ nbproject/
 
 # Ignore test files
 sh/build-database-test.sh
-results/
 
 # Ignore local temporary files
 temp/
@@ -62,9 +61,10 @@ migration-*.sql
 yarn-error.log
 *.log
 
-/test-results
-/playwright-report
-/playwright/.cache
-/tests-examples
+results
+test-results
+playwright-report
+playwright/.cache
+tests-examples
 
 .sqlfluff
