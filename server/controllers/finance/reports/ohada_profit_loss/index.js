@@ -187,8 +187,8 @@ async function reporting(options, session) {
     _.merge(context, { fiscalYear });
 
     const currentData = await AccountReference.computeAllAccountReference(fiscalYear.current.period_id);
-    const previousData = fiscalYear.previous.period_id ? await AccountReference.computeAllAccountReference(fiscalYear.previous.period_id)
-      : [];
+    const previousData = fiscalYear.previous.period_id
+      ? await AccountReference.computeAllAccountReference(fiscalYear.previous.period_id) : [];
 
     const currentReferences = formatReferences(_.groupBy(currentData, 'abbr'));
     const previousReferences = formatReferences(_.groupBy(previousData, 'abbr'));
