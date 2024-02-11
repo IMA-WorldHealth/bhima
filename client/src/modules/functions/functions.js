@@ -36,7 +36,7 @@ function FunctionManagementController(Functions, Modals, Notify, uiGridConstants
     }, {
       field : 'action',
       width : 80,
-      displayName : '...',
+      displayName : '',
       cellTemplate : '/modules/functions/templates/action.tmpl.html',
       enableSorting : false,
       enableFiltering : false,
@@ -79,7 +79,6 @@ function FunctionManagementController(Functions, Modals, Notify, uiGridConstants
           .catch(Notify.handleError);
       });
   }
-
 
   loadFunctions();
 }
