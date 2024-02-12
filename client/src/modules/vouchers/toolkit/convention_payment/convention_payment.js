@@ -8,7 +8,7 @@ ConventionPaymentKitController.$inject = [
 
 // Import transaction rows for a convention payment
 function ConventionPaymentKitController(
-  Instance, DebtorGroup, Notify, Session, bhConstants, $translate, ToolKits
+  Instance, DebtorGroup, Notify, Session, bhConstants, $translate, ToolKits,
 ) {
   const vm = this;
 
@@ -83,29 +83,17 @@ function ConventionPaymentKitController(
     cashboxRow.credit = 0;
     rows.push(cashboxRow);
 
-
     // then loop through each selected item and credit it with the convention account
     invoices.forEach(invoice => {
       const row = ToolKits.getBlankVoucherRow();
 
       row.account_id = conventionAccountId;
       row.reference_uuid = invoice.uuid;
-      row.entity_uuid = invoice.entity_uuid;
       row.credit = invoice.balance;
 
-      // this is needed for a nice display in the grid
-      row.entity = {
-        label : invoice.entityReference,
-        type : 'D',
-        uuid : invoice.entity_uuid,
-      };
-
-      // this is need to display references in the grid nicely
-      row.document = {
-        uuid : invoice.uuid,
-        reference : invoice.reference,
-        document_type : 'VOUCHERS.COMPLEX.PATIENT_INVOICE',
-      };
+      // maybe this should be "invoice.debtor_uuid"
+      row.entity_uuid = invoice.entity_uuid;
+      row.document_uuid = invoice.uuid;
 
       // add the row in to the
       rows.push(row);

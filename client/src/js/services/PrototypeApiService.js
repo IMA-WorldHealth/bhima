@@ -105,12 +105,14 @@ function PrototypeApiService($http, util) {
    *     // data is typically an array here
    *   });
    */
-  function read(id, parameters = {}) {
+  function read(id, parameters = {}, httpParameters = {}) {
     // append the id to the target
     const target = this.url.concat(id || '');
 
+    const options = angular.extend(httpParameters, { params : parameters });
+
     // send the GET request
-    return $http.get(target, { params : parameters })
+    return $http.get(target, options)
       .then(util.unwrapHttpResponse);
   }
 
