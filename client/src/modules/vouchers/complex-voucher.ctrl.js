@@ -2,10 +2,9 @@ angular.module('bhima.controllers')
   .controller('ComplexJournalVoucherController', ComplexJournalVoucherController);
 
 ComplexJournalVoucherController.$inject = [
-  'VoucherService', 'CurrencyService', 'SessionService', 'FindEntityService',
-  'FindReferenceService', 'NotifyService', 'VoucherToolkitService',
-  'ReceiptModal', 'bhConstants', 'uiGridConstants', 'VoucherForm', '$timeout',
-  'ExchangeRateService',
+  'VoucherService', 'CurrencyService', 'SessionService', 'NotifyService',
+  'VoucherToolkitService', 'ReceiptModal', 'bhConstants', 'uiGridConstants',
+  'VoucherForm', '$timeout', 'ExchangeRateService', 'TransactionTypeService',
 ];
 
 /**
@@ -16,12 +15,10 @@ ComplexJournalVoucherController.$inject = [
  * specifying two or more lines of transactions and all relative document references
  *
  * @constructor
- *
- * TODO/FIXME - this error notification system needs serious refactor.
  */
 function ComplexJournalVoucherController(
-  Vouchers, Currencies, Session, FindEntity, FindReference, Notify, Toolkit,
-  Receipts, bhConstants, uiGridConstants, VoucherForm, $timeout, Rates,
+  Vouchers, Currencies, Session, Notify, Toolkit, Receipts, bhConstants,
+  uiGridConstants, VoucherForm, $timeout, Rates, TransactionTypes,
 ) {
   const vm = this;
 
@@ -57,11 +54,12 @@ function ComplexJournalVoucherController(
   // ui-grid options
   vm.gridOptions = {
     appScopeProvider  : vm,
-    fastWatch         : true,
     flatEntityAccess  : true,
+    fastWatch         : true,
     enableSorting     : false,
     enableColumnMenus : false,
     showColumnFooter  : true,
+    virtualizationThreshold : 200,
     onRegisterApi,
   };
 
@@ -176,24 +174,6 @@ function ComplexJournalVoucherController(
   // bind the startup method as a reset method
   vm.submit = submit;
   vm.currencySymbol = currencySymbol;
-  vm.openEntityModal = openEntityModal;
-  vm.openReferenceModal = openReferenceModal;
-
-  /** Entity modal */
-  function openEntityModal(row) {
-    FindEntity.openModal()
-      .then(entity => {
-        row.entity = entity;
-      });
-  }
-
-  /** Reference modal */
-  function openReferenceModal(row) {
-    FindReference.openModal(row.entity)
-      .then(doc => {
-        row.configure({ document : doc });
-      });
-  }
 
   /** Get the selected currency symbol */
   function currencySymbol(currencyId) {
@@ -212,9 +192,9 @@ function ComplexJournalVoucherController(
 
   /* ============================= Transaction Type ============================= */
 
-  Vouchers.transactionType()
-    .then((list) => {
-      vm.types = list;
+  TransactionTypes.read()
+    .then(types => {
+      vm.types = types;
     })
     .catch(Notify.handleError);
 
@@ -286,17 +266,24 @@ function ComplexJournalVoucherController(
     }
 
     const voucher = vm.Voucher.details;
-
     voucher.items = vm.Voucher.store.data;
 
     return Vouchers.create(voucher)
-      .then((result) => {
+      .then(result => {
         Receipts.voucher(result.uuid, true);
         vm.Voucher.clear();
         form.$setPristine();
       })
       .catch(Notify.handleError);
   }
+
+  vm.onSelectEntity = (row, entity) => {
+    row.entity.entity_uuid = entity.uuid;
+  };
+
+  vm.onSelectRecord = (row, record) => {
+    row.entity.document_uuid = record.uuid;
+  };
 
   startup();
 }

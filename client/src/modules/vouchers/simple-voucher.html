@@ -63,9 +63,9 @@
 
                   <ui-select-choices
                     ui-select-focus-patch
-                    repeat="item.id as item in SimpleVoucherCtrl.types | filter:{ 'hrText' : $select.search }"
+                    repeat="item.id as item in SimpleVoucherCtrl.types | filter:{ 'plainText' : $select.search }"
                     group-by="SimpleVoucherCtrl.groupTransactionByType">
-                    <div ng-bind-html="item.hrText | highlight: $select.search"></div>
+                    <div ng-bind-html="item.plainText | highlight: $select.search"></div>
                   </ui-select-choices>
                 </ui-select>
 

@@ -18,11 +18,6 @@ DebtorService.$inject = ['$q', '$http', 'util'];
  * // Returns all debtor groups
  * Debtors.groups()
  *
- * @todo  A pattern of overriding a method has been used in various other services
- *        * groups() - returns all debtor groups
- *        * groups(uuid) - returns details for a specific group
- *        This would replace the groupDetail method
- *
  * @module services/DebtorService
  */
 function DebtorService($q, $http, util) {
@@ -37,21 +32,12 @@ function DebtorService($q, $http, util) {
   /** returns a list of debtor groups */
   service.groups = groups;
 
-  /** returns the details of a debtor group */
-  service.groupDetail = groupDetail;
-
   /** returns a list of invoices owed to a given debtor */
   service.invoices = invoices;
 
-  function read(uuid) {
+  function read(uuid, params = {}) {
     const path = `/debtors/${uuid || ''}`;
-    return $http.get(path)
-      .then(util.unwrapHttpResponse);
-  }
-
-  function groupDetail(uuid) {
-    const path = `/debtors/groups/${uuid}`;
-    return $http.get(path)
+    return $http.get(path, { params })
       .then(util.unwrapHttpResponse);
   }
 
