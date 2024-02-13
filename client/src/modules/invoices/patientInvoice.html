@@ -26,21 +26,13 @@
                     </bh-find-patient>
                   </div>
 
-                  <div class="form-group"
-                    ng-class="{'has-error' : InvoiceForm.$submitted && InvoiceForm.service.$invalid }">
-                    <label class="control-label" translate>FORM.LABELS.SERVICE</label>
-                    <select
-                      class="form-control"
-                      name="service"
-                      ng-model="PatientInvoiceCtrl.Invoice.details.service_uuid"
-                      ng-options="service.uuid as service.name for service in PatientInvoiceCtrl.Invoice.services"
-                      required>
-                      <option disabled="disabled" value="" translate>FORM.LABELS.SERVICE</option>
-                    </select>
-                    <div class="help-block" ng-messages="InvoiceForm.service.$error" ng-show="InvoiceForm.$submitted">
-                      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-                    </div>
-                  </div>
+                  <bh-service-select
+                    service-uuid="PatientInvoiceCtrl.Invoice.details.service_uuid"
+                    name="service_uuid"
+                    on-select-callback="PatientInvoiceCtrl.onSelectService(service)"
+                    required="true">
+                  </bh-service-select>
+
                 </div>
 
                 <div class="col-md-6">
