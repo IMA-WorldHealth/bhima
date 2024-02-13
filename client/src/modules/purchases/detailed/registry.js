@@ -159,7 +159,7 @@ function PurchaseDetailedController(
     enableSorting : false,
   }, {
     field : 'action',
-    displayName : '...',
+    displayName : '',
     enableFiltering : false,
     enableColumnMenu : false,
     enableSorting : false,
