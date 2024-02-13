@@ -1,15 +1,7 @@
-<div class="ui-grid-cell-contents" ng-class="{ 'bg-info': row.entity.document.uuid }">
-  <a class="text-action"
-    ng-click="grid.appScope.openReferenceModal(row.entity)"
-    data-reference-button>
-
-    <span
-      ng-show="row.entity.document.uuid" class="text-primary">
-      <i class="fa fa-file-o"></i> {{ row.entity.document.reference }} - <span translate>{{ row.entity.document.document_type }}</span>
-    </span>
-
-    <span ng-hide="row.entity.document.uuid">
-      <i class="fa fa-plus"></i> <span translate>VOUCHERS.COMPLEX.REFERENCE</span>
-    </span>
-  </a>
+<div class="ui-grid-cell-contents" data-row-record>
+  <bh-record-typeahead
+    record-uuid="row.entity.document_uuid"
+    on-select-callback="grid.appScope.onSelectRecord(row, record)"
+    disabled="!row.entity._initialized">
+  </bh-record-typeahead>
 </div>

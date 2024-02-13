@@ -29,7 +29,7 @@ test.describe('Voucher Registry', () => {
   test.describe('Search', VoucherRegistrySearch);
 
   test('deletes a record from the voucher registry', async () => {
-    const row = new GridRow('VO.TPA.1');
+    const row = new GridRow('VO.TPC.1');
     await row.dropdown();
     await row.remove();
 
