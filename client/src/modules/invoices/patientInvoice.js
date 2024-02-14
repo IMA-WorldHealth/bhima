@@ -17,7 +17,7 @@ PatientInvoiceController.$inject = [
  */
 function PatientInvoiceController(
   Patients, PatientInvoices, PatientInvoiceForm, util, Session, Receipts, Notify,
-  Constants, Exchange, moment
+  Constants, Exchange, moment,
 ) {
   const vm = this;
 
@@ -85,7 +85,7 @@ function PatientInvoiceController(
     data : vm.Invoice.store.data,
   };
 
-    // called when the grid is initialized
+  // called when the grid is initialized
   function exposeGridScroll(gridApi) {
     vm.gridApi = gridApi;
   }
@@ -196,6 +196,11 @@ function PatientInvoiceController(
     // reset client balance
     vm.patientBalance = null;
   }
+
+  // select service
+  vm.onSelectService = (service) => {
+    vm.Invoice.details.service_uuid = service.uuid;
+  };
 
   vm.gridOptions = gridOptions;
   vm.setPatient = setPatient;
