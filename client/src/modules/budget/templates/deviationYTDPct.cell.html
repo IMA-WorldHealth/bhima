@@ -5,7 +5,7 @@
        'budget-total-expenses' : row.entity.acctType == 'total-expenses',
        'budget-total-summary' : row.entity.acctType == 'total-summary'
      }">
-  <span ng-if="row.entity.deviationYTDPct !== null">
+  <span ng-if="(row.entity.deviationYTDPct !== null) && (row.entity.differenceYTD !== null)">
   {{ row.entity.deviationYTDPct }} %
   </span>
 </div>
