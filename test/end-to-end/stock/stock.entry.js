@@ -1,5 +1,5 @@
 const moment = require('moment');
-const { test } = require('@playwright/test');
+const { test, expect } = require('@playwright/test');
 const TU = require('../shared/TestUtils');
 
 const EntryPage = require('./stock.entry.page');
@@ -81,23 +81,33 @@ function StockEntryTests() {
 
   test('Should enter stock from a transfer reception', async () => {
     // set another Depot
+    console.debug('E0');
+    TU.screenshot('results/entry1.png');
     await page.setDepot(DEPOT_SECONDAIRE);
-
+    TU.screenshot('results/entry2.png');
+    console.debug('E1');
     // select the movement
     await page.setTransfer(0);
-
+    console.debug('E2');
     // Wait for the transfer selection dialog to close
     await TU.waitForSelector('textarea[name="description"]:visible');
-
+    console.debug('E3');
+    TU.screenshot('results/entry3.png');
     await page.setDate(new Date());
-
+    console.debug('E4');
     await page.setDescription(DESCRIPTION.concat(' - Transfer reception'));
 
     const lots = [
       { quantity : 75 },
     ];
-
+    console.debug('E5');
+    TU.screenshot('results/entry4.png');
     await page.setLots(0, lots, true, null);
+    TU.screenshot('results/entry5.png');
+    console.debug('E6');
+
+    // Wait for the dialog to disappear
+    await expect(TU.locator('.modal-dialog')).toHaveCount(0);
 
     // submit
     await page.submit();
