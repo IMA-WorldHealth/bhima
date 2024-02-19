@@ -10,7 +10,7 @@ SupportPatientKitController.$inject = [
 function SupportPatientKitController(Instance, Notify, Session, bhConstants, Debtors, $translate, ToolKits) {
   const vm = this;
 
-  const MAX_DECIMAL_PRECISION = bhConstants.precision.MAX_DECIMAL_PRECISION;
+  const { MAX_DECIMAL_PRECISION } = bhConstants.precision;
 
   vm.enterprise = Session.enterprise;
 
@@ -61,7 +61,7 @@ function SupportPatientKitController(Instance, Notify, Session, bhConstants, Deb
     const rows = [];
     const supportAccountId = result.account_id;
     const supportedAccountId = result.patient.account_id;
-    const invoices = result.invoices;
+    const { invoices } = result;
     const supportRow = ToolKits.getBlankVoucherRow();
 
     rows.typeId = bhConstants.transactionType.SUPPORT_INCOME;
@@ -71,12 +71,14 @@ function SupportPatientKitController(Instance, Notify, Session, bhConstants, Deb
     supportRow.debit = vm.totalSelected;
     supportRow.credit = 0;
 
-    supportRow.entity = vm.selectEmployee && vm.employee
-      ? { label : vm.employee.display_name, type : 'C', uuid : vm.employee.creditor_uuid } : null;
+    // add the employee uuid if the support is being done by an employee
+    if (vm.selectEmployee && vm.employee) {
+      supportRow.entity_uuid = vm.employee.creditor_uuid;
+    }
 
     rows.push(supportRow);
 
-    // then loop through each selected item and credit it with the Supported account
+    // then loop through each selected item and credit it with the supported account
     invoices.forEach((invoice) => {
       const row = ToolKits.getBlankVoucherRow();
 
@@ -84,14 +86,7 @@ function SupportPatientKitController(Instance, Notify, Session, bhConstants, Deb
       row.reference_uuid = invoice.uuid;
       row.entity_uuid = invoice.entity_uuid;
       row.credit = invoice.balance;
-
-      // this is needed for a nice display in the grid
-      row.entity = { label : result.patient.text, type : 'D', uuid : result.patient.debtor_uuid };
-
-      // @FIXME(sfount) this was included in legacy format invoice code - it should either be derived from
-      // the database or omitted
-      invoice.document_type = 'VOUCHERS.COMPLEX.PATIENT_INVOICE';
-      row.document = invoice;
+      row.document_uuid = invoice.uuid;
 
       // add the row in to the
       rows.push(row);
