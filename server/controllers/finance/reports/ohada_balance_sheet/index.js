@@ -231,12 +231,13 @@ function reporting(options, session) {
         }
         return item;
       });
-
       /**
        * displays depreciation in positive values
        */
       assetTable.forEach(item => {
-        item.currentAmo *= -1;
+        if (item.currentAmo) {
+          item.currentAmo *= -1;
+        }
       });
 
       /**
@@ -245,8 +246,12 @@ function reporting(options, session) {
        * values, so for doing that we will multiply them by -1
        */
       liabilityTable.forEach(item => {
-        item.currentNet *= -1;
-        item.previousNet *= -1;
+        if (item.currentNet) {
+          item.currentNet *= -1;
+        }
+        if (item.previousNet) {
+          item.previousNet *= -1;
+        }
       });
 
       _.merge(context, { assetTable, liabilityTable });

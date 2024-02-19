@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-catch */
 /**
  * Ohada Profit loss Controller
  *
@@ -12,7 +13,6 @@
  * @requires lib/errors/BadRequest
  */
 
-const Q = require('q');
 const _ = require('lodash');
 const db = require('../../../../lib/db');
 const AccountReference = require('../../accounts/references');
@@ -174,129 +174,128 @@ profitLossTable.forEach(item => {
  * @param {*} options the report options
  * @param {*} session the session
  */
-function reporting(options, session) {
+async function reporting(options, session) {
   const params = options;
   const context = {};
+  try {
 
-  _.defaults(params, DEFAULT_PARAMS);
+    _.defaults(params, DEFAULT_PARAMS);
 
-  const report = new ReportManager(TEMPLATE, session, params);
+    const report = new ReportManager(TEMPLATE, session, params);
 
-  return getFiscalYearDetails(params.fiscal_id)
-    .then(fiscalYear => {
-      _.merge(context, { fiscalYear });
+    const fiscalYear = await getFiscalYearDetails(params.fiscal_id);
+    _.merge(context, { fiscalYear });
 
-      const currentPeriodReferences = AccountReference.computeAllAccountReference(fiscalYear.current.period_id);
+    const currentData = await AccountReference.computeAllAccountReference(fiscalYear.current.period_id);
+    const previousData = fiscalYear.previous.period_id
+      ? await AccountReference.computeAllAccountReference(fiscalYear.previous.period_id) : [];
 
-      const firstChoice = AccountReference.computeAllAccountReference(fiscalYear.previous.period_id);
-      const previousPeriodReferences = fiscalYear.previous.period_id ? firstChoice : [];
-      return Q.all([currentPeriodReferences, previousPeriodReferences]);
-    })
-    .spread((currentData, previousData) => {
+    const currentReferences = formatReferences(_.groupBy(currentData, 'abbr'));
+    const previousReferences = formatReferences(_.groupBy(previousData, 'abbr'));
 
-      const currentReferences = formatReferences(_.groupBy(currentData, 'abbr'));
-      const previousReferences = formatReferences(_.groupBy(previousData, 'abbr'));
+    const totals = {
+      currentNet : 0,
+      previousNet : 0,
+    };
 
-      const totals = {
-        currentNet : 0,
-        previousNet : 0,
-      };
+    const assetTable = profitLossTable.map(item => {
+      item.label = 'REPORT.OHADA.REF_DESCRIPTION.'.concat(item.ref);
+      const current = currentReferences[item.ref];
+      const previous = previousReferences[item.ref];
 
-      const assetTable = profitLossTable.map(item => {
-        item.label = 'REPORT.OHADA.REF_DESCRIPTION.'.concat(item.ref);
-        const current = currentReferences[item.ref];
-        const previous = previousReferences[item.ref];
+      if (current) {
+        item.currentBrut = current.brut.balance;
+        item.currentAmo = current.amortissement.balance;
+        item.currentNet = current.net.balance;
+        item.previousNet = previous ? previous.net.balance : 0;
 
-        if (current) {
-          item.currentBrut = current.brut.balance;
-          item.currentAmo = current.amortissement.balance;
-          item.currentNet = current.net.balance;
-          item.previousNet = previous ? previous.net.balance : 0;
+        totals.currentNet += item.currentNet;
+        totals.previousNet += item.previousNet;
 
-          totals.currentNet += item.currentNet;
-          totals.previousNet += item.previousNet;
+        setSign(item);
+      }
 
-          setSign(item);
-        }
+      // process manually totals
+      let list = [];
+      if (item.ref === 'XA') {
+        list = ['TA', 'RA', 'RB'];
+        _.extend(item, aggregateReferences(list, currentReferences, previousReferences, mapTable));
+      }
 
-        // process manually totals
-        let list = [];
-        if (item.ref === 'XA') {
-          list = ['TA', 'RA', 'RB'];
-          _.extend(item, aggregateReferences(list, currentReferences, previousReferences, mapTable));
-        }
+      if (item.ref === 'XB') {
+        list = ['TA', 'TB', 'TC', 'TD'];
+        _.extend(item, aggregateReferences(list, currentReferences, previousReferences, mapTable));
+      }
 
-        if (item.ref === 'XB') {
-          list = ['TA', 'TB', 'TC', 'TD'];
-          _.extend(item, aggregateReferences(list, currentReferences, previousReferences, mapTable));
-        }
+      if (item.ref === 'XC') {
+        list = [
+          'TA', 'TB', 'TC', 'TD', 'RA', 'RB',
+          'TE', 'TF', 'TG', 'TH', 'TI', 'RC', 'RD', 'RE', 'RF', 'RG', 'RH', 'RI', 'RJ',
+        ];
+        _.extend(item, aggregateReferences(list, currentReferences, previousReferences, mapTable));
+      }
 
-        if (item.ref === 'XC') {
-          list = [
-            'TA', 'TB', 'TC', 'TD', 'RA', 'RB',
-            'TE', 'TF', 'TG', 'TH', 'TI', 'RC', 'RD', 'RE', 'RF', 'RG', 'RH', 'RI', 'RJ',
-          ];
-          _.extend(item, aggregateReferences(list, currentReferences, previousReferences, mapTable));
-        }
+      if (item.ref === 'XD') {
+        list = [
+          'TA', 'TB', 'TC', 'TD', 'RA', 'RB',
+          'TE', 'TF', 'TG', 'TH', 'TI', 'RC', 'RD', 'RE', 'RF', 'RG', 'RH', 'RI', 'RJ',
+          'RK'];
+        _.extend(item, aggregateReferences(list, currentReferences, previousReferences, mapTable));
+      }
 
-        if (item.ref === 'XD') {
-          list = [
-            'TA', 'TB', 'TC', 'TD', 'RA', 'RB',
-            'TE', 'TF', 'TG', 'TH', 'TI', 'RC', 'RD', 'RE', 'RF', 'RG', 'RH', 'RI', 'RJ',
-            'RK'];
-          _.extend(item, aggregateReferences(list, currentReferences, previousReferences, mapTable));
-        }
+      if (item.ref === 'XE') {
+        list = [
+          'TA', 'TB', 'TC', 'TD', 'RA', 'RB',
+          'TE', 'TF', 'TG', 'TH', 'TI', 'RC', 'RD', 'RE', 'RF', 'RG', 'RH', 'RI', 'RJ',
+          'RK',
+          'TJ', 'RL'];
+        _.extend(item, aggregateReferences(list, currentReferences, previousReferences, mapTable));
+      }
 
-        if (item.ref === 'XE') {
-          list = [
-            'TA', 'TB', 'TC', 'TD', 'RA', 'RB',
-            'TE', 'TF', 'TG', 'TH', 'TI', 'RC', 'RD', 'RE', 'RF', 'RG', 'RH', 'RI', 'RJ',
-            'RK',
-            'TJ', 'RL'];
-          _.extend(item, aggregateReferences(list, currentReferences, previousReferences, mapTable));
-        }
+      if (item.ref === 'XF') {
+        list = ['TK', 'TL', 'TM', 'RM', 'RN'];
+        _.extend(item, aggregateReferences(list, currentReferences, previousReferences, mapTable));
+      }
 
-        if (item.ref === 'XF') {
-          list = ['TK', 'TL', 'TM', 'RM', 'RN'];
-          _.extend(item, aggregateReferences(list, currentReferences, previousReferences, mapTable));
-        }
+      if (item.ref === 'XG') {
+        list = [
+          'TA', 'TB', 'TC', 'TD', 'RA', 'RB',
+          'TE', 'TF', 'TG', 'TH', 'TI', 'RC', 'RD', 'RE', 'RF', 'RG', 'RH', 'RI', 'RJ',
+          'RK',
+          'TJ', 'RL',
+          'TK', 'TL', 'TM', 'RM', 'RN',
+        ];
+        _.extend(item, aggregateReferences(list, currentReferences, previousReferences, mapTable));
+      }
 
-        if (item.ref === 'XG') {
-          list = [
-            'TA', 'TB', 'TC', 'TD', 'RA', 'RB',
-            'TE', 'TF', 'TG', 'TH', 'TI', 'RC', 'RD', 'RE', 'RF', 'RG', 'RH', 'RI', 'RJ',
-            'RK',
-            'TJ', 'RL',
-            'TK', 'TL', 'TM', 'RM', 'RN',
-          ];
-          _.extend(item, aggregateReferences(list, currentReferences, previousReferences, mapTable));
-        }
+      if (item.ref === 'XH') {
+        list = ['TN', 'TO', 'RO'];
+        _.extend(item, aggregateReferences(list, currentReferences, previousReferences, mapTable));
+      }
 
-        if (item.ref === 'XH') {
-          list = ['TN', 'TO', 'RO'];
-          _.extend(item, aggregateReferences(list, currentReferences, previousReferences, mapTable));
-        }
+      if (item.ref === 'XI') {
+        list = [
+          'TA', 'TB', 'TC', 'TD', 'RA', 'RB',
+          'TE', 'TF', 'TG', 'TH', 'TI', 'RC', 'RD', 'RE', 'RF', 'RG', 'RH', 'RI', 'RJ',
+          'RK',
+          'TJ', 'RL',
+          'TK', 'TL', 'TM', 'RM', 'RN',
+          'TN', 'TO', 'RO',
+          'RQ', 'RS'];
 
-        if (item.ref === 'XI') {
-          list = [
-            'TA', 'TB', 'TC', 'TD', 'RA', 'RB',
-            'TE', 'TF', 'TG', 'TH', 'TI', 'RC', 'RD', 'RE', 'RF', 'RG', 'RH', 'RI', 'RJ',
-            'RK',
-            'TJ', 'RL',
-            'TK', 'TL', 'TM', 'RM', 'RN',
-            'TN', 'TO', 'RO',
-            'RQ', 'RS'];
+        _.extend(item, aggregateReferences(list, currentReferences, previousReferences, mapTable));
+      }
 
-          _.extend(item, aggregateReferences(list, currentReferences, previousReferences, mapTable));
-        }
-
-        return item;
-      });
-
-      _.merge(context, { assetTable }, { totals });
-
-      return report.render(context);
+      return item;
     });
+
+    _.merge(context, { assetTable }, { totals });
+
+    return report.render(context);
+
+  } catch (error) {
+    throw error;
+  }
 }
 
 /**
@@ -306,7 +305,7 @@ function reporting(options, session) {
 function document(req, res, next) {
   reporting(req.query, req.session)
     .then(result => {
-      res.set(result.header).send(result.report);
+      res.set(result.headers).send(result.report);
     })
     .catch(next);
 }
@@ -345,10 +344,11 @@ function formatReferences(references) {
   return values;
 }
 
-function getFiscalYearDetails(fiscalYearId) {
+async function getFiscalYearDetails(fiscalYearId) {
   const bundle = {};
-  // get fiscal year details and the last period id of the fiscal year
-  const query = `
+  try {
+    // get fiscal year details and the last period id of the fiscal year
+    const query = `
     SELECT
       p.id AS period_id, fy.end_date,
       fy.id, fy.label, fy.previous_fiscal_year_id
@@ -360,17 +360,13 @@ function getFiscalYearDetails(fiscalYearId) {
         WHERE period.fiscal_year_id = ? AND period.number < 13)
     WHERE fy.id = ?;
   `;
-  return db.one(query, [fiscalYearId, fiscalYearId])
-    .then(fiscalYear => {
-      bundle.current = fiscalYear;
-      const detailsParams = [bundle.current.previous_fiscal_year_id, bundle.current.previous_fiscal_year_id];
-      return bundle.current.previous_fiscal_year_id ? db.one(query, detailsParams) : {};
-    })
-    .then(previousFiscalYear => {
-      bundle.previous = previousFiscalYear;
-
-      return bundle;
-    });
+    bundle.current = await db.one(query, [fiscalYearId, fiscalYearId]);
+    const detailsParams = [bundle.current.previous_fiscal_year_id, bundle.current.previous_fiscal_year_id];
+    bundle.previous = bundle.current.previous_fiscal_year_id ? await db.one(query, detailsParams) : {};
+    return bundle;
+  } catch (error) {
+    throw error;
+  }
 }
 
 function aggregateReferences(references, currentDb, previousDb, mapRef) {
