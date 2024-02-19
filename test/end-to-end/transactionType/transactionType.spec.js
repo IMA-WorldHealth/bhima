@@ -63,6 +63,7 @@ test.describe('transaction types', () => {
     await TU.modal.submit();
     console.debug('T6');
     await components.notification.hasSuccess();
+    console.debug('T7 OK');
   });
 
   test('successfully creates a transaction type with a specific type', async () => {
