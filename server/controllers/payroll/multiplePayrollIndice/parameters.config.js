@@ -37,10 +37,24 @@ async function create(req, res, next) {
 
   const transaction = db.transaction();
 
-  // FIXME(@jniles) - refresh these from the database rather
-  // than obtaining them for the session information
-  const minMonentaryUnit = req.session.enterprise.min_monentary_unit;
-  const percentageFixedBonus = req.session.enterprise.settings.percentage_fixed_bonus;
+  const getEnterpriseMiMonentaryUnit = `
+    SELECT c.min_monentary_unit
+    FROM enterprise AS e
+    JOIN currency AS c ON c.id = e.currency_id
+    WHERE e.id = ?;`;
+
+  const getEnterprisePercentageFixedBonus = `
+    SELECT s.percentage_fixed_bonus
+    FROM enterprise_setting AS s
+    WHERE s.enterprise_id = ?;`;
+
+  const [resultMiMonentaryUnit, resultPercentageFixedBonus] = await Promise.all([
+    db.exec(getEnterpriseMiMonentaryUnit, req.session.enterprise.id),
+    db.exec(getEnterprisePercentageFixedBonus, req.session.enterprise.id),
+  ]);
+
+  const minMonentaryUnit = resultMiMonentaryUnit[0].min_monentary_unit;
+  const percentageFixedBonus = resultPercentageFixedBonus[0].percentage_fixed_bonus;
   const percentagePerformanceBonus = 100 - percentageFixedBonus;
 
   debug(`the fixed percentage performance bonus is ${percentagePerformanceBonus}.`);
