@@ -57,6 +57,10 @@ class VisitPage {
     patientName, serviceName, diagnosis, note, isHospitalized, isOldCase,
     isPregnant, notInsideHealthZone, isRefered, ward, room) {
     await TU.buttons.create();
+
+    // Wait for the modal to come up
+    await TU.waitForSelector('.modal-dialog');
+
     // choose the patient
     await components.findPatient.findByName(patientName);
 
