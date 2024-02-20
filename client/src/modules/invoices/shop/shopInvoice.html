@@ -1,0 +1,221 @@
+<div class="flex-header static">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.FINANCE</li>
+      <li class="title" translate>TREE.INVOICING_DISTRIBUTION</li>
+    </ol>
+
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <bh-dropdown-menu>
+          <bh-dropdown-menu-item>
+            <a href>
+              <bh-change-depot on-select="ShopInvoiceCtrl.setDepot(depot)"></bh-change-depot>
+            </a>
+          </bh-dropdown-menu-item>
+        </bh-dropdown-menu>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- content -->
+<div class="flex-content">
+  <div class="container-fluid">
+
+    <form name="StockExitForm" bh-submit="ShopInvoiceCtrl.submit(StockExitForm)" novalidate>
+      <!-- date and note -->
+      <div class="row">
+        <div class="col-xs-8 col-md-5">
+          <!-- date -->
+          <bh-date-editor
+            date-value="ShopInvoiceCtrl.stockForm.details.date"
+            on-change="ShopInvoiceCtrl.setDate(date)">
+          </bh-date-editor>
+
+          <bh-cashbox-liste-select
+            cashbox-id="ShopInvoiceCtrl.stockForm.details.cashboxId"
+            on-select-callback="ShopInvoiceCtrl.onSelectCashbox(cashbox)"
+            restrict-to-user="false"
+            is-auxiliary="true"
+            required="true">
+          </bh-cashbox-liste-select>
+
+          <!-- note -->
+          <div class="form-group"
+            ng-class="{ 'has-error' : StockExitForm.$submitted && StockExitForm.description.$invalid }">
+            <label class="control-label" translate> FORM.LABELS.DESCRIPTION </label>
+            <textarea
+              class="form-control"
+              name="description"
+              ng-model="ShopInvoiceCtrl.stockForm.details.description"
+              placeholder="{{ 'FORM.PLACEHOLDERS.DESCRIPTION' | translate }}"
+              ng-maxlength="ShopInvoiceCtrl.maxLength">
+            </textarea>
+            <div class="help-block" ng-messages="StockExitForm.description.$error" ng-show="StockExitForm.$submitted">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+
+          <!-- message panel to display actions the user needs to take -->
+          <div class="form-group" style="min-height: 12em;">
+            <label class="control-label" translate>STOCK.PENDING_ACTIONS</label>
+
+            <p
+              style="padding-top:0"
+              class="form-control-static"
+              ng-repeat="message in ShopInvoiceCtrl.messages"
+              ng-class="{
+                'text-danger' : message.type === 'error',
+                'text-warning' : message.type === 'warn',
+                'text-primary' : message.type === 'info',
+                'text-success' : message.type === 'success',
+              }">
+              <i class="fa"
+                ng-class="{
+                  'fa-exclamation-triangle' : message.type === 'error',
+                  'fa-exclamation-circle' : message.type === 'warn',
+                  'fa-chevron-circle-right' : message.type === 'info',
+                  'fa-check-circle-o' : message.type === 'success',
+                }">
+              </i>
+              <span translate>{{ message.text }}<span>
+            </p>
+
+            <p ng-if="ShopInvoiceCtrl.messages.length === 0" style="padding-top:0" class="form-control-static text-success">
+              <i class="fa fa-check-circle-o"></i> <span translate>STOCK.MESSAGES.SUCCESS_ALL_VALID<span>
+            </p>
+
+          </div>
+        </div>
+
+        <div class="col-xs-6 col-md-3 panel-default">
+          <bh-stock-out depot-uuid="ShopInvoiceCtrl.stockForm.depot.uuid" date="ShopInvoiceCtrl.stockForm.details.date">
+          </bh-stock-out>
+        </div>
+
+        <div class="col-xs-6 col-md-4 panel-default">
+          <bh-stock-expired depot-uuid="ShopInvoiceCtrl.stockForm.depot.uuid" date="ShopInvoiceCtrl.stockForm.details.date">
+          </bh-stock-expired>
+        </div>
+      </div>
+
+      <div class="row" style="padding-bottom : 5px;">
+        <div class="col-xs-12">
+
+          <div class="grid-toolbar">
+
+            <!-- "Add number of grid rows" input-group -->
+            <div class="grid-toolbar-item">
+              <bh-add-item
+                disable="ShopInvoiceCtrl.stockForm.details.exit_type"
+                callback="ShopInvoiceCtrl.addItems(numItem)">
+              </bh-add-item>
+            </div>
+
+            <div class="grid-toolbar-item">
+              <button class="btn btn-default"
+                type="button"
+                style="margin-left: 10px; vertical-align: middle;"
+                ng-click="ShopInvoiceCtrl.getLotByBarcode()"
+                ng-disabled="!ShopInvoiceCtrl.stockForm.details.exit_type">
+                <span class="fa fa-plus-circle"></span> <span translate>BARCODE.SCAN</span> <span class="fa fa-barcode"></span>
+              </button>
+            </div>
+
+            <!-- Other Actions -->
+            <div class="grid-toolbar-item">
+              <div uib-dropdown dropdown-append-to-body data-action="grid-lots-tools">
+                <a class="btn btn-default" uib-dropdown-toggle>
+                  </span> <span class="hidden-xs" translate>FORM.BUTTONS.ACTIONS</span> <span class="caret"></span>
+                </a>
+
+                <ul uib-dropdown-menu role="menu" class="dropdown-menu-right">
+                  <li role="menuitem">
+                    <a href ng-click="ShopInvoiceCtrl.exportGrid()">
+                      <i class="fa fa-file-excel-o"></i> <span translate>FORM.BUTTONS.EXPORT</span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- grid -->
+      <div id="stock-exit-grid"
+        ui-grid="ShopInvoiceCtrl.gridOptions"
+        style="height: 230px; width: 100%;"
+        ui-grid-exporter
+        ui-grid-auto-resize
+        ui-grid-resize-columns>
+        <bh-grid-loading-indicator
+          loading-state="ShopInvoiceCtrl.stockForm.isLoading()"
+          empty-state="ShopInvoiceCtrl.emptyStock"
+          error-state="ShopInvoiceCtrl.hasError"
+          empty-state-message="STOCK.EMPTY">
+        </bh-grid-loading-indicator>
+      </div>
+
+      <div ng-if="ShopInvoiceCtrl.stockForm.details.cashbox_id" class="row" style="margin-top: 5px; margin-bottom:5px;">
+        <div class="col-md-8">
+        </div>
+        <div class="col-md-4">
+          <h4><strong translate>FORM.LABELS.TOTAL</strong> : <strong>{{ ShopInvoiceCtrl.totals | currency:ShopInvoiceCtrl.enterprise.currency_id }}</strong> </h4>
+        </div>
+
+        <div class="col-md-8">
+        </div>
+        <div ng-if="!ShopInvoiceCtrl.isEnterpriseCurrency" class="col-md-4">
+          <h4><strong translate>TABLE.COLUMNS.EXCHANGE_RATE</strong> : <strong>{{ ShopInvoiceCtrl.currentExchangeRate | currency:ShopInvoiceCtrl.stockForm.details.currency_id }}</strong> </h4>
+        </div>
+
+        <div class="col-md-8">
+        </div>
+        <div class="col-md-4">
+          <h4><strong translate>FORM.LABELS.AMOUNT_TO_PAID</strong> : <strong>{{ ShopInvoiceCtrl.totalsCurrentExchangeRate | currency:ShopInvoiceCtrl.stockForm.details.currency_id }}</strong> </h4>
+        </div>
+
+        <div ng-repeat="item in $ctrl.list track by item.id">
+          <div class="col-md-8">
+          </div>
+          <div class="col-md-4">
+            <bh-currency-input
+              data-payment-currency-input
+              currency-id="ShopInvoiceCtrl.stockForm.details.currency_id"
+              model="ShopInvoiceCtrl.stockForm.details.amount">
+            </bh-currency-input>
+          </div>
+        </div>
+
+        ESPANE {{ ShopInvoiceCtrl.stockForm.details.amount }} + {{ ShopInvoiceCtrl.totalsCurrentExchangeRate }}
+       <div ng-if="ShopInvoiceCtrl.stockForm.details.amount > ShopInvoiceCtrl.totalsCurrentExchangeRate">
+        <div class="col-md-8">
+        </div>
+        <div class="col-md-4">
+          <bh-currency-input
+            data-payment-currency-input
+            currency-id="ShopInvoiceCtrl.stockForm.details.currency_id"
+            model="ShopInvoiceCtrl.stockForm.details.amount">
+          </bh-currency-input>
+        </div>
+       </div> 
+
+      </div>
+
+      <!-- footer -->
+      <div class="row" style="margin-top: 5px; margin-bottom:5px;">
+        <div class="col-md-12 text-right">
+          <button class="btn btn-default" ng-click="ShopInvoiceCtrl.clear()" type="button" translate>
+            FORM.BUTTONS.CLEAR
+          </button>
+
+          <bh-loading-button loading-state="StockExitForm.$loading">
+            <span translate>FORM.BUTTONS.SUBMIT</span>
+          </bh-loading-button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
