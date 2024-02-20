@@ -120,8 +120,11 @@ async function lookUp(options) {
   // let get rubric values for each employee
   const stagePaymentsParams = employeeUuid ? [payConfigId, db.bid(employeeUuid)] : [payConfigId];
   const stagePayments = await db.exec(stagePaymentIndiceSql, stagePaymentsParams);
+
   stagePayments.forEach(stagePay => {
-    employeesMap[stagePay.employee_uuid].rubrics.push(stagePay);
+    if (employeesMap[stagePay.employee_uuid]) {
+      employeesMap[stagePay.employee_uuid].rubrics.push(stagePay);
+    }
   });
 
   // let get rubric for this payment period
