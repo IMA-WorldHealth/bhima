@@ -23,6 +23,7 @@ function MultiPayrollSearchModalController(
   const vm = this;
   vm.enterpriseCurrencyId = Session.enterprise.currency_id;
 
+
   const changes = new Store({ identifier : 'key' });
   const searchQueryOptions = [
     'payroll_configuration_id', 'currency_id', 'display_name', 'code', 'status_id',
@@ -45,6 +46,9 @@ function MultiPayrollSearchModalController(
 
   // assign already defined custom filters to searchQueries object
   vm.searchQueries = util.maskObjectFromKeys(filters, searchQueryOptions);
+
+  // Default to enterprise currency
+  vm.searchQueries.currency_id = vm.enterpriseCurrencyId;
 
   // load all Paiement Status
   Payroll.paymentStatus()
