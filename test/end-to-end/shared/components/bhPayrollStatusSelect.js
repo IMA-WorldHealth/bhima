@@ -14,5 +14,8 @@ module.exports = {
 
     await TU.series(payrollStatus,
       state => TU.uiSelect('$ctrl.selectedPayrollStatus', state, null, IS_MULTIPLE_SELECTION));
+
+    // Let the GUI know we are finished selecting from the drop-down
+    // ??? return TU.locator(locator).blur();
   },
 };
