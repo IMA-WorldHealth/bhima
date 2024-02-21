@@ -106,6 +106,17 @@ async function create(req, res, next) {
     UPDATE employee SET individual_salary = ? WHERE uuid = ?
   `;
 
+  // Deletion of employee data that has been removed from the configuration
+  const cleanStagePaymentIndice = `
+    DELETE FROM stage_payment_indice AS spi WHERE spi.payroll_configuration_id = ? AND spi.employee_uuid NOT IN (
+      SELECT emp.uuid
+      FROM employee AS emp
+      JOIN patient AS pa ON pa.uuid = emp.patient_uuid
+      JOIN config_employee_item AS cei ON cei.employee_uuid = emp.uuid
+      JOIN config_employee AS ce ON ce.id = cei.config_employee_id
+      JOIN payroll_configuration AS pc ON pc.config_employee_id = ce.id
+      WHERE pc.id = ?)`;
+
   employeesGradeIndice.forEach(emp => {
     debug(`computing payroll for ${emp.code} - ${emp.display_name}`);
 
@@ -376,6 +387,12 @@ async function create(req, res, next) {
     transaction.addQuery(
       updateEmployeeIndividualySalary,
       [emp.grossSalary, emp.employee_buid],
+    );
+
+    // Clean of employee data that has been removed from the configuration
+    transaction.addQuery(
+      cleanStagePaymentIndice,
+      [id, id],
     );
 
     // Set working days
