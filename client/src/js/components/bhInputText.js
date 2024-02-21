@@ -17,6 +17,7 @@ angular.module('bhima.components')
       isCurrency : '<?',
       disabled : '<?',
       maxLength : '@?',
+      min   : '@?',
     },
   });
 
