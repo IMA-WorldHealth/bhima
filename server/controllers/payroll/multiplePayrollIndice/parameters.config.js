@@ -37,10 +37,24 @@ async function create(req, res, next) {
 
   const transaction = db.transaction();
 
-  // FIXME(@jniles) - refresh these from the database rather
-  // than obtaining them for the session information
-  const minMonentaryUnit = req.session.enterprise.min_monentary_unit;
-  const percentageFixedBonus = req.session.enterprise.settings.percentage_fixed_bonus;
+  const getEnterpriseMiMonentaryUnit = `
+    SELECT c.min_monentary_unit
+    FROM enterprise AS e
+    JOIN currency AS c ON c.id = e.currency_id
+    WHERE e.id = ?;`;
+
+  const getEnterprisePercentageFixedBonus = `
+    SELECT s.percentage_fixed_bonus
+    FROM enterprise_setting AS s
+    WHERE s.enterprise_id = ?;`;
+
+  const [resultMiMonentaryUnit, resultPercentageFixedBonus] = await Promise.all([
+    db.exec(getEnterpriseMiMonentaryUnit, req.session.enterprise.id),
+    db.exec(getEnterprisePercentageFixedBonus, req.session.enterprise.id),
+  ]);
+
+  const minMonentaryUnit = resultMiMonentaryUnit[0].min_monentary_unit;
+  const percentageFixedBonus = resultPercentageFixedBonus[0].percentage_fixed_bonus;
   const percentagePerformanceBonus = 100 - percentageFixedBonus;
 
   debug(`the fixed percentage performance bonus is ${percentagePerformanceBonus}.`);
@@ -91,6 +105,17 @@ async function create(req, res, next) {
   const updateEmployeeIndividualySalary = `
     UPDATE employee SET individual_salary = ? WHERE uuid = ?
   `;
+
+  // Deletion of employee data that has been removed from the configuration
+  const cleanStagePaymentIndice = `
+    DELETE FROM stage_payment_indice AS spi WHERE spi.payroll_configuration_id = ? AND spi.employee_uuid NOT IN (
+      SELECT emp.uuid
+      FROM employee AS emp
+      JOIN patient AS pa ON pa.uuid = emp.patient_uuid
+      JOIN config_employee_item AS cei ON cei.employee_uuid = emp.uuid
+      JOIN config_employee AS ce ON ce.id = cei.config_employee_id
+      JOIN payroll_configuration AS pc ON pc.config_employee_id = ce.id
+      WHERE pc.id = ?)`;
 
   employeesGradeIndice.forEach(emp => {
     debug(`computing payroll for ${emp.code} - ${emp.display_name}`);
@@ -362,6 +387,12 @@ async function create(req, res, next) {
     transaction.addQuery(
       updateEmployeeIndividualySalary,
       [emp.grossSalary, emp.employee_buid],
+    );
+
+    // Clean of employee data that has been removed from the configuration
+    transaction.addQuery(
+      cleanStagePaymentIndice,
+      [id, id],
     );
 
     // Set working days
