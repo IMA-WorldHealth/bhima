@@ -210,17 +210,31 @@ function MultiplePayrollController(
       const isNotConfigured = employee => parseInt(employee.status_id, 10) !== 2;
       const invalid = employees.some(isNotConfigured);
 
+      let totalNetSalary = 0;
+      employees.forEach(emp => {
+        totalNetSalary += emp.net_salary;
+      });
+
       if (invalid) {
         Notify.warn('FORM.WARNINGS.ATTENTION_WAITING_LIST');
       } else {
-        vm.activePosting = false;
+        const employeesNumber = employeesUuid.length;
+        const paiementPeriodLabel = vm.latestViewFilters.defaultFilters[0].displayValue;
 
-        const idPeriod = vm.latestViewFilters.defaultFilters[0]._value;
-        MultiplePayroll.paymentCommitment(idPeriod, employeesUuid)
-          .then(() => {
-            Notify.success('FORM.INFO.CONFIGURED_SUCCESSFULLY');
-            vm.activePosting = true;
-            $state.go('multiple_payroll', null, { reload : true });
+        MultiplePayroll.openModalWaitingListConfirmation(employeesNumber, paiementPeriodLabel, totalNetSalary)
+          .then(success => {
+            if (success) {
+              vm.activePosting = false;
+
+              const idPeriod = vm.latestViewFilters.defaultFilters[0]._value;
+              MultiplePayroll.paymentCommitment(idPeriod, employeesUuid)
+                .then(() => {
+                  Notify.success('FORM.INFO.CONFIGURED_SUCCESSFULLY');
+                  vm.activePosting = true;
+                  $state.go('multiple_payroll', null, { reload : true });
+                })
+                .catch(Notify.handleError);
+            }
           })
           .catch(Notify.handleError);
       }
