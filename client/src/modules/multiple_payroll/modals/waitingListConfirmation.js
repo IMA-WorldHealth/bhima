@@ -14,7 +14,6 @@ function ModalWaitingListConfirmationController(
   vm.cancel = () => Instance.close(false);
 
   vm.enterprise = Session.enterprise;
-
   vm.employeesNumber = data.employeesNumber;
   vm.paiementPeriodLabel = data.paiementPeriodLabel;
   vm.totalNetSalary = data.totalNetSalary;
