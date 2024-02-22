@@ -83,6 +83,10 @@ test.describe('Payroll Process Management', () => {
     await TU.locator('[data-action="open-menu"]').click();
     await TU.locator('[data-method="put-waiting"]').click();
 
+    // Wait for confirmation dialog
+    await TU.waitForSelector('.modal-dialog form[name="ModalForm"]');
+    await TU.modal.submit();
+
     await components.notification.hasSuccess();
   });
 
