@@ -2,8 +2,8 @@ angular.module('bhima.services')
   .service('MultiplePayrollService', MultiplePayrollService);
 
 MultiplePayrollService.$inject = [
-  'PrototypeApiService', 'TransactionTypeStoreService', '$uibModal',
-  'FilterService', 'PeriodService', 'LanguageService', '$httpParamSerializer',
+  'PrototypeApiService', '$uibModal',
+  'FilterService', 'LanguageService', '$httpParamSerializer',
   'appcache', 'TransactionService',
 ];
 
@@ -16,7 +16,7 @@ MultiplePayrollService.$inject = [
  * includes some utilities that are useful for Multiple Payroll pages.
  */
 function MultiplePayrollService(
-  Api, TransactionTypeStore, Modal, Filters, Periods, Languages,
+  Api, Modal, Filters, Languages,
   $httpParamSerializer, AppCache, Transactions,
 ) {
   const service = new Api('/multiple_payroll/');
@@ -35,6 +35,7 @@ function MultiplePayrollService(
   service.setConfiguration = setConfiguration;
   service.paymentCommitment = paymentCommitment;
   service.configurations = configurations;
+  service.openModalWaitingListConfirmation = openModalWaitingListConfirmation;
 
   // loads the Payroll Configuration
   function getConfiguration(id, params) {
@@ -123,6 +124,19 @@ function MultiplePayrollService(
         filters : () => filters,
       },
     }).result;
+  }
+
+  // open a dialog box to put employees in waiting list
+  function openModalWaitingListConfirmation(employeesNumber, paiementPeriodLabel, totalNetSalary) {
+    return Modal.open({
+      templateUrl : 'modules/multiple_payroll/modals/waitingListConfirmation.html',
+      resolve : { data : { employeesNumber, paiementPeriodLabel, totalNetSalary } },
+      size : 'md',
+      animation : true,
+      keyboard  : false,
+      backdrop : 'static',
+      controller : 'ModalWaitingListConfirmationController as ModalCtrl',
+    }, true).result;
   }
 
   return service;
