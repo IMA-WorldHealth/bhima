@@ -5,7 +5,6 @@
        'budget-total-summary' : row.entity.acctType == 'total-summary'
      }">
   <span ng-if="row.entity.budget && row.entity.budget !== 0">
-    <span ng-if="(row.entity.acctType == 'income') || (row.entity.acctType == 'total-income')">+</span><span ng-if="(row.entity.acctType == 'expense') || (row.entity.acctType == 'total-expenses')">-</span>
-  {{row.entity.budget | currency: grid.appScope.enterprise.currency_id:0}}
+   {{row.entity.budget | currency: grid.appScope.enterprise.currency_id:0}}
   </span>
 </div>
