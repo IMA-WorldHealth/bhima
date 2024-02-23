@@ -1,0 +1,51 @@
+<form name="ModalForm" bh-submit="ModalCtrl.submit(ModalForm)" novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate>FORM.BUTTONS.PUT_ON_WAITING</li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+    <div class="alert alert-warning">
+      <i class="fa fa-exclamation-triangle"></i>
+      <span translate translate-values="ModalCtrl.alertI18nValues" translate-sanitize-strategy="'sce'">FORM.WARNINGS.PUTTING_WAITING_LIST</span>
+    </div>
+
+    <div class="alert alert-info">
+      <i class="fa fa-exclamation-circle"></i>
+      <span translate translate-values="ModalCtrl.alertI18nValues" translate-sanitize-strategy="'sce'">FORM.INFO.DO_WANT_PUT_WAITING_LIST</span>
+    </div>
+
+    <!--description -->
+    <dl>
+      <dt translate>FORM.LABELS.DESCRIPTION</dt>
+    </dl>
+
+    <table class="table table-condensed">
+      <tbody>
+        <tr>
+          <td translate>FORM.INFO.PAYMENT_PERIOD</td>
+          <td>{{ModalCtrl.employeesNumber}}</td>
+        </tr>
+        <tr>
+          <td translate>FORM.INFO.NUMBER_EMPLOYEES_SELECTED</td>
+          <td>{{ModalCtrl.paiementPeriodLabel}}</td>
+        </tr>
+        <tr>
+          <td translate>FORM.LABELS.TOTAL</td>
+          <td>{{ ModalCtrl.totalNetSalary | currency:ModalCtrl.enterprise.currency_id }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="ModalCtrl.cancel()" translate>
+      FORM.BUTTONS.CLOSE
+    </button>
+
+    <bh-loading-button loading-state="ModalForm.$loading" disabled="ModalCtrl.hasPaymentsAgainstInvoice">
+      <span translate>FORM.BUTTONS.CONFIRM</span>
+    </bh-loading-button>
+  </div>
+</form>
