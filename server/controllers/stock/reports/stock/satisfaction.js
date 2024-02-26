@@ -10,6 +10,8 @@ async function getSatisfactionData(options) {
   const { dateFrom, dateTo } = options;
   let { depotUuids } = options;
 
+  console.debug('Dates (server): ', dateFrom, dateTo);
+
   const data = {};
   const suppliersList = [];
 
