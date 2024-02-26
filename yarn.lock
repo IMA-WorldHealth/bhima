@@ -2460,10 +2460,10 @@ decompress-response@^6.0.0:
   dependencies:
     mimic-response "^3.1.0"
 
-deeks@3.0.2:
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/deeks/-/deeks-3.0.2.tgz#49d908fb2b797554a139aede17176b11679eb89f"
-  integrity sha512-c6OmjIygIB/avwXwEQOiODS+nw6fEX4cvOdDMqdL7dt3dicV/xykAJ9AeVc/8/JTVQDuacjRc9KCMmXafL1Y4A==
+deeks@3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/deeks/-/deeks-3.1.0.tgz#ecc47c600bcc6dbda656c6d86bbc96cbe126fd41"
+  integrity sha512-e7oWH1LzIdv/prMQ7pmlDlaVoL64glqzvNgkgQNgyec9ORPHrT2jaOqMtRyqJuwWjtfb6v+2rk9pmaHj+F137A==
 
 deep-eql@^4.1.3:
   version "4.1.3"
@@ -2680,10 +2680,10 @@ dir-glob@^3.0.1:
   dependencies:
     path-type "^4.0.0"
 
-doc-path@4.0.2:
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/doc-path/-/doc-path-4.0.2.tgz#157ddd33b86282bdf58cf4b9979bf9483cf9a95f"
-  integrity sha512-OqZEk7EM1aP3JpO+mq0pv1msEJWrzZVXu4q3YjEYJKc+Wt3/chac4KJdaGueK5IGemOwfptrLctG9I8xkb59qQ==
+doc-path@4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/doc-path/-/doc-path-4.1.0.tgz#870d71b31dbbb54200c815e3051ba6a9c48c4a93"
+  integrity sha512-i+hXn5HFwpPOwe8JcvjjQYuUVt0p46Ybi+73g9L43zQUKR6zMyaUAKFwGBMH3NWQDugRWIwxg2+FvvxCv0IG7Q==
 
 doctrine@^2.1.0:
   version "2.1.0"
@@ -5508,13 +5508,13 @@ jsdoc-type-pratt-parser@~4.0.0:
   resolved "https://registry.yarnpkg.com/jsdoc-type-pratt-parser/-/jsdoc-type-pratt-parser-4.0.0.tgz#136f0571a99c184d84ec84662c45c29ceff71114"
   integrity sha512-YtOli5Cmzy3q4dP26GraSOeAhqecewG04hoO8DY56CH4KJ9Fvv5qKWUCCo3HZob7esJQHCv6/+bnTy72xZZaVQ==
 
-json-2-csv@^5.2.0:
-  version "5.2.0"
-  resolved "https://registry.yarnpkg.com/json-2-csv/-/json-2-csv-5.2.0.tgz#20249f346b2ae3a58b30cd067d93e95ebcbe2e5b"
-  integrity sha512-C+XmSKRCS7zSTENm7Ha/lhLkO2ZE+fcSNC2kLiWSEGKy6ZwRCG2KakMJj0bvyfy2U8oZY+KFoU8F1isCgpUBYg==
+json-2-csv@^5.4.0:
+  version "5.4.0"
+  resolved "https://registry.yarnpkg.com/json-2-csv/-/json-2-csv-5.4.0.tgz#ec5cec705b6c884c5c90643ec4854e6e9f472991"
+  integrity sha512-3yQ0Y6Fi7R2LL7hz5rD2+JS5xH96k+XXTidIpQv8pDHvzD4+PM5vVYLT3zb7R28oTikVDIjLuB80YqgeXI2WXg==
   dependencies:
-    deeks "3.0.2"
-    doc-path "4.0.2"
+    deeks "3.1.0"
+    doc-path "4.1.0"
 
 json-buffer@3.0.1:
   version "3.0.1"
