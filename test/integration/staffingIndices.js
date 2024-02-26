@@ -59,6 +59,29 @@ describe('test/integration/staffingIndices The staffing indices API', () => {
     payroll_configuration_id : 6,
   };
 
+  const year = new Date().getFullYear();
+  const yearPlus2 = year + 2;
+
+  const payrollConfigYearPlus2 = {
+    label : `Account Configuration ${yearPlus2}`,
+    dateFrom : `${yearPlus2}-01-01`,
+    dateTo : `${yearPlus2}-01-31`,
+    config_rubric_id : 2,
+    config_accounting_id : 1,
+    config_weekend_id : 1,
+    config_employee_id : 2,
+  };
+
+  const payrollConfigYearPlus2Month = {
+    label : `Account Configuration ${yearPlus2} plus one month`,
+    dateFrom : `${yearPlus2}-02-01`,
+    dateTo : `${yearPlus2}-02-28`,
+    config_rubric_id : 2,
+    config_accounting_id : 1,
+    config_weekend_id : 1,
+    config_employee_id : 2,
+  };
+
   it('POST /staffing_indices add a new staffing indice', () => {
     return agent.post('/staffing_indices')
       .send(newIndice)
@@ -179,6 +202,92 @@ describe('test/integration/staffingIndices The staffing indices API', () => {
 
         expect(res.body.employees[1].rubrics[10].rubric_abbr).to.equal('Salaire brute');
         expect(res.body.employees[1].rubrics[10].rubric_value).to.equal(577.26);
+      })
+      .catch(helpers.handler);
+  });
+
+  // Checking the increase in base indices when creating a futuristic pay period
+  it(`POST /PAYROLL_CONFIG should Payroll Configuration Year+2 for Checking
+    the increase in base indices when creating a futuristic pay period`, () => {
+    return agent.post('/payroll_config')
+      .send(payrollConfigYearPlus2)
+      .then((res) => {
+        payrollConfigYearPlus2.id = res.body.id;
+        helpers.api.created(res);
+
+        // This test must verify that the two configured employees must benefit from
+        // the increase in their base index for two years the first employee has a base index of 66
+        // with a rate of 5% in accordance with his date of hire and his last configuration
+        // its index after configuring the new pay period must be 69
+
+        // And the second employee has a base index of 138
+        // with a rate of 5% in accordance with his date of hire and his last configuration
+        // its index after configuring the new pay period must be 144
+
+        return agent.get('/staffing_indices')
+          .then(res2 => {
+            expect(res2).to.have.status(200);
+            expect(res2.body).to.be.an('array');
+
+            let checkIncrementationGradeIndice = 0;
+
+            res2.body.forEach(element => {
+              if (element.grade_indice === 145) {
+                checkIncrementationGradeIndice++;
+              }
+
+              if (element.grade_indice === 69) {
+                checkIncrementationGradeIndice++;
+              }
+            });
+            expect(checkIncrementationGradeIndice).to.equal(2);
+            expect(res2.body).to.have.length(9);
+          })
+          .catch(helpers.handler);
+      })
+      .catch(helpers.handler);
+  });
+
+  // With the following test, which takes place in the period corresponding
+  // to the same period in which the employees were hired, they must benefit from the increase in their base index
+  it(`POST /PAYROLL_CONFIG should Payroll Configuration Year+2 + One month for Checking
+    the increase in base indices when creating a futuristic pay period`, () => {
+    return agent.post('/payroll_config')
+      .send(payrollConfigYearPlus2Month)
+      .then((res) => {
+        payrollConfigYearPlus2Month.id = res.body.id;
+        helpers.api.created(res);
+
+        // This test must verify that the two configured employees must benefit from
+        // the increase in their base index for two years the first employee has a base index of 69
+        // with a rate of 5% in accordance with his date of hire and his last configuration
+        // its index after configuring the new pay period must be 76
+
+        // And the second employee has a base index of 144
+        // with a rate of 5% in accordance with his date of hire and his last configuration
+        // its index after configuring the new pay period must be 160
+
+        return agent.get('/staffing_indices')
+          .then(res2 => {
+            expect(res2).to.have.status(200);
+            expect(res2.body).to.be.an('array');
+
+            let checkIncrementationGradeIndice = 0;
+
+            res2.body.forEach(element => {
+              if (element.grade_indice === 160) {
+                checkIncrementationGradeIndice++;
+              }
+
+              if (element.grade_indice === 76) {
+                checkIncrementationGradeIndice++;
+              }
+            });
+            expect(checkIncrementationGradeIndice).to.equal(2);
+            expect(res2.body).to.have.length(11);
+            expect(6).to.equal(11);
+          })
+          .catch(helpers.handler);
       })
       .catch(helpers.handler);
   });
