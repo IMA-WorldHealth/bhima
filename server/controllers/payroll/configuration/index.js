@@ -210,8 +210,9 @@ async function updateEmployeesBasicIndice(idPeriod, dateTo) {
   // this query the date of the very first increment as well as the last value of the base index,
   // the responsibility index linked to the function and date of hire
   const sqlFindOldEmployees = `
-    SELECT emp.uuid, emp.date_embauche, lastIndice.date AS lastDateIncrease, lastIndice.grade_indice,
-    sfi.value AS function_indice_value, emp.grade_uuid, emp.fonction_id, pa.display_name
+    SELECT emp.uuid, emp.date_embauche, lastIndice.date AS lastDateIncrease,
+    MAX(lastIndice.grade_indice) AS grade_indice, sfi.value AS function_indice_value, emp.grade_uuid,
+    emp.fonction_id, pa.display_name
     FROM employee AS emp
     JOIN config_employee_item AS it ON it.employee_uuid = emp.uuid
     JOIN config_employee AS conf ON conf.id = it.config_employee_id
@@ -229,6 +230,7 @@ async function updateEmployeesBasicIndice(idPeriod, dateTo) {
     LEFT JOIN staffing_function_indice AS sfi ON sfi.fonction_id = emp.fonction_id
     JOIN patient AS pa ON pa.uuid = emp.patient_uuid
     WHERE pay.id = ?
+    GROUP BY emp.uuid
     ORDER BY pa.display_name ASC;
   `;
 
