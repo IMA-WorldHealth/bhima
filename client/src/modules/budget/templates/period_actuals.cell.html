@@ -1,10 +1,10 @@
 <div class="ui-grid-cell-contents text-right"
-     ng-if="row.entity.actuals && (row.entity.acctTitle != 'title')"
      ng-class="{
        'budget-total-income' : row.entity.acctType == 'total-income',
        'budget-total-expenses' : row.entity.acctType == 'total-expenses',
        'budget-total-summary' : row.entity.acctType == 'total-summary'
      }">
-  <span ng-if="row.entity.acctType != 'total-summary'">{{ grid.appScope.getPeriodActualsSign(col.name, row.entity) }}</span>
-  <span ng-if="row.entity.acctType != 'total-summary'">{{ grid.appScope.getPeriodActuals(col.name, row.entity.period) | currency: grid.appScope.enterprise.currency_id:0 }}</span>
+  <span ng-if="grid.appScope.specialTitleRow(row.entity) || (row.entity.actuals && grid.appScope.getPeriodActuals(col.name, row.entity))">
+    <span>{{ grid.appScope.getPeriodActuals(col.name, row.entity) | currency: grid.appScope.enterprise.currency_id:0 }}</span>
+  </span>
 </div>
