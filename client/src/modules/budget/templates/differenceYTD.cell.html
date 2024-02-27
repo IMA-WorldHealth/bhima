@@ -4,7 +4,7 @@
        'budget-total-expenses' : row.entity.acctType == 'total-expenses',
        'budget-total-summary' : row.entity.acctType == 'total-summary'
      }">
-  <span ng-if="row.entity.differenceYTD && row.entity.budget">
+  <span ng-if="row.entity.budget && row.entity.differenceYTD">
     {{ row.entity.differenceYTD | currency: grid.appScope.enterprise.currency_id:0 }}
   </span>
 </div>

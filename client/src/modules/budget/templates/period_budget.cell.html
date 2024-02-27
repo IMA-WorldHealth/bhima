@@ -4,8 +4,9 @@
        'budget-total-expenses' : row.entity.acctType == 'total-expenses',
        'budget-total-summary' : row.entity.acctType == 'total-summary'
      }"
-     ng-if="row.entity.budget && (row.entity.acctType != 'title')">
-  <span ng-if="grid.appScope.getPeriodBudgetLocked(col.name, row.entity.period) && (row.entity.acctType != 'total-summary')"><i class="fa fa-lock"></i> </span>
-  <span ng-if="row.entity.acctType != 'total-summary'">{{ grid.appScope.getPeriodBudgetSign(col.name, row.entity) }}</span>
-  <span ng-if="row.entity.acctType != 'total-summary'">{{ grid.appScope.getPeriodBudget(col.name, row.entity.period) | currency: grid.appScope.enterprise.currency_id:0 }}</span>
+     >
+  <span ng-if="row.entity.budget">
+    <span ng-if="grid.appScope.getPeriodBudgetLocked(col.name, row.entity.period)"><i class="fa fa-lock"></i> </span>
+    <span>{{ grid.appScope.getPeriodBudget(col.name, row.entity.period) | currency: grid.appScope.enterprise.currency_id:0 }}</span>
+  </span>
 </div>
