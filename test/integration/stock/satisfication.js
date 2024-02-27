@@ -1,13 +1,16 @@
 /* global expect, agent */
 
+const moment = require('moment');
 const helpers = require('../helpers');
+
+const today = new Date();
 
 describe('test/integration/stock Test the stock satisfaction rate REST API', () => {
 
   it('GET /stock/satisfication_rate', () => {
     const options = {
-      dateFrom : '2023-01-01T00:00:00.000Z',
-      dateTo : '2023-12-31T00:00:00.000Z',
+      dateFrom : moment(today).subtract(366, 'days').toDate(),
+      dateTo : moment(today).subtract(1, 'days').toDate(),
       depotUuids : [
         'F9CAEB16168443C5A6C447DBAC1DF296',
         'D4BB1452E4FA4742A281814140246877',

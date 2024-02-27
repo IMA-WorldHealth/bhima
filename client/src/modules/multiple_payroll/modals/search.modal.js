@@ -46,6 +46,9 @@ function MultiPayrollSearchModalController(
   // assign already defined custom filters to searchQueries object
   vm.searchQueries = util.maskObjectFromKeys(filters, searchQueryOptions);
 
+  // Default to enterprise currency
+  vm.searchQueries.currency_id = vm.enterpriseCurrencyId;
+
   // load all Paiement Status
   Payroll.paymentStatus()
     .then((paymentStatus) => {

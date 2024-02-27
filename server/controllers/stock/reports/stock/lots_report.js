@@ -1,3 +1,4 @@
+const moment = require('moment');
 const {
   _, ReportManager, Stock, formatFilters, STOCK_LOTS_REPORT_TEMPLATE, stockStatusLabelKeys,
 } = require('../common');
@@ -60,14 +61,16 @@ function stockLotsReport(req, res, next) {
     'enterprisePurchaseInterval', 'exhausted', 'expired',
     'inventory_uuid', 'lifetime_lot', 'min_delay',
     'min_months_security_stock', 'mvt_quantity', 'near_expiration',
-    'purchase_interval', 'tag_name', 'tracking_consumption',
-    'tracking_expiration', 'wac'];
+    'purchase_interval', 'tag_name', 'tracking_consumption', 'wac'];
 
   const dateKeys = ['min_stock_date', 'max_stock_date'];
 
   return Stock.getLotsDepot(null, options)
     .then((rows) => {
       rows.forEach(row => {
+        const current = new Date();
+        const delay = moment(new Date(row.expiration_date)).diff(current);
+        row.delay_expiration = moment.duration(delay).humanize(true);
         // Purge unneeded fields from the row
         purgeKeys.forEach(key => {
           delete row[key];

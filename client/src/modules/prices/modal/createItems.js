@@ -91,7 +91,7 @@ function PriceListItemsModalController(
   }, {
     field : 'actions',
     width : 25,
-    displayName : '...',
+    displayName : '',
     cellTemplate : `/modules/prices/templates/delete_price_item.tmpl.html`,
   }];
 
