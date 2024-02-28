@@ -43,15 +43,17 @@ test.describe('transaction types', () => {
   });
 
   test('successfully updates an existing transaction type', async () => {
+    await TU.reloadPage(); // Force a page reload
     const editButton = `[data-edit-type="${newType.text}"]`;
     await TU.waitForSelector(editButton);
 
     await TU.locator(editButton).click();
+    await TU.waitForSelector('.modal-dialog');
 
     await TU.input('$ctrl.transactionType.text', updateType.text);
     await TU.select('$ctrl.transactionType.type', updateType.type);
 
-    await TU.buttons.submit();
+    await TU.modal.submit();
 
     await components.notification.hasSuccess();
   });
