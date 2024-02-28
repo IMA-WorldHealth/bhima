@@ -220,7 +220,14 @@
       "TOTAL_DAYS" : "Total Days",
       "RATIO" : "Ratio"
     },
-    "SATISFACTION_RATE_REPORT" : "Satisfaction rate report",
+    "SATISFACTION_RATE_REPORT": {
+      "TITLE": "Satisfaction rate report",
+      "INCLUDE_SUMMARY": "Include the summary of satisfaction by structure",
+      "INCLUDE_QUANTITY_DETAILS": "Include quantity satisfaction details",
+      "NB_STRUCTURE": "Number of structures",
+      "NB_STRUCTURE_WITH_SATISFACTION": "Number of structures with satisfaction (>= 80%)",
+      "SATISFACTION_BY_STRUCTURE": "Satisfaction by structures"
+    },
     "STOCK_VALUE": {
       "TITLE": "Stock value report",
       "DESCRIPTION": "This report shows the current stock value for each inventory in a depot",

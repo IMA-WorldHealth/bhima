@@ -34,7 +34,22 @@
               required="true"
               limit-min-fiscal>
             </bh-date-interval>
-            <hr>
+
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" ng-model="ReportConfigCtrl.reportDetails.includeSummary" ng-true-value="1" ng-false-value="0">
+                <span translate>REPORT.SATISFACTION_RATE_REPORT.INCLUDE_SUMMARY</span>
+              </label>
+            </div>
+
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" ng-model="ReportConfigCtrl.reportDetails.includeQuantityDetails" ng-true-value="1" ng-false-value="0">
+                <span translate>REPORT.SATISFACTION_RATE_REPORT.INCLUDE_QUANTITY_DETAILS</span>
+              </label>
+            </div>
+
+            <br>
 
             <bh-loading-button loading-state="ConfigForm.$loading">
               <span translate>REPORT.UTIL.PREVIEW</span>

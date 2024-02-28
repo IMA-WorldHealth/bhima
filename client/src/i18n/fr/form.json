@@ -728,6 +728,7 @@
             "QUANTITY_ORDERED": "Quantité commandée",
             "QUANTITY": "Quantité",
             "QUANTITY_VALIDATED": "Quantité validée",
+            "QUANTITY_ORDERED_VALIDATED": "Commande validée",
             "RANK": "Rang",
             "RATE": "TAUX",
             "RECEIPT_RENDERER_SETTING": "Format du Reçu",
