@@ -803,8 +803,6 @@ INSERT INTO `payroll_configuration` (`id`, `label`, `dateFrom`, `dateTo`,
 (1, 'Février 2018', '2018-02-01', '2018-02-28', 1, 1, 1, 1, 1),
 (2, 'Juin 2019', '2019-06-01', '2019-06-30', 2, 1, 1, 1, 1);
 
-CALL UpdateStaffingIndices('2019-06-01', '2019-06-30', 2);
-
 SET @paymentUuid = HUID('2a3f17b0ae3242bb9333a760825fd257');
 SET @employeeUuid = HUID('75e0969465f245a1a8a28b025003d793');
 -- payment DATA
@@ -1145,7 +1143,7 @@ INSERT INTO `patient` (`uuid`, `project_id`, `reference`, `debtor_uuid`, `displa
 INSERT INTO `creditor` (`uuid`, `group_uuid`, `text`) VALUES (0x75ED6B1141764BF7821D34BA638B0647, 0xB0FA5ED204F94CB392F761D6404696E7, 'Crediteur [Employee indice 1]');
 INSERT INTO `creditor` (`uuid`, `group_uuid`, `text`) VALUES (0x6150E9B14D214DC28E845BFAAB40DD5E, 0xB0FA5ED204F94CB392F761D6404696E7, 'Crediteur [Employee indice 2]');
 
-INSERT INTO `employee` (`uuid`, `code`, `date_embauche`, `grade_uuid`, `nb_spouse`, `nb_enfant`, `individual_salary`, `bank`, `bank_account`, `fonction_id`, `service_uuid`, `creditor_uuid`, `locked`, `patient_uuid`, `reference`) VALUES (0x10F64A41DA594962AA9A90CF0D42257C, 'IMA-ASSR-1', DATE_ADD(CURRENT_DATE, INTERVAL -2 YEAR), 0x71E9F21CD9B111E58AB778EB2F2A46E0, 0, 0, 0, NULL, NULL, 2, 0xB1816006555845F993A0C222B5EFA6CB, 0x75ED6B1141764BF7821D34BA638B0647, NULL, 0x4B23E6B9187F4CE69696542F798B5F32, 3);
+INSERT INTO `employee` (`uuid`, `code`, `date_embauche`, `grade_uuid`, `nb_spouse`, `nb_enfant`, `individual_salary`, `bank`, `bank_account`, `fonction_id`, `service_uuid`, `creditor_uuid`, `locked`, `patient_uuid`, `reference`) VALUES (0x10F64A41DA594962AA9A90CF0D42257C, 'IMA-ASSR-1', DATE_ADD(CURRENT_DATE, INTERVAL -25 MONTH)   , 0x71E9F21CD9B111E58AB778EB2F2A46E0, 0, 0, 0, NULL, NULL, 2, 0xB1816006555845F993A0C222B5EFA6CB, 0x75ED6B1141764BF7821D34BA638B0647, NULL, 0x4B23E6B9187F4CE69696542F798B5F32, 3);
 INSERT INTO `employee` (`uuid`, `code`, `date_embauche`, `grade_uuid`, `nb_spouse`, `nb_enfant`, `individual_salary`, `bank`, `bank_account`, `fonction_id`, `service_uuid`, `creditor_uuid`, `locked`, `patient_uuid`, `reference`) VALUES (0xD321099D01CD41029686B87CB70B9311, 'IMA-ASSP-2', DATE_ADD(CURRENT_DATE, INTERVAL -2 YEAR), 0x61E9F21CD9B111E48AB678EB2F2A46E0, 0, 2, 0, NULL, NULL, 1, 0xE3988489EF6641DF88FA8B8ED6AA03AC, 0x6150E9B14D214DC28E845BFAAB40DD5E, NULL, 0xA6643C4F310145BA961B54FD83D71E7C, 4);
 
 INSERT INTO `config_employee_item` (`id`, `config_employee_id`, `employee_uuid`) VALUES
