@@ -246,7 +246,7 @@ describe('test/integration/staffingIndices The staffing indices API', () => {
               // The pay period is January 2026
               // The system will first calculate their year of seniority in relation to the pay period
               // Seniority = (2026-01-31) - (2022-02-27) is equal to 3 years (1)
-              // Last increment = (2024-02-27) - (2024-02-27) is equal to 2 years (2)
+              // Last increment = (2024-02-27) - (2022-02-27) is equal to 2 years (2)
               // Base Index Growth Rate being 5%, the base index of this employee will be increased in
               // accordance with the difference in years (1)-(2) => 3 years - 2 years = 1 year
               // - Year 1: 138 + (138 x 0.05) = 144.9 which the system will round to 145

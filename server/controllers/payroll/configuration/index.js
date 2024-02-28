@@ -58,6 +58,7 @@ function create(req, res, next) {
   db.exec(sql, [data])
     .then((row) => {
       insertedId = row.insertId;
+      data.dateTo = moment(data.dateTo).format('YYYY-MM-DD');
       return updateEmployeesBasicIndice(insertedId, data.dateTo);
     }).then(() => {
       res.status(201).json({ id : insertedId });
@@ -250,10 +251,8 @@ async function updateEmployeesBasicIndice(idPeriod, dateTo) {
 
   // Processing of new employee data
   newEmployees.forEach(employee => {
-    const diff = moment(dateTo).diff(moment(employee.date_embauche));
-    const duration = moment.duration(diff, 'milliseconds');
-    // Here we calculate in years the number of years of seniority
-    const yearOfSeniority = parseInt(duration.asYears(), 10);
+    employee.date_embauche = moment(employee.date_embauche).format('YYYY-MM-DD');
+    const yearOfSeniority = parseInt(moment(dateTo).diff(employee.date_embauche, 'years'), 10);
 
     // Here we increment the base index based on the number of years
     for (let i = 0; i < yearOfSeniority; i++) {
@@ -273,18 +272,15 @@ async function updateEmployeesBasicIndice(idPeriod, dateTo) {
   });
 
   oldEmployees.forEach(employee => {
+    employee.date_embauche = moment(employee.date_embauche).format('YYYY-MM-DD');
+    employee.lastDateIncrease = moment(employee.lastDateIncrease).format('YYYY-MM-DD');
     // For employees who have already been configured, we will compare the number of years of seniority
     // and the difference in years between the date of the last increment of the base index,
     // if this difference is greater than zero, the we will have to increment
     // the base index in relation to this difference
-
-    const diffSeriority = moment(dateTo).diff(moment(employee.date_embauche));
-    const durationSeniority = moment.duration(diffSeriority, 'milliseconds');
-    const yearOfSeniority = parseInt(durationSeniority.asYears(), 10);
-
-    const diffLastIncrementation = moment(employee.lastDateIncrease).diff(moment(employee.date_embauche));
-    const durationLastIncrementation = moment.duration(diffLastIncrementation, 'milliseconds');
-    const yearLastIncrementation = parseInt(durationLastIncrementation.asYears(), 10);
+    const yearOfSeniority = parseInt(moment(dateTo).diff(employee.date_embauche, 'years'), 10);
+    const yearLastIncrementation = parseInt(moment(employee.lastDateIncrease).diff(employee.date_embauche, 'years'),
+      10);
 
     const diffSeniorityIncrementation = yearOfSeniority - yearLastIncrementation;
 
