@@ -1,6 +1,6 @@
 /* eslint no-unused-expressions:off */
 /* global expect, agent */
-
+const moment = require('moment');
 const helpers = require('./helpers');
 
 /*
@@ -57,6 +57,25 @@ describe('test/integration/staffingIndices The staffing indices API', () => {
   const paramsMultipayrollIndice = {
     currency_id : 2,
     payroll_configuration_id : 6,
+  };
+
+  const year = new Date().getFullYear();
+  const datePlus2Year = moment().add(2, 'year').format('YYYY-MM-DD');
+
+  const datePlus2YearSub1Month = moment(datePlus2Year).clone().subtract(1, 'months').format('YYYY-MM-DD');
+  const datePlus2YearSub1MonthBegin = moment(datePlus2YearSub1Month).clone().startOf('month').format('YYYY-MM-DD');
+  const datePlus2YearSub1MonthEnd = moment(datePlus2YearSub1Month).clone().endOf('month').format('YYYY-MM-DD');
+
+  const yearPlus2 = year + 2;
+
+  const payrollConfigYearPlus2Sub1Month = {
+    label : `Account Configuration ${yearPlus2} substract one month`,
+    dateFrom : datePlus2YearSub1MonthBegin,
+    dateTo : datePlus2YearSub1MonthEnd,
+    config_rubric_id : 2,
+    config_accounting_id : 1,
+    config_weekend_id : 1,
+    config_employee_id : 2,
   };
 
   it('POST /staffing_indices add a new staffing indice', () => {
@@ -179,6 +198,68 @@ describe('test/integration/staffingIndices The staffing indices API', () => {
 
         expect(res.body.employees[1].rubrics[10].rubric_abbr).to.equal('Salaire brute');
         expect(res.body.employees[1].rubrics[10].rubric_value).to.equal(577.26);
+      })
+      .catch(helpers.handler);
+  });
+
+  // Checking the increase in base indices when creating a futuristic pay period
+  it(`POST /PAYROLL_CONFIG should Payroll Configuration Year+2 for Checking
+    the increase in base indices when creating a futuristic pay period`, () => {
+    return agent.post('/payroll_config')
+      .send(payrollConfigYearPlus2Sub1Month)
+      .then((res) => {
+        payrollConfigYearPlus2Sub1Month.id = res.body.id;
+        helpers.api.created(res);
+
+        // To test the new functionality intended to increase the base indices,
+        // the system will first calculate the number of years of employee seniority
+        // in relation to the pay period as well as the difference in years between
+        // the last increment of the base index by in relation to the pay period,
+        // and if this difference is greater than zero, the basic index will be
+        // incremented as a percentage proportionally to the number of years.
+
+        //
+        return agent.get('/staffing_indices')
+          .then(res2 => {
+            expect(res2).to.have.status(200);
+            expect(res2.body).to.be.an('array');
+
+            let checkIncrementationGradeIndice = 0;
+
+            res2.body.forEach(element => {
+              // For the following example the first was hired on January 27, 2022, and
+              // its last base index dates from February 27, 2024 and it is 66
+              // The pay period is January 2026
+              // The system will first calculate their year of seniority in relation to the pay period
+              // Seniority = (2026-01-31) - (2022-01-27) is equal to 4 years (1)
+              // Last increment = (2024-02-27) - (2022-01-27) is equal to 2 years (2)
+              // Base Index Growth Rate being 5%, the base index of this employee will be increased in
+              // accordance with the difference in years (1)-(2) => 4 years - 2 years = 2 years,
+              // - Year 1: 66 + (66 x 0.05) = 69.03
+              // - Year 2: 69.03 + (69.03 x 0.05) = 72.77 which the system will round to 73
+              if (element.grade_indice === 73) {
+                checkIncrementationGradeIndice++;
+              }
+
+              // For the following example the second was hired on february 27, 2022, and
+              // its last base index dates from February 27, 2024 and it is 138
+              // The pay period is January 2026
+              // The system will first calculate their year of seniority in relation to the pay period
+              // Seniority = (2026-01-31) - (2022-02-27) is equal to 3 years (1)
+              // Last increment = (2024-02-27) - (2022-02-27) is equal to 2 years (2)
+              // Base Index Growth Rate being 5%, the base index of this employee will be increased in
+              // accordance with the difference in years (1)-(2) => 3 years - 2 years = 1 year
+              // - Year 1: 138 + (138 x 0.05) = 144.9 which the system will round to 145
+              if (element.grade_indice === 145) {
+                checkIncrementationGradeIndice++;
+              }
+
+            });
+
+            expect(checkIncrementationGradeIndice).to.equal(2);
+            expect(res2.body).to.have.length(9);
+          })
+          .catch(helpers.handler);
       })
       .catch(helpers.handler);
   });

@@ -3,9 +3,10 @@
 *
 * This controller exposes an API to the client for reading and writing Payroll configuration
 */
-
 const q = require('q');
+const moment = require('moment');
 const db = require('../../../lib/db');
+const util = require('../../../lib/util');
 
 // GET /PAYROLL_CONFIG
 function lookupPayrollConfig(id) {
@@ -57,7 +58,8 @@ function create(req, res, next) {
   db.exec(sql, [data])
     .then((row) => {
       insertedId = row.insertId;
-      return db.exec(`CALL UpdateStaffingIndices(?, ?, ?)`, [data.dateFrom, data.dateTo, insertedId]);
+      data.dateTo = moment(data.dateTo).format('YYYY-MM-DD');
+      return updateEmployeesBasicIndice(insertedId, data.dateTo);
     }).then(() => {
       res.status(201).json({ id : insertedId });
     })
@@ -185,6 +187,126 @@ function payrollReportElements(idPeriod, employees, employeesPaymentUuid) {
   ]);
 }
 
+async function updateEmployeesBasicIndice(idPeriod, dateTo) {
+  // This query is executed when running payroll with index for the very first time or
+  // when dealing with employees who are configured for the very first time,
+  // this query searches for the date of hire, their relative base index with their rank,
+  // their responsibility index linked to their function,
+  const sqlFindNewEmployees = `
+    SELECT emp.uuid, emp.date_embauche, sgi.value, sfi.value AS function_indice_value,
+    emp.grade_uuid, emp.fonction_id, pa.display_name
+    FROM employee AS emp
+    JOIN config_employee_item AS it ON it.employee_uuid = emp.uuid
+    JOIN config_employee AS conf ON conf.id = it.config_employee_id
+    JOIN payroll_configuration AS pay ON pay.config_employee_id = conf.id
+    JOIN grade AS gr ON gr.uuid = emp.grade_uuid
+    JOIN staffing_grade_indice AS sgi ON sgi.grade_uuid = emp.grade_uuid
+    LEFT JOIN staffing_function_indice AS sfi ON sfi.fonction_id = emp.fonction_id
+    JOIN patient AS pa ON pa.uuid = emp.patient_uuid
+    WHERE pay.id = ? AND emp.uuid NOT IN (SELECT stf.employee_uuid FROM staffing_indice AS stf)
+    ORDER BY pa.display_name ASC;
+  `;
+
+  // The following query is executed when dealing with employees who have already been configured,
+  // this query the date of the very first increment as well as the last value of the base index,
+  // the responsibility index linked to the function and date of hire
+  const sqlFindOldEmployees = `
+    SELECT emp.uuid, emp.date_embauche, lastIndice.date AS lastDateIncrease,
+    MAX(lastIndice.grade_indice) AS grade_indice, sfi.value AS function_indice_value, emp.grade_uuid,
+    emp.fonction_id, pa.display_name
+    FROM employee AS emp
+    JOIN config_employee_item AS it ON it.employee_uuid = emp.uuid
+    JOIN config_employee AS conf ON conf.id = it.config_employee_id
+    JOIN payroll_configuration AS pay ON pay.config_employee_id = conf.id
+    JOIN grade AS gr ON gr.uuid = emp.grade_uuid
+    JOIN (
+      SELECT st.uuid, st.employee_uuid, st.grade_indice, st.date
+        FROM staffing_indice st
+        JOIN (
+          SELECT uuid, employee_uuid, MAX(date) AS maxdate
+            FROM staffing_indice st
+            GROUP BY st.employee_uuid
+        ) AS currentInd ON currentInd.employee_uuid = st.employee_uuid AND currentInd.maxdate = st.date
+    ) AS lastIndice ON lastIndice.employee_uuid = emp.uuid
+    LEFT JOIN staffing_function_indice AS sfi ON sfi.fonction_id = emp.fonction_id
+    JOIN patient AS pa ON pa.uuid = emp.patient_uuid
+    WHERE pay.id = ?
+    GROUP BY emp.uuid
+    ORDER BY pa.display_name ASC;
+  `;
+
+  const sqlGetBaseIndexGrowthRate = `
+    SELECT base_index_growth_rate FROM enterprise_setting LIMIT 1;
+  `;
+
+  const [newEmployees, oldEmployees, dataEnterprise] = await Promise.all([
+    db.exec(sqlFindNewEmployees, idPeriod),
+    db.exec(sqlFindOldEmployees, idPeriod),
+    db.exec(sqlGetBaseIndexGrowthRate),
+  ]);
+
+  const transaction = db.transaction();
+
+  const baseIndexGrowthRate = dataEnterprise[0].base_index_growth_rate;
+
+  // Processing of new employee data
+  newEmployees.forEach(employee => {
+    employee.date_embauche = moment(employee.date_embauche).format('YYYY-MM-DD');
+    const yearOfSeniority = parseInt(moment(dateTo).diff(employee.date_embauche, 'years'), 10);
+
+    // Here we increment the base index based on the number of years
+    for (let i = 0; i < yearOfSeniority; i++) {
+      employee.value += (employee.value * (baseIndexGrowthRate / 100));
+    }
+
+    const dataStaffingIndice = {
+      uuid : db.uuid(),
+      employee_uuid : employee.uuid,
+      grade_uuid : employee.grade_uuid,
+      fonction_id : employee.fonction_id,
+      grade_indice : util.roundDecimal(employee.value, 0),
+      function_indice : employee.function_indice_value || 0,
+      date : new Date(),
+    };
+    transaction.addQuery('INSERT INTO staffing_indice SET ?', dataStaffingIndice);
+  });
+
+  oldEmployees.forEach(employee => {
+    employee.date_embauche = moment(employee.date_embauche).format('YYYY-MM-DD');
+    employee.lastDateIncrease = moment(employee.lastDateIncrease).format('YYYY-MM-DD');
+    // For employees who have already been configured, we will compare the number of years of seniority
+    // and the difference in years between the date of the last increment of the base index,
+    // if this difference is greater than zero, the we will have to increment
+    // the base index in relation to this difference
+    const yearOfSeniority = parseInt(moment(dateTo).diff(employee.date_embauche, 'years'), 10);
+    const yearLastIncrementation = parseInt(moment(employee.lastDateIncrease).diff(employee.date_embauche, 'years'),
+      10);
+
+    const diffSeniorityIncrementation = yearOfSeniority - yearLastIncrementation;
+
+    if ((diffSeniorityIncrementation > 0) && (baseIndexGrowthRate > 0)) {
+      for (let i = 0; i < diffSeniorityIncrementation; i++) {
+        employee.grade_indice += (employee.grade_indice * (baseIndexGrowthRate / 100));
+      }
+
+      const dataStaffingIndice = {
+        uuid : db.uuid(),
+        employee_uuid : employee.uuid,
+        grade_uuid : employee.grade_uuid,
+        fonction_id : employee.fonction_id,
+        grade_indice : util.roundDecimal(employee.grade_indice, 0),
+        function_indice : employee.function_indice_value || 0,
+        date : new Date(),
+      };
+
+      transaction.addQuery('INSERT INTO staffing_indice SET ?', dataStaffingIndice);
+
+    }
+  });
+
+  return transaction.execute();
+}
+
 // get list of Payroll configuration
 exports.list = list;
 
@@ -206,3 +328,5 @@ exports.paymentStatus = paymentStatus;
 exports.lookupPayrollConfig = lookupPayrollConfig;
 
 exports.payrollReportElements = payrollReportElements;
+
+exports.updateEmployeesBasicIndice = updateEmployeesBasicIndice;
