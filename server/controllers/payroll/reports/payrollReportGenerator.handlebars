@@ -72,7 +72,7 @@
           {{/each}}
         </tbody>
         <tr class="text-capitalize">
-          <td style="text-align: right; width: 16%;" colspan="3"><strong>{{translate 'TABLE.COLUMNS.TOTAL' }} </strong></td>
+          <td style="text-align: right; width: 16%;" colspan="4"><strong>{{translate 'TABLE.COLUMNS.TOTAL' }} </strong></td>
           {{#each rubrics}}
             <td style="text-align: right;"><strong>{{currency (multiply total ../payrollPeriod.exchangeRate) ../payrollPeriod.currency}}</strong></td>
           {{/each}}
