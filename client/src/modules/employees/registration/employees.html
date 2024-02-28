@@ -134,6 +134,7 @@
                       <ui-select
                         name="grade"
                         ng-model="EmployeeCtrl.employee.grade_uuid"
+                        on-select="EmployeeCtrl.onSelectGrade($item)"
                         required>
                         <ui-select-match placeholder="{{ 'FORM.SELECT.GRADE' | translate }}">
                           <span>{{$select.selected.format}}</span>
