@@ -61,11 +61,11 @@ test.describe('Creditor Groups Management', () => {
   });
 
   test('deletes a creditor group', async () => {
+    await TU.waitForSelector(`[data-update="${group.updated_name}"]`);
     await TU.locator(`[data-update="${group.updated_name}"]`).click();
 
     // click the "delete" button
     await TU.buttons.delete();
-
     await TU.modal.submit(); // Confirm the deletion
 
     await components.notification.hasSuccess();

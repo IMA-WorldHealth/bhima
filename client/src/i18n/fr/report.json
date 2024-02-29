@@ -129,7 +129,14 @@
       "TITLE": "Consommations mensuelles",
       "DESCRIPTION": "Rapport de consommations mensuelles par dépôt et pour une période données"
     },
-    "SATISFACTION_RATE_REPORT" : "Rapport des taux de satisfaction",
+    "SATISFACTION_RATE_REPORT": {
+      "TITLE": "Rapport des taux de satisfaction",
+      "INCLUDE_SUMMARY": "Inclure le resumé de la satisfaction par structures",
+      "INCLUDE_QUANTITY_DETAILS": "Inclure les détails de la satisfaction des quantités",
+      "NB_STRUCTURE": "Nombre des structures",
+      "NB_STRUCTURE_WITH_SATISFACTION": "Nombre des structures ayant satisfait (>= 80%)",
+      "SATISFACTION_BY_STRUCTURE": "Satisfaction par structures"
+    },
     "SYSTEM_USAGE_STAT" : {
       "TITLE" : "Statistique d'utilisation du système",
       "DESCRIPTION" : "Ce rapport produit, pour une période donnée, les statistiques suivantes: total des patients enregistrés par heure de la journée, total des factures établies par heure de la journée et total des paiements en espèces effectués par heure de la journée"

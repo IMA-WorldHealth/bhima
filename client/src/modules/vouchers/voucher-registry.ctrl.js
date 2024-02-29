@@ -108,7 +108,7 @@ function VoucherController(
     headerCellFilter : 'translate',
   }, {
     field : 'action',
-    displayName : '...',
+    displayName : '',
     enableFiltering : false,
     enableColumnMenu : false,
     enableSorting : false,

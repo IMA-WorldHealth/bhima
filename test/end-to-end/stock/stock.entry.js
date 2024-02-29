@@ -1,5 +1,5 @@
 const moment = require('moment');
-const { test } = require('@playwright/test');
+const { test, expect } = require('@playwright/test');
 const TU = require('../shared/TestUtils');
 
 const EntryPage = require('./stock.entry.page');
@@ -98,6 +98,9 @@ function StockEntryTests() {
     ];
 
     await page.setLots(0, lots, true, null);
+
+    // Wait for the dialog to disappear
+    await expect(TU.locator('.modal-dialog')).toHaveCount(0);
 
     // submit
     await page.submit();

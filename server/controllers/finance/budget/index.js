@@ -181,7 +181,7 @@ function buildBudgetData(fiscalYearId) {
           if (adata) {
             record.credit = adata.credit || 0;
             record.debit = adata.debit || 0;
-            record.actuals = (acct.type_id === 4) ? adata.credit - adata.debit : adata.debit - adata.credit;
+            record.actuals = (acct.type_id === INCOME) ? adata.credit - adata.debit : adata.debit - adata.credit;
           }
           acct.period.push(record);
         });
@@ -212,11 +212,20 @@ function buildBudgetData(fiscalYearId) {
       return sortAccounts(data, allAccounts);
     })
     .then(data => {
+      return computeTitleAccountTotals(data, allAccounts);
+    })
+    .then(data => {
       computeSubTotals(data);
+      return computeTitleAccountPeriodTotals(data, allAccounts);
+    })
+    .then(data => {
       return computeBudgetTotalsYTD(data, fiscalYearId);
     })
     .then(data => {
-      return data;
+      return excludeTopLevelIEAccounts(data);
+    })
+    .then(data => {
+      return data; // NOP for debugging convenience
     });
 }
 
@@ -276,6 +285,7 @@ function sortAccounts(origAccounts, allAccounts) {
       if (!accounts.find(item => item.id === pid)) {
         const title = allAccounts.find(a => a.id === pid);
         title.type = typeToken(title.type_id);
+        title.period = _.cloneDeep(periods);
         accounts.push(title);
       }
     });
@@ -297,7 +307,7 @@ function sortAccounts(origAccounts, allAccounts) {
     budget : null,
     debit : null,
     credit : null,
-    period : [...periods], // Make a copy
+    period : _.cloneDeep(periods), // Make a copy
   });
 
   // Add in a blank row to separate income accounts from expense accounts
@@ -344,7 +354,7 @@ function sortAccounts(origAccounts, allAccounts) {
     budget : null,
     debit : null,
     credit : null,
-    period : [...periods], // Make a copy
+    period : _.cloneDeep(periods), // Make a copy
   });
 
   // Add in a blank row to separate income accounts from expense accounts
@@ -353,7 +363,6 @@ function sortAccounts(origAccounts, allAccounts) {
     _$$treeLevel : 0,
     id : null,
     number : null,
-    type_id : TITLE,
     isTitle : true,
     label : '',
     parent : 0,
@@ -376,14 +385,14 @@ function sortAccounts(origAccounts, allAccounts) {
     budget : null,
     debit : null,
     credit : null,
-    period : [...periods], // Make a copy
+    period : _.cloneDeep(periods), // Make a copy
   });
 
   return accounts;
 }
 
 /**
- * Get the IDs of the parent (title) accounts for an account
+ * Get the IDs of the parent title accounts for an account
  *
  * This is a recursive function used by getTitleAccounts
  *
@@ -392,20 +401,40 @@ function sortAccounts(origAccounts, allAccounts) {
  * @param {Array} parents - current list of parents
  * @returns {Array} of parent account IDs
  */
-function getParentAccounts(id, accounts, parents) {
+function getParentTitleAccounts(id, accounts, parents) {
   const acct = accounts.find(item => item.id === id);
   if (acct.parent === id) {
     // In some cases, some accounts erroneously point to themselves as parents.
     // Assume that there are no more parents.
     return parents;
   }
-  const parentAcct = accounts.find(a => (a.id === acct.parent) && (a.type_id === 6));
-  // const parentAcct = accounts.find(a => a.id === acct.parent);
+  const parentAcct = accounts.find(a => (a.id === acct.parent) && (a.type_id === TITLE));
   if (parentAcct) {
     parents.push(parentAcct.id);
-    return getParentAccounts(parentAcct.id, accounts, parents);
+    return getParentTitleAccounts(parentAcct.id, accounts, parents);
   }
   return parents;
+}
+
+/**
+ * Return the IDs of all children accounts of an account given
+ *
+ * @param {Array} accounts - list of accounts
+ * @param {number} parentId - The parent id
+ * @returns {Array} list of IDs of all children accounts
+ */
+function getChildrenAccounts(accounts, parentId) {
+  const children = accounts.filter(account => account.parent === parentId);
+  if (children.length === 0) { return []; }
+
+  const results = [];
+  children.forEach(acct => {
+    results.push(acct.id);
+    const grandChildren = getChildrenAccounts(accounts, acct.id);
+    results.push(...grandChildren);
+  });
+
+  return results;
 }
 
 /**
@@ -416,7 +445,7 @@ function getParentAccounts(id, accounts, parents) {
  * @returns {Array} of title (parent) accounts for this account (in hierarchical order)
  */
 function getTitleAccounts(id, accounts) {
-  const parents = getParentAccounts(id, accounts, []);
+  const parents = getParentTitleAccounts(id, accounts, []);
   return parents.sort((a, b) => a - b);
 }
 
@@ -453,6 +482,44 @@ function getPeriods(fiscalYearId) {
     });
 }
 
+// For each child title account, compute the budget for all child accounts
+function computeTitleAccountTotals(budgetAccts, allAccounts) {
+
+  // Construct the list of periods (leave out the FY total period)
+  const periods = constants.periods.filter(elt => elt.periodNum !== 0);
+
+  function computeChildrenSubtotal(acct) {
+    const childrenIDs = getChildrenAccounts(allAccounts, acct.id);
+    childrenIDs.forEach(childId => {
+      const bdAcct = budgetAccts.find(item => item.id === childId);
+      if (bdAcct && bdAcct.budget) {
+        if (bdAcct.type_id === INCOME) {
+          acct.isIncomeTitle = true;
+        } else if (bdAcct.type_id === EXPENSE) {
+          acct.isExpenseTitle = true;
+        }
+        if ((bdAcct.type_id === INCOME) || (bdAcct.type_id === EXPENSE)) {
+          acct.budget += bdAcct.budget;
+          acct.actuals += bdAcct.actuals ? bdAcct.actuals : 0;
+        }
+        // NB: Ignore child title accounts
+      }
+    });
+  }
+
+  // Now compute the total for all children
+  budgetAccts.forEach(acct => {
+    if (acct.type_id === TITLE && acct.id !== null) {
+      acct.budget = 0;
+      acct.actuals = 0;
+      acct.period = _.cloneDeep(periods); // Make a copy
+      computeChildrenSubtotal(acct);
+    }
+  });
+
+  return budgetAccts;
+}
+
 /**
  * Compute the subtotals for expenses and incomes
  *
@@ -461,7 +528,6 @@ function getPeriods(fiscalYearId) {
  * @param {object} accounts - the list of accounts (processed in place)
  */
 function computeSubTotals(accounts) {
-
   const incomeTotal = accounts.find(acct => acct.acctType === 'total-income');
   const expensesTotal = accounts.find(acct => acct.acctType === 'total-expenses');
   const summaryTotal = accounts.find(acct => acct.acctType === 'total-summary');
@@ -478,7 +544,14 @@ function computeSubTotals(accounts) {
 
   // Construct the list of periods (leave out the FY total period)
   const periods = constants.periods.filter(elt => elt.periodNum !== 0);
-  const periodSums = [...periods]; // Make a copy
+  const periodSums = _.cloneDeep(periods); // Make a copy
+  // Clear the totals for each period (income)
+  periodSums.forEach(pt => {
+    pt.budget = 0;
+    pt.credit = 0;
+    pt.debit = 0;
+    pt.actuals = 0;
+  });
 
   // compute income totals
   accounts.forEach(acct => {
@@ -503,13 +576,6 @@ function computeSubTotals(accounts) {
         actualsTotal -= acct.debit;
       }
 
-      // Sum the totals for each period
-      periodSums.forEach(pt => {
-        pt.budget = 0;
-        pt.credit = 0;
-        pt.debit = 0;
-        pt.actuals = 0;
-      });
       periodSums.forEach(pt => {
         const acctPeriod = acct.period.find(item => item.key === pt.key);
         if (acctPeriod) {
@@ -536,10 +602,10 @@ function computeSubTotals(accounts) {
   // save the income totals for the periods
   incomeTotal.period.forEach(pit => {
     const pdata = periodSums.find(item => item.key === pit.key);
-    pit.budget = pdata.budget && pdata.budget !== 0 ? pdata.budget : null;
-    pit.credit = pdata.credit && pdata.credit !== 0 ? pdata.credit : null;
-    pit.debit = pdata.debit && pdata.debit !== 0 ? pdata.debit : null;
-    pit.actuals = pdata.actuals && pdata.actuals !== 0 ? pdata.actuals : null;
+    pit.budget = pdata.budget ? pdata.budget : 0;
+    pit.credit = pdata.credit ? pdata.credit : 0;
+    pit.debit = pdata.debit ? pdata.debit : 0;
+    pit.actuals = pdata.actuals ? pdata.actuals : 0;
   });
 
   // compute expense totals
@@ -547,6 +613,14 @@ function computeSubTotals(accounts) {
   debitTotal = 0;
   creditTotal = 0;
   actualsTotal = 0;
+
+  // Clear the totals for each period (expense)
+  periodSums.forEach(pt => {
+    pt.budget = 0;
+    pt.credit = 0;
+    pt.debit = 0;
+    pt.actuals = 0;
+  });
 
   accounts.forEach(acct => {
     if (acct.type_id === EXPENSE) {
@@ -569,14 +643,6 @@ function computeSubTotals(accounts) {
       if (acct.credit) {
         actualsTotal -= acct.credit;
       }
-
-      // Sum the totals for each period
-      periodSums.forEach(pt => {
-        pt.budget = 0;
-        pt.credit = 0;
-        pt.debit = 0;
-        pt.actuals = 0;
-      });
 
       periodSums.forEach(pt => {
         const acctPeriod = acct.period.find(item => item.key === pt.key);
@@ -604,12 +670,13 @@ function computeSubTotals(accounts) {
   // save the expense totals for the periods
   expensesTotal.period.forEach(pet => {
     const pdata = periodSums.find(item => item.key === pet.key);
-    pet.budget = pdata.budget && pdata.budget !== 0 ? pdata.budget : null;
-    pet.credit = pdata.credit && pdata.credit !== 0 ? pdata.credit : null;
-    pet.debit = pdata.debit && pdata.debit !== 0 ? pdata.debit : null;
-    pet.actuals = pdata.actuals && pdata.actuals !== 0 ? pdata.actuals : null;
+    pet.budget = pdata.budget ? pdata.budget : null;
+    pet.credit = pdata.credit ? pdata.credit : null;
+    pet.debit = pdata.debit ? pdata.debit : null;
+    pet.actuals = pdata.actuals ? pdata.actuals : null;
   });
 
+  // Compute the summary data
   summaryTotal.budget = incomeTotal.budget - expensesTotal.budget;
   summaryTotal.debit = incomeTotal.debit - expensesTotal.debit;
   summaryTotal.credit = incomeTotal.credit - expensesTotal.credit;
@@ -619,13 +686,59 @@ function computeSubTotals(accounts) {
 
   // save the expense totals for the periods
   summaryTotal.period.forEach(pst => {
-    const pdata = periodSums.find(item => item.key === pst.key);
-    pst.budget = pdata.budget && pdata.budget !== 0 ? pdata.budget : null;
-    pst.credit = pdata.credit && pdata.credit !== 0 ? pdata.credit : null;
-    pst.debit = pdata.debit && pdata.debit !== 0 ? pdata.debit : null;
-    pst.actuals = pdata.actuals && pdata.actuals !== 0 ? pdata.actuals : null;
+    const incomePeriod = incomeTotal.period.find(item => item.key === pst.key);
+    const expensesPeriod = expensesTotal.period.find(item => item.key === pst.key);
+    pst.budget = (incomePeriod && expensesPeriod) ? incomePeriod.budget - expensesPeriod.budget : 0;
+    pst.credit = (incomePeriod && expensesPeriod) ? incomePeriod.credit - expensesPeriod.credit : 0;
+    pst.debit = (incomePeriod && expensesPeriod) ? incomePeriod.debit - expensesPeriod.debit : 0;
+    pst.actuals = (incomePeriod && expensesPeriod) ? incomePeriod.actuals - expensesPeriod.actuals : 0;
+  });
+}
+
+function computeTitleAccountPeriodTotals(budgetAccts, allAccounts) {
+
+  function computeChildrenPeriodTotals(acct) {
+    const childrenIDs = getChildrenAccounts(allAccounts, acct.id);
+    childrenIDs.forEach(childId => {
+      const bdAcct = budgetAccts.find(item => item.id === childId);
+      if (bdAcct && bdAcct.budget) {
+        if ((bdAcct.type_id === INCOME) || (bdAcct.type_id === EXPENSE)) {
+          acct.actuals += bdAcct.actuals ? bdAcct.actuals : 0;
+          acct.credit += bdAcct.credit ? bdAcct.credit : 0;
+          acct.debit += bdAcct.debit ? bdAcct.debit : 0;
+          bdAcct.period.forEach((pt, i) => {
+            acct.period[i].budget += pt.budget;
+            acct.period[i].actuals += pt.actuals ? pt.actuals : 0;
+            acct.period[i].credit += pt.credit ? pt.credit : 0;
+            acct.period[i].debit += pt.debit ? pt.debit : 0;
+          });
+        }
+        // NB: Ignore child title accounts
+      }
+    });
+  }
+
+  // Now compute the period totals for all children
+  budgetAccts.forEach(acct => {
+    if (acct.type_id === TITLE && acct.id !== null) {
+      // Prepare for summing over all child accounts
+      // @TODO : Move the computation of title account budgets here too?
+      acct.actuals = 0;
+      acct.credit = 0;
+      acct.debit = 0;
+      // Zero the budget for each period
+      acct.period.forEach(pt => {
+        pt.budget = 0;
+        pt.credit = 0;
+        pt.debit = 0;
+        pt.actuals = 0;
+      });
+
+      computeChildrenPeriodTotals(acct);
+    }
   });
 
+  return budgetAccts;
 }
 
 /**
@@ -644,7 +757,10 @@ async function computeBudgetTotalsYTD(accounts, fiscalYearId) {
   let expensesTotalYTD = 0;
 
   accounts.forEach(acct => {
-    if ((acct.type_id === INCOME) || (acct.type_id === EXPENSE)) {
+
+    if ((acct.type_id === INCOME) || (acct.type_id === EXPENSE)
+      || (acct.type_id === TITLE && acct.isIncomeTitle)
+      || (acct.type_id === TITLE && acct.isExpenseTitle)) {
       let budgetYTD = 0;
 
       acct.period.forEach(p => {
@@ -667,7 +783,7 @@ async function computeBudgetTotalsYTD(accounts, fiscalYearId) {
           }
         }
         acct.budgetYTD = budgetYTD;
-        acct.differenceYTD = acct.actuals - budgetYTD;
+        acct.differenceYTD = acct.actuals && acct.actuals !== 0 ? acct.actuals - budgetYTD : null;
 
         // Compute the deviation percent YTD
         acct.deviationYTDPct = (budgetYTD !== 0)
@@ -676,7 +792,7 @@ async function computeBudgetTotalsYTD(accounts, fiscalYearId) {
 
       if (acct.type_id === INCOME) {
         incomeTotalYTD += budgetYTD;
-      } else {
+      } else if (acct.type_id === EXPENSE) {
         expensesTotalYTD += budgetYTD;
       }
     }
@@ -707,7 +823,50 @@ async function computeBudgetTotalsYTD(accounts, fiscalYearId) {
     summaryTotalRow.deviationYTDPct = expensesTotalYTD !== 0
       ? Math.round(100.0 * (summaryTotalRow.actuals / summaryTotalRow.budgetYTD)) : null;
   }
+
   return accounts;
+}
+
+/**
+ * Exclude any top-level title accounts that have both expenses and income sub-accounts
+ *
+ * In the OHADA system, '8' title accounts can have both income and expenses.
+ * But if a top-level '8' title account appears in two places in the budget display
+ * with different totals, it would be confusing.  So do not display those
+ * top-level title accounts.
+ *
+ * @param {Array} accounts - list of accounts
+ * @returns {Promise} of the accounts with updated YTD data
+ */
+function excludeTopLevelIEAccounts(accounts) {
+
+  function hasIncomeAndExpenses(acctId) {
+    let hasIncome = false;
+    let hasExpenses = false;
+    const childrenIds = getChildrenAccounts(accounts, acctId);
+    childrenIds.forEach(id => {
+      const child = accounts.find(item => item.id === id);
+      if (child.type_id === INCOME) {
+        hasIncome = true;
+      } else if (child.type_id === EXPENSE) {
+        hasExpenses = true;
+      }
+    });
+    return hasIncome && hasExpenses;
+  }
+
+  // Collect the IDs of any dual-nature title accounts
+  const excludeIDs = [];
+  accounts.forEach(acct => {
+    if ((acct.id !== null) && (acct.parent === 0)) {
+      if (hasIncomeAndExpenses(acct.id)) {
+        excludeIDs.push(acct.id);
+      }
+    }
+  });
+
+  // Filter out the dual-nature title accounts
+  return accounts.filter(item => !excludeIDs.includes(item.id));
 }
 
 /**

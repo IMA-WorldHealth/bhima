@@ -42,7 +42,7 @@ function TitleManagementController(Titles, Modals, Notify, uiGridConstants) {
     }, {
       field : 'action',
       width : 80,
-      displayName : '...',
+      displayName : '',
       cellTemplate : '/modules/titles/templates/action.tmpl.html',
       enableSorting : false,
       enableFiltering : false,
