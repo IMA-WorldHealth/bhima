@@ -12,32 +12,60 @@
   <div class="row">
     <div class="col-xs-12">
 
+      {{#if option.includeSummary}}
+        <table class="table table-condensed table-report">
+          <tr>
+            <th>&nbsp;</th>
+            {{#if option.includeQuantityDetails}}<th>{{translate 'FORM.LABELS.SATISFACTION_RATE_QUANTITY_GRANTED'}}</th>{{/if}}
+            <th>{{translate 'FORM.LABELS.SATISFACTION_RATE_BY_ITEMS_GRANTED'}}</th>
+          </tr>
+          <tr>
+            <td>{{translate 'REPORT.SATISFACTION_RATE_REPORT.NB_STRUCTURE'}}</td>
+            {{#if option.includeQuantityDetails}}<td>{{ option.summary.totalBeneficiary}}</td>{{/if}}
+            <td>{{ option.summary.totalBeneficiary}}</td>
+          </tr>
+          <tr>
+            <td>{{translate 'REPORT.SATISFACTION_RATE_REPORT.NB_STRUCTURE_WITH_SATISFACTION'}}</td>
+            {{#if option.includeQuantityDetails}}<td>{{ option.summary.totalSatisfactionQuantity}}</td>{{/if}}
+            <td>{{ option.summary.totalSatisfactionItem}}</td>
+          </tr>
+          <tr>
+            <td>{{translate 'REPORT.SATISFACTION_RATE_REPORT.SATISFACTION_BY_STRUCTURE'}}</td>
+            {{#if option.includeQuantityDetails}}<td>{{percentage option.summary.totalSatisfactionQuantityRate}}</td>{{/if}}
+            <td>{{percentage option.summary.totalSatisfactionItemRate}}</td>
+          </tr>
+        </table>
+        <br>
+      {{/if}}
+
       {{#each depotsListSupplier}}
         <table class="table table-condensed table-report">
           <thead>
             <tr style="background-color: #DEDEDE;">
-              <th colspan="9">{{ depot_text}}</th>
+              <th colspan="{{#if ../option.includeQuantityDetails}}9{{else}}8{{/if}}">{{ depot_text}}</th>
             </tr>
           </thead>
           <tr style="background-color: #1F1F1F;">
-            <th colspan="9"> </th>
+            <th colspan="{{#if ../option.includeQuantityDetails}}9{{else}}8{{/if}}"> </th>
           </tr>
+          {{#if ../option.includeQuantityDetails}}
           <tr>
             <td style="font-weight: bold; font-style: italic; text-align: right; background-color: #DEDEDE; text-transform: uppercase;" colspan="8"> {{translate 'FORM.LABELS.SATISFACTION_RATE_QUANTITY_GRANTED'}} </td>
             <td style="font-weight: bold; font-style: italic; text-align: right; background-color: #DEDEDE; text-transform: uppercase;"><strong>{{percentage satisfaction_rate_quantity}} </strong></td>
           </tr>
+          {{/if}}
           <tr>
-            <td style="font-weight: bold; font-style: italic; text-align: right; background-color: #DEDEDE; text-transform: uppercase;" colspan="8"> {{translate 'FORM.LABELS.SATISFACTION_RATE_BY_ITEMS_GRANTED'}} </td>
+            <td style="font-weight: bold; font-style: italic; text-align: right; background-color: #DEDEDE; text-transform: uppercase;" colspan="{{#if ../option.includeQuantityDetails}}8{{else}}7{{/if}}"> {{translate 'FORM.LABELS.SATISFACTION_RATE_BY_ITEMS_GRANTED'}} </td>
             <td style="font-weight: bold; font-style: italic; text-align: right; background-color: #DEDEDE; text-transform: uppercase;"><strong>{{percentage satisfaction_rate_item }}</strong></td>
           </tr>
           <tr style="background-color: #000;">
-            <th colspan="9"> </th>
+            <th colspan="{{#if ../option.includeQuantityDetails}}9{{else}}8{{/if}}"> </th>
           </tr>
           {{#each data}}
             <thead>
               <tr style="background-color: #EFEFEF;">
                 <th colspan="1" width="2%"> {{ add @index 1 }} </th>
-                <th colspan="8" width="98%"> {{ depot_requisition.beneficiary }} </th>
+                <th colspan="{{#if ../../option.includeQuantityDetails}}8{{else}}7{{/if}}" width="98%"> {{ depot_requisition.beneficiary }} </th>
               </tr>
             </thead>
 
@@ -48,8 +76,10 @@
                 <td width="10%"> {{translate 'FORM.LABELS.REQUISITION' }} </td>
                 <td width="10%"> {{translate 'FORM.LABELS.MOVEMENT'}} </td>
                 <td width="25%"> {{translate 'FORM.LABELS.PRODUCT'}} </td>
+                {{#if ../../option.includeQuantityDetails}}
                 <td width="10%"> {{translate 'FORM.LABELS.QUANTITY_ORDERED'}} </td>
-                <td width="10%"> {{translate 'FORM.LABELS.QUANTITY_VALIDATED'}} </td>
+                {{/if}}
+                <td width="10%"> {{translate 'FORM.LABELS.QUANTITY_ORDERED_VALIDATED'}} </td>
                 <td width="10%"> {{translate 'FORM.LABELS.QUANTITY_DELIVERED'}} </td>
                 <td width="10%"> {{translate 'FORM.LABELS.SATISFACTION_RATE'}} </td>
               </tr>
@@ -60,22 +90,26 @@
                 <td> {{ requisition_reference }} </td>
                 <td> {{ stock_movement_text }} </td>
                 <td> {{ inventory_text }} </td>
-                <td style="text-align: right;"> {{ quantity_requested }} </td>
+                {{#if ../../../option.includeQuantityDetails}}
+                  <td style="text-align: right;"> {{ quantity_requested }} </td>
+                {{/if}}
                 <td style="text-align: right;"> {{ quantity_validated }} </td>
                 <td style="text-align: right;"> {{ quantity_delivered }} </td>
                 <td style="text-align: right;"><strong>{{percentage satisfaction_rate }}</strong></td>
               </tr>
               {{/each}}
+              {{#if ../../option.includeQuantityDetails}}
               <tr>
                 <td style="font-weight: bold; font-style: italic; text-align: right; background-color: #EBEBEB; text-transform: uppercase;" colspan="8"> {{translate 'FORM.LABELS.SATISFACTION_RATE_QUANTITY_GRANTED'}} </td>
                 <td style="font-weight: bold; font-style: italic; text-align: right; background-color: #EBEBEB; text-transform: uppercase;"><strong>{{percentage depot_requisition.satisfaction_rate_quantity }} </strong></td>
               </tr>
+              {{/if}}
               <tr>
-                <td style="font-weight: bold; font-style: italic; text-align: right; background-color: #ECECEC; text-transform: uppercase;" colspan="8"> {{translate 'FORM.LABELS.SATISFACTION_RATE_BY_ITEMS_GRANTED'}} </td>
+                <td style="font-weight: bold; font-style: italic; text-align: right; background-color: #ECECEC; text-transform: uppercase;" colspan="{{#if ../../option.includeQuantityDetails}}8{{else}}7{{/if}}"> {{translate 'FORM.LABELS.SATISFACTION_RATE_BY_ITEMS_GRANTED'}} </td>
                 <td style="font-weight: bold; font-style: italic; text-align: right; background-color: #ECECEC; text-transform: uppercase;"><strong>{{percentage depot_requisition.satisfaction_rate_item }}</strong></td>
               </tr>
               <tr style="background-color: #000;">
-                <th colspan="9"> </th>
+                <th colspan="{{#if ../../option.includeQuantityDetails}}9{{else}}8{{/if}}"> </th>
               </tr>
             </tbody>
           {{/each}}
