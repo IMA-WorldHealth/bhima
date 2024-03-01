@@ -5533,10 +5533,10 @@ jsdoc-type-pratt-parser@~4.0.0:
   resolved "https://registry.yarnpkg.com/jsdoc-type-pratt-parser/-/jsdoc-type-pratt-parser-4.0.0.tgz#136f0571a99c184d84ec84662c45c29ceff71114"
   integrity sha512-YtOli5Cmzy3q4dP26GraSOeAhqecewG04hoO8DY56CH4KJ9Fvv5qKWUCCo3HZob7esJQHCv6/+bnTy72xZZaVQ==
 
-json-2-csv@^5.4.0:
-  version "5.4.0"
-  resolved "https://registry.yarnpkg.com/json-2-csv/-/json-2-csv-5.4.0.tgz#ec5cec705b6c884c5c90643ec4854e6e9f472991"
-  integrity sha512-3yQ0Y6Fi7R2LL7hz5rD2+JS5xH96k+XXTidIpQv8pDHvzD4+PM5vVYLT3zb7R28oTikVDIjLuB80YqgeXI2WXg==
+json-2-csv@^5.5.0:
+  version "5.5.0"
+  resolved "https://registry.yarnpkg.com/json-2-csv/-/json-2-csv-5.5.0.tgz#b0881aaf4b842fccc13f7972584ccea8b5a96d19"
+  integrity sha512-1Y4upYpzhoweEMkFDogMU8fKLCs+ciNKviTotrrMZ8duqlycERcB38GYXpu4xcwm6YBn86cTXd7za2yUl0GAkg==
   dependencies:
     deeks "3.1.0"
     doc-path "4.1.0"
