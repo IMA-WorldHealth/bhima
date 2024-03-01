@@ -4447,10 +4447,10 @@ gulp-match@^1.1.0:
   dependencies:
     minimatch "^3.0.3"
 
-gulp-merge-json@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/gulp-merge-json/-/gulp-merge-json-2.2.0.tgz#b448ebf2e47195ab9972f36d7e6a8a269bcb1c7b"
-  integrity sha512-HEnmRRckVaLgsYRmzk14h4iD6/xNDHbLX5nuvFXHZd2Y+U9Qtvpl+IrvIh8hWs2VvpLuYaF1z8v9jkhLPYH8Mw==
+gulp-merge-json@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/gulp-merge-json/-/gulp-merge-json-2.2.1.tgz#82c73d2ac2094a314e7d20617583cb5423576012"
+  integrity sha512-w1+ka0xPu/VSEAVxvYlwEASpyZuHGVpBBtYakd4xpw+dF5QiwNh81qkNGnhGvtUINh94IInleQNs0rzy8KdyRg==
   dependencies:
     json5 "^2.2.3"
     lodash.clonedeep "^4.5.0"
