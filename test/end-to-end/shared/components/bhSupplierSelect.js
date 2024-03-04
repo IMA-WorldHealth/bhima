@@ -15,9 +15,7 @@ module.exports = {
   set : async function set(supplier, id) {
     const locator = (id) ? by.id(id) : by.css(selector);
     const target = await TU.locator(locator);
-
     await target.click();
-
     return TU.uiSelect('$ctrl.supplierUuid', supplier, target);
   },
 };

@@ -46,17 +46,22 @@ test.describe('Purchase Orders', () => {
     // change the prices
     await page.adjustItemPrice(0, 25);
 
+    // Deal with the confirmation dialog if it appears
+    if (await TU.locator('.modal-dialog form[name="ConfirmModalForm"]').count() > 0) {
+      TU.modal.submit();
+    }
+
     // make sure the submit button is not disabled
     expect(await page.submitButtonEnabled()).toBe(true);
 
     // attempt to submit the page.
     await page.submit();
-
     await TU.waitForSelector(by.id('receipt-confirm-created'));
     await page.reset();
   });
 
   test('supports multi-item purchase orders', async () => {
+    await TU.navigate(path); // Force reload
     const page = new PurchaseOrderPage();
     const datePurchase = moment(new Date(), 'YYYY-MM-DD').subtract(1710, 'days').toDate();
 
@@ -97,6 +102,11 @@ test.describe('Purchase Orders', () => {
 
     // submit the page
     await page.submit();
+
+    // If the confirm dialog comes up, deal with it
+    if (await TU.locator('.modal-dialog form[name="ConfirmModalForm"]').count() > 0) {
+      TU.modal.submit();
+    }
 
     /** @todo - this can validate totals and receipt content in the future */
     await TU.waitForSelector(by.id('receipt-confirm-created'));

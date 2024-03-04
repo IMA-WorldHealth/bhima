@@ -172,11 +172,9 @@ function StockExitTests() {
     // Wait for the grid to display
     await TU.waitForSelector('.ui-grid-canvas .ui-grid-row');
 
-    // first item
+    // replace the first item (was out-of-date QUININE-A)
+    // Note: Only select 1 even though the req is for 4, to do a partial distribution
     await page.setLot(0, 'QUININE-B', 1);
-
-    // second item
-    await page.setLot(1, 'QUININE-C');
 
     // submit
     await page.submit();
