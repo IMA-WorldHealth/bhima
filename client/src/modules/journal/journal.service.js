@@ -85,6 +85,7 @@ function JournalService(Api, AppCache, Filters, Periods, Modal, bhConstants, Tra
       delete row.project_name;
       delete row.display_name;
       delete row.posted;
+      delete row.account_type_id;
     });
 
     return rows.data;
