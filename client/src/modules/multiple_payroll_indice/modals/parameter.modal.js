@@ -3,10 +3,10 @@ angular.module('bhima.controllers')
 
 MultiPayrollIndiceParamModalController.$inject = [
   'NotifyService', 'MultipleIndicesPayrollService', '$uibModalInstance',
-  'SessionService',
+  'SessionService', 'LanguageService',
 ];
 
-function MultiPayrollIndiceParamModalController(Notify, MultiplePayroll, Instance, Session) {
+function MultiPayrollIndiceParamModalController(Notify, MultiplePayroll, Instance, Session, Languages) {
   const vm = this;
   vm.close = Instance.close;
   vm.param = {};
@@ -18,17 +18,28 @@ function MultiPayrollIndiceParamModalController(Notify, MultiplePayroll, Instanc
   vm.onSelectPayrollPeriod = (payrollConfig) => {
     vm.param.payroll_configuration_id = payrollConfig.id;
     MultiplePayroll.parameters.read(payrollConfig.id).then(parameter => {
-      vm.param = parameter;
+      if (parameter.length) {
+        const [param] = parameter;
+        vm.param = param;
+      }
     });
   };
 
   vm.submit = (form) => {
     if (form.$invalid) { return 0; }
+    vm.param.lang = Languages.key;
     return MultiplePayroll.parameters.create(vm.param).then(() => {
       Notify.success('FORM.INFO.OPERATION_SUCCESS');
       return vm.close(true);
     })
-      .catch(Notify.handleError);
+      .catch((error) => {
+        if (error.status === 400) {
+          Notify.errorMessage(error.data.code);
+          vm.close(true);
+        }
+
+        Notify.handleError(error);
+      });
   };
 
 }
