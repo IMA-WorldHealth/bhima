@@ -30,7 +30,8 @@ function find(options) {
       payroll.payment_date, payroll.base_taxable, payroll.basic_salary, payroll.gross_salary, payroll.grade_salary,
       payroll.text, payroll.net_salary, payroll.working_day, payroll.total_day, payroll.daily_salary,
       payroll.amount_paid, payroll.status_id, payroll.status, (payroll.net_salary - payroll.amount_paid) AS balance,
-      payroll.hrreference, payroll.cost_center_id, payroll.service_name
+      payroll.hrreference, payroll.cost_center_id, payroll.service_name,
+      IF (payroll.net_salary < 0, 1, 0) AS negativeValue
     FROM(
       SELECT employee.uuid AS employee_uuid, employee.reference, em.text AS hrreference, employee.code,
         employee.date_embauche, employee.nb_enfant,employee.individual_salary, creditor_group.account_id,

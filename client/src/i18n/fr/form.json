@@ -1142,6 +1142,7 @@
             "ONLY_TWO_SECTORS":"Veuillez sélectionner seulement deux secteurs",
             "ONLY_TWO_VILLAGES":"Veuillez sélectionner seulement deux villages",
             "ATTENTION_CONFIGURED": "Attention, seul les employés en attentes de configuration peuvent être configuré",
+            "ATTENTION_NEGATIVE_VALUE": "Attention, Il y'a des employés pour lequel la totalité de leurs retenues est supérieur à leur salaire brute, veuillez corrigé ce problème",
             "ATTENTION_PAYSLIPS": "Attention, il n'existe pas les fiches de paies pour les employés en attente de configuration",
             "ATTENTION_SELECTED": "Attention, vous n'avez sélectionné aucun élément",
             "ATTENTION_WAITING_LIST": "Attention, seule les employes configurés peuvent être placés dans la liste d'attente",
