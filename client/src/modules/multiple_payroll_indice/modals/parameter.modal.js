@@ -28,7 +28,7 @@ function MultiPayrollIndiceParamModalController(Notify, MultiplePayroll, Instanc
   vm.submit = (form) => {
     if (form.$invalid) { return 0; }
     vm.param.lang = Languages.key;
-    return MultiplePayroll.parameters.create(vm.param).then((res) => {
+    return MultiplePayroll.parameters.create(vm.param).then(() => {
       Notify.success('FORM.INFO.OPERATION_SUCCESS');
       return vm.close(true);
     })
