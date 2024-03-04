@@ -1217,25 +1217,7 @@ bluebird@^3.5.1:
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.7.2.tgz#9f229c15be272454ffa973ace0dbee79a1b0c36f"
   integrity sha512-XpNj6GDQzdfW+r2Wnn7xiSAd7TM3jzkxGXBGTtWKuSXv1xUV+azxAm8jdWZN06QTQk+2N2XB9jRDkvbmQmcRtg==
 
-body-parser@1.20.1:
-  version "1.20.1"
-  resolved "https://registry.yarnpkg.com/body-parser/-/body-parser-1.20.1.tgz#b1812a8912c195cd371a3ee5e66faa2338a5c668"
-  integrity sha512-jWi7abTbYwajOytWCQc37VulmWiRae5RyTpaCyDcS5/lMdtwSz5lOpDE67srw/HYe35f1z3fDQw+3txg7gNtWw==
-  dependencies:
-    bytes "3.1.2"
-    content-type "~1.0.4"
-    debug "2.6.9"
-    depd "2.0.0"
-    destroy "1.2.0"
-    http-errors "2.0.0"
-    iconv-lite "0.4.24"
-    on-finished "2.4.1"
-    qs "6.11.0"
-    raw-body "2.5.1"
-    type-is "~1.6.18"
-    unpipe "1.0.0"
-
-body-parser@^1.19.0:
+body-parser@1.20.2, body-parser@^1.19.0:
   version "1.20.2"
   resolved "https://registry.yarnpkg.com/body-parser/-/body-parser-1.20.2.tgz#6feb0e21c4724d06de7ff38da36dad4f57a747fd"
   integrity sha512-ml9pReCu3M61kGlqoTm2umSXTlRTuGTx0bfYj+uIUKKYycG5NtSbeetV3faSU6R7ajOPw0g/J1PvK4qNy7s5bA==
@@ -3475,14 +3457,14 @@ express-session@^1.18.0:
     safe-buffer "5.2.1"
     uid-safe "~2.1.5"
 
-express@^4.18.2:
-  version "4.18.2"
-  resolved "https://registry.yarnpkg.com/express/-/express-4.18.2.tgz#3fabe08296e930c796c19e3c516979386ba9fd59"
-  integrity sha512-5/PsL6iGPdfQ/lKM1UuielYgv3BUoJfz1aUwU9vHZ+J7gyvwdQXFEBIEIaxeGf0GIcreATNyBExtalisDbuMqQ==
+express@^4.18.3:
+  version "4.18.3"
+  resolved "https://registry.yarnpkg.com/express/-/express-4.18.3.tgz#6870746f3ff904dee1819b82e4b51509afffb0d4"
+  integrity sha512-6VyCijWQ+9O7WuVMTRBTl+cjNNIzD5cY5mQ1WM8r/LEkI2u8EYpOotESNwzNlyCn3g+dmjKYI6BmNneSr/FSRw==
   dependencies:
     accepts "~1.3.8"
     array-flatten "1.1.1"
-    body-parser "1.20.1"
+    body-parser "1.20.2"
     content-disposition "0.5.4"
     content-type "~1.0.4"
     cookie "0.5.0"
@@ -4447,10 +4429,10 @@ gulp-match@^1.1.0:
   dependencies:
     minimatch "^3.0.3"
 
-gulp-merge-json@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/gulp-merge-json/-/gulp-merge-json-2.2.0.tgz#b448ebf2e47195ab9972f36d7e6a8a269bcb1c7b"
-  integrity sha512-HEnmRRckVaLgsYRmzk14h4iD6/xNDHbLX5nuvFXHZd2Y+U9Qtvpl+IrvIh8hWs2VvpLuYaF1z8v9jkhLPYH8Mw==
+gulp-merge-json@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/gulp-merge-json/-/gulp-merge-json-2.2.1.tgz#82c73d2ac2094a314e7d20617583cb5423576012"
+  integrity sha512-w1+ka0xPu/VSEAVxvYlwEASpyZuHGVpBBtYakd4xpw+dF5QiwNh81qkNGnhGvtUINh94IInleQNs0rzy8KdyRg==
   dependencies:
     json5 "^2.2.3"
     lodash.clonedeep "^4.5.0"
@@ -5533,10 +5515,10 @@ jsdoc-type-pratt-parser@~4.0.0:
   resolved "https://registry.yarnpkg.com/jsdoc-type-pratt-parser/-/jsdoc-type-pratt-parser-4.0.0.tgz#136f0571a99c184d84ec84662c45c29ceff71114"
   integrity sha512-YtOli5Cmzy3q4dP26GraSOeAhqecewG04hoO8DY56CH4KJ9Fvv5qKWUCCo3HZob7esJQHCv6/+bnTy72xZZaVQ==
 
-json-2-csv@^5.4.0:
-  version "5.4.0"
-  resolved "https://registry.yarnpkg.com/json-2-csv/-/json-2-csv-5.4.0.tgz#ec5cec705b6c884c5c90643ec4854e6e9f472991"
-  integrity sha512-3yQ0Y6Fi7R2LL7hz5rD2+JS5xH96k+XXTidIpQv8pDHvzD4+PM5vVYLT3zb7R28oTikVDIjLuB80YqgeXI2WXg==
+json-2-csv@^5.5.0:
+  version "5.5.0"
+  resolved "https://registry.yarnpkg.com/json-2-csv/-/json-2-csv-5.5.0.tgz#b0881aaf4b842fccc13f7972584ccea8b5a96d19"
+  integrity sha512-1Y4upYpzhoweEMkFDogMU8fKLCs+ciNKviTotrrMZ8duqlycERcB38GYXpu4xcwm6YBn86cTXd7za2yUl0GAkg==
   dependencies:
     deeks "3.1.0"
     doc-path "4.1.0"
@@ -6637,10 +6619,10 @@ node-releases@^2.0.14:
   resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-2.0.14.tgz#2ffb053bceb8b2be8495ece1ab6ce600c4461b0b"
   integrity sha512-y10wOWt8yZpqXmOgRo77WaHEmhYQYGNA6y421PKsKYWEK8aW+cqAphborZDhqfyKrbZEN92CN1X2KbafY2s7Yw==
 
-nodemailer@^6.9.10:
-  version "6.9.10"
-  resolved "https://registry.yarnpkg.com/nodemailer/-/nodemailer-6.9.10.tgz#54cc1e062f20726606d3289fcf38ee731aff0d9d"
-  integrity sha512-qtoKfGFhvIFW5kLfrkw2R6Nm6Ur4LNUMykyqu6n9BRKJuyQrqEGwdXXUAbwWEKt33dlWUGXb7rzmJP/p4+O+CA==
+nodemailer@^6.9.11:
+  version "6.9.11"
+  resolved "https://registry.yarnpkg.com/nodemailer/-/nodemailer-6.9.11.tgz#900703bd6dc62855d9cea962acf261926841f825"
+  integrity sha512-UiAkgiERuG94kl/3bKfE8o10epvDnl0vokNEtZDPTq9BWzIl6EFT9336SbIT4oaTBD8NmmUTLsQyXHV82eXSWg==
 
 normalize-package-data@^2.3.2, normalize-package-data@^2.5.0:
   version "2.5.0"
@@ -7816,16 +7798,6 @@ range-parser@^1.2.1, range-parser@~1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/range-parser/-/range-parser-1.2.1.tgz#3cf37023d199e1c24d1a55b84800c2f3e6468031"
   integrity sha512-Hrgsx+orqoygnmhFbKaHE6c296J+HTAQXoxEF6gNupROmmGJRoyzfG3ccAveqCBrwr/2yxQ5BVd/GTl5agOwSg==
-
-raw-body@2.5.1:
-  version "2.5.1"
-  resolved "https://registry.yarnpkg.com/raw-body/-/raw-body-2.5.1.tgz#fe1b1628b181b700215e5fd42389f98b71392857"
-  integrity sha512-qqJBtEyVgS0ZmPGdCFPWJ3FreoqvG4MVQln/kCgF7Olq95IbOp0/BWyMwbdtn4VTvkM8Y7khCQ2Xgk/tcrCXig==
-  dependencies:
-    bytes "3.1.2"
-    http-errors "2.0.0"
-    iconv-lite "0.4.24"
-    unpipe "1.0.0"
 
 raw-body@2.5.2:
   version "2.5.2"
@@ -9883,19 +9855,19 @@ windows-release@^5.0.1:
   dependencies:
     execa "^5.1.1"
 
-winston-transport@^4.5.0:
-  version "4.5.0"
-  resolved "https://registry.yarnpkg.com/winston-transport/-/winston-transport-4.5.0.tgz#6e7b0dd04d393171ed5e4e4905db265f7ab384fa"
-  integrity sha512-YpZzcUzBedhlTAfJg6vJDlyEai/IFMIVcaEZZyl3UXIl4gmqRpU7AE89AHLkbzLUsv0NVmw7ts+iztqKxxPW1Q==
+winston-transport@^4.7.0:
+  version "4.7.0"
+  resolved "https://registry.yarnpkg.com/winston-transport/-/winston-transport-4.7.0.tgz#e302e6889e6ccb7f383b926df6936a5b781bd1f0"
+  integrity sha512-ajBj65K5I7denzer2IYW6+2bNIVqLGDHqDw3Ow8Ohh+vdW+rv4MZ6eiDvHoKhfJFZ2auyN8byXieDDJ96ViONg==
   dependencies:
     logform "^2.3.2"
     readable-stream "^3.6.0"
     triple-beam "^1.3.0"
 
-winston@^3.11.0:
-  version "3.11.0"
-  resolved "https://registry.yarnpkg.com/winston/-/winston-3.11.0.tgz#2d50b0a695a2758bb1c95279f0a88e858163ed91"
-  integrity sha512-L3yR6/MzZAOl0DsysUXHVjOwv8mKZ71TrA/41EIduGpOOV5LQVodqN+QdQ6BS6PJ/RdIshZhq84P/fStEZkk7g==
+winston@^3.12.0:
+  version "3.12.0"
+  resolved "https://registry.yarnpkg.com/winston/-/winston-3.12.0.tgz#a5d965a41d3dc31be5408f8c66e927958846c0d0"
+  integrity sha512-OwbxKaOlESDi01mC9rkM0dQqQt2I8DAUMRLZ/HpbwvDXm85IryEHgoogy5fziQy38PntgZsLlhAYHz//UPHZ5w==
   dependencies:
     "@colors/colors" "^1.6.0"
     "@dabh/diagnostics" "^2.0.2"
@@ -9907,7 +9879,7 @@ winston@^3.11.0:
     safe-stable-stringify "^2.3.1"
     stack-trace "0.0.x"
     triple-beam "^1.3.0"
-    winston-transport "^4.5.0"
+    winston-transport "^4.7.0"
 
 word-wrap@~1.2.3:
   version "1.2.5"
