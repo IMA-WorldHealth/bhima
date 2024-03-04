@@ -35,7 +35,7 @@ function MultiPayrollIndiceParamModalController(Notify, MultiplePayroll, Instanc
       .catch((error) => {
         if (error.status === 400) {
           Notify.errorMessage(error.data.code);
-          return vm.close(true);
+          vm.close(true);
         }
 
         Notify.handleError(error);
