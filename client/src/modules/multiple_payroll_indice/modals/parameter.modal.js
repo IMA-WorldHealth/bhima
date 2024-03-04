@@ -32,14 +32,14 @@ function MultiPayrollIndiceParamModalController(Notify, MultiplePayroll, Instanc
       Notify.success('FORM.INFO.OPERATION_SUCCESS');
       return vm.close(true);
     })
-    .catch((error) => {
-      if (error.status === 400) {
-        Notify.errorMessage(error.data.code);
-        return vm.close(true);
-      }
+      .catch((error) => {
+        if (error.status === 400) {
+          Notify.errorMessage(error.data.code);
+          return vm.close(true);
+        }
 
-      Notify.handleError(error);
-    });
+        Notify.handleError(error);
+      });
   };
 
 }
