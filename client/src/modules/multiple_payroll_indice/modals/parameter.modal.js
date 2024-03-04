@@ -28,11 +28,18 @@ function MultiPayrollIndiceParamModalController(Notify, MultiplePayroll, Instanc
   vm.submit = (form) => {
     if (form.$invalid) { return 0; }
     vm.param.lang = Languages.key;
-    return MultiplePayroll.parameters.create(vm.param).then(() => {
+    return MultiplePayroll.parameters.create(vm.param).then((res) => {
       Notify.success('FORM.INFO.OPERATION_SUCCESS');
       return vm.close(true);
     })
-      .catch(Notify.handleError);
+    .catch((error) => {
+      if (error.status === 400) {
+        Notify.errorMessage(error.data.code);
+        return vm.close(true);
+      }
+
+      Notify.handleError(error);
+    });
   };
 
 }
