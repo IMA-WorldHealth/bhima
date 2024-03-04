@@ -7,8 +7,10 @@
  */
 const moment = require('moment');
 const debug = require('debug')('payroll:indice');
+const { BadRequest } = require('../../../lib/errors');
 const db = require('../../../lib/db');
 const util = require('../../../lib/util');
+const translate = require('../../../lib/helpers/translate');
 
 // get staffing indice parameters
 function detail(req, res, next) {
@@ -18,7 +20,7 @@ function detail(req, res, next) {
     WHERE payroll_configuration_id = ?
   `;
   const id = req.params.payroll_config_id;
-  db.one(sql, id)
+  db.exec(sql, id)
     .then(param => {
       res.status(200).json(param);
     })
@@ -29,6 +31,8 @@ function detail(req, res, next) {
 // settup staffing indice parameters
 async function create(req, res, next) {
   const data = req.body;
+  const { lang } = data;
+  delete data.lang;
 
   data.uuid = db.uuid();
   const id = req.body.payroll_configuration_id;
@@ -321,6 +325,15 @@ async function create(req, res, next) {
 
     // Set Day index
     if (rubricDayIndexId) {
+      if (!emp.dayIndex) {
+        const messageError = translate(lang)('ERRORS.ER_EMPLOYEE_IS_NOT_CONFIGURED_CORRECTLY');
+        const messageErrorFormated = messageError.replace('%EMPLOYEE%', emp.display_name);
+        next(new BadRequest('The employee: is not configured correctly',
+          messageErrorFormated),
+        );
+        return;
+      }
+
       transaction.addQuery(
         updateStaffingIndice,
         [emp.dayIndex, id, emp.employee_buid, rubricDayIndexId],
