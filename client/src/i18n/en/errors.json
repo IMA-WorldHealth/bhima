@@ -22,6 +22,7 @@
     "ER_DUP_KEY" : "A key collided in a unique database field.  Please retry your action.  If the problem persists, contact the developers.",
     "ER_DUP_ENTRY" : "You have duplicated a value in a unique field!  Please make sure that the necessary values are unique.",
     "ER_DUP_PURCHASE_ORDER_ITEM" : "You have duplicate items for an inventory item (shown in red).  Please delete it and update the previous item with that inventory item.",
+    "ER_EMPLOYEE_IS_NOT_CONFIGURED_CORRECTLY" : "The employee: \"%EMPLOYEE%\" is not configured correctly",
     "ER_EXPIRED_STOCK_LOTS" : "Some stock lots are expired",
     "ER_STOCK_LOT_IS_EXPIRED" : "Stock lot '{{label}}' cannot be selected because it is expired",
     "ER_BAD_FIELD_ERROR" : "Column does not exist in database.",

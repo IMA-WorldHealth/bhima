@@ -18,7 +18,6 @@ function lookupGrade(uid) {
   return db.one(sql, [db.bid(uid)], uid, 'grade');
 }
 
-
 // Lists of grades of hospital employees.
 function list(req, res, next) {
   let sql = 'SELECT BUID(uuid) as uuid, text FROM grade ;';
@@ -49,7 +48,6 @@ function detail(req, res, next) {
     .done();
 }
 
-
 // POST /grade
 function create(req, res, next) {
   const data = req.body;
@@ -67,7 +65,6 @@ function create(req, res, next) {
     .catch(next)
     .done();
 }
-
 
 // PUT /grade /:uuid
 function update(req, res, next) {
@@ -103,7 +100,6 @@ function del(req, res, next) {
     .catch(next)
     .done();
 }
-
 
 // get list of Grade
 exports.list = list;
