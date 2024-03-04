@@ -1142,6 +1142,7 @@
             "ONLY_TWO_SECTORS":"Please select two sectors only",
             "ONLY_TWO_VILLAGES":"Please select two villages only",
             "ATTENTION_CONFIGURED": "Warning! Only employees waiting for configuration can be configured",
+            "ATTENTION_NEGATIVE_VALUE": "Warning, there are employees for whom the totality of their deductions is greater than their gross salary, please correct this problem​",
             "ATTENTION_PAYSLIPS": "Warning! There are no payslips records for employees waiting for configuration",
             "ATTENTION_WAITING_LIST": "Warning! Only configured employees can be placed in the payroll waiting list",
             "ATTENTION_SELECTED": "Warning! You have not selected any element",
