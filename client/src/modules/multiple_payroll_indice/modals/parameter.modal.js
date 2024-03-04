@@ -18,7 +18,10 @@ function MultiPayrollIndiceParamModalController(Notify, MultiplePayroll, Instanc
   vm.onSelectPayrollPeriod = (payrollConfig) => {
     vm.param.payroll_configuration_id = payrollConfig.id;
     MultiplePayroll.parameters.read(payrollConfig.id).then(parameter => {
-      vm.param = parameter;
+      if (parameter.length) {
+        const [param] = parameter;
+        vm.param = param;
+      }
     });
   };
 

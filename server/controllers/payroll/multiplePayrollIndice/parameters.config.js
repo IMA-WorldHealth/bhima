@@ -20,7 +20,7 @@ function detail(req, res, next) {
     WHERE payroll_configuration_id = ?
   `;
   const id = req.params.payroll_config_id;
-  db.one(sql, id)
+  db.exec(sql, id)
     .then(param => {
       res.status(200).json(param);
     })
