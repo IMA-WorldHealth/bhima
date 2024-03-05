@@ -45,7 +45,7 @@
             {{/each}}
           </tbody>
           <tr class="text-capitalize">
-            <td style="text-align: right;" colspan="2">{{translate 'TABLE.COLUMNS.TOTAL' }} </td>
+            <td style="text-align: right;" colspan="3">{{translate 'TABLE.COLUMNS.TOTAL' }} </td>
             {{#each rubEnterprises}}
               <td style="text-align: right;">{{currency (multiply total ../payrollPeriod.exchangeRate) ../payrollPeriod.currency}}</td>
             {{/each}}
