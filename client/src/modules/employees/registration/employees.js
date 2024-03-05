@@ -92,7 +92,9 @@ function EmployeeController(Employees, Services, Grades, Functions, Titles, Cred
   }
 
   function onSelectGrade(element) {
-    vm.employee.individual_salary = element.basic_salary;
+    if (!vm.employee.individual_salary) {
+      vm.employee.individual_salary = element.basic_salary;
+    }
   }
 
   // Expose lenths from util
