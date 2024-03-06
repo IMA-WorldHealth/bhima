@@ -35,18 +35,24 @@ test.describe('transaction types', () => {
 
   test('successfully creates a transaction type', async () => {
     await TU.buttons.create();
-    await TU.locator('div.modal-dialog');
+    await TU.waitForSelector('div.modal-dialog');
     await TU.input('$ctrl.transactionType.text', newType.text);
     await TU.select('$ctrl.transactionType.type', newType.type);
-    await TU.buttons.submit();
+    await TU.modal.submit();
     await components.notification.hasSuccess();
   });
 
   test('successfully updates an existing transaction type', async () => {
-    await TU.reloadPage(); // Force a page reload
-    const editButton = `[data-edit-type="${newType.text}"]`;
-    await TU.waitForSelector(editButton);
+    // Wait for the page to resort by 'text' (eg label)
+    // So that the new transaction type is visible; apparently
+    // being "below the fold" affects the ability to click
+    // on the "edit" link for the transaction.
+    await TU.locator('div[role="button"]').first().click();
+    await TU.locator('div[role="button"]').first().click();
+    await TU.waitForSelector(`div:has-text("${newType.text}")`);
 
+    // Open the edit modal and edit the transaction type
+    const editButton = `[data-edit-type="${newType.text}"]`;
     await TU.locator(editButton).click();
     await TU.waitForSelector('.modal-dialog');
 
@@ -54,7 +60,6 @@ test.describe('transaction types', () => {
     await TU.select('$ctrl.transactionType.type', updateType.type);
 
     await TU.modal.submit();
-
     await components.notification.hasSuccess();
   });
 
