@@ -15,6 +15,7 @@ function EmployeeController(Employees, Services, Grades, Functions, Titles, Cred
   const { saveAsEmployee } = $state.params;
 
   vm.enterprise = Session.enterprise;
+  vm.onSelectGrade = onSelectGrade;
 
   vm.isUpdating = $state.params.uuid;
   vm.updateEditLabel = vm.isUpdating
@@ -88,6 +89,12 @@ function EmployeeController(Employees, Services, Grades, Functions, Titles, Cred
     employee.displayGender = employee.sex;
     // eslint-disable-next-line no-undef
     employee.displayAge = moment().diff(employee.dob, 'years');
+  }
+
+  function onSelectGrade(element) {
+    if (!vm.employee.individual_salary) {
+      vm.employee.individual_salary = element.basic_salary;
+    }
   }
 
   // Expose lenths from util

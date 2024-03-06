@@ -54,6 +54,7 @@ function NotifyService($translate) {
   service.danger = danger;
   service.info = info;
   service.warn = warn;
+  service.errorMessage = errorMessage;
 
   service.handleError = handleError;
 
@@ -74,6 +75,10 @@ function NotifyService($translate) {
 
   function warn(key, ttl) {
     setNotification(key, ttl, formatOptions.warn);
+  }
+
+  function errorMessage(key, ttl) {
+    setNotification(key, ttl, formatOptions.error);
   }
 
   /**

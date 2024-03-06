@@ -22,6 +22,7 @@
     "ER_DUP_KEY" : "Il ya déjà un enregistrement avec cette clé. Veuillez réessayer votre action. Si le problème persiste, contactez les développeurs.",
     "ER_DUP_ENTRY" : "Vous avez dupliqué une valeur dans un champ unique! Assurez-vous que les valeurs nécessaires sont uniques.",
     "ER_DUP_PURCHASE_ORDER_ITEM" : "Vous avez des éléments en double pour un article d'inventaire (indiqué en rouge).  Veuillez le supprimer et mettre à jour l'élément précédent avec cet élément d'inventaire.",
+    "ER_EMPLOYEE_IS_NOT_CONFIGURED_CORRECTLY" : "L'employé: \"%EMPLOYEE%\" n'est pas configuré correctement",
     "ER_EXPIRED_STOCK_LOTS" : "Certains lots de stock sont expirés",
     "ER_STOCK_LOT_IS_EXPIRED" : "Le lot de stock '{{label}}' ne peut être sélectionné car il est expiré",
     "ER_BAD_FIELD_ERROR" : "Vous avez entré un champ qui ne peut pas être stocké dans la base de données.",

@@ -918,6 +918,10 @@ a[disabled] {
   background-color: #ffb3b3 !important;
 }
 
+.negative {
+  background-color: #ffb3b3 !important;
+}
+
 .expired {
   background-color: #ff000083 !important;
 }
