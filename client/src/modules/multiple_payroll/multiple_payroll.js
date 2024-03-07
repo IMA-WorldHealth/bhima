@@ -98,6 +98,7 @@ function MultiplePayrollController(
     enableColumnMenus : false,
     flatEntityAccess  : true,
     fastWatch         : true,
+    rowTemplate       : '/modules/templates/row.negative.html',
     columnDefs,
     onRegisterApi : (api) => { vm.gridApi = api; },
   };
@@ -201,8 +202,17 @@ function MultiplePayrollController(
   vm.putOnWaiting = function putOnWaiting() {
     const employees = vm.gridApi.selection.getSelectedRows();
     vm.getSelectedEmployees = employees;
+    let numberOfEmployeesWithNegativeSalary = 0;
 
-    if (employees.length) {
+    employees.forEach(emp => {
+      if (emp.net_salary < 0) {
+        numberOfEmployeesWithNegativeSalary++;
+      }
+    });
+
+    if (numberOfEmployeesWithNegativeSalary > 0) {
+      Notify.danger('FORM.WARNINGS.ATTENTION_NEGATIVE_VALUE');
+    } else if (employees.length && (numberOfEmployeesWithNegativeSalary === 0)) {
       // get All Employees Uuid
       const employeesUuid = employees.map(emp => emp.employee_uuid);
 
