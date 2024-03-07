@@ -112,15 +112,10 @@ test.describe('Fiscal Year', () => {
   });
 
   test('forbid unbalanced submission', async () => {
-    await TU.navigate(path); // Force reload (?)
+    // Make sure we are on the last page
+    await TU.locator('.pagination-last a').click({ force : true }); // NOP if we are on the last page
 
-    // If we are not on the last page, go to it
-    const disabled = await TU.locator('li.pagination-last').isDisabled();
-    if (!disabled) {
-      await TU.locator('li.pagination-last a').click();
-    }
-
-    // the last in the list is the oldest
+    // the last FY in the list is the oldest
     await TU.locator('[data-fiscal-entry] [data-method="update"]').last().click();
 
     // click on the opening balance button

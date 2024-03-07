@@ -92,6 +92,14 @@ function PurchaseOrderPage() {
 
   // click the reset modal button
   page.reset = async function reset() {
+
+    // Deal with the confirmation dialog if it appears
+    // This is a hack that should not be needed, but does not hurt anything.
+    // @TODO figure out why this is needed and fix the root problem
+    if (await TU.locator('.modal-dialog form[name="ConfirmModalForm"]').count() > 0) {
+      TU.modal.submit();
+    }
+
     await TU.locator('[data-action="close"]').click();
   };
 
