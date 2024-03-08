@@ -18,11 +18,14 @@ The directions below assume you are working in a development environment based o
 9. Move the `server/models/migrations/next/migrate.sql` file to the directory created in the previous step.
 10. Create an empty `migrate.sql` file in `server/models/migrations/next/`.  You may insert a comment at the top of the file including the name of the new release version.
 11. Commit any updated files (`git commit ...`)
-12. Make sure your personal GITHUB_TOKEN environment variable is defined
+12. Push your branch to the BHIMA upstream repo and make a PR:
+  - `git push --set-upstream upstream release-next`
+13. Make sure your personal GITHUB_TOKEN environment variable is defined
     (assuming you have permissions to update the main BHIMA repository.  [See Github instructions for this.](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)
-13. Run `yarn release` and follow the directions.
-14. Verify the release was created and that the binary <version>.tar.gz file
+14. Run `yarn release` and follow the directions.
+15. Verify the release was created and that the binary <version>.tar.gz file
     is in the assets for the release.
+16. Via the github interface, merge your `release-next` PR into `master`
 
 (*) Optional, Best Practice: Test the latest database changes on a production database.
 
