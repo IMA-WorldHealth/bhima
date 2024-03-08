@@ -11,6 +11,7 @@ function SatisfactionRateReportController($sce, Notify, SavedReports, AppCache, 
   const reportUrl = '/reports/stock/satisfaction_rate_report';
   vm.reportDetails = {};
   vm.previewGenerated = false;
+  vm.loading = false;
   checkCachedConfiguration();
 
   vm.onSelectDepots = (depotUuids) => {
@@ -20,14 +21,20 @@ function SatisfactionRateReportController($sce, Notify, SavedReports, AppCache, 
   vm.preview = function preview(form) {
     if (form.$invalid) { return; }
     cache.reportDetails = angular.copy(vm.reportDetails);
-
+    vm.loading = true;
     SavedReports.requestPreview(reportUrl, reportData.id, angular.copy(vm.reportDetails))
       .then((result) => {
         vm.previewGenerated = true;
         vm.previewResult = $sce.trustAsHtml(result);
+        vm.loading = false;
       })
-      .catch(Notify.handleError);
+      .catch(handleError);
   };
+
+  function handleError(error) {
+    Notify.handleError(error);
+    vm.loading = false;
+  }
 
   vm.clearPreview = function clearPreview() {
     vm.previewGenerated = false;
