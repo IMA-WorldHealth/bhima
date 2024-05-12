@@ -167,7 +167,7 @@ To start a MySQL server using docker you can use:
 docker run --name mysql -p 3306:3306 \
   -e MYSQL_ROOT_PASSWORD=MyPassword \
   -e MYSQL_ROOT_HOST=% \
-  -d mysql/mysql-server:8.0 \
+  -d mysql:8.3 \
   --sql-mode='STRICT_ALL_TABLES,NO_UNSIGNED_SUBTRACTION' \
   --default-authentication-plugin=mysql_native_password
 
@@ -176,21 +176,27 @@ docker run --name mysql -p 3306:3306 \
 
 This will start a MySQL server that listens on port 3306 (the default MySQL port) on your localhost.  Additionally, you have to set `DB_HOST` in the `.env` file to `127.0.0.1`, leaving it to `localhost` will make the `mysql` command trying to connect via socket, what is not possible when using docker.
 
-If you have already a MySQL server running on port 3306 of your localhost, start docker without the port-forwarding (`-p 3306:3306`), use `docker inspect mysql5.7` to find the IP of the container and use that IP in the `.env` file as `DB_HOST`.
+Note that you can also run redis using docker if you prefer:
+
+```bash
+docker run --name redis -p 6379:6379 -d redis
+```
+
+If you have already a MySQL server running on port 3306 of your localhost, start docker without the port-forwarding (`-p 3306:3306`), use `docker inspect mysql` to find the IP of the container and use that IP in the `.env` file as `DB_HOST`.
 
 The database structure is contained in the `server/models/*.sql` files. You can execute these one by one in the order below, or simply run `yarn build:db`.
 
-1. `server/models/schema.sql`
-2. `server/models/functions.sql`
-3. `server/models/procedures.sql`
-4. `server/models/admin.sql`
-5. `server/models/triggers.sql`
+1. `server/models/01-schema.sql`
+2. `server/models/02-functions.sql`
+3. `server/models/03-procedures.sql`
+4. `server/models/98-admin.sql`
+5. `server/models/04-triggers.sql`
 
 
 This sets up the basic schema, routines, and triggers. The following scripts will build a basic dataset to begin playing around with:
 
-1. `server/models/icd10.sql`
-2. `server/models/bhima.sql`
+1. `server/models/05-icd10.sql`
+2. `server/models/06-bhima.sql`
 3. `test/data.sql`
 
 You can run all this by using the following command: `yarn build:db` Alternatively, you might use the `./sh/build-database.sh` script, customized with your environmental variables as shown below:
