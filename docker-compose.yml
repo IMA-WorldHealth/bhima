@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   bhima:
     build: .
@@ -13,14 +11,15 @@ services:
     depends_on:
       - mysql
       - redis
+    networks:
+      - backend
+
   mysql:
     image: mysql:8
-    restart: always
+    restart: unless-stopped
     command:
-      - --default-authentication-plugin=mysql_native_password
+      - --mysql-native-password=ON
       - --sql-mode=STRICT_ALL_TABLES,NO_UNSIGNED_SUBTRACTION
-      - --character-set-server=utf8mb4
-      - --collation-server=utf8mb4_unicode_ci
     volumes:
       - mysqldata:/var/lib/mysql/
       - "./temp/docker-build.sql:/docker-entrypoint-initdb.d/bhima.sql"
@@ -29,9 +28,18 @@ services:
       - MYSQL_USER=$DB_USER
       - MYSQL_PASSWORD=$DB_PASS
       - MYSQL_DATABASE=$DB_NAME
+    networks:
+      - backend
+
   redis:
     image: redis:latest
-    restart: always
+    restart: unless-stopped
+    networks:
+      - backend
+
+networks:
+  backend:
 
 volumes:
   mysqldata:
+
