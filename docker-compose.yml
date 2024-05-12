@@ -1,7 +1,7 @@
 services:
   bhima:
     build: .
-    image: imaworldhealth/bhima
+    image: ghcr.io/third-culture-software/bhima
     restart: unless-stopped
     ports:
       - $PORT:$PORT
