@@ -293,21 +293,21 @@ cp .env bin/
 echo "Building initial mysql database..."
 
 echo "[ build ] database schema"
-mysql "$BHIMA_DB_NAME" < $HOME/apps/bhima/bin/server/models/schema.sql || { echo "failed to build DB scheme" ; exit 1; }
+mysql "$BHIMA_DB_NAME" < $HOME/apps/bhima/bin/server/models/01-schema.sql || { echo "failed to build DB scheme" ; exit 1; }
 echo "[ build ] functions"
-mysql "$BHIMA_DB_NAME" < $HOME/apps/bhima/bin/server/models/functions.sql || { echo "failed to import functions into DB" ; exit 1; }
+mysql "$BHIMA_DB_NAME" < $HOME/apps/bhima/bin/server/models/02-functions.sql || { echo "failed to import functions into DB" ; exit 1; }
 
 echo "[ build ] procedures"
-mysql "$BHIMA_DB_NAME" < $HOME/apps/bhima/bin/server/models/procedures.sql || { echo "failed to import procedures into DB 1/2" ; exit 1; }
+mysql "$BHIMA_DB_NAME" < $HOME/apps/bhima/bin/server/models/03-procedures.sql || { echo "failed to import procedures into DB 1/2" ; exit 1; }
 
-mysql "$BHIMA_DB_NAME" < $HOME/apps/bhima/bin/server/models/admin.sql || { echo "failed to import procedures into DB 2/2" ; exit 1; }
+mysql "$BHIMA_DB_NAME" < $HOME/apps/bhima/bin/server/models/98-admin.sql || { echo "failed to import procedures into DB 2/2" ; exit 1; }
 
 echo "[ build ] triggers"
-mysql "$BHIMA_DB_NAME" < $HOME/apps/bhima/bin/server/models/triggers.sql
+mysql "$BHIMA_DB_NAME" < $HOME/apps/bhima/bin/server/models/04-triggers.sql
 
 echo "[ build ] default data"
-mysql  "$BHIMA_DB_NAME" < $HOME/apps/bhima/bin/server/models/icd10.sql || { echo "failed to import default data into DB 1/2" ; exit 1; }
-mysql  "$BHIMA_DB_NAME" < $HOME/apps/bhima/bin/server/models/bhima.sql || { echo "failed to import default data into DB 2/2" ; exit 1; }
+mysql  "$BHIMA_DB_NAME" < $HOME/apps/bhima/bin/server/models/05-icd10.sql || { echo "failed to import default data into DB 1/2" ; exit 1; }
+mysql  "$BHIMA_DB_NAME" < $HOME/apps/bhima/bin/server/models/06-bhima.sql || { echo "failed to import default data into DB 2/2" ; exit 1; }
 
 echo "[build] recomputing mappings"
 mysql "$BHIMA_DB_NAME" -e "Call zRecomputeEntityMap();" || { echo "failed to recompute mappings 1/2" ; exit 1; }
