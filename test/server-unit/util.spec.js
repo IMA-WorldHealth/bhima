@@ -4,7 +4,7 @@ const path = require('path');
 
 const util = require('../../server/lib/util');
 
-describe('test/sever-unit/util', () => {
+describe('test/server-unit/util', () => {
 
   it('#take() should take values from one key of each object in an array of objects', () => {
     const objects = [{ id : 1 }, { id : 2 }, { id : 3 }];

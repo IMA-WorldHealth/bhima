@@ -3,7 +3,7 @@ const { expect } = require('chai');
 
 const dataset = require('./stepdown.data');
 
-describe('test/sever-unit/stepdown', () => {
+describe('test/server-unit/stepdown', () => {
 
   let Stepdown;
 

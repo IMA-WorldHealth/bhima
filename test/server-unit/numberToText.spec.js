@@ -6,7 +6,7 @@ const util = require('../../server/lib/util');
 
 const { loadDictionary } = util;
 
-describe('test/sever-unit/numberToText', () => {
+describe('test/server-unit/numberToText', () => {
 
   // use local dictionary
   before(() => {

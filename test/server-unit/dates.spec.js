@@ -1,7 +1,7 @@
 const { expect } = require('chai');
 const dates = require('../../server/lib/template/helpers/dates');
 
-describe('test/sever-unit/dates', () => {
+describe('test/server-unit/dates', () => {
 
   it('#date() should format a date is "DD/MM/YYYY" format.', () => {
     const date = new Date('2015-03-25 12:00:00');
