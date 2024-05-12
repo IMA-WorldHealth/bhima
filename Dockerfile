@@ -36,6 +36,8 @@ RUN chown -R node:node *
 # Switch to non-root user
 USER node
 
+ENV NODE_ENV production
+
 # Define startup command
-CMD ["NODE_ENV=production", "node", "server/app.js"]
+CMD ["node", "server/app.js"]
 
