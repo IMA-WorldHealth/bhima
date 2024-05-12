@@ -38,6 +38,10 @@ USER node
 
 ENV NODE_ENV production
 
+LABEL org.opencontainers.image.source=https://github.com/third-Culture-Software/bhima
+LABEL org.opencontainers.image.description="A hospital information management application for rural Congolese hospitals"
+LABEL org.opencontainers.image.licenses=GPL
+
 # Define startup command
 CMD ["node", "server/app.js"]
 
