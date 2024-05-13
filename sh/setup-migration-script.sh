@@ -55,10 +55,10 @@ mysql -u $DB_USER --password=$DB_PASS -e "SELECT CONCAT('DROP ',ROUTINE_TYPE,' I
 echo "" >> $MIGRATION_FILE
 
 echo "[migrate] Adding latest triggers, functions, and procedures to $DATABASE."
-cat "$BHIMA_PATH"/server/models/functions.sql \
-  "$BHIMA_PATH"/server/models/procedures.sql \
-  "$BHIMA_PATH"/server/models/admin.sql \
-  "$BHIMA_PATH"/server/models/triggers.sql \
+cat "$BHIMA_PATH"/server/models/02-functions.sql \
+  "$BHIMA_PATH"/server/models/03-procedures.sql \
+  "$BHIMA_PATH"/server/models/98-admin.sql \
+  "$BHIMA_PATH"/server/models/04-triggers.sql \
   >> $MIGRATION_FILE
 
 echo "" >> $MIGRATION_FILE

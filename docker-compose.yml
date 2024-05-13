@@ -1,37 +1,48 @@
-version: '3'
-
 services:
   bhima:
     build: .
-    image: imaworldhealth/bhima
+    image: ghcr.io/third-culture-software/bhima
     restart: unless-stopped
     ports:
       - $PORT:$PORT
     environment:
       - REDIS_HOST=redis
       - DB_HOST=mysql
+      - DB_USER=$DB_USER
+      - DB_PASS=$DB_PASS
     depends_on:
       - mysql
       - redis
+    networks:
+      - backend
+
   mysql:
-    image: mysql:8
-    restart: always
+    image: mysql:8.3 # pin 8.3 ; https://github.com/appsignal/appsignal-nodejs/commit/0586d603c75aa12f8e99f4a5716fd8445f10d79c
+    restart: unless-stopped
     command:
-      - --default-authentication-plugin=mysql_native_password
+      #- --mysql-native-password=ON # See https://github.com/appsignal/appsignal-nodejs/commit/0586d603c75aa12f8e99f4a5716fd8445f10d79c
       - --sql-mode=STRICT_ALL_TABLES,NO_UNSIGNED_SUBTRACTION
-      - --character-set-server=utf8mb4
-      - --collation-server=utf8mb4_unicode_ci
+      - --default-authentication-plugin=mysql_native_password
     volumes:
       - mysqldata:/var/lib/mysql/
-      - "./temp/docker-build.sql:/docker-entrypoint-initdb.d/bhima.sql"
+      - ./server/models:/docker-entrypoint-initdb.d
     environment:
-      - MYSQL_RANDOM_ROOT_PASSWORD=1
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
       - MYSQL_USER=$DB_USER
       - MYSQL_PASSWORD=$DB_PASS
       - MYSQL_DATABASE=$DB_NAME
+    networks:
+      - backend
+
   redis:
     image: redis:latest
-    restart: always
+    restart: unless-stopped
+    networks:
+      - backend
+
+networks:
+  backend:
 
 volumes:
   mysqldata:
+
