@@ -8,6 +8,8 @@ services:
     environment:
       - REDIS_HOST=redis
       - DB_HOST=mysql
+      - DB_USER=$DB_USER
+      - DB_PASS=$DB_PASS
     depends_on:
       - mysql
       - redis
