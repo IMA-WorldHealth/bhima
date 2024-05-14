@@ -47,4 +47,3 @@ networks:
 
 volumes:
   mysqldata:
-

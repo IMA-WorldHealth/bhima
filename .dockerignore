@@ -5,6 +5,7 @@ node_modules
 # ignore the .env file, we will use .env.docker
 .env
 
+
 # ignore logging utilities
 npm-debug.log
 yarn-error.log

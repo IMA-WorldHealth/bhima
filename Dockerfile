@@ -27,7 +27,6 @@ RUN npm install && \
    NODE_ENV=production npm run build && \
    npm install --omit=dev
 
-
 # Change directory to bin
 WORKDIR /usr/src/app/bin/
 
@@ -45,4 +44,3 @@ LABEL org.opencontainers.image.licenses=GPL
 
 # Define startup command
 CMD ["node", "server/app.js"]
-
