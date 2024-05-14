@@ -19,13 +19,14 @@ WORKDIR /usr/src/app
 # Copy source code
 COPY --chown=node:node . .
 
+# Copy environment file to bin folder
+COPY --chown=node:node .env.docker /usr/src/app/.env
+
 # Install dependencies
 RUN npm install && \
    NODE_ENV=production npm run build && \
    npm install --omit=dev
 
-# Copy environment file to bin folder
-COPY .env bin/
 
 # Change directory to bin
 WORKDIR /usr/src/app/bin/
