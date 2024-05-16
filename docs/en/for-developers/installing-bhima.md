@@ -4,6 +4,8 @@ _Note: these are the instructions for installing the BHIMA development environme
 
 The BHIMA software can be complex to install.  We only officially support Linux, so the following guide assumes you are setting up BHIMA on Debian-based Linux environment.
 
+Note: if you are running on the x64 architecture, you may consider [installing BHIMA using docker](./installing-bhima-with-docker.md).
+
 This guide will get you up and running with bhima locally. Please note that bhima is under active development and tends to move fast and break things. If you are interested in development progress, shoot us a line at [developers@imaworldhealth.org](mailto:developers@imaworldhealth.org).
 
 ### Dependencies
