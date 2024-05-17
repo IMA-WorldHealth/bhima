@@ -8,12 +8,13 @@ Currently, BHIMA is compatible only with the x64 architecture. If you are using 
 
 ### Installation Steps
 
-1. Download the Docker Compose File
+1. Clone the BHIMA repository
 
-Retrieve the latest Docker Compose file from the repository:
+Retrieve the latest Docker Compose file by cloning the repository:
 
 ```bash
-wget -c "https://raw.githubusercontent.com/Third-Culture-Software/bhima/master/docker-compose.yml" docker-compose.yml
+git clone --depth 1 https://github.com/Third-Culture-Software/bhima.git
+cd bhima
 ```
 
 2. Configure Environment Variables
