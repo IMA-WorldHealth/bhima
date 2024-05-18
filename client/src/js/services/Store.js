@@ -5,20 +5,16 @@ angular.module('bhima.services')
  * @class Store
  *
  * @description
- * This class implements an object data store, similar to Dojo's Memory Store.  It could
- * forseeably be replaced by a WeakMap() in the future.
+ * This class implements an object data store, similar to Dojo's Memory Store.
+ * It has been migrated to use the Map API.  New code should likely just use
+ * a new Map() instead of using the store service.
  */
 function StoreService() {
 
-  /** @constructor */
+  // deprecated
   function Store(options = {}) {
-    // default to empty options
-
-    // default index and data
-    this.index = {};
-    this.data = [];
-
-    // default the identifier to 'id'
+    // default data
+    this.data = new Map();
     this.identifier = options.identifier || 'id';
 
     if (options.data) { this.setData(options.data); }
@@ -34,8 +30,10 @@ function StoreService() {
    * @param {Array} data - an array of objects that will be stored in the instance.
    */
   Store.prototype.setData = function setData(data) {
-    this.data = data;
-    this.recalculateIndex();
+    this.data.clear();
+    data.forEach((item) => {
+      this.post(item);
+    });
   };
 
   /**
@@ -51,17 +49,12 @@ function StoreService() {
    * matches.  Otherwise, it returns undefined.
    */
   Store.prototype.get = function get(id) {
-    const key = this.index[id];
-    if (angular.isUndefined(key)) { return undefined; }
-    return this.data[key];
+    return this.data.get(id);
   };
 
-  // return only the latest (indexed) copy of each data element
+  // return the latest copy of each data element
   Store.prototype.getAll = function getAll() {
-    const keys = Object.keys(this.index);
-    return keys.map((key) => {
-      return this.data[this.index[key]];
-    });
+    return Array.from(this.data.values());
   };
 
   /**
@@ -74,21 +67,16 @@ function StoreService() {
    * @param {Object} object - an object to be inserted into the store.
    */
   Store.prototype.post = function post(object) {
-    const { data, index, identifier } = this;
-
-    // default to an empty array if data not provided
-    if (!data) { this.data = []; }
-
-    const id = object[identifier];
+    const id = object[this.identifier];
 
     if (angular.isUndefined(id)) {
       throw new Error(
-        `Trying to insert an object without the identity property "${identifier}".\n`
+        `Trying to insert an object without the identity property "${this.identifier}".\n`
         + `Failing object: ${JSON.stringify(object)}`,
       );
     }
 
-    index[id] = data.push(object) - 1;
+    this.data.set(id, object);
   };
 
   /**
@@ -100,12 +88,7 @@ function StoreService() {
    * @param {Object} object - an object to be inserted into the store
    */
   Store.prototype.remove = function remove(id) {
-    const { data, index } = this;
-
-    if (id in index) {
-      data.splice(index[id], 1);
-      this.setData(data);
-    }
+    this.data.delete(id);
   };
 
   /**
@@ -120,34 +103,17 @@ function StoreService() {
    * @return {Boolean} - true if the value exists in the store.
    */
   Store.prototype.contains = function contains(id) {
-    return !!this.get(id);
+    return this.data.has(id);
   };
 
   /**
    * @method clear
    *
    * @description
-   * Clears all data from the store and recalculates the index.
+   * Clears all data from the store.
    */
   Store.prototype.clear = function clear() {
-    this.data.length = 0;
-    this.recalculateIndex();
-  };
-
-  /**
-   * @method recalculateIndex
-   *
-   * @description
-   * Recalculates the stores index when data is added/removed via other methods.
-   */
-  Store.prototype.recalculateIndex = function recalculateIndex() {
-    const { data } = this;
-    this.index = {};
-    const { index, identifier } = this;
-
-    for (let i = 0, l = data.length; i < l; i += 1) {
-      index[data[i][identifier]] = i;
-    }
+    this.data.clear();
   };
 
   return Store;
