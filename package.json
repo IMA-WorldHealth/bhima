@@ -201,7 +201,7 @@
     "mocha": "^10.4.0",
     "postcss": "^8.4.38",
     "qs": "^6.12.1",
-    "release-it": "^17.2.1",
+    "release-it": "^17.3.0",
     "sinon": "^18.0.0",
     "standard-version": "^9.5.0",
     "typescript": "^5.4.5"
