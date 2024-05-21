@@ -256,9 +256,9 @@ async function getItemsMetadata(params) {
       inventory.stock_max, inventory.created_at AS timestamp, inventory.type_id, inventory.unit_id,
       inventory.note,  inventory.unit_weight, inventory.unit_volume, inventory.is_asset,
       inventory.manufacturer_brand, inventory.manufacturer_model, inventory.is_count_per_container,
-      ig.sales_account, ig.stock_account, ig.donation_account, inventory.sellable,
+      ig.sales_account, ig.stock_account, inventory.sellable,
       inventory.note, inventory.unit_weight, inventory.unit_volume, ig.sales_account, ig.stock_account,
-      ig.donation_account, ig.cogs_account, inventory.default_quantity, ig.tracking_consumption, ig.tracking_expiration,
+      ig.cogs_account, inventory.default_quantity, ig.tracking_consumption, ig.tracking_expiration,
       inventory.importance, inventory.updated_at,  u.display_name AS last_user_update,
       GROUP_CONCAT(BUID(t.uuid), ';', t.name, ';', t.color ORDER BY t.name) AS tag_details,
       ${usePreviousPrice ? previousPriceQuery : 'inventory.price'}
