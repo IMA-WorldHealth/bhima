@@ -2,16 +2,24 @@
 node_modules
 .git
 
-# ignore loggin utilities
+# ignore the .env file, we will use .env.docker
+.env
+
+
+# ignore logging utilities
 npm-debug.log
 yarn-error.log
 
+
 # ignore documentation
 *.md
+CNAME
 
 # ignore unnecessary folders
 docs
 temp
-test
+test*
+results
 sh
 bin
+

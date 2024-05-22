@@ -132,7 +132,7 @@ Tu peux aussi utiliser docker avec mysql.  Le command pour le lancer est:
 docker run --name mysql -p 3306:3306 \
   -e MYSQL_ROOT_PASSWORD=MyPassword \
   -e MYSQL_ROOT_HOST=% \
-  -d mysql/mysql-server:8.0 \
+  -d mysql:8.3 \
   --sql-mode='STRICT_ALL_TABLES,NO_UNSIGNED_SUBTRACTION' \
   --default-authentication-plugin=mysql_native_password
 
@@ -141,18 +141,18 @@ docker run --name mysql -p 3306:3306 \
 Il faut changer le fichier `.env` pour mettre `DB_HOST` a `127.0.0.1`.
 
 
-La structure de la base de données est contenue dans les fichiers `server/models/*. Sql`. Vous pouvez les exécuter un par un dans l'ordre ci-dessous ou simplement lancer `yarn build: db`.
+La structure de la base de données est contenue dans les fichiers `server/models/*.sql`. Vous pouvez les exécuter un par un dans l'ordre ci-dessous ou simplement lancer `yarn build: db`.
 
-1. `server/models/schema.sql`
-2. `server/models/triggers.sql`
-3. `server/models/functions.sql`
-4. `server/models/procedures.sql`
-5. `server/models/admin.sql`
+1. `server/models/01-schema.sql`
+2. `server/models/04-triggers.sql`
+3. `server/models/02-functions.sql`
+4. `server/models/03-procedures.sql`
+5. `server/models/98-admin.sql`
 
 Ceci configure le schéma de base, les déclencheurs et les routines. Les scripts suivants créeront un ensemble de données de base avec lequel commencer à jouer:
 
-1. `server/models/icd10.sql`
-2. `server/models/bhima.sql`
+1. `server/models/05-icd10.sql`
+2. `server/models/06-bhima.sql`
 3. `test/data.sql`
 
 Vous pouvez exécuter tout cela en utilisant la commande suivante: `yarn build:db` Vous pouvez également utiliser le script`./sh/build-database.sh`, personnalisé à l'aide de vos variables d'environnement, comme indiqué ci-dessous:
