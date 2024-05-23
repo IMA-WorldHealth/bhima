@@ -35,7 +35,7 @@ class DatabaseConnector {
 
       // https://sidorares.github.io/node-mysql2/docs/documentation#known-incompatibilities-with-node-mysql
       // Ensure that numbers are returned as numbers, not strings.
-      decimalNumbers: true,
+      decimalNumbers : true,
 
       // NOTE(@jniles): the MySQL character set variable must be uppercase.  To
       // see the full list of check out:
