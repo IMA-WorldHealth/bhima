@@ -1,7 +1,6 @@
 services:
   bhima:
     build: .
-    #image: ghcr.io/third-culture-software/bhima
     image: thirdculturesoftware/bhima
     restart: unless-stopped
     ports:
@@ -19,11 +18,11 @@ services:
       - backend
 
   mysql:
-    image: mysql:8.3 # pin 8.3 ; https://github.com/appsignal/appsignal-nodejs/commit/0586d603c75aa12f8e99f4a5716fd8445f10d79c
+    image: mysql:8.4
     restart: unless-stopped
     command:
       - --sql-mode=STRICT_ALL_TABLES,NO_UNSIGNED_SUBTRACTION
-      - --default-authentication-plugin=mysql_native_password
+      - --mysql-native-password=ON
     volumes:
       - mysqldata:/var/lib/mysql/
       - ./server/models:/docker-entrypoint-initdb.d
