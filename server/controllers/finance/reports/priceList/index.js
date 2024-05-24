@@ -81,8 +81,8 @@ function lookupPriceList(uuid) {
       ig.unique_item, inventory.consumable,inventory.locked, inventory.stock_min,
       inventory.stock_max, inventory.created_at AS timestamp, inventory.type_id, inventory.unit_id,
       inventory.note,  inventory.unit_weight, inventory.unit_volume,
-      ig.sales_account, ig.stock_account, ig.donation_account, inventory.sellable, inventory.note,
-      inventory.unit_weight, inventory.unit_volume, ig.sales_account, ig.stock_account, ig.donation_account,
+      ig.sales_account, ig.stock_account, inventory.sellable, inventory.note,
+      inventory.unit_weight, inventory.unit_volume, ig.sales_account, ig.stock_account,
       ig.cogs_account, inventory.default_quantity, s1.priceListValue, s1.is_percentage
     FROM inventory
       JOIN inventory_type AS it ON inventory.type_id = it.id

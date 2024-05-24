@@ -15,50 +15,49 @@ SET CHARACTER SET utf8mb4, CHARACTER_SET_CONNECTION = utf8mb4;
 -- inventory group
 --
 
-INSERT INTO inventory_group (uuid,name,code,sales_account,cogs_account,stock_account,donation_account,unique_item,tracking_consumption,tracking_expiration) VALUES
-(0xD81D0C1D727C11EA8241000C2997DDC0,"Anti Retro Viraux","D.ARV",242,201,162,NULL,0,1,1)
-,(0xD81D0FEB727C11EA8241000C2997DDC0,"Tests diagnostics","D.DGT",242,201,162,NULL,0,1,1)
-,(0xD81D12F0727C11EA8241000C2997DDC0,"Antiseptiques & Désinfectants","D.DIS",242,201,162,NULL,0,1,1)
-,(0xD81D144E727C11EA8241000C2997DDC0,"Produits à usage Ophtalmique","D.EXO",242,201,162,NULL,0,1,1)
-,(0xD81D1537727C11EA8241000C2997DDC0,"Produits à Usage Externe","D.EXT",242,201,162,NULL,0,1,1)
-,(0xD81D1610727C11EA8241000C2997DDC0,"Solutés Massifs pour perfusion","D.INF",242,201,162,NULL,0,1,1)
-,(0xD81D16DA727C11EA8241000C2997DDC0,"Produits Injectables","D.INJ",242,201,162,NULL,0,1,1)
-,(0xD81D17A7727C11EA8241000C2997DDC0,"Produits Oraux","D.ORA",242,201,162,NULL,0,1,1)
-,(0xD81D1884727C11EA8241000C2997DDC0,"Sérums et vaccins","D.VAC",242,201,162,NULL,0,1,1)
-,(0xD81D194A727C11EA8241000C2997DDC0,"Equipements pour l'anesthesie","E.ANE",242,201,162,NULL,0,1,0)
-;
-INSERT INTO inventory_group (uuid,name,code,sales_account,cogs_account,stock_account,donation_account,unique_item,tracking_consumption,tracking_expiration) VALUES
-(0xD81D1A0B727C11EA8241000C2997DDC0,"Equipement anthropo","E.ANT",242,201,162,NULL,0,1,0)
-,(0xD81D1ACD727C11EA8241000C2997DDC0,"Equipements Hospitaliers","E.HOE",242,201,162,NULL,0,1,0)
-,(0xD81D1BA7727C11EA8241000C2997DDC0,"Petit Matériel de laboratoire","E.LAE",242,201,162,NULL,0,1,1)
-,(0xD81D1C87727C11EA8241000C2997DDC0,"Linge et Champs Opératoires","E.LIN",242,201,162,NULL,0,1,0)
-,(0xD81D1D4A727C11EA8241000C2997DDC0,"Equipements Médicaux","E.MEQ",242,201,162,NULL,0,1,0)
-,(0xD81D1E12727C11EA8241000C2997DDC0,"Equipements de Stérilisation","E.STE",242,201,162,NULL,0,1,0)
-,(0xD81D1EE0727C11EA8241000C2997DDC0,"Petits Equipements Chirurgicau","E.SUR",242,201,162,NULL,0,1,0)
-,(0xD81D1FA7727C11EA8241000C2997DDC0,"Kit Laboratoire","K.LAB",242,201,162,NULL,0,1,1)
-,(0xD81D2067727C11EA8241000C2997DDC0,"Kits médicaux","K.MED",242,201,162,NULL,0,1,1)
-,(0xD81D212C727C11EA8241000C2997DDC0,"Kits Chirurgicaux","K.SUR",242,201,162,NULL,0,1,1)
-;
-INSERT INTO inventory_group (uuid,name,code,sales_account,cogs_account,stock_account,donation_account,unique_item,tracking_consumption,tracking_expiration) VALUES
-(0xD81D21FA727C11EA8241000C2997DDC0,"Nutritions","N.FOS",242,201,162,NULL,0,1,1)
-,(0xD81D22BB727C11EA8241000C2997DDC0,"Equipement Chaine de froid","P.COL",242,201,162,NULL,0,1,0)
-,(0xD81D2385727C11EA8241000C2997DDC0,"Equipement Eléctrique","P.ELE",242,201,162,NULL,0,1,0)
-,(0xD81D244F727C11EA8241000C2997DDC0,"Sondes et Drains","S.CTD",242,201,162,NULL,0,1,1)
-,(0xD81D251A727C11EA8241000C2997DDC0,"Bandages et Pansements","S.DRE",242,201,162,NULL,0,1,1)
-,(0xD81D25DD727C11EA8241000C2997DDC0,"Matériels d'injection","S.INS",242,201,162,NULL,0,1,1)
-,(0xD81D26B2727C11EA8241000C2997DDC0,"Réactifs de laboratoire","S.LAS",242,201,162,NULL,0,1,1)
-,(0xD81D278D727C11EA8241000C2997DDC0,"Dispositifs de laboratoire","S.MST",242,201,162,NULL,0,1,1)
-,(0xD81D2857727C11EA8241000C2997DDC0,"Dispositifs Médico-chirurgicaux","S.MSU",242,201,162,NULL,0,1,1)
-,(0xD81D291E727C11EA8241000C2997DDC0,"Sutures et Ligatures","S.SUT",242,201,162,NULL,0,1,1)
-;
-INSERT INTO inventory_group (uuid,name,code,sales_account,cogs_account,stock_account,donation_account,unique_item,tracking_consumption,tracking_expiration) VALUES
-(0xD81D29E8727C11EA8241000C2997DDC0,"Produits et Consommables de Radio","S.XRS",242,201,162,NULL,0,1,1)
-,(0xF4C4F0D8728411EA8241000C2997DDC0,"Eau, Hygiène et Assainissement","3167969",NULL,NULL,NULL,NULL,0,1,0)
-,(0x552843E2C9234CFABEA321C65E350922,"Équipement informatique","E.IT",362,361,360,NULL,0,0,0)
-;
+INSERT INTO inventory_group (uuid,name,code,sales_account,cogs_account,stock_account,unique_item,tracking_consumption,tracking_expiration) VALUES
+(0xD81D0C1D727C11EA8241000C2997DDC0,"Anti Retro Viraux","D.ARV",242,201,162,0,1,1)
+,(0xD81D0FEB727C11EA8241000C2997DDC0,"Tests diagnostics","D.DGT",242,201,162,0,1,1)
+,(0xD81D12F0727C11EA8241000C2997DDC0,"Antiseptiques & Désinfectants","D.DIS",242,201,162,0,1,1)
+,(0xD81D144E727C11EA8241000C2997DDC0,"Produits à usage Ophtalmique","D.EXO",242,201,162,0,1,1)
+,(0xD81D1537727C11EA8241000C2997DDC0,"Produits à Usage Externe","D.EXT",242,201,162,0,1,1)
+,(0xD81D1610727C11EA8241000C2997DDC0,"Solutés Massifs pour perfusion","D.INF",242,201,162,0,1,1)
+,(0xD81D16DA727C11EA8241000C2997DDC0,"Produits Injectables","D.INJ",242,201,162,0,1,1)
+,(0xD81D17A7727C11EA8241000C2997DDC0,"Produits Oraux","D.ORA",242,201,162,0,1,1)
+,(0xD81D1884727C11EA8241000C2997DDC0,"Sérums et vaccins","D.VAC",242,201,162,0,1,1)
+,(0xD81D194A727C11EA8241000C2997DDC0,"Equipements pour l'anesthesie","E.ANE",242,201,162,0,1,0);
 
-INSERT INTO inventory_group (uuid,name,code,sales_account,cogs_account,stock_account,donation_account,unique_item,tracking_consumption,tracking_expiration, depreciation_rate) VALUES
-(0x552843E2F9234CFABEA321C65E350921,"Véhicule de transport","E.VEH",362,361,359,NULL,0,0,0,15.5);
+INSERT INTO inventory_group (uuid,name,code,sales_account,cogs_account,stock_account,unique_item,tracking_consumption,tracking_expiration) VALUES
+(0xD81D1A0B727C11EA8241000C2997DDC0,"Equipement anthropo","E.ANT",242,201,162,0,1,0)
+,(0xD81D1ACD727C11EA8241000C2997DDC0,"Equipements Hospitaliers","E.HOE",242,201,162,0,1,0)
+,(0xD81D1BA7727C11EA8241000C2997DDC0,"Petit Matériel de laboratoire","E.LAE",242,201,162,0,1,1)
+,(0xD81D1C87727C11EA8241000C2997DDC0,"Linge et Champs Opératoires","E.LIN",242,201,162,0,1,0)
+,(0xD81D1D4A727C11EA8241000C2997DDC0,"Equipements Médicaux","E.MEQ",242,201,162,0,1,0)
+,(0xD81D1E12727C11EA8241000C2997DDC0,"Equipements de Stérilisation","E.STE",242,201,162,0,1,0)
+,(0xD81D1EE0727C11EA8241000C2997DDC0,"Petits Equipements Chirurgicau","E.SUR",242,201,162,0,1,0)
+,(0xD81D1FA7727C11EA8241000C2997DDC0,"Kit Laboratoire","K.LAB",242,201,162,0,1,1)
+,(0xD81D2067727C11EA8241000C2997DDC0,"Kits médicaux","K.MED",242,201,162,0,1,1)
+,(0xD81D212C727C11EA8241000C2997DDC0,"Kits Chirurgicaux","K.SUR",242,201,162,0,1,1);
+
+INSERT INTO inventory_group (uuid,name,code,sales_account,cogs_account,stock_account,unique_item,tracking_consumption,tracking_expiration) VALUES
+(0xD81D21FA727C11EA8241000C2997DDC0,"Nutritions","N.FOS",242,201,162,0,1,1)
+,(0xD81D22BB727C11EA8241000C2997DDC0,"Equipement Chaine de froid","P.COL",242,201,162,0,1,0)
+,(0xD81D2385727C11EA8241000C2997DDC0,"Equipement Eléctrique","P.ELE",242,201,162,0,1,0)
+,(0xD81D244F727C11EA8241000C2997DDC0,"Sondes et Drains","S.CTD",242,201,162,0,1,1)
+,(0xD81D251A727C11EA8241000C2997DDC0,"Bandages et Pansements","S.DRE",242,201,162,0,1,1)
+,(0xD81D25DD727C11EA8241000C2997DDC0,"Matériels d'injection","S.INS",242,201,162,0,1,1)
+,(0xD81D26B2727C11EA8241000C2997DDC0,"Réactifs de laboratoire","S.LAS",242,201,162,0,1,1)
+,(0xD81D278D727C11EA8241000C2997DDC0,"Dispositifs de laboratoire","S.MST",242,201,162,0,1,1)
+,(0xD81D2857727C11EA8241000C2997DDC0,"Dispositifs Médico-chirurgicaux","S.MSU",242,201,162,0,1,1)
+,(0xD81D291E727C11EA8241000C2997DDC0,"Sutures et Ligatures","S.SUT",242,201,162,0,1,1);
+
+INSERT INTO inventory_group (uuid,name,code,sales_account,cogs_account,stock_account,unique_item,tracking_consumption,tracking_expiration) VALUES
+(0xD81D29E8727C11EA8241000C2997DDC0,"Produits et Consommables de Radio","S.XRS",242,201,162,0,1,1)
+,(0xF4C4F0D8728411EA8241000C2997DDC0,"Eau, Hygiène et Assainissement","3167969",NULL,NULL,NULL,1,1,0)
+,(0x552843E2C9234CFABEA321C65E350922,"Équipement informatique","E.IT",362,361,360,0,0,0);
+
+INSERT INTO inventory_group (uuid,name,code,sales_account,cogs_account,stock_account,unique_item,tracking_consumption,tracking_expiration, depreciation_rate) VALUES
+(0x552843E2F9234CFABEA321C65E350921,"Véhicule de transport","E.VEH",362,361,359,0,0,0,15.5);
 
 --
 -- inventory
@@ -2395,4 +2394,3 @@ INSERT INTO `inventory` (`enterprise_id`, `uuid`, `code`, `text`, `price`, `defa
 	(1,0xC3FD5A026A7549FCB2F376EE4C3FBFB7,"DEXT_PRED5G5_0","Prednisolone, 0,5%, Solution, Flacon, Unité",3.8900,1,0xD81D1537727C11EA8241000C2997DDC0,40,0,0,0,0,0,1,1,1,NULL,0,1.0000,0.0000,NULL,0,0,NULL,"2020-03-30 12:49:56",NULL),
 	(1,0xF4C4FD3F728411EA8241000C2997DDC0,"CWAT_BOLT---_0","Bouillotte",0.4400,1,0xF4C4F0D8728411EA8241000C2997DDC0,40,0,0,0,0,0,1,1,1,NULL,0,1.0000,0.0000,NULL,0,0,NULL,"2020-03-30 12:49:55",NULL),
 	(1,0xF6556E729D0547998CBD0A03B1810185,"DINJ_TRIB1A2_0","Vitamines B1+B6+B12, 100+50+0.5mg/2ml, Amp, Unité",3.6200,1,0xD81D16DA727C11EA8241000C2997DDC0,40,0,0,0,0,0,1,1,1,NULL,0,1.0000,0.0000,NULL,0,0,NULL,"2020-03-30 12:49:56",NULL);
-
