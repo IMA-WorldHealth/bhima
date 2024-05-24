@@ -5,7 +5,7 @@
 *~
 
 # ignore lock file until it works with npm < version 5
-package-lock.json
+#package-lock.json
 
 # ignore all compressed files
 *.gz, *.xz, *.zip

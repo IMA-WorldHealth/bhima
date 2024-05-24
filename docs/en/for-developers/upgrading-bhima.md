@@ -18,7 +18,7 @@ When upgrading from an old version to a new version, it is important to run all 
 
 Changes to stored procedures, triggers, and functions are **not** tracked in migration scripts.  This is because they are due to frequent change and are already stored in the `server/models` directory.  Therefore, it is sufficient to simply rebuild them from source.
 
-To help with this operation, BHIMA provides a [migration helper script](https://github.com/IMA-WorldHealth/bhima/blob/master/sh/setup-migration-script.sh) that can be invoked with `yarn migrate`.  This script does several things:
+To help with this operation, BHIMA provides a [migration helper script](https://github.com/IMA-WorldHealth/bhima/blob/master/sh/setup-migration-script.sh) that can be invoked with `npm run migrate`.  This script does several things:
 
 1. Drops all the triggers
 2. Drops all routines
@@ -36,9 +36,9 @@ As mentioned above, releases are managed on Github.  There are two ways to obtai
 The basic steps to upgrade now are:
 
 1. Obtain the latest release either by downloading and unzipping or checking out the tag with git.
-2. Run `yarn` to upgrade dependencies.
-3. Run `NODE_ENV=production yarn build` to compile the latest client-side code
-4. Run `yarn migrate` to create the migration script.
+2. Run `npm install` to upgrade dependencies.
+3. Run `NODE_ENV=production npm run build` to compile the latest client-side code
+4. Run `npm run migrate` to create the migration script.
 5. Run `mysql $DATABASE < migration-$DATABASE.sql` as described above.
 6. Restart any running BHIMA instances
 
