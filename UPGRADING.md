@@ -25,7 +25,7 @@ These steps describe the typical deployment setup.  We assume that the BHIMA sof
 7. Copy the `.env` file from the current application into the `bhima-$RELEASE/bin/` folder and make any changes necessary to `.env`.
 8. Copy the contents (but not sub-directories) from the `bhima-$RELEASE/bin/` folder into the `bhima-$RELEASE/` folder.  This can be done with `cp $HOME/apps/bhima-$RELEASE/bin/* $HOME/apps/bhima-$RELEASE/bin/`
 9. Change directory into the release directory with `cd $HOME/apps/bhima-$RELEASE/`
-10. Install the `node_modules/` in the `bhima-$RELEASE/` folder with the command: `NODE_ENV=production yarn`
+10. Install the `node_modules/` in the `bhima-$RELEASE/` folder with the command: `NODE_ENV=production npm install`
 
 The BHIMA upgrade is not prepared.
 
@@ -35,7 +35,7 @@ Locally:
 1. Download the latest production database from the BHIMA backups server for the site you are upgrading.
 2. Build it locally.
 3. Change the environmental variable `$DB_NAME` in the `.env` file in the bhima repository to the name of the site you are upgrading.
-4. Run `yarn migrate` to create a migration script `migration-$DATABASE.sql`.
+4. Run `npm run migrate` to create a migration script `migration-$DATABASE.sql`.
 5. Copy in the migration files from up to the present version from the `server/models/migrations/` folder(s).  You can use `cat` for this.
 6. Test the database migration script: `mysql $DATABASE < migration-$DATABASE.sql`
 7. If it works, copy the database over to the remote server with `scp`:  `scp migration-$DATABASE.sql bhima@target.bhi.ma:~/`

@@ -35,6 +35,7 @@ const typescriptConfig = {
   target : 'es5',
   lib : ['es6', 'dom'],
   module : 'none',
+  moduleResolution : 'Node',
   outFile : 'js/bhima/bhima.min.js',
 };
 

@@ -52,10 +52,10 @@
       "before:init": "node utilities/translation/tfcomp.js client/src/i18n/en client/src/i18n/fr",
       "after:bump": [
         "rm -rf bin",
-        "cross-env NODE_ENV=production yarn build",
+        "cross-env NODE_ENV=production npm run build",
         "rm bin/.env",
         "cp package.json bin/",
-        "cp yarn.lock bin/",
+        "cp package-lock.json bin/",
         "cp .env.sample bin/.env",
         "cp -R server/models/ bin/server/",
         "mkdir bhima-${version}",
@@ -206,8 +206,5 @@
     "standard-version": "^9.5.0",
     "typescript": "^5.4.5"
   },
-  "homepage": "https://docs.bhi.ma",
-  "engines": {
-    "yarn": ">= 1.0.0"
-  }
+  "homepage": "https://docs.bhi.ma"
 }
