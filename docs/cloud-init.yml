@@ -7,7 +7,6 @@
 #   BH_DATABASE_NAME - the name of the BHIMA database.  Often tied to the domain name.
 #   BH_DATABASE_PASSWORD - the password of the database. Defaults to $(uuid).
 #   BH_DATABASE_USER - the name of the database user
-#
 
 packages:
   - curl
@@ -159,10 +158,6 @@ runcmd:
   - apt-get -qq update
   - apt-get install -y nodejs
 
-# install yarn
-  - curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-  - echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-  - apt-get -qq update && apt-get install yarn --no-install-recommends
 
 # clone and set up BHIMA repository
   - cd /opt/
@@ -181,8 +176,8 @@ runcmd:
   - echo "DB_NAME=$BH_DATABASE_NAME" >> .env
 
   - bash ./sh/build-init-database.sh
-  - yarn --ignore-engines --frozen-lockfile
-  - NODE_ENV=production yarn build
+  - npm install
+  - NODE_ENV=production npm run build
   - chown -R bhima:bhima .
 
 # set up bhima to start on reboot

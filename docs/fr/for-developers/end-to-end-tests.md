@@ -9,7 +9,6 @@ BHIMA dispose d'une large collection de tests de bout en bout utilisant le [Envi
 
 2. Vérifiez que tout est cohérent. Les commandes suivantes doivent donner les mêmes numéros de version :
 ```bash
-  grep 'playwright/test' yarn.lock   # si vous utilisez yarn
   grep 'playwright/test' package.json
   npx playwright --version
 ```

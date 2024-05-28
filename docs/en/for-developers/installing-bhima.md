@@ -16,8 +16,7 @@ Before you begin the installation process, please make sure you have all the bhi
 2. [Redis](https://redis.io)
 3. [curl](https://curl.haxx.se/)
 4. [NodeJS](https://nodejs.org/en/) \(Note that we only test on stable and edge\).
-5. [yarn](https://yarnpkg.com/)
-6. [git](https://git-scm.com/downloads)
+5. [git](https://git-scm.com/downloads)
 
 ### Detailed dependency installation instructions for Ubuntu
 
@@ -53,13 +52,8 @@ sudo apt-get install nodejs
 # Verify that nodejs and npm are installed as expected
 npm --version
 node --version
-```
 
 ```bash
-# Installs yarn without re-installing NodeJS
-curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-sudo apt-get update && sudo apt-get install yarn --no-install-recommends
 
 # Install chromium browser
 # (On debian, you will also need to install 'chromium-driver' separately)
@@ -96,13 +90,12 @@ cd bhima
 
 All our build scripts are found the `package.json` file. We use [gulpjs](http://www.gulpjs.com) internally, but you shouldn't ever need to call gulp explicitly.
 
-To execute the build scripts, you can use either `yarn` or `npm`. We'll use `yarn` for the remainder of this guide. Note that using `npm` requires you to use `npm run` where it says `yarn` below.
-
+To execute the build scripts, you can use either `yarn` or `npm`.  We'll use `npm` below.
 ```bash
 # Inside the bhima/ directory
 # install all node modules
 
-yarn install
+npm run install
 
 #If this command gives you an error (I.E. if you’re running Parallels), try running the following command:
 git config -global url."https://".insteadOf git://
@@ -143,7 +136,7 @@ Then, build the app with
 ```bash
 # build the application
 
-NODE_ENV="development" yarn build
+NODE_ENV="development" npm run build
 ```
 
 ### Creating a database
@@ -186,7 +179,7 @@ docker run --name redis -p 6379:6379 -d redis
 
 If you have already a MySQL server running on port 3306 of your localhost, start docker without the port-forwarding (`-p 3306:3306`), use `docker inspect mysql` to find the IP of the container and use that IP in the `.env` file as `DB_HOST`.
 
-The database structure is contained in the `server/models/*.sql` files. You can execute these one by one in the order below, or simply run `yarn build:db`.
+The database structure is contained in the `server/models/*.sql` files. You can execute these one by one in the order below, or simply run `npm run build:db`.
 
 1. `server/models/01-schema.sql`
 2. `server/models/02-functions.sql`
@@ -201,7 +194,7 @@ This sets up the basic schema, routines, and triggers. The following scripts wil
 2. `server/models/06-bhima.sql`
 3. `test/data.sql`
 
-You can run all this by using the following command: `yarn build:db` Alternatively, you might use the `./sh/build-database.sh` script, customized with your environmental variables as shown below:
+You can run all this by using the following command: `npm run build:db` Alternatively, you might use the `./sh/build-database.sh` script, customized with your environmental variables as shown below:
 
 ```bash
 # Install the database
@@ -211,13 +204,13 @@ DB_USER='me' DB_PASS='MyPassword' DB_NAME='bhima' ./sh/build-database.sh
 If you are creating a fresh build for a new production site, you should probably start with:
 
 ```bash
-yarn build:clean
+npm run build:clean
 ```
 And the databases to be loaded will need to be customized for that site.
 
 ### Running the Application
 
-Running the application is super easy! Just type `yarn dev` in the application root directory.
+Running the application is super easy! Just type `npm run dev` in the application root directory.
 
 ### Verify the Install
 
@@ -229,18 +222,18 @@ Navigate to [http://localhost:8080](http://localhost:8080) in the browser to ver
 
 Our tests are broken into unit tests, end to end tests, and integration tests. There is more information on testing in the [wiki](https://github.com/IMA-WorldHealth/bhima/wiki).
 
-1. **Integration Tests** - These test the server + database integration and generally our APIs. All reachable API endpoints should generally have an integration test associated with them. To run them, type `yarn test:integration`.
+1. **Integration Tests** - These test the server + database integration and generally our APIs. All reachable API endpoints should generally have an integration test associated with them. To run them, type `npm run test:integration`.
 2. **Server Unit Tests** - Server libraries are unit tested with mocha and chai, similar to the integration tests. To run them, type
-   `yarn test:server-unit.`
-3. **Client Unit Tests** - Client components are unit tested with karma which you should have installed if you installed all dependencies. Karma launches a chrome browser to execute the tests. To run them, type `yarn test:client-unit`.
+   `npm run test:server-unit.`
+3. **Client Unit Tests** - Client components are unit tested with karma which you should have installed if you installed all dependencies. Karma launches a chrome browser to execute the tests. To run them, type `npm run test:client-unit`.
 4. **End to End Tests** - The entire stack is tested with end to end tests using [playwright](https://playwright.dev/).  To enable the end-to-end tests, see [Running end-to-end tests](./end-to-end-tests.md).
 You can run the end-to-end tests with
-- `yarn test:e2e-account`  _or_
-- `yarn test:e2e-all` _or_
-- `yarn test:e2e-?` _(where ? varies from 1 to 8)_.
+- `npm run test:e2e-account`  _or_
+- `npm run test:e2e-all` _or_
+- `npm run test:e2e-?` _(where ? varies from 1 to 8)_.
 
 Note: test:e2e-3 includes test:e2e-account.
 
-You can run all non-end-to-end tests by simply typing `yarn test`.
+You can run all non-end-to-end tests by simply typing `npm run test`.
 
 Enjoy using bhima!
