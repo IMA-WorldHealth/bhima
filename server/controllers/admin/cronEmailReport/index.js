@@ -5,7 +5,10 @@
 const debug = require('debug')('bhima:cron');
 const Cron = require('cron').CronJob;
 const pRetry = require('p-retry');
-const delay = require('delay');
+
+const { setTimeout } = require('node:timers/promises');
+
+const delay = (ms) => setTimeout(ms);
 
 const db = require('../../../lib/db');
 const FilterParser = require('../../../lib/filter');

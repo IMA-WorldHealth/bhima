@@ -120,7 +120,6 @@
     "cross-env": "^7.0.3",
     "csvtojson": "^2.0.8",
     "debug": "^4.3.5",
-    "delay": "^5.0.0",
     "dotenv": "^16.4.5",
     "eslint-plugin-jsdoc": "^48.2.11",
     "excel4node": "^1.8.2",
