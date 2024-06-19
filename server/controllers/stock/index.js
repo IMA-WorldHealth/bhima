@@ -289,11 +289,16 @@ function createIntegration(req, res, next) {
 
 /**
  * POST /stock/inventory_adjustment
- * Stock inventory adjustement
+ * Stock inventory adjustment
  */
 async function createInventoryAdjustment(req, res, next) {
   try {
-    const movement = req.body;
+    let movement = req.body;
+    const isMobileSync = movement.sync_mobile;
+
+    if (isMobileSync === 1) {
+      movement = await movementsFromMobile(movement);
+    }
     let filteredInvalidData = [];
 
     const paramsStock = {
@@ -423,10 +428,25 @@ async function createInventoryAdjustment(req, res, next) {
     // reset all previous lots
     await trx.execute();
 
+    if (isMobileSync === 1) {
+      const uuids = lots.map(l => l.uuid).join(',');
+      return res.status(201)
+        .json({
+          uuid : uniqueAdjustmentUuid,
+          date : new Date(movement.date),
+          user : req.session.user.id,
+          uuids,
+        });
+    }
     // await normalMovement(document, movement, req.session);
-    res.status(201).json({ uuid : uniqueAdjustmentUuid, date : new Date(movement.date), user : req.session.user.id });
+    return res.status(201)
+      .json({
+        uuid : uniqueAdjustmentUuid,
+        date : new Date(movement.date),
+        user : req.session.user.id,
+      });
   } catch (err) {
-    next(err);
+    return next(err);
   }
 }
 
@@ -507,7 +527,28 @@ async function movementsFromMobile(params) {
       }),
     };
   }
-
+  // stock adjustment
+  if (mobile.isExit && mobile.fluxId === 15) {
+    return mobileLots.length ? {
+      flux_id : mobile.fluxId,
+      is_exit : mobile.isExit,
+      depot_uuid : mobile.depotUuid,
+      entity_uuid : db.bid(mobile.depotUuid),
+      date : mobile.date,
+      description : mobile.description,
+      lots : mobileLots.map(item => {
+        return {
+          unique_line : item.uuid,
+          uuid : item.lotUuid,
+          inventory_uuid : item.inventoryUuid,
+          description : item.description,
+          oldQuantity : item.oldQuantity,
+          quantity : item.quantity,
+          unit_cost : item.unitCost,
+        };
+      }),
+    } : {};
+  }
   // default stock exit movement
   return mobileLots.length ? {
     flux_id : mobile.fluxId,
