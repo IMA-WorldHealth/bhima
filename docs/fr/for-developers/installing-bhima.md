@@ -14,8 +14,7 @@ Avant de commencer le processus d'installation, assurez-vous que toutes les dép
 2. [Redis](https://redis.io)
 3. [curl](https://curl.haxx.se/)
 4. [NodeJS](https://nodejs.org/en/) \(nous vous recommandons d’utiliser le [gestionnaire de version de node](https://github.com/creationix/nvm) sous Linux. Notez que nous ne testons que sur des versions stables. et bord \).
-5. [yarn](https://yarnpkg.com)
-6. [git](https://git-scm.com/downloads)
+5. [git](https://git-scm.com/downloads)
 
 ### Instructions détaillées sur l'installation des dépendances pour Ubuntu \(vérifiées/installées spécifiquement avec VirtualBox\)
 
@@ -42,11 +41,6 @@ export NVM_DIR = "$ HOME/.nvm"
 #Téléchargez NodeJS LTS
 nvm install lts/*
 
-#Installe yarn sans réinstaller NodeJS
-curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-
-echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-sudo apt-get update && sudo apt-get install fil --no-install-recommend
 
 # Exécutez la commande suivante pour installer git:
 sudo apt-get install git
@@ -65,13 +59,12 @@ cd bhima
 
 Tous nos scripts de construction se trouvent dans le fichier `package.json`. Nous utilisons [gulpjs](http://www.gulpjs.com) en interne, mais vous ne devriez jamais avoir besoin d'appeler explicitement gulp.
 
-Pour exécuter les scripts de construction, vous pouvez utiliser `yarn` ou` npm`. Nous utiliserons `fil 'pour le reste de ce guide. Notez que l'utilisation de `npm` peut nécessiter que vous utilisiez` npm run` où il est indiqué `yarn` ci-dessous.
-
+Pour exécuter les scripts de construction, vous pouvez utiliser `yarn` ou` npm`. Nous utiliserons `npm` pour le reste de ce guide. 
 ```bash
 # Dans le répertoire bhima /
 # installer tous les modules de noeuds
 
-yarn install
+npm run install
 
 # Si cette commande vous donne une erreur (par exemple, si vous utilisez Parallels), essayez d’exécuter la commande suivante:
 git config -global url. "https: //" .insteadOf git: //
@@ -106,7 +99,7 @@ Ensuite, construisez l'application avec
 ```bash
 # construire l'application
 
-NODE_ENV="development" yarn build
+NODE_ENV="development" npm run build
 ```
 
 ### Création d'une base de données
@@ -132,7 +125,7 @@ Tu peux aussi utiliser docker avec mysql.  Le command pour le lancer est:
 docker run --name mysql -p 3306:3306 \
   -e MYSQL_ROOT_PASSWORD=MyPassword \
   -e MYSQL_ROOT_HOST=% \
-  -d mysql/mysql-server:8.0 \
+  -d mysql:8.3 \
   --sql-mode='STRICT_ALL_TABLES,NO_UNSIGNED_SUBTRACTION' \
   --default-authentication-plugin=mysql_native_password
 
@@ -141,21 +134,21 @@ docker run --name mysql -p 3306:3306 \
 Il faut changer le fichier `.env` pour mettre `DB_HOST` a `127.0.0.1`.
 
 
-La structure de la base de données est contenue dans les fichiers `server/models/*. Sql`. Vous pouvez les exécuter un par un dans l'ordre ci-dessous ou simplement lancer `yarn build: db`.
+La structure de la base de données est contenue dans les fichiers `server/models/*.sql`. Vous pouvez les exécuter un par un dans l'ordre ci-dessous ou simplement lancer `npm run build: db`.
 
-1. `server/models/schema.sql`
-2. `server/models/triggers.sql`
-3. `server/models/functions.sql`
-4. `server/models/procedures.sql`
-5. `server/models/admin.sql`
+1. `server/models/01-schema.sql`
+2. `server/models/04-triggers.sql`
+3. `server/models/02-functions.sql`
+4. `server/models/03-procedures.sql`
+5. `server/models/98-admin.sql`
 
 Ceci configure le schéma de base, les déclencheurs et les routines. Les scripts suivants créeront un ensemble de données de base avec lequel commencer à jouer:
 
-1. `server/models/icd10.sql`
-2. `server/models/bhima.sql`
+1. `server/models/05-icd10.sql`
+2. `server/models/06-bhima.sql`
 3. `test/data.sql`
 
-Vous pouvez exécuter tout cela en utilisant la commande suivante: `yarn build:db` Vous pouvez également utiliser le script`./sh/build-database.sh`, personnalisé à l'aide de vos variables d'environnement, comme indiqué ci-dessous:
+Vous pouvez exécuter tout cela en utilisant la commande suivante: `npm run build:db` Vous pouvez également utiliser le script`./sh/build-database.sh`, personnalisé à l'aide de vos variables d'environnement, comme indiqué ci-dessous:
 
 ```bash
 # installer la base de données
@@ -164,7 +157,7 @@ DB_USER='moi' DB_PASS='MonPassword' DB_NAME='bhima' ./sh/build-database.sh
 
 ### Exécution de l'application
 
-Exécuter l'application est super facile! Tapez simplement `yarn dev` dans le répertoire racine de l'application.
+Exécuter l'application est super facile! Tapez simplement `npm run dev` dans le répertoire racine de l'application.
 
 ### Vérifier l'installation
 
@@ -180,8 +173,8 @@ Nos tests sont répartis en tests unitaires, tests de bout en bout et tests d'in
 2. **Tests unitaires de serveur** - Les bibliothèques de serveur sont testées d'unité avec mocha et chai, de manière similaire aux tests d'intégration. Pour les exécuter, tapez
    `test de fil: unité-serveur.`
 3. **Tests d'unité client** - Les composants client sont testés avec karma et doivent être installés si vous avez installé toutes les dépendances. Karma lance un navigateur chrome pour exécuter les tests. Pour les exécuter, tapez `test de fil: unité-client`.
-4. **Tests de bout en bout** - L'ensemble de la pile est testée avec \(souvent flaky \) des tests de bout en bout à l'aide de [rapporteur](https://playwright.dev/).  Les tests de bout en bout peuvent être exécutés avec `yarn test:e2e`.
+4. **Tests de bout en bout** - L'ensemble de la pile est testée avec \(souvent flaky \) des tests de bout en bout à l'aide de [rapporteur](https://playwright.dev/).  Les tests de bout en bout peuvent être exécutés avec `npm run test:e2e`.
 
-Vous pouvez exécuter tous les tests en tapant simplement `yarn test`.
+Vous pouvez exécuter tous les tests en tapant simplement `npm run test`.
 
 Profitez de l'aide bhima!

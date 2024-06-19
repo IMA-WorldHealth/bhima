@@ -4,7 +4,7 @@ chai.use(require('chai-datetime'));
 const { expect } = chai;
 const logic = require('../../../server/controllers/payroll/multiplePayroll/datelogic');
 
-describe('test/sever-unit/payroll/datelogic', () => {
+describe('test/server-unit/payroll/datelogic', () => {
 
   it('#isDateOnWeekend() returns true if date in array passed in', () => {
     const date = new Date(2019, 1, 2); // this is a Sunday (index 6)

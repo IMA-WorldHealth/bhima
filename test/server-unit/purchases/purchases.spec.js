@@ -2,7 +2,7 @@
 const { expect } = require('chai');
 const uuid = require('uuid').v4;
 
-describe('test/sever-unit/purchases/purchases', () => {
+describe('test/server-unit/purchases/purchases', () => {
 
   let db;
   before(() => {

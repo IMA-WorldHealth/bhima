@@ -1,6 +1,6 @@
 /* eslint class-methods-use-this:off */
 const q = require('q');
-const mysql = require('mysql');
+const mysql = require('mysql2');
 const uuidParse = require('uuid-parse');
 const _ = require('lodash');
 const moment = require('moment');
@@ -32,6 +32,10 @@ class DatabaseConnector {
       user     : process.env.DB_USER,
       password : process.env.DB_PASS,
       database : process.env.DB_NAME,
+
+      // https://sidorares.github.io/node-mysql2/docs/documentation#known-incompatibilities-with-node-mysql
+      // Ensure that numbers are returned as numbers, not strings.
+      decimalNumbers : true,
 
       // NOTE(@jniles): the MySQL character set variable must be uppercase.  To
       // see the full list of check out:

@@ -836,10 +836,9 @@ CREATE TABLE `inventory_group` (
   `uuid` BINARY(16) NOT NULL,
   `name` VARCHAR(100) NOT NULL,
   `code` VARCHAR(30) NOT NULL,
-  `sales_account` mediumINT(8) UNSIGNED DEFAULT NULL,
-  `cogs_account` mediumINT(8) UNSIGNED DEFAULT NULL,
-  `stock_account` mediumINT(8) UNSIGNED DEFAULT NULL,
-  `donation_account` mediumINT(8) UNSIGNED DEFAULT NULL,
+  `sales_account` MEDIUMINT(8) UNSIGNED DEFAULT NULL,
+  `cogs_account` MEDIUMINT(8) UNSIGNED DEFAULT NULL,
+  `stock_account` MEDIUMINT(8) UNSIGNED DEFAULT NULL,
   `unique_item`  TINYINT(1) DEFAULT 0,
   `tracking_consumption` TINYINT(1) DEFAULT 1,
   `tracking_expiration` TINYINT(1) DEFAULT 1,
@@ -849,8 +848,7 @@ CREATE TABLE `inventory_group` (
   UNIQUE KEY `inventory_group_2` (`code`),
   KEY `sales_account` (`sales_account`),
   KEY `cogs_account` (`cogs_account`),
-  KEY `stock_account` (`stock_account`),
-  KEY `donation_account` (`donation_account`)
+  KEY `stock_account` (`stock_account`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `inventory_type`;
@@ -1215,8 +1213,8 @@ DROP TABLE IF EXISTS `period_total`;
 
 CREATE TABLE `period_total` (
   `enterprise_id` SMALLINT(5) UNSIGNED NOT NULL,
-  `fiscal_year_id` mediumINT(8) UNSIGNED NOT NULL,
-  `period_id` mediumINT(8) UNSIGNED NOT NULL,
+  `fiscal_year_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  `period_id` MEDIUMINT(8) UNSIGNED NOT NULL,
   `account_id` INT(10) UNSIGNED NOT NULL,
   `credit` decimal(19,4) UNSIGNED DEFAULT NULL,
   `debit` decimal(19,4) UNSIGNED DEFAULT NULL,
@@ -1235,7 +1233,7 @@ CREATE TABLE `period_total` (
 DROP TABLE IF EXISTS `permission`;
 
 CREATE TABLE `permission` (
-  `id` mediumINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
   `unit_id` SMALLINT(5) UNSIGNED NOT NULL,
   `user_id` SMALLINT(5) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),

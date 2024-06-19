@@ -18,7 +18,7 @@ Lors de la mise à niveau d'une ancienne version vers une nouvelle version, il e
 
 Les modifications apportées aux procédures stockées, aux déclencheurs et aux fonctions ne sont **pas** suivies dans les scripts de migration. En effet, ils sont dus à des changements fréquents et sont déjà stockés dans le répertoire `server/models`. Il suffit donc simplement de les reconstruire à partir des sources.
 
-Pour faciliter cette opération, BHIMA fournit un [script d'aide à la migration](https://github.com/IMA-WorldHealth/bhima/blob/master/sh/setup-migration-script.sh) qui peut être invoqué avec `yarn migrate`. Ce script fait plusieurs choses :
+Pour faciliter cette opération, BHIMA fournit un [script d'aide à la migration](https://github.com/IMA-WorldHealth/bhima/blob/master/sh/setup-migration-script.sh) qui peut être invoqué avec `npm run migrate`. Ce script fait plusieurs choses :
 
 1. Supprime tous les déclencheurs
 2. Supprime toutes les routines
@@ -36,9 +36,9 @@ Comme mentionné ci-dessus, les versions sont gérées sur Github. Il existe deu
 Les étapes de base pour mettre à niveau maintenant sont :
 
 1. Obtenez la dernière version en téléchargeant et en décompressant ou en vérifiant la balise avec git.
-2. Exécutez `yarn` pour mettre à niveau les dépendances.
-3. Exécutez `NODE_ENV=production yarn build` pour compiler le dernier code côté client
-4. Exécutez `yarn migrate` pour créer le script de migration.
+2. Exécutez `npm install` pour mettre à niveau les dépendances.
+3. Exécutez `NODE_ENV=production npm run build` pour compiler le dernier code côté client
+4. Exécutez `npm run migrate` pour créer le script de migration.
 5. Exécutez `mysql $DATABASE < migration-$DATABASE.sql` comme décrit ci-dessus.
 6. Redémarrez toutes les instances BHIMA en cours d'exécution
 

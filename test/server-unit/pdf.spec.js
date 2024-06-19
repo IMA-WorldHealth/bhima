@@ -32,7 +32,7 @@ const data = {
 
 const fixturesPath = path.resolve('test/fixtures');
 
-describe('test/sever-unit/pdf', function () { // eslint-disable-line
+describe('test/server-unit/pdf', function () { // eslint-disable-line
   this.timeout(5000);
 
   it('#pdf.render() renders a valid PDF file', async () => {
