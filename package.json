@@ -199,7 +199,7 @@
     "merge-stream": "^2.0.0",
     "mocha": "^10.5.2",
     "postcss": "^8.4.39",
-    "qs": "^6.12.1",
+    "qs": "^6.12.2",
     "release-it": "^17.4.1",
     "sinon": "^18.0.0",
     "standard-version": "^9.5.0",
