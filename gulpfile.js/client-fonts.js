@@ -18,7 +18,7 @@ const FONT_FILES = [
  * Move all fonts into the fonts/ folder on the client.
  */
 function fonts() {
-  return src(FONT_FILES)
+  return src(FONT_FILES, { encoding : false })
     .pipe(dest(`${CLIENT_FOLDER}/fonts/`));
 }
 
@@ -31,7 +31,7 @@ function fonts() {
  * in the CSS folder (instead of the fonts folder).
  */
 function fontsUiGrid() {
-  return src('node_modules/angular-ui-grid/fonts/*')
+  return src('node_modules/angular-ui-grid/fonts/*', { encoding : false })
     .pipe(dest(`${CLIENT_FOLDER}/css/fonts/`));
 }
 
