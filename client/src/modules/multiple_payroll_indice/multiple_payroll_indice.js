@@ -5,7 +5,7 @@ angular.module('bhima.controllers')
 MultiplePayrollIndiceController.$inject = [
   'MultipleIndicesPayrollService', 'NotifyService',
   'GridColumnService', 'GridStateService', '$state',
-  'util', 'uiGridConstants', 'LanguageService', '$httpParamSerializer',
+  'util', 'uiGridConstants', 'LanguageService', '$httpParamSerializer', '$translate',
 ];
 
 /**
@@ -19,6 +19,7 @@ MultiplePayrollIndiceController.$inject = [
 function MultiplePayrollIndiceController(
   MultiplePayroll, Notify, Columns, GridState,
   $state, util, uiGridConstants, Languages, $httpParamSerializer,
+  $translate,
 ) {
   const vm = this;
   const cacheKey = 'multiple-indice-payroll-grid';
@@ -32,6 +33,7 @@ function MultiplePayrollIndiceController(
   vm.download = MultiplePayroll.download;
   vm.toggleInlineFilter = toggleInlineFilter;
   vm.staffingParametersModal = staffingParametersModal;
+  vm.importConfigCSV = importConfigCSV;
 
   // date format function
   vm.format = util.formatDate;
@@ -96,6 +98,8 @@ function MultiplePayrollIndiceController(
   }
 
   function load(filters) {
+    vm.payrollConfigurationId = filters.payroll_configuration_id;
+
     // flush error and loading states
     vm.hasError = false;
     toggleLoadingIndicator();
@@ -260,9 +264,13 @@ function MultiplePayrollIndiceController(
   vm.downloadExcel = () => {
     const displayNames = gridColumns.getDisplayNames();
     const filterOpts = MultiplePayroll.filters.formatHTTP();
+    const payrollConfigurationLabel = MultiplePayroll.filters._defaultFilters[0].displayValue;
+    const fileTemplateName = `${$translate.instant('FORM.LABELS.DOWN_TEMPLATE_FILE')}_${payrollConfigurationLabel}_`;
+
     const defaultOpts = {
       renderer : 'xlsx',
       lang : Languages.key,
+      filename : fileTemplateName,
       ignoredColumns : [
         displayNames.uuid,
         displayNames.hrRecord,
@@ -276,5 +284,16 @@ function MultiplePayrollIndiceController(
     // return  serialized options
     return $httpParamSerializer(options);
   };
+
+  function importConfigCSV() {
+    return MultiplePayroll.importConfigModal({ payroll_configuration_id : vm.payrollConfigurationId })
+      .then(result => {
+        if (result) {
+          startup();
+        }
+      })
+      .catch(Notify.handleError);
+  }
+
   startup();
 }

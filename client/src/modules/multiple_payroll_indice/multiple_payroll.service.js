@@ -28,6 +28,7 @@ function MultipleIndicesPayrollService(
   service.remove = Transactions.remove;
   service.openSearchModal = openSearchModal;
   service.staffingParametersModal = staffingParametersModal;
+  service.importConfigModal = importConfigModal;
 
   service.filters = multiplePayrollFilters;
   service.cacheFilters = cacheFilters;
@@ -69,13 +70,6 @@ function MultipleIndicesPayrollService(
   multiplePayrollFilters.registerDefaultFilters([
     { key : 'payroll_configuration_id', label : 'FORM.LABELS.PERIOD_PAYMENT' },
     { key : 'currency_id', label : 'FORM.LABELS.CURRENCY' },
-  ]);
-
-  multiplePayrollFilters.registerCustomFilters([
-    { key : 'display_name', label : 'FORM.LABELS.EMPLOYEE_NAME' },
-    { key : 'code', label : 'FORM.LABELS.CODE' },
-    { key : 'status_id', label : 'FORM.LABELS.STATUS' },
-    { key : 'conversion_rate', label : 'FORM.LABELS.CONVERSION_RATE' },
   ]);
 
   if (filterCache.filters) {
@@ -135,5 +129,20 @@ function MultipleIndicesPayrollService(
       controller : 'MultiPayrollIndiceParamModalController as $ctrl',
     }).result;
   }
+
+  function importConfigModal(configuration) {
+    return Modal.open({
+      templateUrl : 'modules/multiple_payroll_indice/modals/import.modal.html',
+      size : 'md',
+      animation : false,
+      keyboard : false,
+      backdrop : 'static',
+      controller : 'MultiPayrollIndiceImportModalController as $ctrl',
+      resolve : {
+        data : () => configuration,
+      },
+    }).result;
+  }
+
   return service;
 }

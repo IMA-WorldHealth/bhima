@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 MultiPayrollIndiceSearchModalController.$inject = [
   '$uibModalInstance', 'filters', 'NotifyService', 'Store', 'util',
-  'MultiplePayrollService', 'PayrollConfigurationService',
+  'MultipleIndicesPayrollService', 'PayrollConfigurationService',
   '$translate', 'SessionService', 'SearchModalUtilService',
 ];
 
@@ -17,7 +17,7 @@ MultiPayrollIndiceSearchModalController.$inject = [
  */
 function MultiPayrollIndiceSearchModalController(
   ModalInstance, filters, Notify, Store, util,
-  MultiplePayroll, Payroll, $translate, Session, SearchModal,
+  MultipleIndicesPayrollService, Payroll, $translate, Session, SearchModal,
 ) {
   const vm = this;
   vm.enterpriseCurrencyId = Session.enterprise.currency_id;
@@ -25,19 +25,12 @@ function MultiPayrollIndiceSearchModalController(
   const changes = new Store({ identifier : 'key' });
   const searchQueryOptions = [
     'payroll_configuration_id', 'currency_id',
-    'display_name', 'code', 'status_id',
   ];
   const lastValues = {};
 
-  let statusText = '/';
-
   // displayValues will be an id:displayValue pair
   const displayValues = {};
-  const lastDisplayValues = MultiplePayroll.filters.formatView().defaultFilters;
-
-  lastDisplayValues.forEach((last) => {
-    lastValues[last._key] = last._displayValue;
-  });
+  const lastDisplayValues = MultipleIndicesPayrollService.filters.formatView().defaultFilters;
 
   vm.filters = filters;
   // searchQueries is the same id:value pair
@@ -45,6 +38,13 @@ function MultiPayrollIndiceSearchModalController(
 
   // assign already defined custom filters to searchQueries object
   vm.searchQueries = util.maskObjectFromKeys(filters, searchQueryOptions);
+
+  if (lastDisplayValues.length) {
+    lastDisplayValues.forEach((last) => {
+      lastValues[last._key] = last._displayValue;
+      vm.searchQueries[last._key] = last._value;
+    });
+  }
 
   // load all Paiement Status
   Payroll.paymentStatus()
@@ -63,25 +63,12 @@ function MultiPayrollIndiceSearchModalController(
   vm.onSelectPayrollPeriod = function onSelectPayrollPeriod(period) {
     vm.searchQueries.payroll_configuration_id = period.id;
     displayValues.payroll_configuration_id = period.label;
+    vm.periodLabel = period.label;
   };
 
   vm.setCurrency = function setCurrency(currency) {
     displayValues.currency_id = currency.label;
     vm.searchQueries.currency_id = currency.id;
-  };
-
-  vm.onPayrollStatusChange = function onPayrollStatusChange(paymentStatus) {
-    vm.searchQueries.status_id = paymentStatus;
-
-    paymentStatus.forEach((statusId) => {
-      vm.paymentStatus.forEach((status) => {
-        if (statusId === status.id) {
-          statusText += `${status.plainText} / `;
-        }
-      });
-    });
-
-    displayValues.status_id = statusText;
   };
 
   // deletes a filter from the custom filter object, this key will no longer be written to changes on exit
@@ -92,6 +79,19 @@ function MultiPayrollIndiceSearchModalController(
   // submit the filter object to the parent controller.
   vm.submit = function submit(form) {
     if (form.$invalid) { return 0; }
+
+    const checkDisplayValuesLength = Object.keys(displayValues).length;
+    const lastDisplayValuesLength = lastDisplayValues.length;
+
+    if (lastDisplayValuesLength !== checkDisplayValuesLength) {
+      lastDisplayValues.forEach(it => {
+        Object.keys(vm.searchQueries).forEach(key => {
+          if ((it._key === key) && (it._value === vm.searchQueries[key])) {
+            displayValues[it._key] = it.displayValue;
+          }
+        });
+      });
+    }
 
     const loggedChanges = SearchModal.getChanges(vm.searchQueries, changes, displayValues, lastDisplayValues);
     return ModalInstance.close(loggedChanges);

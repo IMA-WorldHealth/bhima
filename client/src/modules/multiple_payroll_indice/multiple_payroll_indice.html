@@ -31,6 +31,13 @@
                 <i class="fa fa-close"></i> <span translate>FORM.BUTTONS.CLEAR_GRID_CONFIGURATION</span>
               </a>
             </li>
+            <li role="separator" class="divider"></li>
+
+            <li role="menuitem">
+              <a href data-method="import-config-csv" ng-click="MultiplePayrollCtrl.importConfigCSV()">
+                <i class="fa fa-upload"></i> <span translate>FORM.INFO.IMPORT_PAYROLL_CONFIGURATION</span>
+              </a>
+            </li>            
 
             <li role="separator" class="divider"></li>
 
@@ -44,6 +51,13 @@
             <li role="menuitem">
               <a target='_blank' href="/multiple_payroll_indice/reports/?{{MultiplePayrollCtrl.downloadExcel()}}">
                 <i class="fa fa-file-excel-o"></i> <span translate>DOWNLOADS.EXCEL</span>
+              </a>
+            </li>
+            <li role="separator" class="divider"></li>
+
+            <li role="menuitem">
+              <a target='_blank' href="/multiple_payroll_indice/downloads/?{{MultiplePayrollCtrl.downloadExcel()}}">
+                <i class="fa fa-cloud-download"></i> <span translate>FORM.LABELS.DOWN_TEMPLATE_FILE</span>
               </a>
             </li>
           </ul>
