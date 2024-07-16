@@ -11,6 +11,8 @@ const { BadRequest } = require('../../../lib/errors');
 const db = require('../../../lib/db');
 const util = require('../../../lib/util');
 const translate = require('../../../lib/helpers/translate');
+const { uuid } = require('../../../lib/util');
+const i18n = require('../../../lib/helpers/translate');
 
 // get staffing indice parameters
 function detail(req, res, next) {
@@ -479,5 +481,165 @@ function stagePaymentIndice(payrollConfigurationId) {
 
 }
 
+/**
+ * Import Payroll Configuration for a payroll configuration
+ *
+ * POST /multiple_payroll_indice/upload/:payroll_config_id'
+ *
+ * @param {object} req - the request object
+ * @param {object} res - the response object
+ * @param {object} next - next middleware object to pass control to
+ */
+async function importConfig(req, res, next) {
+  if (!req.params.payroll_config_id) {
+    throw new BadRequest(`ERROR: Missing 'payroll_config' ID parameter in POST /multiple_payroll_indice/upload`);
+  }
+  const payrollConfigId = Number(req.params.payroll_config_id);
+  const { lang } = req.query;
+
+  try {
+
+    if (!req.files || req.files.length === 0) {
+      const errMsg = `${i18n(lang)('ERRORS.MISSING_UPLOAD_FILES')}`;
+      throw new BadRequest('Expected at least one file upload but did not receive any files.',
+        errMsg);
+    }
+    const filePath = req.files[0].path;
+    const data = await util.formatCsvToJson(filePath);
+
+    const arrayDataFormated = data.map((employee) => {
+      const keys = Object.keys(employee);
+      const firstKey = keys[0];
+      const { [firstKey] : renamedProperty, ...rest } = employee;
+      return { employee : renamedProperty, ...rest };
+    });
+
+    const sqlGetRubs = `
+      SELECT rub.id, rub.abbr, rub.label, cri.config_rubric_id, cr.label, pc.label AS 'Period paie'
+      FROM rubric_payroll AS rub
+      JOIN config_rubric_item AS cri ON cri.rubric_payroll_id = rub.id
+      JOIN config_rubric AS cr ON cr.id = cri.config_rubric_id
+      JOIN payroll_configuration AS pc ON pc.config_rubric_id = cr.id
+      WHERE pc.id = ?;
+    `;
+
+    const sqlGetEmployees = `
+      SELECT BUID(emp.uuid) AS employee_uuid, pat.display_name AS employee_display_name,
+      cemp.label, cemp.id, pc.id payroll_configuration_id
+      FROM employee AS emp
+      JOIN patient AS pat ON pat.uuid = emp.patient_uuid
+      JOIN config_employee_item AS cei ON cei.employee_uuid = emp.uuid
+      JOIN config_employee AS cemp ON cemp.id = cei.config_employee_id
+      JOIN payroll_configuration AS pc ON pc.config_employee_id = cemp.id
+      WHERE pc.id = ?;
+    `;
+
+    const sqlGetEditableRubrics = `
+      SELECT rub.id, rub.abbr, rub.label, cri.config_rubric_id, cr.label, pc.label AS 'Period paie'
+      FROM rubric_payroll AS rub
+      JOIN config_rubric_item AS cri ON cri.rubric_payroll_id = rub.id
+      JOIN config_rubric AS cr ON cr.id = cri.config_rubric_id
+      JOIN payroll_configuration AS pc ON pc.config_rubric_id = cr.id
+      WHERE pc.id = ? AND rub.is_indice AND rub.indice_to_grap;
+    `;
+
+    const transaction = db.transaction();
+
+    transaction
+      .addQuery(sqlGetRubs, [payrollConfigId])
+      .addQuery(sqlGetEmployees, [payrollConfigId])
+      .addQuery(sqlGetEditableRubrics, [payrollConfigId]);
+
+    const record = await transaction.execute();
+
+    const [rubPayroll, empPayroll, rubPayrollConfig] = record;
+
+    const checkColumnFormated = Object.keys(arrayDataFormated[0]).length;
+
+    let checkValidColumn = 0;
+    rubPayrollConfig.forEach(rcf => {
+      if (rcf.abbr in arrayDataFormated[0]) {
+        checkValidColumn++;
+      }
+    });
+
+    let checkValidEmployee = 0;
+    empPayroll.forEach(emp => {
+      arrayDataFormated.forEach(dt => {
+        if (emp.employee_display_name.toLowerCase() === dt.employee.toLowerCase()) {
+          checkValidEmployee++;
+        }
+      });
+    });
+
+    if (empPayroll.length !== checkValidEmployee) {
+      throw new BadRequest(
+        `Warning: The configured list of employees does not match the initially configured list.`,
+        `${i18n(lang)('ERRORS.ER_BAD_CSV_FILE_EMP')}`);
+    }
+
+    if (rubPayrollConfig.length !== checkValidColumn) {
+      throw new BadRequest(
+        `Warning: The CSV file you have selected does not match the selected payroll period.
+          Please download the template again, configure it correctly, and re-upload the file.`,
+        `${i18n(lang)('ERRORS.ER_BAD_CSV_FILE')}`);
+    }
+
+    if ((checkColumnFormated - rubPayrollConfig.length) > 2) {
+      throw new BadRequest(
+        'Error: The uploaded CSV file contains more columns than expected.',
+        `${i18n(lang)('ERRORS.ER_CSV_MORE_COLUMN')}`);
+    }
+
+    if ((checkColumnFormated - rubPayrollConfig.length) < 2) {
+      throw new BadRequest(
+        'Error: Error: The uploaded CSV file contains fewer columns than expected.',
+        `${i18n(lang)('ERRORS.ER_CSV_FEW_COLUMN')}`);
+    }
+
+    const transactionOperation = db.transaction();
+
+    const delStagePaymentIndice = `
+      DELETE FROM stage_payment_indice
+      WHERE payroll_configuration_id = ? AND employee_uuid = ?`;
+
+    const insertStagePaymentIndice = 'INSERT INTO stage_payment_indice SET ?';
+
+    empPayroll.forEach(emp => {
+      transactionOperation.addQuery(delStagePaymentIndice, [payrollConfigId, db.bid(emp.employee_uuid)]);
+
+      rubPayroll.forEach(rub => {
+        const stagePaymentIndiceData = {};
+        let rubricValue = 0;
+        arrayDataFormated.forEach(df => {
+          rubPayrollConfig.forEach(rcf => {
+            // to prevent the addition of non-configurable and non-editable columns
+            if (rub.id === rcf.id) {
+              if ((df.employee.toLowerCase() === emp.employee_display_name.toLowerCase()) && (rub.abbr in df)) {
+                rubricValue = df[rub.abbr];
+              }
+            }
+          });
+        });
+
+        stagePaymentIndiceData.uuid = db.bid(uuid());
+        stagePaymentIndiceData.employee_uuid = db.bid(emp.employee_uuid);
+        stagePaymentIndiceData.payroll_configuration_id = payrollConfigId;
+        stagePaymentIndiceData.currency_id = req.session.enterprise.currency_id;
+        stagePaymentIndiceData.rubric_id = rub.id;
+        stagePaymentIndiceData.rubric_value = rubricValue;
+
+        transactionOperation.addQuery(insertStagePaymentIndice, [stagePaymentIndiceData]);
+      });
+    });
+
+    await transactionOperation.execute();
+    res.status(204).send();
+  } catch (e) {
+    next(e);
+  }
+}
+
 module.exports.detail = detail;
 module.exports.create = create;
+module.exports.importConfig = importConfig;

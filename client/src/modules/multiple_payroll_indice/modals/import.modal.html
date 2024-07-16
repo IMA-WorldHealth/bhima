@@ -1,0 +1,39 @@
+<form name="ModalForm" bh-submit="$ctrl.submit(ModalForm)" novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.MULTI_PAYROLL_INDICE</li>
+      <li class="title" translate>FORM.INFO.IMPORT_PAYROLL_CONFIGURATION</li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="form-group marginTop1ex"
+          ng-class="{ 'has-error' : $ctrl.noSelectedFile }">
+          <label translate>FORM.LABELS.LOAD_FROM_FILE</label>
+          <input
+            id="import-input"
+            accept=".csv"
+            class="form-control"
+            type="file"
+            name="file"
+            ng-model="$ctrl.file"
+            ngf-select="$ctrl.select($ctrl.file)">
+          <div class="help-block" data-error-message ng-show="$ctrl.noSelectedFile">
+            <i class="fa fa-warning"></i> <span translate>FORM.INFO.NO_FILE_SELECTED</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button data-method="cancel" type="button" class="btn btn-default" ng-click="$ctrl.close()">
+      <span translate>FORM.BUTTONS.CANCEL</span>
+    </button>
+
+    <bh-loading-button disabled="!$ctrl.file" loading-state="ModalForm.$loading">
+    </bh-loading-button>
+  </div>
+</form>

@@ -31,14 +31,6 @@ function MultiPayrollSearchModalController(
 
   let statusText = '/';
 
-  // displayValues will be an id:displayValue pair
-  const displayValues = {};
-  const lastDisplayValues = MultiplePayroll.filters.formatView().defaultFilters;
-
-  lastDisplayValues.forEach((last) => {
-    lastValues[last._key] = last._displayValue;
-  });
-
   vm.filters = filters;
   // searchQueries is the same id:value pair
   vm.searchQueries = {};
@@ -48,6 +40,17 @@ function MultiPayrollSearchModalController(
 
   // Default to enterprise currency
   vm.searchQueries.currency_id = vm.enterpriseCurrencyId;
+
+  // displayValues will be an id:displayValue pair
+  const displayValues = {};
+  const lastDisplayValues = MultiplePayroll.filters.formatView().defaultFilters;
+
+  if (lastDisplayValues.length) {
+    lastDisplayValues.forEach((last) => {
+      lastValues[last._key] = last._displayValue;
+      vm.searchQueries[last._key] = last._value;
+    });
+  }
 
   // load all Paiement Status
   Payroll.paymentStatus()
@@ -95,6 +98,19 @@ function MultiPayrollSearchModalController(
   // submit the filter object to the parent controller.
   vm.submit = function submit(form) {
     if (form.$invalid) { return 0; }
+
+    const checkDisplayValuesLength = Object.keys(displayValues).length;
+    const lastDisplayValuesLength = lastDisplayValues.length;
+
+    if (lastDisplayValuesLength !== checkDisplayValuesLength) {
+      lastDisplayValues.forEach(it => {
+        Object.keys(vm.searchQueries).forEach(key => {
+          if ((it._key === key) && (it._value === vm.searchQueries[key])) {
+            displayValues[it._key] = it.displayValue;
+          }
+        });
+      });
+    }
 
     const loggedChanges = SearchModal.getChanges(vm.searchQueries, changes, displayValues, lastDisplayValues);
     return ModalInstance.close(loggedChanges);

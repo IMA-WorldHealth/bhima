@@ -690,6 +690,13 @@ exports.configure = function configure(app) {
   app.get('/multiple_payroll_indice/parameters/:payroll_config_id', multiplePayrollIndice.parameters.detail);
   app.post('/multiple_payroll_indice/parameters/', multiplePayrollIndice.parameters.create);
   app.get('/multiple_payroll_indice/reports/', multiplePayrollIndice.reports.document);
+  app.get('/multiple_payroll_indice/downloads/', multiplePayrollIndice.reports.template);
+  app.post(
+    '/multiple_payroll_indice/upload/:payroll_config_id',
+    upload.middleware('csv', 'file'),
+    multiplePayrollIndice.parameters.importConfig,
+  );
+
   // discounts
   app.get('/discounts', discounts.list);
   app.get('/discounts/:id', discounts.detail);
