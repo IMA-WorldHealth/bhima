@@ -17,7 +17,7 @@ const i18n = require('../../../lib/helpers/translate');
 // get staffing indice parameters
 function detail(req, res, next) {
   const sql = `
-    SELECT BUID(uuid) as uuid, pay_envelope, working_days, payroll_configuration_id
+    SELECT BUID(uuid) as uuid, pay_envelope, pension_fund, working_days, payroll_configuration_id
     FROM staffing_indice_parameters
     WHERE payroll_configuration_id = ?
   `;
@@ -69,14 +69,17 @@ async function create(req, res, next) {
   // is going to be increased by the percentage_fixed_bonus.
   //
   // FIXME(@jniles) - what currency is this in?
+  // RESPONSE (@lomamech): Enterprise Currency
   const payEnvelope = req.body.pay_envelope * (percentageFixedBonus / 100);
   const bonusPerformance = req.body.pay_envelope * (percentagePerformanceBonus / 100);
+  const pensionFund = req.body.pension_fund;
 
   debug(`the computed pay envelope is ${payEnvelope}.`);
   debug(`the computed bonus performance is ${bonusPerformance}.`);
 
   const workingDays = req.body.working_days;
   const requestsUpdateIndices = await stagePaymentIndice(id);
+  let getRubricFundPension = {};
 
   const [
     paymentIndice,
@@ -84,7 +87,12 @@ async function create(req, res, next) {
     aggregateOtherProfits,
     rubricMonetaryValue,
     payrollPeriod,
+    rubricFundPension,
   ] = requestsUpdateIndices;
+
+  if (rubricFundPension.length) {
+    [getRubricFundPension] = rubricFundPension;
+  }
 
   const payrollPeriodDate = payrollPeriod[0].dateTo;
 
@@ -99,6 +107,7 @@ async function create(req, res, next) {
   let totalRelatifPoint = 0;
   let rubricPerformanceRateId;
   let rubricPerformanceBonusId;
+  let rubricPensionFundId;
 
   transaction.addQuery('DELETE FROM staffing_indice_parameters WHERE payroll_configuration_id =?', id);
   transaction.addQuery('INSERT INTO staffing_indice_parameters SET ?', data);
@@ -149,6 +158,12 @@ async function create(req, res, next) {
     debug(`[${emp.code}] processing ${employeePaymentIndice.length} indices for ${emp.name}.`);
 
     employeePaymentIndice.forEach(ind => {
+      if (getRubricFundPension) {
+        if (ind.rubric_id === getRubricFundPension.rubric_id) {
+          rubricPensionFundId = ind.rubric_id;
+        }
+      }
+
       debug(`[${emp.code}] computing ${ind.indice_type} for ${emp.display_name}`);
 
       // calculate total days for rubrics where type is 'is_day_worked' or 'is_extra_day'
@@ -276,6 +291,7 @@ async function create(req, res, next) {
     // TODO(@jniles) - filter these first by employee for better debuggin
     // employeeMonetaryRubrics = rubricMonetaryValue.filter(r => r.employee_uuid === emp.employee_uuid)
     // employeeMonetaryRubrics.forEach(r => { /* blah */ });
+
     rubricMonetaryValue.forEach(money => {
       if (emp.employee_uuid === money.employee_uuid) {
         transaction.addQuery('INSERT INTO employee_advantage SET ?', {
@@ -346,6 +362,7 @@ async function create(req, res, next) {
   });
 
   const payRate = payEnvelope / totalCode;
+  const pensionFundRate = pensionFund ? (pensionFund / totalCode) : 0;
   const performanceBonusRate = bonusPerformance / totalRelatifPoint;
 
   employeesGradeIndice.forEach(emp => {
@@ -353,6 +370,7 @@ async function create(req, res, next) {
 
     emp.payRate = payRate;
     emp.fixedBonus = util.roundDecimal(((payRate * emp.totalCode) / minMonentaryUnit), 0) * minMonentaryUnit;
+    emp.pensionFund = util.roundDecimal(((pensionFundRate * emp.totalCode) / minMonentaryUnit), 0) * minMonentaryUnit;
 
     if (emp.relatifPoint) {
       emp.performanceBonus = performanceBonusRate * emp.relatifPoint;
@@ -382,6 +400,20 @@ async function create(req, res, next) {
         updateStaffingIndice,
         [emp.performanceBonus, id, emp.employee_buid, rubricPerformanceBonusId],
       );
+    }
+
+    // Set Employee Pension Fund
+    if (rubricPensionFundId) {
+      transaction.addQuery(
+        updateStaffingIndice,
+        [emp.pensionFund, id, emp.employee_buid, rubricPensionFundId],
+      );
+
+      transaction.addQuery('INSERT INTO employee_advantage SET ?', {
+        employee_uuid : emp.employee_buid,
+        rubric_payroll_id : rubricPensionFundId,
+        value : emp.pensionFund,
+      });
     }
 
     // Set Employee Performance Bonus Rate
@@ -430,7 +462,8 @@ function stagePaymentIndice(payrollConfigurationId) {
     rub.label, spi.rubric_value, rub.indice_type
     FROM stage_payment_indice AS spi
     JOIN rubric_payroll AS rub ON rub.id = spi.rubric_id
-    WHERE spi.payroll_configuration_id = ? AND rub.is_indice = 1 AND rub.is_monetary_value = 0;
+    WHERE spi.payroll_configuration_id = ? AND rub.is_indice = 1 AND 
+    (rub.is_monetary_value = 0 OR rub.is_linked_pension_fund = 1);
   `;
 
   const sqlGetEmployees = `
@@ -465,11 +498,21 @@ function stagePaymentIndice(payrollConfigurationId) {
     rub.label, spi.rubric_value, rub.indice_type
     FROM stage_payment_indice AS spi
     JOIN rubric_payroll AS rub ON rub.id = spi.rubric_id
-    WHERE spi.payroll_configuration_id = ? AND rub.is_indice = 1 AND rub.is_monetary_value = 1;
+    WHERE spi.payroll_configuration_id = ? AND rub.is_indice = 1
+    AND rub.is_monetary_value = 1  AND rub.is_linked_pension_fund = 0;
   `;
 
   const sqlGetEndOfPeriod = `
     SELECT pc.dateTo FROM payroll_configuration AS pc WHERE pc.id = ?;`;
+
+  const sqlGetRubricPensionFund = `
+    SELECT pc.id, pc.label, rub.id AS rubric_id, rub.label AS rubric_label, rub.abbr AS rubric_abbr
+    FROM payroll_configuration AS pc
+    JOIN config_rubric AS crb ON crb.id = pc.config_rubric_id
+    JOIN config_rubric_item AS rubi ON rubi.config_rubric_id = crb.id
+    JOIN rubric_payroll AS rub ON rub.id = rubi.rubric_payroll_id
+    WHERE pc.id = ? AND rub.is_indice = 1 AND rub.is_monetary_value = 1 AND rub.is_linked_pension_fund = 1;
+  `;
 
   return Promise.all([
     db.exec(sqlGetStagePaymentIndice, [payrollConfigurationId]),
@@ -477,6 +520,7 @@ function stagePaymentIndice(payrollConfigurationId) {
     db.exec(sqlGetAggregateOtherProfits, [payrollConfigurationId]),
     db.exec(sqlGetRubricMonetaryValue, [payrollConfigurationId]),
     db.exec(sqlGetEndOfPeriod, [payrollConfigurationId]),
+    db.exec(sqlGetRubricPensionFund, [payrollConfigurationId]),
   ]);
 
 }

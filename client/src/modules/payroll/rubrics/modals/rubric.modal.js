@@ -19,6 +19,7 @@ function RubricModalController($state, Rubrics, Notify, AppCache, Session, param
   vm.indexesMap = Rubrics.indexesMap;
 
   vm.enableIndexPayment = Session.enterprise.settings.enable_index_payment_system;
+  vm.enableActivatePensionFund = Session.enterprise.settings.enable_activate_pension_fund;
 
   if (params.isCreateState || params.id) {
     vm.stateParams = params;

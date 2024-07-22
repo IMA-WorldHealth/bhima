@@ -11,6 +11,7 @@ const _ = require('lodash');
 const db = require('../../lib/db');
 const NotFound = require('../../lib/errors/NotFound');
 const BadRequest = require('../../lib/errors/BadRequest');
+const { loadSessionInformation } = require('../auth');
 
 exports.lookupEnterprise = lookupEnterprise;
 exports.lookupByProjectId = lookupByProjectId;
@@ -28,7 +29,7 @@ exports.list = function list(req, res, next) {
         enable_auto_email_report, enable_index_payment_system, base_index_growth_rate,
         posting_payroll_cost_center_mode, enable_require_cost_center_for_posting,
         enable_prf_details, purchase_general_condition, terms_of_delivery, special_instructions,
-        percentage_fixed_bonus
+        percentage_fixed_bonus, enable_activate_pension_fund, pension_transaction_type_id
       FROM enterprise LEFT JOIN enterprise_setting
         ON enterprise.id = enterprise_setting.enterprise_id
       ;`;
@@ -59,6 +60,8 @@ exports.list = function list(req, res, next) {
             'purchase_general_condition',
             'terms_of_delivery',
             'special_instructions',
+            'enable_activate_pension_fund',
+            'pension_transaction_type_id',
           ];
 
           row.settings = _.pick(row, settings);
@@ -175,6 +178,7 @@ exports.update = function update(req, res, next) {
 
       return db.exec('UPDATE enterprise_setting SET ? WHERE enterprise_id = ?', [settings, req.params.id]);
     })
+    .then(() => loadSessionInformation(req.session.user))
     .then(() => lookupEnterprise(req.params.id))
     .then((enterprise) => {
       res.status(200).json(enterprise);

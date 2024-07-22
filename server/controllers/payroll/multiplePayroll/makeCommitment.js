@@ -32,6 +32,7 @@ function config(req, res, next) {
   const userId = req.session.user.id;
   const currencyId = req.session.enterprise.currency_id;
   const postingPayrollCostCenterMode = req.session.enterprise.settings.posting_payroll_cost_center_mode;
+  const postingPensionFundTransactionType = req.session.enterprise.settings.pension_transaction_type_id;
 
   const data = {};
 
@@ -73,7 +74,8 @@ function config(req, res, next) {
     payment.base_taxable, payment.currency_id, rubric_payroll.is_employee, rubric_payroll.is_discount, 
     rubric_payroll.label, rubric_payroll.id, rubric_payroll.is_tax, rubric_payroll.is_social_care,
     rubric_payroll.is_membership_fee, rubric_payroll.debtor_account_id, rubric_payroll.expense_account_id,
-    rubric_payment.value, rubric_payroll.is_associated_employee, employee.reference
+    rubric_payment.value, rubric_payroll.is_associated_employee, rubric_payroll.is_linked_pension_fund,
+    employee.reference
     FROM payment
     JOIN rubric_payment ON rubric_payment.payment_uuid = payment.uuid
     JOIN rubric_payroll ON rubric_payroll.id = rubric_payment.rubric_payroll_id
@@ -98,7 +100,26 @@ function config(req, res, next) {
     LEFT JOIN cost_center AS cc ON cc.id = s_cost.cost_center_id
     JOIN account AS a_deb ON a_deb.id = rb.debtor_account_id
     JOIN account AS a_exp ON a_exp.id = rb.expense_account_id
-    WHERE rb.is_employee = 0 AND rb.is_discount = 1  AND paie.payroll_configuration_id = ?
+    WHERE rb.is_employee = 0 AND rb.is_discount = 1 AND
+    rb.is_linked_pension_fund = 0 AND paie.payroll_configuration_id = ?
+    GROUP BY cc.id;
+  `;
+
+  const sqlCostBreakdownCostCenterForPensionFund = `
+    SELECT rp.payment_uuid,  SUM(rp.value) AS value_cost_center_id,
+      cc.id AS cost_center_id, a_exp.id AS account_expense_id
+    FROM rubric_payment AS rp
+    JOIN rubric_payroll AS rb ON rb.id = rp.rubric_payroll_id
+    JOIN payment AS paie ON paie.uuid = rp.payment_uuid
+    JOIN employee AS emp ON emp.uuid = paie.employee_uuid
+    JOIN patient AS pat ON pat.uuid = emp.patient_uuid
+    LEFT JOIN service AS ser ON ser.uuid = emp.service_uuid
+    LEFT JOIN service_cost_center AS s_cost ON s_cost.service_uuid = ser.uuid
+    LEFT JOIN cost_center AS cc ON cc.id = s_cost.cost_center_id
+    JOIN account AS a_deb ON a_deb.id = rb.debtor_account_id
+    JOIN account AS a_exp ON a_exp.id = rb.expense_account_id
+    WHERE rb.is_employee = 0 AND rb.is_discount = 1 AND
+    rb.is_linked_pension_fund = 1 AND paie.payroll_configuration_id = ?
     GROUP BY cc.id;
   `;
 
@@ -131,10 +152,11 @@ function config(req, res, next) {
         db.exec(sqlSalaryByCostCenter, [employeesUuid]),
         Exchange.getCurrentExchangeRateByCurrency(),
         CostCenter.getAllCostCenterAccounts(),
+        db.exec(sqlCostBreakdownCostCenterForPensionFund, [payrollConfigurationId]),
       ]);
     })
     .spread((rubricsEmployees, rubricsConfig, configuration,
-      costBreakDown, SalaryByCostCenter, exchangeRates, accountsCostCenter) => {
+      costBreakDown, SalaryByCostCenter, exchangeRates, accountsCostCenter, pensionFundCostBreakDown) => {
       let transactions;
       const postingJournal = db.transaction();
 
@@ -157,6 +179,7 @@ function config(req, res, next) {
           exchangeRates,
           currencyId,
           accountsCostCenter,
+          postingPensionFundTransactionType,
         );
 
         transactions.forEach(item => {
@@ -176,6 +199,8 @@ function config(req, res, next) {
           accountsCostCenter,
           costBreakDown,
           SalaryByCostCenter,
+          pensionFundCostBreakDown,
+          postingPensionFundTransactionType,
         );
 
         transactions.forEach(item => {
@@ -190,7 +215,7 @@ function config(req, res, next) {
           userId,
           exchangeRates,
           currencyId,
-          sessionParams,
+          postingPensionFundTransactionType,
         );
 
         transactions.forEach(item => {

@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
   .controller('PayrollSettingsController', PayrollSettingsController);
 
 PayrollSettingsController.$inject = [
-  'EnterpriseService', 'NotifyService', 'SessionService', 'bhConstants',
+  'EnterpriseService', 'NotifyService', 'SessionService', 'bhConstants', 'TransactionTypeService',
 ];
 
 /**
@@ -10,7 +10,7 @@ PayrollSettingsController.$inject = [
  * This module is a for getting/updating the parameters/settings related to Payroll
  */
 function PayrollSettingsController(
-  Enterprises, Notify, Session, bhConstants,
+  Enterprises, Notify, Session, bhConstants, TransactionTypes,
 ) {
   const vm = this;
 
@@ -35,6 +35,12 @@ function PayrollSettingsController(
     // load Posting Payroll Cost Center Mode
     vm.postingPayrollCostCenterMode = bhConstants.posting_payroll_cost_center;
   }
+
+  TransactionTypes.read()
+    .then(types => {
+      vm.types = types;
+    })
+    .catch(Notify.handleError);
 
   // form submission
   function submit(form) {
@@ -76,6 +82,7 @@ function PayrollSettingsController(
   }
 
   vm.enableIndexPaymentSetting = proxy('enable_index_payment_system');
+  vm.enableActivatePensionFundSetting = proxy('enable_activate_pension_fund');
 
   startup();
 }

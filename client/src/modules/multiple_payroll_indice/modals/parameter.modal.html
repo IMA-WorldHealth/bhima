@@ -1,6 +1,8 @@
 <form name="ModalForm" bh-submit="$ctrl.submit(ModalForm)" novalidate>
   <div class="modal-header">
     <ol class="headercrumb">
+      <li class="static" translate>TREE.HUMANS_RESSOURCES</li>
+      <li class="static" translate>TREE.INDEXES</li>      
       <li class="static" translate>FORM.LABELS.SETTINGS</li>
       <li class="title" translate>TREE.MULTI_PAYROLL_INDICE</li>
     </ol>
@@ -20,6 +22,25 @@
           currency-id="$ctrl.currencyId"
           model="$ctrl.param.pay_envelope">
         </bh-currency-input>
+
+        <div class="form-group" ng-if="$ctrl.enableActivatePensionFund">
+          <hr>          
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" name="is_linked_pension_fund" ng-true-value="1" ng-false-value="0"
+                ng-model="$ctrl.is_linked_pension_fund">
+              <span translate>FORM.INFO.DEFINE_AMOUNT_FOUND</span>
+            </label>
+          </div>
+        </div>
+        <div ng-if="$ctrl.is_linked_pension_fund">
+          <bh-currency-input
+            id="pension_fund"
+            label="FORM.LABELS.ENVELOPE_ALLOCATED_PENSION_FUND" 
+            currency-id="$ctrl.currencyId"
+            model="$ctrl.param.pension_fund">
+          </bh-currency-input>
+        </div>
               
         <bh-input-text
           key="working_days"

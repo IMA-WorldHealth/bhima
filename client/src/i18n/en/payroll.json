@@ -63,10 +63,15 @@
   "PAYROLL_SETTINGS" : {
     "DEFAULT" : "Default",
     "DEFAULT_HELP_TEXT" : "With this option, transactions related to employee payment are done in bulk and require that each expense account be linked to a cost center",
-    "ENABLE_INDEX_PAYMENT_SYSTEM" : "Enabling index payment system",
+    "ENABLE_INDEX_PAYMENT_SYSTEM" : "Enable index payment system",
+    "ENABLE_ACTIVATE_PENSION_FUND_BREACKDOWN": "Enable pension fund handling", 
     "GROUP_BY_COST_CENTERS" : "Group by cost centers",
     "GROUP_BY_COST_CENTERS_HELP_TEXT": "With this option the transactions related to the payment of the employees are done by group compared to the related cost centers of the employees.",
     "INDIVIDUALLY_PER_EMPLOYEE" : "Individually per employee",
-    "INDIVIDUALLY_PER_EMPLOYEE_HELP_TEXT" : "With this option, transactions related to the payment of employee salaries are done individually by employee"
+    "INDIVIDUALLY_PER_EMPLOYEE_HELP_TEXT" : "With this option, transactions related to the payment of employee salaries are done individually by employee",
+    "SELECT_TRANSACTION_TYPE_HELP_TEXT": "Please select the appropriate transaction type to ensure accurate accounting entries for the retirement fund allocation.",
+    "SET_FUND_AMOUNT_PERCENTAGE": "Set fund amount as a percentage",
+    "SET_PERCENTAGE": "Set this percentage",
+    "SET_PERCENTAGE_HELP_TEXT": "The percentage to define is for the distribution of the pension fund relative to the monthly revenues." 
   }
 }

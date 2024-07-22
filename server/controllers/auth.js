@@ -222,6 +222,7 @@ async function loadSessionInformation(user) {
     FROM stock_setting
     WHERE enterprise_id = ?;
   `;
+
   try {
     session.stock_settings = await db.one(sql, [session.user.enterprise_id]);
   } catch (err) {

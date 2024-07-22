@@ -23,10 +23,13 @@ function dataCommitment(employees, exchangeRates, rubrics, identificationCommitm
     voucherWithholdingUuid,
     descriptionCommitment,
     descriptionWithholding,
+    voucherPensionFundAllocationUuid,
+    descriptionPensionFund,
   } = identificationCommitment;
 
   const employeesBenefitsItem = [];
   const employeesWithholdingItem = [];
+  const employeesPensionFundsItem = [];
 
   employees.forEach(employee => {
     const paymentUuid = db.bid(employee.payment_uuid);
@@ -54,6 +57,7 @@ function dataCommitment(employees, exchangeRates, rubrics, identificationCommitm
 
     const rubricsPayment = [];
     let employeeWithholdings = [];
+    let employeePensionFunds = [];
 
     employeesBenefitsItem.push([
       db.bid(util.uuid()),
@@ -109,6 +113,23 @@ function dataCommitment(employees, exchangeRates, rubrics, identificationCommitm
           }
         });
       }
+
+      // PENSION FUNDS
+      employeePensionFunds = rubricsPayment.filter(item => (item.is_linked_pension_fund));
+      if (employeePensionFunds.length) {
+        employeePensionFunds.forEach(pensionFund => {
+          employeesPensionFundsItem.push([
+            db.bid(util.uuid()),
+            pensionFund.debtor_account_id,
+            0,
+            util.roundDecimal(pensionFund.value, 2),
+            voucherPensionFundAllocationUuid,
+            db.bid(employee.creditor_uuid),
+            `${descriptionPensionFund} (${employee.display_name})`,
+            null,
+          ]);
+        });
+      }
     }
   });
 
@@ -116,6 +137,7 @@ function dataCommitment(employees, exchangeRates, rubrics, identificationCommitm
     transactions,
     employeesBenefitsItem,
     employeesWithholdingItem,
+    employeesPensionFundsItem,
     totalCommitments,
     totalBasicSalaries,
   };

@@ -123,7 +123,7 @@ function payrollReportElements(idPeriod, employees, employeesPaymentUuid) {
     JOIN employee ON employee.uuid = payment.employee_uuid
     JOIN rubric_payroll ON rubric_payroll.id = rubric_payment.rubric_payroll_id
     WHERE payment.payroll_configuration_id = ? AND employee.uuid IN (?)
-    AND rubric_payroll.is_monetary_value = 1
+    AND rubric_payroll.is_monetary_value = 1 AND rubric_payroll.is_linked_pension_fund = 0
     ORDER BY rubric_payroll.label, rubric_payroll.is_social_care ASC, rubric_payroll.is_discount ASC
   `;
 
@@ -149,7 +149,7 @@ function payrollReportElements(idPeriod, employees, employeesPaymentUuid) {
     JOIN payroll_configuration ON payroll_configuration.config_rubric_id = config_rubric_item.config_rubric_id
     WHERE payroll_configuration.id = ?
     AND (rubric_payroll.is_discount = 0 OR (rubric_payroll.is_discount = 1 AND rubric_payroll.is_employee = 1))
-    AND rubric_payroll.is_monetary_value = 1
+    AND rubric_payroll.is_monetary_value = 1 AND rubric_payroll.is_linked_pension_fund = 0
     ORDER BY rubric_payroll.is_employee ASC, rubric_payroll.is_social_care ASC, rubric_payroll.is_discount ASC,
     rubric_payroll.label ASC;
   `;
@@ -162,7 +162,7 @@ function payrollReportElements(idPeriod, employees, employeesPaymentUuid) {
     JOIN payroll_configuration ON payroll_configuration.config_rubric_id = config_rubric_item.config_rubric_id
     WHERE payroll_configuration.id = ?
     AND (rubric_payroll.is_discount = 1 AND rubric_payroll.is_employee = 0)
-    AND rubric_payroll.is_monetary_value = 1
+    AND rubric_payroll.is_monetary_value = 1 AND rubric_payroll.is_linked_pension_fund = 0
     ORDER BY rubric_payroll.is_employee ASC, rubric_payroll.is_social_care ASC, rubric_payroll.is_discount ASC,
     rubric_payroll.label ASC;
   `;
@@ -173,7 +173,7 @@ function payrollReportElements(idPeriod, employees, employeesPaymentUuid) {
     FROM stage_payment_indice AS spi
     JOIN rubric_payroll AS rub ON rub.id = spi.rubric_id
     WHERE spi.payroll_configuration_id = ? AND spi.employee_uuid IN (?)
-    AND rub.is_indice = 1 AND rub.is_monetary_value = 0
+    AND rub.is_indice = 1 AND rub.is_monetary_value = 0 AND rub.is_linked_pension_fund = 0
     ORDER BY rub.label ASC;
   `;
 

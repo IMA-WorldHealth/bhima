@@ -1,7 +1,8 @@
 <form name="ConfigPaiementForm" bh-submit="ConfigPaiementModalCtrl.submit(ConfigPaiementForm)" novalidate>
   <div class="modal-header">
     <ol class="headercrumb">
-      <li class="static" translate>TREE.PAYROLL</li>
+      <li class="static" translate>TREE.HUMANS_RESSOURCES</li>
+      <li class="static" translate>TREE.INDEXES</li>
       <li class="title" translate>TREE.MULTI_PAYROLL</li>
       <label class="badge badge-success">{{ ConfigPaiementModalCtrl.employee.display_name }}</label>
       <label class="badge badge-primary"><span translate> {{ ConfigPaiementModalCtrl.label }} </span> : {{ ConfigPaiementModalCtrl.displayValue }}</label>
@@ -38,7 +39,7 @@
         ng-repeat="rubConfigured in ConfigPaiementModalCtrl.rubrics | orderBy:'label'" class="form-group">
         <bh-currency-input
           data-payment-currency-input
-          ng-if="rubConfigured.is_monetary_value && rubConfigured.is_indice "
+          ng-if="rubConfigured.is_monetary_value && rubConfigured.is_indice && !rubConfigured.is_linked_pension_fund"
           label="{{rubConfigured.label}}"
           id="{{rubConfigured.abbr}}"
           currency-id="ConfigPaiementModalCtrl.payroll.currency_id"
