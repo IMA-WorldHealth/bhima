@@ -22,8 +22,9 @@ const CHARGES_TYPE_ID = 17;
 const DECIMAL_PRECISION = 2;
 
 function groupedCommitments(employees, rubrics, rubricsConfig, configuration,
-  projectId, userId, exchangeRates, currencyId, accountsCostCenter, costBreakDown, SalaryByCostCenter) {
-
+  projectId, userId, exchangeRates, currencyId, accountsCostCenter,
+  costBreakDown, SalaryByCostCenter, pensionFundCostBreakDown, postingPensionFundTransactionType) {
+  const TRANSACTION_TYPE = postingPensionFundTransactionType;
   const accountPayroll = configuration[0].account_id;
 
   const periodPayroll = moment(configuration[0].dateTo).format('MM-YYYY');
@@ -33,29 +34,38 @@ function groupedCommitments(employees, rubrics, rubricsConfig, configuration,
 
   const descriptionCommitment = `ENGAGEMENT DE PAIE [${periodPayroll}]/ ${labelPayroll}`;
   const descriptionWithholding = `RETENUE DU PAIEMENT [${periodPayroll}]/ ${labelPayroll}`;
+  const descriptionPensionFund = `RÉPARTITION DU FONDS DE RETRAITE [${periodPayroll}]/ ${labelPayroll}`;
 
   const voucherCommitmentUuid = db.bid(commitmentUuid);
   const withholdingUuid = util.uuid();
   const voucherWithholdingUuid = db.bid(withholdingUuid);
   const chargeRemunerationUuid = util.uuid();
   const voucherChargeRemunerationUuid = db.bid(chargeRemunerationUuid);
+  const pensionFundUuid = util.uuid();
+  const voucherPensionFundAllocationUuid = db.bid(pensionFundUuid);
+
   const identificationCommitment = {
     voucherCommitmentUuid,
     voucherWithholdingUuid,
     voucherChargeRemunerationUuid,
     descriptionCommitment,
     descriptionWithholding,
+    voucherPensionFundAllocationUuid,
+    descriptionPensionFund,
   };
   const enterpriseChargeRemunerations = [];
 
   let rubricsBenefits = [];
   let rubricsWithholdings = [];
   let chargesRemunerations = [];
+  let pensionFunds = [];
   let rubricsWithholdingsNotAssociat = [];
   let voucherChargeRemuneration = {};
+  let voucherPensionFund = {};
   let voucherWithholding = {};
   let totalCommitments = 0;
   let totalChargesRemuneration = 0;
+  let totalPensionFund = 0;
   let totalWithholdings = 0;
 
   rubricsConfig.forEach(item => {
@@ -88,7 +98,12 @@ function groupedCommitments(employees, rubrics, rubricsConfig, configuration,
 
   // Get Enterprise charge on remuneration
   chargesRemunerations = rubricsConfig.filter(
-    item => (item.is_employee !== 1 && item.is_discount === 1 && item.totals > 0),
+    item => (item.is_employee !== 1 && item.is_discount === 1 && item.totals > 0 && item.is_linked_pension_fund === 0),
+  );
+
+  // Get Pension Found
+  pensionFunds = rubricsConfig.filter(
+    item => (item.is_employee !== 1 && item.is_discount === 1 && item.totals > 0 && item.is_linked_pension_fund === 1),
   );
 
   // Assign Cost Center Params
@@ -98,12 +113,20 @@ function groupedCommitments(employees, rubrics, rubricsConfig, configuration,
     accountsCostCenter, chargesRemunerations, 'expense_account_id',
   );
 
+  pensionFunds = CostCenter.assignCostCenterParams(
+    accountsCostCenter, pensionFunds, 'expense_account_id',
+  );
+
   rubricsWithholdingsNotAssociat = CostCenter.assignCostCenterParams(
     accountsCostCenter, rubricsWithholdingsNotAssociat, 'debtor_account_id',
   );
 
   chargesRemunerations.forEach(charge => {
     totalChargesRemuneration += charge.totals;
+  });
+
+  pensionFunds.forEach(charge => {
+    totalPensionFund += charge.totals;
   });
 
   rubricsWithholdings.forEach(charge => {
@@ -121,6 +144,7 @@ function groupedCommitments(employees, rubrics, rubricsConfig, configuration,
     transactions,
     employeesBenefitsItem,
     employeesWithholdingItem,
+    employeesPensionFundsItem,
   } = dataCommitment;
 
   totalCommitments = util.roundDecimal(dataCommitment.totalCommitments, DECIMAL_PRECISION);
@@ -202,7 +226,35 @@ function groupedCommitments(employees, rubrics, rubricsConfig, configuration,
         ]);
       }
     });
+  }
 
+  if (pensionFunds.length) {
+    // Pension Fund
+    voucherPensionFund = {
+      uuid : voucherPensionFundAllocationUuid,
+      date : datePeriodTo,
+      project_id : projectId,
+      currency_id : currencyId,
+      user_id : userId,
+      type_id : TRANSACTION_TYPE,
+      description : `RÉPARTITION DU FONDS DE RETRAITE [${periodPayroll}]/ ${labelPayroll}`,
+      amount : util.roundDecimal(totalPensionFund, 2),
+    };
+
+    pensionFundCostBreakDown.forEach(item => {
+      if (item.value_cost_center_id) {
+        employeesPensionFundsItem.push([
+          db.bid(util.uuid()),
+          item.account_expense_id,
+          item.value_cost_center_id,
+          0,
+          voucherPensionFundAllocationUuid,
+          null,
+          descriptionPensionFund,
+          item.cost_center_id,
+        ]);
+      }
+    });
   }
 
   if (rubricsWithholdings.length) {
@@ -258,6 +310,22 @@ function groupedCommitments(employees, rubrics, rubricsConfig, configuration,
     }, {
       query : 'CALL PostVoucher(?);',
       params : [voucherChargeRemuneration.uuid],
+    });
+  }
+
+  if (pensionFunds.length) {
+    transactions.push({
+      query : 'INSERT INTO voucher SET ?',
+      params : [voucherPensionFund],
+    }, {
+      query : `INSERT INTO voucher_item (
+        uuid, account_id, debit, credit, voucher_uuid, entity_uuid,
+        description, cost_center_id
+      ) VALUES ?`,
+      params : [employeesPensionFundsItem],
+    }, {
+      query : 'CALL PostVoucher(?);',
+      params : [voucherPensionFund.uuid],
     });
   }
 

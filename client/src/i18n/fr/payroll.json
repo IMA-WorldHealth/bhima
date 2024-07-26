@@ -63,10 +63,15 @@
   "PAYROLL_SETTINGS" : {
     "DEFAULT" : "Par défaut",
     "DEFAULT_HELP_TEXT" : "Avec cette option les transactions liés aux paiement des employés se font en bloc et nécessite à ce que chaque comptes des charges soient réliées à un centre de coût",
+    "ENABLE_ACTIVATE_PENSION_FUND_BREACKDOWN": "Activer la ventillation de la caisse des retraites",
     "ENABLE_INDEX_PAYMENT_SYSTEM" : "Activer le systeme de payement par indice",
     "GROUP_BY_COST_CENTERS" : "Régrouper par centres des frais",
     "GROUP_BY_COST_CENTERS_HELP_TEXT": "Avec cette option les transactions liées au paiement des employés se font par groupe par rapport aux centres des coûts rélatives des employés ",
     "INDIVIDUALLY_PER_EMPLOYEE" : "Individuellement par employé",
-    "INDIVIDUALLY_PER_EMPLOYEE_HELP_TEXT" : "Avec cette option les transactions liées au paiement des employés se font individuellement par employée"
+    "INDIVIDUALLY_PER_EMPLOYEE_HELP_TEXT" : "Avec cette option les transactions liées au paiement des employés se font individuellement par employée",
+    "SELECT_TRANSACTION_TYPE_HELP_TEXT": "Veuillez sélectionner le type de transaction approprié pour garantir des écritures comptables précises lors de la ventilation des fonds de la caisse de retraites.",
+    "SET_FUND_AMOUNT_PERCENTAGE": "Définir le montant de la caisse en pourcentage",
+    "SET_PERCENTAGE": "Définir ce pourcentage",
+    "SET_PERCENTAGE_HELP_TEXT": "Le pourcentage à définir est pour la ventilation du fonds de la caisse de retraite par rapport aux recettes mensuelles."
   }
 }

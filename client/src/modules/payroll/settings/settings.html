@@ -1,7 +1,7 @@
 <div class="flex-header">
   <div class="bhima-title">
     <ol class="headercrumb">
-      <li class="static" translate>TREE.PAYROLL</li>
+      <li class="static" translate>TREE.HUMANS_RESSOURCES</li>
       <li class="title" translate>TREE.PAYROLL_SETTINGS</li>
     </ol>
   </div>
@@ -58,6 +58,45 @@
             on-change-callback="PayrollSettingsCtrl.enableIndexPaymentSetting(value)">
           </bh-yes-no-radios>
 
+          <bh-yes-no-radios
+            label="PAYROLL_SETTINGS.ENABLE_ACTIVATE_PENSION_FUND_BREACKDOWN"
+            value="PayrollSettingsCtrl.enterprise.settings.enable_activate_pension_fund"
+            name="enable_activate_pension_fund"
+            on-change-callback="PayrollSettingsCtrl.enableActivatePensionFundSetting(value)">
+          </bh-yes-no-radios>
+
+          <div class="form-group" ng-class="{ 'has-error' : PayrollSettingsForm.$submitted && PayrollSettingsForm.pension_transaction_type_id.$invalid }">
+            <label class="control-label" translate>
+              FORM.LABELS.TRANSACTION_TYPE_PENSION
+            </label>
+
+            <ui-select
+              name="pension_transaction_type_id"
+              ng-model="PayrollSettingsCtrl.enterprise.settings.pension_transaction_type_id"
+              required="true"
+              append-to-body="true">
+
+              <ui-select-match placeholder="{{ 'FORM.SELECT.TRANSACTION_TYPE_PENSION' | translate }}">
+                <span translate>{{ $select.selected.text }}</span>
+              </ui-select-match>
+
+              <ui-select-choices
+                ui-select-focus-patch
+                repeat="item.id as item in PayrollSettingsCtrl.types | filter:{ 'plainText' : $select.search }"
+                group-by="PayrollSettingsCtrl.groupTransactionByType">
+                <div ng-bind-html="item.plainText | highlight: $select.search"></div>
+              </ui-select-choices>
+            </ui-select>
+            <span class="help-block" translate>
+              PAYROLL_SETTINGS.SELECT_TRANSACTION_TYPE_HELP_TEXT
+            </span>
+
+            <div class="help-block" ng-messages="PayrollSettingsForm.pension_transaction_type_id.$error" ng-show="PayrollSettingsForm.$submitted">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+
+          <hr>
           <div class="form-group" ng-class="{ 'has-error' : PayrollSettingsForm.$submitted && PayrollSettingsForm.base_index_growth_rate.$invalid }">
             <label class="control-label" translate>
               SETTINGS.PERCENTAGE_ATTRIBUTED_FIXED_BONUS

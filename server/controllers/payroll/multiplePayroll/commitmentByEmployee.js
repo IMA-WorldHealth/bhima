@@ -20,8 +20,9 @@ const CHARGES_TYPE_ID = 17;
 const DECIMAL_PRECISION = 2;
 
 function commitmentByEmployee(employees, rubrics, configuration,
-  projectId, userId, exchangeRates, currencyId) {
+  projectId, userId, exchangeRates, currencyId, postingPensionFundTransactionType) {
 
+  const TRANSACTION_TYPE = postingPensionFundTransactionType;
   const transactions = [];
   const accountPayroll = configuration[0].account_id;
 
@@ -44,12 +45,15 @@ function commitmentByEmployee(employees, rubrics, configuration,
     let employeeRubricsBenefits = [];
     let employeeRubricsWithholdings = [];
     let employeeChargesRemunerations = [];
+    let employeePensionFund = [];
 
     const rubricsForEmployee = rubrics.filter(item => (item.employee_uuid === employee.employee_uuid));
     let totalEmployeeWithholding = 0;
     let totalChargeRemuneration = 0;
+    let totalPensionFund = 0;
     let voucherWithholding;
     let voucherChargeRemuneration;
+    let voucherPensionFund;
 
     const paymentUuid = db.bid(employee.payment_uuid);
 
@@ -70,7 +74,12 @@ function commitmentByEmployee(employees, rubrics, configuration,
 
     // Get Enterprise charge on remuneration
     employeeChargesRemunerations = rubricsForEmployee.filter(
-      item => (item.is_employee !== 1 && item.is_discount === 1 && item.value > 0),
+      item => (item.is_employee !== 1 && item.is_discount === 1 && item.value > 0 && item.is_linked_pension_fund === 0),
+    );
+
+    // Get Pension Found
+    employeePensionFund = rubricsForEmployee.filter(
+      item => (item.is_employee !== 1 && item.is_discount === 1 && item.value > 0 && item.is_linked_pension_fund === 1),
     );
 
     const commitmentUuid = util.uuid();
@@ -81,6 +90,7 @@ function commitmentByEmployee(employees, rubrics, configuration,
     const employeeBenefitsItem = [];
     const employeeWithholdingItem = [];
     const enterpriseChargeRemunerations = [];
+    const enterprisePensionFound = [];
 
     // BENEFITS ITEM
     const voucherCommitment = {
@@ -215,6 +225,46 @@ function commitmentByEmployee(employees, rubrics, configuration,
       });
     }
 
+    // PENSION FOUND
+    if (employeePensionFund.length) {
+      employeePensionFund.forEach(pensionFund => {
+        totalPensionFund += util.roundDecimal(pensionFund.value, DECIMAL_PRECISION);
+      });
+
+      voucherPensionFund = {
+        uuid : db.bid(util.uuid()),
+        date : datePeriodTo,
+        project_id : projectId,
+        currency_id : employee.currency_id,
+        user_id : userId,
+        type_id : TRANSACTION_TYPE,
+        description : `RÉPARTITION DU FONDS DE RETRAITE [${periodPayroll}]/ ${employee.display_name}`,
+        amount : util.roundDecimal(totalPensionFund, 2),
+      };
+
+      employeePensionFund.forEach(pensionFund => {
+        enterprisePensionFound.push([
+          db.bid(util.uuid()),
+          pensionFund.debtor_account_id,
+          0,
+          pensionFund.value,
+          voucherPensionFund.uuid,
+          db.bid(employee.creditor_uuid),
+          voucherPensionFund.description,
+          null,
+        ], [
+          db.bid(util.uuid()),
+          pensionFund.expense_account_id,
+          pensionFund.value,
+          0,
+          voucherPensionFund.uuid,
+          null,
+          voucherPensionFund.description,
+          employee.cost_center_id,
+        ]);
+      });
+    }
+
     // initialise the transaction handler
     transactions.push({
       query : 'INSERT INTO voucher SET ?',
@@ -257,6 +307,20 @@ function commitmentByEmployee(employees, rubrics, configuration,
       }, {
         query : 'CALL PostVoucher(?);',
         params : [voucherWithholding.uuid],
+      });
+    }
+
+    if (employeePensionFund.length) {
+      transactions.push({
+        query : 'INSERT INTO voucher SET ?',
+        params : [voucherPensionFund],
+      }, {
+        query : `INSERT INTO voucher_item
+          (uuid, account_id, debit, credit, voucher_uuid, entity_uuid, description, cost_center_id) VALUES ?`,
+        params : [enterprisePensionFound],
+      }, {
+        query : 'CALL PostVoucher(?);',
+        params : [voucherPensionFund.uuid],
       });
     }
 

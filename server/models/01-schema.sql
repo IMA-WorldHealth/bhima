@@ -220,7 +220,8 @@ CREATE TABLE `rubric_payroll` (
   `position`  TINYINT(1) DEFAULT 0,
   `is_indice` TINYINT(1) DEFAULT 0,
   `indice_type` VARCHAR(50) DEFAULT NULL,
-  `indice_to_grap`TINYINT(1) DEFAULT 0,
+  `indice_to_grap` TINYINT(1) DEFAULT 0,
+  `is_linked_pension_fund` TINYINT(1) DEFAULT 0,
   `value` float DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `rubric_payroll_1` (`label`),
@@ -592,6 +593,8 @@ CREATE TABLE `enterprise_setting` (
   `enable_barcodes` TINYINT(1) NOT NULL DEFAULT 1,
   `enable_auto_email_report` TINYINT(1) NOT NULL DEFAULT 0,
   `enable_index_payment_system` TINYINT(1) NOT NULL DEFAULT 0,
+  `enable_activate_pension_fund` TINYINT(1) NOT NULL DEFAULT 6, -- GENERIC_EXPENSE = 6;
+  `pension_transaction_type_id` TINYINT(1) NOT NULL DEFAULT 0,
   `base_index_growth_rate` TINYINT(3) UNSIGNED NOT NULL DEFAULT 0,
   `posting_payroll_cost_center_mode` VARCHAR(100) NOT NULL DEFAULT 'default', -- With this function, transactions related to employee payment are done in bulk and require that each expense account be linked to a cost center
   `enable_require_cost_center_for_posting` TINYINT(1) NOT NULL DEFAULT 0,
@@ -2578,6 +2581,7 @@ DROP TABLE IF EXISTS `staffing_indice_parameters`;
 CREATE TABLE `staffing_indice_parameters` (
   `uuid` BINARY(16) NOT NULL,
   `pay_envelope`  DECIMAL(19,4) NOT NULL,
+  `pension_fund`  DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.00,
   `working_days`   TINYINT(3) UNSIGNED NOT NULL,
   `payroll_configuration_id` INT(10) UNSIGNED NOT NULL,
   PRIMARY KEY (`uuid`),

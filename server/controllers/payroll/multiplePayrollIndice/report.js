@@ -116,8 +116,7 @@ function template(req, res, next) {
  */
 function getEmployeeRubricMatrixUpload(employees, rubrics) {
   // Filtering of configurable rubrics
-  const rubricsFiltered = rubrics.filter(item => (item.indice_to_grap || item.is_monetary_value));
-
+  const rubricsFiltered = rubrics.filter(item => (item.indice_to_grap));
   employees.forEach(emp => {
     const tabRubrics = [];
     rubricsFiltered.forEach(filt => {
