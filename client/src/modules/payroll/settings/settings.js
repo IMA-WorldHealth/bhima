@@ -55,8 +55,14 @@ function PayrollSettingsController(
       return 0;
     }
 
-    const changes = {};
+    if (vm.enterprise.settings.enable_activate_pension_fund
+      && vm.enterprise.settings.pension_transaction_type_id === 0) {
+      form.pension_transaction_type_id.$invalid = true;
+      Notify.danger('FORM.ERRORS.MISSING');
+      return 0;
+    }
 
+    const changes = {};
     changes.settings = angular.copy(vm.enterprise.settings);
     const promise = Enterprises.update(vm.enterprise.id, changes);
 
@@ -66,23 +72,18 @@ function PayrollSettingsController(
       .catch(Notify.handleError);
   }
 
-  /**
-     * @function proxy
-     *
-     * @description
-     * Proxies requests for different payroll settings.
-     *
-     * @returns {function}
-     */
-  function proxy(key) {
-    return (enabled) => {
-      vm.enterprise.settings[key] = enabled;
-      $touched = true;
-    };
-  }
+  vm.enableIndexPaymentSetting = (val) => {
+    vm.enterprise.settings.enable_index_payment_system = val;
+    $touched = true;
+  };
 
-  vm.enableIndexPaymentSetting = proxy('enable_index_payment_system');
-  vm.enableActivatePensionFundSetting = proxy('enable_activate_pension_fund');
+  vm.enableActivatePensionFundSetting = (val) => {
+    vm.enterprise.settings.enable_activate_pension_fund = val;
+    if (!vm.enterprise.settings.enable_activate_pension_fund) {
+      vm.enterprise.settings.pension_transaction_type_id = 0;
+    }
+    $touched = true;
+  };
 
   startup();
 }

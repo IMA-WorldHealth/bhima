@@ -9,7 +9,7 @@
 <div class="flex-content">
   <div class="container-fluid">
     <form name="PayrollSettingsForm" bh-submit="PayrollSettingsCtrl.submit(PayrollSettingsForm)"
-      ng-model-options="{ updateOn: 'blur' }" novalidate>
+      ng-model-options="{ updateOn: 'default' }" novalidate>
 
       <div class="panel panel-default">
         <div class="panel-heading">
@@ -45,7 +45,7 @@
             </div>
             <span class="help-block" translate>
               SETTINGS.BASE_INDEX_GROWTH_RATE_HELP_TEXT
-            </span>                
+            </span>
             <div class="help-block" ng-messages="PayrollSettingsForm.base_index_growth_rate.$error" ng-show="PayrollSettingsForm.$submitted">
               <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
             </div>
@@ -65,7 +65,9 @@
             on-change-callback="PayrollSettingsCtrl.enableActivatePensionFundSetting(value)">
           </bh-yes-no-radios>
 
-          <div class="form-group" ng-class="{ 'has-error' : PayrollSettingsForm.$submitted && PayrollSettingsForm.pension_transaction_type_id.$invalid }">
+          <div class="form-group"
+            ng-if="PayrollSettingsCtrl.enterprise.settings.enable_activate_pension_fund"
+            ng-class="{ 'has-error' : PayrollSettingsForm.$submitted && PayrollSettingsForm.pension_transaction_type_id.$invalid }">
             <label class="control-label" translate>
               FORM.LABELS.TRANSACTION_TYPE_PENSION
             </label>
@@ -82,8 +84,7 @@
 
               <ui-select-choices
                 ui-select-focus-patch
-                repeat="item.id as item in PayrollSettingsCtrl.types | filter:{ 'plainText' : $select.search }"
-                group-by="PayrollSettingsCtrl.groupTransactionByType">
+                repeat="item.id as item in PayrollSettingsCtrl.types | filter:{ 'plainText' : $select.search }">
                 <div ng-bind-html="item.plainText | highlight: $select.search"></div>
               </ui-select-choices>
             </ui-select>
@@ -97,6 +98,7 @@
           </div>
 
           <hr>
+
           <div class="form-group" ng-class="{ 'has-error' : PayrollSettingsForm.$submitted && PayrollSettingsForm.base_index_growth_rate.$invalid }">
             <label class="control-label" translate>
               SETTINGS.PERCENTAGE_ATTRIBUTED_FIXED_BONUS
