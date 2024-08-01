@@ -292,7 +292,8 @@
       "HIDE_LOCKED_CLIENTS" : "Masquer les clients verrouillés",
       "HIDE_LOCKED_CLIENTS_HELP_TEXT" : "Si vous sélectionnez oui, tous les clients verrouillés seront filtrés dans le rapport. Par défaut, la valeur est non.",
       "INCLUDE_CASH_CLIENTS" : "Inclure les payant cash",
-      "INCLUDE_CASH_CLIENTS_HELP_TEXT" : "La sélection de cette option ajoutera des groupes de débiteurs en espèces. Par défaut, seules les conventions sont interrogées."
+      "INCLUDE_CASH_CLIENTS_HELP_TEXT" : "La sélection de cette option ajoutera des groupes de débiteurs en espèces. Par défaut, seules les conventions sont interrogées.",
+      "NO_LOCKED_CLIENTS_FOUND" : "Aucun client bloqué n'a été trouvé."
     },
     "UNPAID_INVOICE_PAYMENTS_REPORT": {
       "TITLE": "Rapport de Factures Non-Payées",

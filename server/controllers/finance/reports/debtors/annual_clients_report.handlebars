@@ -1,10 +1,31 @@
 {{> head }}
 
+<style>
+  th.rotate {
+    height: 11ex;
+    white-space: nowrap;
+    padding-bottom: 6px !important;
+  }
+  th.rotate > div {
+    -webkit-transform: translateX(25%) translateY(25%) rotate(-90deg);
+            transform: translateX(25%) translateY(25%) rotate(-90deg);
+    width: 3ex;
+    padding-left: 6px !important;
+  }
+  th.right {
+    text-align: right;
+  }
+  td.center {
+    text-align: center;
+  }
+</style>
+
 <body>
   <main class="container">
     {{#> header }}
       <h4 class="text-right text-capitalize">
-        {{ fiscalYear.label }}
+        <strong>{{fiscalYear.label}}</strong><br/>
+        {{date fiscalYear.start_date "MMMM YYYY"}} - {{date fiscalYear.end_date "MMMM YYYY"}}
       </h4>
     {{/header}}
 
@@ -16,11 +37,17 @@
           <tr class="text-capitalize text-center" style="background-color: #ddd;">
             <th>{{translate "TABLE.COLUMNS.ACCOUNT"}}</th>
             <th>{{translate "TABLE.COLUMNS.NAME"}}</th>
-            <th>{{translate "REPORT.OPENING_BALANCE"}}</th>
-            <th>{{translate "TABLE.COLUMNS.DEBIT"}}</th>
-            <th>{{translate "TABLE.COLUMNS.CREDIT"}}</th>
-            <th>{{translate "FORM.LABELS.DIFFERENCE"}}</th>
-            <th>{{translate "REPORT.CLOSING_BALANCE"}}</th>
+            {{#if includeCashClients}}
+            <th class="rotate"><div>{{translate "TABLE.COLUMNS.CASHQ"}}</div></th>
+            {{/if}}
+            {{#if showLockedColumn}}
+            <th class="rotate"><div>{{translate "TABLE.COLUMNS.LOCKEDQ"}}</div></th>
+            {{/if}}
+            <th class="right">{{translate "REPORT.OPENING_BALANCE"}}</th>
+            <th class="right">{{translate "TABLE.COLUMNS.DEBIT"}}</th>
+            <th class="right">{{translate "TABLE.COLUMNS.CREDIT"}}</th>
+            <th class="right">{{translate "FORM.LABELS.DIFFERENCE"}}</th>
+            <th class="right">{{translate "REPORT.CLOSING_BALANCE"}}</th>
           </tr>
         </thead>
         <tbody>
@@ -28,7 +55,13 @@
           {{#each rows as | row |}}
             <tr>
               <td>{{row.accountNumber}}</td>
-              <td>{{row.groupName }}</td>
+              <td>{{row.groupName}}</td>
+              {{#if ../includeCashClients}}
+              <td class="center">{{#if row.isConvention}}{{else}}<strong>X</strong>{{/if}}</td>
+              {{/if}}
+              {{#if ../showLockedColumn}}
+              <td class="center">{{#if row.locked}}<strong>X</strong>{{/if}}</td>
+              {{/if}}
               <td class="text-right">{{debcred row.openingBalance row.currencyId}}</td>
               <td class="text-right">{{debcred row.debit row.currencyId}}</td>
               <td class="text-right">{{debcred row.credit row.currencyId}}</td>
@@ -36,12 +69,12 @@
               <td class="text-right">{{debcred row.closingBalance row.currencyId}}</td>
             </tr>
           {{else}}
-            {{> emptyTable columns="6" }}
+            {{> emptyTable columns="{{../numCols}}" }}
           {{/each}}
         </tbody>
 
         <tfoot>
-          <th colspan="2">{{translate "TABLE.COLUMNS.TOTAL"}}</th>
+          <th colspan="{{skipCols}}">{{translate "TABLE.COLUMNS.TOTAL"}}</th>
           <th class="text-right">{{debcred footer.openingBalance footer.currencyId}}</th>
           <th class="text-right">{{debcred footer.debit  footer.currencyId}}</th>
           <th class="text-right">{{debcred footer.credit  footer.currencyId}}</th>
@@ -49,6 +82,11 @@
           <th class="text-right">{{debcred footer.closingBalance footer.currencyId}}</th>
         </tfoot>
       </table>
+      {{#if noLockedClientsFound}}
+      <div style="padding-top: 1ex">
+        <hr4 ><strong>* {{translate "REPORT.CLIENTS.NO_LOCKED_CLIENTS_FOUND"}}</strong></hr4>
+      </div>
+      {{/if}}
     </section>
   </main>
 </body>

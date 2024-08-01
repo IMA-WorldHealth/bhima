@@ -18,8 +18,9 @@ async function setupAnnualClientsReport(options, enterprise) {
   const currencyId = Number(options.currencyId);
 
   // convert to an integer
-  const shouldHideLockedClients = Number(hideLockedClients);
   const shouldIncludeCashClients = Number(includeCashClients);
+  const shouldHideLockedClients = Number(hideLockedClients);
+  const showLockedClients = shouldHideLockedClients === 0 ? 1 : 0;
 
   const [fiscalYear, exchange] = await Promise.all([
     Fiscal.lookupFiscalYear(fiscalId),
@@ -33,8 +34,26 @@ async function setupAnnualClientsReport(options, enterprise) {
     getTotalsFooter(fiscalYear.id, currencyId, rate, shouldHideLockedClients, shouldIncludeCashClients),
   ]);
 
+  // Computations for optional columns
+  const numLocked = rows.reduce((sum, row) => sum + (row.locked ? 1 : 0), 0);
+  const noLockedClientsFound = Number(!shouldHideLockedClients && (numLocked === 0));
+  const showLockedColumn = Number(!shouldHideLockedClients && (numLocked > 0));
+  const skipCols = 2 + shouldIncludeCashClients + (showLockedColumn ? 1 : 0);
+  const numCols = 6 + skipCols;
+
   return {
-    rows, footer, fiscalYear, exchangeRate : rate, currencyId,
+    rows,
+    footer,
+    fiscalYear,
+    exchangeRate : rate,
+    currencyId,
+    lockedClients : showLockedClients,
+    showLockedColumn,
+    noLockedClientsFound,
+    numLocked,
+    includeCashClients : shouldIncludeCashClients,
+    skipCols,
+    numCols,
   };
 }
 
@@ -91,7 +110,8 @@ function getDebtorGroupMovements(fiscalYearId, currencyId, rate, hideLockedClien
   const hiddenClientsCondition = ' AND dg.locked = 0 ';
   const excludeCashClientsCondition = 'AND dg.is_convention = 1 ';
   const sql = `
-    SELECT ac.number AS accountNumber, dg.name AS groupName,
+    SELECT act.number AS accountNumber, dg.name AS groupName,
+      dg.locked, dg.is_convention AS isConvention,
       IFNULL(SUM(IF(p.number = 0, pt.debit - pt.credit, 0)), 0) * ${rate} AS openingBalance,
       IFNULL(SUM(IF(p.number > 0, pt.debit, 0)), 0) * ${rate} AS debit,
       IFNULL(SUM(IF(p.number > 0, pt.credit, 0)), 0) * ${rate} AS credit,
@@ -100,13 +120,13 @@ function getDebtorGroupMovements(fiscalYearId, currencyId, rate, hideLockedClien
       ${currencyId} as currencyId
     FROM debtor_group dg
       LEFT JOIN period_total pt ON dg.account_id = pt.account_id
-      LEFT JOIN account ac ON ac.id = pt.account_id
+      LEFT JOIN account act ON act.id = pt.account_id
       LEFT JOIN period p ON p.id = pt.period_id
     WHERE pt.fiscal_year_id = ?
       ${hideLockedClients ? hiddenClientsCondition : ''}
       ${includeCashClients ? '' : excludeCashClientsCondition}
     GROUP BY pt.account_id
-    ORDER BY ac.number ASC, dg.name DESC;
+    ORDER BY act.number ASC, dg.name DESC;
   `;
 
   return db.exec(sql, fiscalYearId);
@@ -123,7 +143,7 @@ function getTotalsFooter(fiscalYearId, currencyId, rate, hideLockedClients = 0, 
   const hiddenClientsCondition = ' AND dg.locked = 0 ';
   const excludeCashClientsCondition = 'AND dg.is_convention = 1 ';
   const sql = `
-    SELECT ac.number AS accountNumber, ac.label AS accountLabel,
+    SELECT act.number AS accountNumber, act.label AS accountLabel,
       IFNULL(SUM(IF(p.number = 0, pt.debit - pt.credit, 0)), 0) * ${rate} AS openingBalance,
       IFNULL(SUM(IF(p.number > 0, pt.debit, 0)), 0) * ${rate} AS debit,
       IFNULL(SUM(IF(p.number > 0, pt.credit, 0)), 0) * ${rate} AS credit,
@@ -132,7 +152,7 @@ function getTotalsFooter(fiscalYearId, currencyId, rate, hideLockedClients = 0, 
       ${currencyId} as currencyId
     FROM debtor_group dg
       LEFT JOIN period_total pt ON dg.account_id = pt.account_id
-      LEFT JOIN account ac ON ac.id = pt.account_id
+      LEFT JOIN account act ON act.id = pt.account_id
       LEFT JOIN period p ON p.id = pt.period_id
     WHERE pt.fiscal_year_id = ?
       ${hideLockedClients ? hiddenClientsCondition : ''}

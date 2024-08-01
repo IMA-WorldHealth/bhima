@@ -157,6 +157,10 @@
   color : #505050;
 }
 
+.no-top-margin {
+  margin-top: 0;
+}
+
 /**
  * Application Header
  *
