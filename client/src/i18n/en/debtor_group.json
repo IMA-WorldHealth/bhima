@@ -23,13 +23,17 @@
     "NEW_DEBTOR_GROUP": "New Debtor Group",
     "NO_GROUPS" : "No debtor groups found",
     "POLICIES": {
+      "CONVENTIONED": "Conventioned",
+      "INSOLVENT": "Insolvent",
+      "NOT_ASSIMILATED_CLIENT": "Not assimilated to client",
+      "SOLVENT": "Solvent",
       "TITLE": "Group Policies",
       "SUBSIDIES": {
-        "TITLE": "Subsidies",
+        "EMPTY": "This debtor group is not subscribed to any subsidies",
         "INFO": "With this configuration unchecked no member of this debtor group will qualify for any subsidies",
         "LABEL": "This group qualifies for subsidies",
-        "UPDATE": "Update Subsidies",
-        "EMPTY": "This debtor group is not subscribed to any subsidies"
+        "TITLE": "Subsidies",
+        "UPDATE": "Update Subsidies"
       },
       "DISCOUNTS": {
         "TITLE": "Discounts",
@@ -42,7 +46,8 @@
         "LABEL": "This group is exempt from paying invoicing fees",
         "UPDATE": "Update Invoicing Fees",
         "EMPTY": "This debtor group is not subscribed to any invoicing fees"
-      }
+      },
+      "NON_CLIENT_DEBTOR_GROUPS": "Non-Client Debtor Groups"
     },
     "TITLE": "Debtor Group Management",
     "SUBSCRIBED": "Debtors subscribed",
@@ -50,6 +55,7 @@
     "LOADING": "Fetching Debtor Group",
     "CONVENTION": {
       "TITLE": "Convention",
+      "DEBTOR_GROUP_INSOLVENT": "This debtor group is insolvent",
       "DESCRIPTION": "The invoices of debtors in this group will be covered by this debtor group's account. Patients belonging to this group will be blocked from paying their bills at the cash window.",
       "CANNOT_PAY": "This patient does not pay invoices. Its invoices are covered by"
     },

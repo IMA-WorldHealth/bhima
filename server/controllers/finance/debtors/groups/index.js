@@ -56,7 +56,8 @@ function lookupDebtorGroup(uid) {
   const sql = `
     SELECT BUID(uuid) AS uuid, enterprise_id, name, account_id, BUID(location_id) as location_id,
       phone, email, note, locked, max_credit, is_convention, BUID(price_list_uuid) AS price_list_uuid,
-      apply_subsidies, apply_discounts, apply_invoicing_fees, color
+      apply_subsidies, apply_discounts, apply_invoicing_fees, color, is_insolvent,
+      is_non_client_debtor_groups
     FROM debtor_group
     WHERE uuid = ?;
   `;
@@ -121,10 +122,28 @@ function lookupSubsidies(uid) {
  *   apply_discounts : {number},
  *   apply_invoicing_fees : {number},
  *   apply_subsidies : {number}
+ *   is_insolvent : {number},
+ *   is_non_client_debtor_groups : {number},
  * };
  */
 function create(req, res, next) {
   const sql = 'INSERT INTO debtor_group SET ? ;';
+
+  if (req.body.is_convention === 1) {
+    req.body.color = '#1E90FF';
+  }
+
+  if (req.body.is_non_client_debtor_groups === 1) {
+    req.body.color = '#00FF00';
+  }
+
+  if (req.body.is_insolvent === 1) {
+    req.body.color = '#FFA500';
+  }
+
+  if (req.body.locked === 1) {
+    req.body.color = '#FF0000';
+  }
 
   // convert any incoming uuids into binary
   const data = db.convert(req.body, ['price_list_uuid', 'location_id']);
@@ -151,6 +170,22 @@ function create(req, res, next) {
 function update(req, res, next) {
   const sql = 'UPDATE debtor_group SET ? WHERE uuid = ?;';
   const uid = db.bid(req.params.uuid);
+
+  if (req.body.is_convention === 1) {
+    req.body.color = '#1E90FF';
+  }
+
+  if (req.body.is_non_client_debtor_groups === 1) {
+    req.body.color = '#00FF00';
+  }
+
+  if (req.body.is_insolvent === 1) {
+    req.body.color = '#FFA500';
+  }
+
+  if (req.body.locked === 1) {
+    req.body.color = '#FF0000';
+  }
 
   // convert any incoming uuids to binary
   const data = db.convert(req.body, ['price_list_uuid', 'location_id']);
@@ -197,7 +232,8 @@ function detail(req, res, next) {
  * @function list
  */
 function list(req, res, next) {
-  let sql = `SELECT BUID(uuid) AS uuid, name, locked, account_id, is_convention, created_at FROM debtor_group `;
+  let sql = `SELECT BUID(uuid) AS uuid, name, locked, account_id,
+    is_convention, is_insolvent, is_non_client_debtor_groups, created_at FROM debtor_group `;
 
   if (req.query.detailed === '1') {
     /**
@@ -209,8 +245,10 @@ function list(req, res, next) {
       SELECT BUID(debtor_group.uuid) as uuid, debtor_group.name, debtor_group.account_id,
         BUID(debtor_group.location_id) as location_id, debtor_group.phone, debtor_group.email,
         debtor_group.note, debtor_group.locked, debtor_group.max_credit, debtor_group.is_convention,
-        BUID(debtor_group.price_list_uuid) as price_list_uuid, debtor_group.created_at,
-        debtor_group.apply_subsidies, debtor_group.apply_discounts, debtor_group.apply_invoicing_fees,
+        debtor_group.is_insolvent, debtor_group.is_non_client_debtor_groups,
+        BUID(debtor_group.price_list_uuid) as price_list_uuid,
+        debtor_group.created_at, debtor_group.apply_subsidies, debtor_group.apply_discounts,
+        debtor_group.apply_invoicing_fees,
         COUNT(debtor.uuid) as total_debtors, account.number AS account_number, color
       FROM debtor_group
       JOIN account ON account.id =  debtor_group.account_id
@@ -224,6 +262,8 @@ function list(req, res, next) {
 
   filters.equals('locked', 'locked', 'debtor_group');
   filters.equals('is_convention', 'is_convention', 'debtor_group');
+  filters.equals('is_insolvent', 'is_insolvent', 'debtor_group');
+  filters.equals('is_non_client_debtor_groups', 'is_non_client_debtor_groups', 'debtor_group');
 
   filters.setOrder('ORDER BY debtor_group.name');
   filters.setGroup('GROUP BY debtor_group.uuid');

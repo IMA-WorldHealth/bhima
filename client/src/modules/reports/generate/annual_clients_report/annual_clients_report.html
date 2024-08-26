@@ -46,6 +46,64 @@
             on-change-callback="ReportConfigCtrl.onIncludeCashClientsToggle(value)">
           </bh-yes-no-radios>
 
+          <bh-yes-no-radios
+            label="REPORT.CLIENTS.SHOW_ALL_DEBTOR_GROUPS"
+            value="ReportConfigCtrl.reportDetails.showAllDebtorGroup"
+            name="showAllDebtorGroup"
+            on-change-callback="ReportConfigCtrl.onShowAllDebtorGroupToggle(value)">
+          </bh-yes-no-radios>
+
+          <div ng-if="!ReportConfigCtrl.reportDetails.showAllDebtorGroup" style="padding-left: 5%;">
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" ng-model="ReportConfigCtrl.reportDetails.solvent" ng-true-value="1" ng-false-value="0">
+                <span translate>REPORT.CLIENTS.REPORT_SOLVENT_CLIENTS</span>
+              </label>
+            </div>
+
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" ng-model="ReportConfigCtrl.reportDetails.insolvent" ng-true-value="1" ng-false-value="0">
+                <span translate>REPORT.CLIENTS.INSOLVENT_CLIENTS_REPORT</span>
+              </label>
+            </div>
+
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" ng-model="ReportConfigCtrl.reportDetails.conventioned" ng-true-value="1" ng-false-value="0">
+                <span translate>REPORT.CLIENTS.REPORT_OF_CONVENTIONED_CLIENTS</span>
+              </label>
+            </div>
+
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" ng-model="ReportConfigCtrl.reportDetails.non_conventioned" ng-true-value="1" ng-false-value="0">
+                <span translate>REPORT.CLIENTS.REPORT_OF_NON_CONVENTIONED_CLIENTS</span>
+              </label>
+            </div>
+
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" ng-model="ReportConfigCtrl.reportDetails.group_client" ng-true-value="1" ng-false-value="0">
+                <span translate>REPORT.CLIENTS.OVERALL_CUSTOMER_REPORT</span>
+              </label>
+            </div>
+
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" ng-model="ReportConfigCtrl.reportDetails.group_non_client" ng-true-value="1" ng-false-value="0">
+                <span translate>REPORT.CLIENTS.REPORT_DEBT_GROUP_NON_CLIENT</span>
+              </label>
+            </div>
+
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" ng-model="ReportConfigCtrl.reportDetails.is_locked" ng-true-value="1" ng-false-value="0">
+                <span translate>REPORT.CLIENTS.BLOCKED_CLIENTS_REPORT</span>
+              </label>
+            </div>
+          </div>
+
           <bh-currency-select
             currency-id="ReportConfigCtrl.reportDetails.currencyId"
             on-change="ReportConfigCtrl.onSelectCurrency(currency)">

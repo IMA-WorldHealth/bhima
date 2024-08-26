@@ -18,7 +18,7 @@ DebtorGroupCreateController.$inject = [
 
 function DebtorGroupCreateController(
   $state, ScrollTo, Session, DebtorGroups,
-  Accounts, Prices, Uuid, Notify, Color
+  Accounts, Prices, Uuid, Notify, Color,
 ) {
   const vm = this;
 
