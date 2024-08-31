@@ -289,11 +289,20 @@
     "CLIENTS" : {
       "TITLE" : "Rapport Annuel des Clients",
       "DESCRIPTION" : "Ce rapport affiche tous les groupes de débiteurs, leurs soldes de compte au début de l'exercice, les soldes actuels et leurs soldes de clôture.",
+      "GLOBAL_DEBTOR_GROUP_REPORT": "Rapport global des groupes débiteurs",
       "HIDE_LOCKED_CLIENTS" : "Masquer les clients verrouillés",
       "HIDE_LOCKED_CLIENTS_HELP_TEXT" : "Si vous sélectionnez oui, tous les clients verrouillés seront filtrés dans le rapport. Par défaut, la valeur est non.",
       "INCLUDE_CASH_CLIENTS" : "Inclure les payant cash",
       "INCLUDE_CASH_CLIENTS_HELP_TEXT" : "La sélection de cette option ajoutera des groupes de débiteurs en espèces. Par défaut, seules les conventions sont interrogées.",
-      "NO_LOCKED_CLIENTS_FOUND" : "Aucun client bloqué n'a été trouvé."
+      "INSOLVENT_CLIENTS_REPORT" : "Rapport des clients insolvables",
+      "NO_LOCKED_CLIENTS_FOUND" : "Aucun client bloqué n'a été trouvé.",
+      "BLOCKED_CLIENTS_REPORT": "Rapport des clients bloqués",
+      "REPORT_DEBT_GROUP_NON_CLIENT": "Rapport des groupes débiteurs categorisés comme non Clients",
+      "REPORT_OF_CONVENTIONED_CLIENTS": "Rapport des clients conventionnés",
+      "REPORT_OF_NON_CONVENTIONED_CLIENTS": "Rapport des clients non conventionnés (Payant cash)",
+      "REPORT_SOLVENT_CLIENTS" : "Rapport des clients solvables",
+      "OVERALL_CUSTOMER_REPORT": "Rapport global des clients",
+      "SHOW_ALL_DEBTOR_GROUPS": "Afficher tous les groupes débiteurs"
     },
     "UNPAID_INVOICE_PAYMENTS_REPORT": {
       "TITLE": "Rapport de Factures Non-Payées",

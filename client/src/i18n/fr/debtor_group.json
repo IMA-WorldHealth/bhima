@@ -24,13 +24,17 @@
     "NEW_DEBTOR_GROUP": "Nouveau Groupe de Débiteur",
     "NO_GROUPS" : "Aucun Groupe Débiteur trouvés",
     "POLICIES": {
+      "CONVENTIONED": "Conventioné",
+      "INSOLVENT": "Insolvable",
+      "NOT_ASSIMILATED_CLIENT": "Non assimilé aux clients",
+      "SOLVENT": "Solvable",      
       "TITLE": "Les stratégies de groupe",
       "SUBSIDIES": {
-        "TITLE": "Subventions",
+        "EMPTY": "Ce groupe de Débiteurs n'est pas souscrit à des subventions",
         "INFO": "Avec cette configuration, aucun membre de ce Groupe Débiteur ne sera subventionné",
         "LABEL": "Ce groupe est qualifié pour les subventions",
-        "UPDATE": "Mettre à jour les subventions",
-        "EMPTY": "Ce groupe de Débiteurs n'est pas souscrit à des subventions"
+        "TITLE": "Subventions",
+        "UPDATE": "Mettre à jour les subventions"
       },
       "DISCOUNTS": {
         "TITLE": "Réductions",
@@ -43,13 +47,15 @@
         "LABEL": "Ce Groupe est exempté du paiement des services de facturation",
         "EMPTY": "Ce Groupe Débiteur n'est pas abonné à des services de facturation",
         "UPDATE": "Mettre à jour les services de facturation"
-      }
+      },
+      "NON_CLIENT_DEBTOR_GROUPS": "Groupes Débiteurs Non-Clients"
     },
     "TITLE": "Gestion des Groupes des Débiteurs",
     "SUBSCRIBED": "Débiteurs abonnés",
     "SUBSCRIPTIONS": "Abonnements",
     "CONVENTION": {
       "TITLE": "Convention",
+      "DEBTOR_GROUP_INSOLVENT": "Ce groupe débiteur est insolvable",
       "DESCRIPTION": "Les factures des débiteurs de ce groupe seront couvertes par le compte de ce débiteur. Les patients appartenant à ce groupe seront empêchés de payer leurs factures à la caisse",
       "CANNOT_PAY": "Ce patient ne paie pas de factures. Ses factures sont couvertes par"
     },

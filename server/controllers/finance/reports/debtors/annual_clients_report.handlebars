@@ -24,7 +24,6 @@
   <main class="container">
     {{#> header }}
       <h4 class="text-right text-capitalize">
-        <strong>{{fiscalYear.label}}</strong><br/>
         {{date fiscalYear.start_date "MMMM YYYY"}} - {{date fiscalYear.end_date "MMMM YYYY"}}
       </h4>
     {{/header}}
@@ -32,6 +31,58 @@
     {{> exchangeRate rate=exchangeRate currencyId=currencyId}}
 
     <section>
+      {{#if overallCustomer}}
+        <h3 class="text-center text-uppercase">
+          <strong>{{translate 'REPORT.CLIENTS.OVERALL_CUSTOMER_REPORT' }}</strong>
+        </h3>
+      {{/if}}
+
+      {{#if solventClient}}
+        <h3 class="text-center text-uppercase">
+          <strong>{{translate 'REPORT.CLIENTS.REPORT_SOLVENT_CLIENTS' }}</strong>
+        </h3>
+      {{/if}}
+
+      {{#if inSolventClient}}
+        <h3 class="text-center text-uppercase">
+          <strong>{{translate 'REPORT.CLIENTS.INSOLVENT_CLIENTS_REPORT' }}</strong>
+        </h3>
+      {{/if}}
+
+      {{#if debtorConventioned}}
+        <h3 class="text-center text-uppercase">
+          <strong>{{translate 'REPORT.CLIENTS.REPORT_OF_CONVENTIONED_CLIENTS' }}</strong>
+        </h3>
+      {{/if}}
+
+      {{#if debtorNonConventioned}}
+        <h3 class="text-center text-uppercase">
+          <strong>{{translate 'REPORT.CLIENTS.REPORT_OF_NON_CONVENTIONED_CLIENTS' }}</strong>
+        </h3>
+      {{/if}}
+
+      {{#if isLocked}}
+        <h3 class="text-center text-uppercase">
+          <strong>{{translate 'REPORT.CLIENTS.BLOCKED_CLIENTS_REPORT' }}</strong>
+        </h3>
+      {{/if}}
+
+      {{#if groupNonClient}}
+        <h3 class="text-center text-uppercase">
+          <strong>{{translate 'REPORT.CLIENTS.REPORT_DEBT_GROUP_NON_CLIENT' }}</strong>
+        </h3>
+      {{/if}}
+
+      {{#if globalClient}}
+        <h3 class="text-center text-uppercase">
+          <strong>{{translate 'REPORT.CLIENTS.GLOBAL_DEBTOR_GROUP_REPORT' }}</strong>
+        </h3>
+      {{/if}}
+
+      <h3 class="text-center text-uppercase">
+        <strong>{{fiscalYear.label}}</strong>
+      </h3>
+
       <table class="table table-condensed table-report table-bordered">
         <thead>
           <tr class="text-capitalize text-center" style="background-color: #ddd;">

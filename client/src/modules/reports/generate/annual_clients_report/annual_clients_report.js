@@ -23,6 +23,7 @@ function AnnualClientsReportController($state, $sce, Notify, AppCache, SavedRepo
     currencyId : Session.enterprise.currency_id,
     hideLockedClients : 0,
     includeCashClients : 0,
+    showAllDebtorGroup : 1,
   };
 
   checkCachedConfiguration();
@@ -46,6 +47,10 @@ function AnnualClientsReportController($state, $sce, Notify, AppCache, SavedRepo
 
   vm.onIncludeCashClientsToggle = includeCashClients => {
     Object.assign(vm.reportDetails, { includeCashClients });
+  };
+
+  vm.onShowAllDebtorGroupToggle = showAllDebtorGroup => {
+    vm.reportDetails.showAllDebtorGroup = showAllDebtorGroup;
   };
 
   vm.requestSaveAs = function requestSaveAs() {

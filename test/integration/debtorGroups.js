@@ -33,12 +33,14 @@ describe('test/integration/debtorGroups The debtor groups API', () => {
     note : 'Updated debtor group de test',
     locked : 1,
     max_credit : 1000,
+    is_insolvent : 0,
+    is_non_client_debtor_groups : 0,
     is_convention : 1,
     price_list_uuid : helpers.data.PRICE_LIST,
     apply_discounts : 1,
     apply_invoicing_fees : 1,
     apply_subsidies : 1,
-    color : '#00ffff',
+    color : '#FF0000',
   };
 
   const lockedGroup = {

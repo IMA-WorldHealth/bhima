@@ -385,6 +385,8 @@ CREATE TABLE `debtor_group` (
   `apply_invoicing_fees` BOOLEAN NOT NULL DEFAULT TRUE,
   `apply_subsidies` BOOLEAN NOT NULL DEFAULT TRUE,
   `color` VARCHAR(8) NULL,
+  `is_insolvent` TINYINT(1) NOT NULL DEFAULT 0,
+  `is_non_client_debtor_groups` TINYINT(1) NOT NULL DEFAULT 0,
   `created_at`      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`      TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`uuid`),

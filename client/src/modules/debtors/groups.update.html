@@ -162,6 +162,17 @@
                 <span translate>DEBTOR_GROUP.CONVENTION.TITLE</span>
               </label>
             </div>
+            <div class="checkbox">
+              <label>
+                <input
+                  type="checkbox"
+                  name="is_insolvent"
+                  ng-model="GroupUpdateCtrl.group.is_insolvent"
+                  ng-true-value="1"
+                  ng-false-value="0">
+                <span translate>DEBTOR_GROUP.CONVENTION.DEBTOR_GROUP_INSOLVENT</span>
+              </label>
+            </div>
           </div>
         </div>
 
@@ -187,6 +198,17 @@
                     <span translate>DEBTOR_GROUP.POLICIES.SUBSIDIES.LABEL</span>
                   </label>
                 </div>
+                <div class="checkbox">
+                  <label>
+                    <input
+                      type="checkbox"
+                      name="is_non_client_debtor_groups"
+                      ng-model="GroupUpdateCtrl.group.is_non_client_debtor_groups"
+                      ng-true-value="1"
+                      ng-false-value="0">
+                    <span translate>DEBTOR_GROUP.POLICIES.NON_CLIENT_DEBTOR_GROUPS</span>
+                  </label>
+                </div>
               </div>
             </div>
             <div class="row">
@@ -201,7 +223,7 @@
                     <input ng-model="GroupUpdateCtrl.group.apply_discounts" name="apply_discounts" type="checkbox">
                     <span translate>DEBTOR_GROUP.POLICIES.DISCOUNTS.LABEL</span>
                   </label>
-                </div>
+                </div>           
               </div>
             </div>
             <div class="row">

@@ -12,7 +12,7 @@ DebtorGroupsUpdateController.$inject = [
 
 function DebtorGroupsUpdateController(
   $state, DebtorGroups, Prices,
-  ScrollTo, util, Notify, Modal, Color
+  ScrollTo, util, Notify, Modal, Color,
 ) {
   const vm = this;
   vm.group = {};
@@ -51,7 +51,6 @@ function DebtorGroupsUpdateController(
       vm.$loading = false;
     });
 
-
   function formatData(group) {
     delete group.subsidies;
     delete group.invoicingFees;
@@ -73,6 +72,8 @@ function DebtorGroupsUpdateController(
       $state.go('debtorGroups.list', null, { reload : true });
       return;
     }
+
+    vm.group.color = vm.group.is_insolvent ? '#FFA500' : '#000000';
 
     let submitDebtorGroup = angular.copy(vm.group);
     submitDebtorGroup = formatData(submitDebtorGroup);
