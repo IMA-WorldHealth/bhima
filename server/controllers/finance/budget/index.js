@@ -82,13 +82,13 @@ function buildBudgetData(fiscalYearId) {
   let accounts;
   let periodActuals;
 
-  // Get basic info on all relevant accounts
+  // Get basic info on all relevant accounts excluding hidden and blocked accounts.
   const accountsSql = `
     SELECT
       a.id, a.number, a.label, a.locked, a.type_id,
       a.parent, a.locked, a.hidden
     FROM account AS a
-    WHERE a.type_id in (${allowedTypes}) AND a.locked = 0;
+    WHERE a.type_id in (${allowedTypes}) AND a.locked = 0 AND a.hidden = 0;
   `;
 
   // First get the basic account and FY budget data (if available)
@@ -105,9 +105,10 @@ function buildBudgetData(fiscalYearId) {
     JOIN period AS p ON p.id = b.period_id
     WHERE p.number = 0 and p.fiscal_year_id = ?
     ) AS bdata ON bdata.account_id = a.id
-    WHERE a.type_id in (${INCOME}, ${EXPENSE}) AND a.locked = 0;
+    WHERE a.type_id in (${INCOME}, ${EXPENSE}) AND a.locked = 0 AND a.hidden = 0;
   `;
 
+  // Retrieving the values for the periods, excluding period 0 and the closing period 13
   const actualsSql = `
     SELECT
       a.id,
@@ -116,17 +117,21 @@ function buildBudgetData(fiscalYearId) {
     FROM period_total pt
     JOIN account AS a ON a.id = pt.account_id
     JOIN account_type AS at ON at.id = a.type_id
+    JOIN period AS p ON p.id = pt.period_id
     WHERE pt.fiscal_year_id = ? AND a.type_id in (${INCOME}, ${EXPENSE}) AND a.locked = 0
+    AND a.hidden = 0 AND (p.number <> 0 AND p.number <> 13)
     GROUP BY a.id;
   `;
 
+  // Retrieving the values for the periods, excluding period 0 and the closing period 13
   const periodActualsSql = `
     SELECT a.id, pt.debit, pt.credit, p.number AS periodNum
     FROM period_total pt
     JOIN period AS p ON p.id = pt.period_id
     JOIN account AS a ON a.id = pt.account_id
     JOIN account_type AS at ON at.id = a.type_id
-    WHERE pt.fiscal_year_id = ? AND a.type_id in (${INCOME}, ${EXPENSE}) AND a.locked = 0;
+    WHERE pt.fiscal_year_id = ? AND a.type_id in (${INCOME}, ${EXPENSE}) AND a.locked = 0
+    AND a.hidden = 0 AND (p.number <> 0 AND p.number <> 13);
   `;
 
   const months = constants.periods.filter(elt => elt.periodNum !== 0);
@@ -269,8 +274,17 @@ function getBudgetData(req, res, next) {
 function sortAccounts(origAccounts, allAccounts) {
 
   // first separate the types of accounts
-  const expenses = origAccounts.filter(item => item.type_id === EXPENSE).sort((a, b) => a.number - b.number);
-  const incomes = origAccounts.filter(item => item.type_id === INCOME).sort((a, b) => a.number - b.number);
+  const expenses = origAccounts.filter(item => item.type_id === EXPENSE);
+  const incomes = origAccounts.filter(item => item.type_id === INCOME);
+
+  // Improvement of the function for sorting account numbers by treating account numbers as strings.
+  expenses.sort((a, b) => {
+    return String(a.number).localeCompare(String(b.number));
+  });
+
+  incomes.sort((a, b) => {
+    return String(a.number).localeCompare(String(b.number));
+  });
 
   // Construct the list of periods (leave out the FY total period)
   const periods = constants.periods.filter(elt => elt.periodNum !== 0);
@@ -492,7 +506,7 @@ function computeTitleAccountTotals(budgetAccts, allAccounts) {
     const childrenIDs = getChildrenAccounts(allAccounts, acct.id);
     childrenIDs.forEach(childId => {
       const bdAcct = budgetAccts.find(item => item.id === childId);
-      if (bdAcct && bdAcct.budget) {
+      if (bdAcct) {
         if (bdAcct.type_id === INCOME) {
           acct.isIncomeTitle = true;
         } else if (bdAcct.type_id === EXPENSE) {
@@ -701,7 +715,7 @@ function computeTitleAccountPeriodTotals(budgetAccts, allAccounts) {
     const childrenIDs = getChildrenAccounts(allAccounts, acct.id);
     childrenIDs.forEach(childId => {
       const bdAcct = budgetAccts.find(item => item.id === childId);
-      if (bdAcct && bdAcct.budget) {
+      if (bdAcct) {
         if ((bdAcct.type_id === INCOME) || (bdAcct.type_id === EXPENSE)) {
           acct.actuals += bdAcct.actuals ? bdAcct.actuals : 0;
           acct.credit += bdAcct.credit ? bdAcct.credit : 0;

@@ -55,6 +55,7 @@ angular.module('bhima.routes')
       'system_usage_stat',
       'unpaid_invoice_payments',
       'visit_report',
+      'budget_report',
     ];
 
     function resolveReportData($stateParams, SavedReports) {

@@ -1,0 +1,96 @@
+<bh-report-preview
+  ng-if="ReportConfigCtrl.previewGenerated"
+  source-document="ReportConfigCtrl.previewResult"
+  on-clear-callback="ReportConfigCtrl.clearPreview()"
+  on-save-callback="ReportConfigCtrl.requestSaveAs()">
+</bh-report-preview>
+
+<div ng-show="!ReportConfigCtrl.previewGenerated">
+  <div class="row">
+    <div class="col-md-12">
+      <h3 class="text-capitalize" translate>REPORT.BUDGET_REPORT.TITLE</h3>
+      <p class="text-info" translate>REPORT.BUDGET_REPORT.DESCRIPTION</p>
+    </div>
+  </div>
+
+  <div class="row" style="margin-top : 10px">
+    <div class="col-md-6">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <span translate>REPORT.UTIL.OPTIONS</span>
+        </div>
+
+        <div class="panel-body">
+          <form name="ConfigForm" bh-submit="ReportConfigCtrl.preview(ConfigForm)" novalidate>
+            <bh-fiscal-year-select
+              fiscal-id="ReportConfigCtrl.reportDetails.fiscal_id"
+              on-select-fiscal-callback="ReportConfigCtrl.onSelectFiscalYear(fiscalYear)"
+              required="true">
+            </bh-fiscal-year-select>
+
+            <div class="form-group" ng-class="{'has-error' : ConfigForm.set_number_year.$invalid && ConfigForm.$submitted}">
+              <label class="control-label" translate>REPORT.BUDGET_REPORT.SET_NUMBER_YEAR</label>
+              <bh-clear on-clear="ReportConfigCtrl.clear('id')"></bh-clear>
+              <ui-select
+                name="set_number_year"
+                ng-model="ReportConfigCtrl.reportDetails.set_number_year">
+        
+                <ui-select-match placeholder="{{ 'REPORT.BUDGET_REPORT.MAX_5_YEAR' | translate }}">
+                  <span>{{$select.selected.id}}</span>
+                </ui-select-match>
+        
+                <ui-select-choices repeat="year.id as year in ReportConfigCtrl.numberYears | filter:{id: $select.search}">
+                  <strong ng-bind-html="year.id | highlight:$select.search"></strong>
+                </ui-select-choices>
+              </ui-select>
+              <div class="help-block" ng-messages="ConfigForm.id.$error" ng-show="ConfigForm.$submitted">
+                <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+              </div>
+            </div>
+
+            <div class="form-group" ng-class="{ 'has-error' : ConfigForm.$submitted && ConfigForm.budgetFilter.$invalid }">
+              <div ng-repeat="budgetFilter in ReportConfigCtrl.filterBudget" class="radio">
+                <label>
+                  <input
+                    name="filter"
+                    type="radio"
+                    ng-model="ReportConfigCtrl.reportDetails.filter"
+                    ng-value="budgetFilter.value"
+                    data-report-format-option="{{ budgetFilter.value }}"
+                    required>
+                  <span translate>{{budgetFilter.label}}</span>
+                </label>
+              </div>
+            
+              <div class="help-block" ng-messages="ConfigForm.filter.$error" ng-show="ConfigForm.$submitted">
+                <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" ng-model="ReportConfigCtrl.reportDetails.hide_unused" ng-true-value="1" ng-false-value="0">
+                  <span translate>REPORT.BUDGET_REPORT.HIDE_UNUSED_ACCOUNTS</span>
+                </label>
+              </div>
+            </div>
+
+            <bh-loading-button loading-state="ConfigForm.$loading">
+              <span translate>REPORT.UTIL.PREVIEW</span>
+            </bh-loading-button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <bh-cron-email-report
+        report-key="operating"
+        report-form="ConfigForm"
+        report-details="ReportConfigCtrl.reportDetails"
+        on-select-report="ReportConfigCtrl.onSelectCronReport(report)">
+      </bh-cron-email-report>
+    </div>
+  </div>
+</div>

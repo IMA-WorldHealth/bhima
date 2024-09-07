@@ -6,3 +6,11 @@
  */
 ALTER TABLE `debtor_group` ADD COLUMN `is_insolvent` TINYINT(1) NOT NULL DEFAULT 0 AFTER `color`;
 ALTER TABLE `debtor_group` ADD COLUMN `is_non_client_debtor_groups` TINYINT(1) NOT NULL DEFAULT 0 AFTER `is_insolvent`;
+
+/*
+ * @author: lomamech
+ * @date: 2024-09-02
+ * @description: Budget Report #7683
+ */
+INSERT INTO unit values (320, 'Budget Report','TREE.BUDGET_REPORT','',281,'/reports/budget_report');
+INSERT IGNORE INTO `report` (`report_key`, `title_key`) VALUES ('budget_report', 'REPORT.BUDGET_REPORT.TITLE');;
