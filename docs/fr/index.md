@@ -13,7 +13,8 @@ Ce manuel est divisé en chapitres:
 7. [Ressources humaines](./payroll)
 8. [Seuil de rentabilité](./break-even)
 9. Rapports et statistiques
-10. [Référence développeur](./for-developers/)
+10. [Application mobile BHIMA-STOCK](./bhima-stock/)
+11. [Référence développeur](./for-developers/)
 
 ## A propos
 

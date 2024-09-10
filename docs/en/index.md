@@ -9,7 +9,8 @@ This manual is split into chapters:
 3. [Medical Records](./medical-records)
 4. [Inventory and Stock Management](./stock-management)
 5. Reporting and Statistics
-6. [Developer Reference](./for-developers)
+6. [Mobile Application BHIMA-STOCK](./bhima-stock/)
+7. [Developer Reference](./for-developers)
 8. [Glossary](./glossary.md)
 
 # About
