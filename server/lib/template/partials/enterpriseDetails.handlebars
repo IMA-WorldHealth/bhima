@@ -1,8 +1,8 @@
 <!-- this partial requires binding the variable 'metadata' -->
 
-{{#if metadata.enterprise.logo}}
+{{#if metadata.enterprise.logoDataURI}}
   <div class="col-xs-1">
-    <img src="{{absolutePath}}/{{slashed metadata.enterprise.logopath}}" width="65" height="65" alt="">
+    <img src="{{metadata.enterprise.logoDataURI}}" width="65" height="65" alt="">
   </div>
 {{/if}}
 

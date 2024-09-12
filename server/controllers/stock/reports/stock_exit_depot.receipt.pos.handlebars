@@ -3,11 +3,7 @@
 {{> point-of-sale-stylesheet }}
 <body>
 <p style="text-transform: uppercase; text-align:center; margin : 0px;"><b>{{enterprise.name}}</b></p>
-{{#if metadata.enterprise.logo}}
-  <div style="text-align: center; margin : 0px;">
-    <img src="{{absolutePath}}/{{slashed metadata.enterprise.logopath}}" width="40" height="40" alt="">
-  </div>
-{{/if}}
+{{> point-of-sale-logo}}
 <h2 style="text-align: center; margin : 0px">{{translate 'STOCK.RECEIPT.EXIT_DEPOT'}}</h2>
 <hr />
 <p style="margin-top: 0px">

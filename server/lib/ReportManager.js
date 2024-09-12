@@ -25,7 +25,8 @@ const _ = require('lodash');
 const debug = require('debug')('ReportManager');
 const path = require('path');
 const tempy = require('tempy');
-const fs = require('fs');
+const datauri = require('datauri');
+const fs = require('fs/promises');
 const db = require('./db');
 const util = require('./util');
 const translateHelper = require('./helpers/translate');
@@ -38,11 +39,11 @@ const { FORCE_HTML_RECEIPT_RENDERER } = process.env;
 const renderers = {
   json : require('./renderers/json'),
   html : require('./renderers/html'),
-  pdf  : require('./renderers/pdf'),
-  csv  : require('./renderers/csv'),
-  xlsx  : require('./renderers/xlsx'),
-  xls  : require('./renderers/xls'),
-  doc  : require('./renderers/doc'),
+  pdf : require('./renderers/pdf'),
+  csv : require('./renderers/csv'),
+  xlsx : require('./renderers/xlsx'),
+  xls : require('./renderers/xls'),
+  doc : require('./renderers/doc'),
   xlsxReceipt : require('./renderers/xlsxReceipt'),
   xlsxReport : require('./renderers/xlsxReport'),
 };
@@ -68,7 +69,7 @@ const SAVE_SQL = `
 function getFileName(options, extension) {
   const translate = translateHelper(options.lang);
   const translatedName = translate(options.filename);
-  const fileDate = (new Date()).toLocaleDateString();
+  const fileDate = new Date().toLocaleDateString();
   const formattedName = `${translatedName} ${fileDate}`;
   const fileName = `${formattedName}${extension}`;
   return [translatedName, encodeURIComponent(fileName)];
@@ -157,11 +158,20 @@ class ReportManager {
     // sanitise save report option
     this.options.saveReport = Boolean(Number(this.options.saveReport));
 
-    if (metadata.enterprise && metadata.enterprise.logo) {
-      // use dynamic path for logo ie client doesn't need absolute path but pdf need it
-      // so we use {{absolutePath}} which add or not absolute path part into logo
-      // remove the client/ part from logo because it will be injected by {{absolutePath}}
-      metadata.enterprise.logopath = metadata.enterprise.logo.substring(7);
+    // check if the enterprise has a logo, and normalize the path to absolute
+    // Use the IMA application icon as the default logo if nothing else exists
+    const logoPath = metadata.enterprise?.logo || './client/assets/IMAicon.png';
+    metadata.enterprise.logopath = path.isAbsolute(logoPath)
+      ? logoPath
+      : path.resolve(logoPath);
+
+    try {
+      await fs.access(metadata.enterprise.logopath, fs.constants.R_OK);
+      metadata.enterprise.logoDataURI = await datauri(
+        metadata.enterprise.logopath,
+      );
+    } catch (e) {
+      debug('No enterprise logo available');
     }
 
     // merge the data object before templating
@@ -173,12 +183,17 @@ class ReportManager {
 
     const rowsToRename = data.rows || data[this.options.rowsDataKey];
 
-    data.rows = (renameKeys) ? util.renameKeys(rowsToRename, displayNames) : rowsToRename;
+    data.rows = renameKeys
+      ? util.renameKeys(rowsToRename, displayNames)
+      : rowsToRename;
 
     let defaultTitle;
     let fileName;
     if (this.options.filename) {
-      [defaultTitle, fileName] = getFileName(this.options, this.renderer.extension);
+      [defaultTitle, fileName] = getFileName(
+        this.options,
+        this.renderer.extension,
+      );
     }
 
     // set the report title to the filename if no title is given
@@ -233,7 +248,7 @@ class ReportManager {
       report_id : options.reportId,
     };
 
-    await fs.promises.writeFile(link, stream);
+    await fs.writeFile(link, stream);
     await db.exec(SAVE_SQL, data);
 
     return { uuid : reportId };
