@@ -89,5 +89,6 @@ async function renderPDF(context, template, options = {}) {
 
   debug('PDF created with coral.');
 
-  return pdf;
+  // Convert from Uint8Array to a buffer
+  return Buffer.from(pdf);
 }
