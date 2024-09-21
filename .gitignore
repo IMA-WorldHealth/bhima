@@ -68,3 +68,5 @@ playwright/.cache
 tests-examples
 
 .sqlfluff
+
+.DS_Store
