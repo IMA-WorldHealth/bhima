@@ -177,9 +177,10 @@ INSERT INTO unit VALUES
   (316, 'Detailed record of purchases','TREE.PURCHASE_REGISTRY_DETAILED','The purchase registry detailed',154,'/purchases/detailed'),
   (317, 'Satisfaction Rate Report','TREE.SATISFACTION_RATE_REPORT','Satisfaction Rate Report',282,'/reports/satisfaction_rate_report'),
   (318, 'Job Titles Management','TREE.TITLE','',57, '/titles'),
-  (319, 'Budget Management', 'TREE.BUDGET', '', 5, '/budget');
+  (319, 'Budget Management', 'TREE.BUDGET', '', 5, '/budget'),
+  (320, 'Budget Report','TREE.BUDGET_REPORT','',281,'/reports/budget_report');
 
--- Reserved system account type
+-- Reserved system account type /client_debts
 INSERT IGNORE INTO `account_category` VALUES
   (1, 'income', 'ACCOUNT.TYPES.INCOME'),
   (2, 'expense', 'ACCOUNT.TYPES.EXPENSE'),
@@ -250,7 +251,8 @@ INSERT IGNORE INTO `report` (`report_key`, `title_key`) VALUES
   ('stock_value', 'TREE.STOCK_VALUE'),
   ('system_usage_stat', 'REPORT.SYSTEM_USAGE_STAT.TITLE'),
   ('unpaid_invoice_payments', 'REPORT.UNPAID_INVOICE_PAYMENTS_REPORT.TITLE'),
-  ('visit_report', 'PATIENT_RECORDS.REPORT.VISITS');
+  ('visit_report', 'PATIENT_RECORDS.REPORT.VISITS'),
+  ('budget_report', 'REPORT.BUDGET_REPORT.TITLE');
 
 -- Supported Languages
 INSERT IGNORE INTO `language` VALUES

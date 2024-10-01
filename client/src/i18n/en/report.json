@@ -50,6 +50,23 @@
       "GRAND_TOTAL": "Grand Total",
       "MEDICATION_COSTS" : "Medication Costs"
     },
+    "BUDGET_REPORT":{
+      "TITLE" : "Budget Report",
+      "COMPLETION_RATE" : "Completion rate",
+      "DEFAULT_SETTING": "Default Setting",
+      "DESCRIPTION" : "The Budget Management Report is a comprehensive tool designed to provide detailed insights into the financial planning and allocation processes.",
+      "DISPLAY_ALL_ACCOUNTS" : "Display all accounts",
+      "EXPENSES": "Expenses",
+      "HIDE_TITLE_ACCOUNT": "Hide Title Account",
+      "HIDE_UNUSED_ACCOUNTS": "Hide Unused Accounts or Accounts with Zero Values",
+      "MAX_5_YEAR": "Please note that the budget analysis period is limited to a maximum of 5 years.",
+      "PERCENTAGE_VARIATION_COMPARED": "Percentage Variation Compared to the Budget",
+      "REALIZATION" : "Actuals",
+      "REVENUS": "Income",
+      "SET_NUMBER_YEAR": "Set the Number of Years for Analysis",
+      "SHOW_ONLY_TITLE_ACCOUNT": "Display Only the Title Account",
+      "VARIATION_IN_AMOUNT": "Variation in Amount"
+    },
     "BY_ASC": "By Ascending Order",
     "BY_DESC": "By Descending Order",
     "BALANCE": "Balance Report",
