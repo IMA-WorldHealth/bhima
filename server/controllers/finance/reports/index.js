@@ -39,3 +39,4 @@ exports.analysisAuxiliaryCashboxes = require('./analysis_auxiliary_cashboxes');
 exports.configurableAnalysisReport = require('./configurable_analysis_report');
 exports.invoicedReceivedStock = require('./invoiced_received_stock');
 exports.recoveryCapacity = require('./recovery_capacity');
+exports.budget_analytical = require('./budget_analytical');
