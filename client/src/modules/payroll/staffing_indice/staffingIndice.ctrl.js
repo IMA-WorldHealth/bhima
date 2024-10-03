@@ -24,6 +24,15 @@ function StaffingIndiceController($state, $uibModal, StaffingIndice,
       StaffingIndice.loadCachedFilters();
     }
 
+    StaffingIndice.getRubricsLinkedGrade()
+      .then(data => {
+        vm.rubricsGrade = data;
+      })
+      .catch(Notify.handleError)
+      .finally(() => {
+        vm.loading = false;
+      });
+
     vm.latestViewFilters = StaffingIndice.filters.formatView();
     const params = StaffingIndice.filters.formatHTTP(true);
     loadIndexes(params || {});
@@ -177,6 +186,14 @@ function StaffingIndiceController($state, $uibModal, StaffingIndice,
     $uibModal.open({
       templateUrl : 'modules/payroll/staffing_indice/modal/funcitonIndiceModal.html',
       controller : 'FunctionIndiceModalController as $ctrl',
+    });
+  };
+
+  vm.openSetRubricsGradeModal = (id) => {
+    $uibModal.open({
+      templateUrl : 'modules/payroll/staffing_indice/modal/gradeRubricsModal.html',
+      controller : 'GradeRubricsModalController as $ctrl',
+      resolve : { data : () => id },
     });
   };
 

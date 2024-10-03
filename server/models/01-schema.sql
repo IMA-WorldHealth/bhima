@@ -222,6 +222,7 @@ CREATE TABLE `rubric_payroll` (
   `indice_type` VARCHAR(50) DEFAULT NULL,
   `indice_to_grap` TINYINT(1) DEFAULT 0,
   `is_linked_pension_fund` TINYINT(1) DEFAULT 0,
+  `is_linked_to_grade` TINYINT(1) DEFAULT 0,
   `value` float DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `rubric_payroll_1` (`label`),
@@ -2567,6 +2568,20 @@ CREATE TABLE `staffing_grade_indice` (
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `grade_uuid_uniq`(`grade_uuid`),
   CONSTRAINT `staffing_grade_indice__grade` FOREIGN KEY (`grade_uuid`) REFERENCES `grade` (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `rubric_grade_indice`;
+CREATE TABLE `rubric_grade_indice` (
+  `uuid` BINARY(16) NOT NULL,
+  `value`  DECIMAL(19,4) NOT NULL,
+  `grade_uuid` BINARY(16) NOT NULL,
+  `rubric_id` INT(10) UNSIGNED NOT NULL,
+  PRIMARY KEY (`uuid`),
+  KEY `rubric_id` (`rubric_id`),
+  KEY `grade_uuid` (`grade_uuid`),
+  CONSTRAINT `rubric_grade_indice__grade` FOREIGN KEY (`grade_uuid`) REFERENCES `grade` (`uuid`),
+  CONSTRAINT `rubric_grade_indice__rubric_payroll` FOREIGN KEY (`rubric_id`) REFERENCES `rubric_payroll` (`id`),
+  UNIQUE KEY `rubric_grade_indice_1` (`grade_uuid`, `rubric_id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `staffing_function_indice`;

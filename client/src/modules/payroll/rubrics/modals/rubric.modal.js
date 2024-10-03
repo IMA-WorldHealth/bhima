@@ -38,6 +38,10 @@ function RubricModalController($state, Rubrics, Notify, AppCache, Session, param
     vm.rubric.indice_to_grap = value;
   };
 
+  vm.isLinkedToGradeSetting = (value) => {
+    vm.rubric.is_linked_to_grade = value;
+  };
+
   vm.selectExpenseAccount = (account) => {
     vm.rubric.expense_account_id = account.id;
   };

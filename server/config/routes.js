@@ -438,6 +438,15 @@ exports.configure = function configure(app) {
   app.put('/staffing_grade_indices/:uuid', staffingIndices.gradeIndices.update);
   app.delete('/staffing_grade_indices/:uuid', staffingIndices.gradeIndices.delete);
 
+  app.get('/rubrics_linked_grade/', staffingIndices.gradeIndices.listRubrics);
+  app.get('/rubrics_grade_employee/', staffingIndices.gradeIndices.listRubricsGradeEmployee);
+
+  app.get('/rubrics_grade/', staffingIndices.gradeIndices.listRubricsGrade);
+  app.get('/rubrics_grade/:uuid', staffingIndices.gradeIndices.detailRubricsGrade);
+  app.post('/rubrics_grade', staffingIndices.gradeIndices.createRubricsGrade);
+  app.put('/rubrics_grade/:uuid', staffingIndices.gradeIndices.updateRubricsGrade);
+  app.delete('/rubrics_grade/:uuid', staffingIndices.gradeIndices.deleteRubricsGrade);
+
   // reports API: Invoices (receipts)
   app.get('/reports/medical/patients', medicalReports.patientRegistrations);
   app.get('/reports/medical/patients/:uuid', medicalReports.receipts.patients);

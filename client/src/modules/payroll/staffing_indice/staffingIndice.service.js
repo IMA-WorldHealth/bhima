@@ -85,5 +85,31 @@ function StaffingIndiceService(Api, Filters, AppCache, bhConstants, Modal, Perio
     staffingFilters.resetFilterState(key);
   };
 
+  // loads the Rubrics Linked Grade
+  service.getRubricsLinkedGrade = function getRubricsLinkedGrade() {
+    return service.$http.get(`/rubrics_linked_grade`)
+      .then(service.util.unwrapHttpResponse);
+  };
+
+  // loads the Rubrics Grade data
+  service.rubricGradeRead = function rubricGradeRead(params) {
+    return service.$http.get(`/rubrics_grade/`, { params })
+      .then(service.util.unwrapHttpResponse);
+  };
+
+  service.rubricGradeCreate = function rubricGradeCreate(data) {
+    return service.$http.post(`/rubrics_grade/`, { data })
+      .then(service.util.unwrapHttpResponse);
+  };
+
+  service.gradeRubricsDelete = function gradeRubricsDelete(uuid) {
+    return service.$http.delete('/rubrics_grade/'.concat(uuid));
+  };
+
+  service.getRubricsGradeEmp = function getRubricsGradeEmp(params) {
+    return service.$http.get(`/rubrics_grade_employee/`, { params })
+      .then(service.util.unwrapHttpResponse);
+  };
+
   return service;
 }

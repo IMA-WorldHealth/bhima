@@ -3,18 +3,28 @@ angular.module('bhima.controllers')
 
 ConfigIndicePaiementModalController.$inject = [
   '$state', 'NotifyService', 'appcache', 'MultipleIndicesPayrollService', 'SessionService', 'params',
+  'StaffingIndiceService', '$translate',
 ];
 
 function ConfigIndicePaiementModalController(
-  $state, Notify, AppCache, MultiplePayroll, Session, params,
+  $state, Notify, AppCache, MultiplePayroll, Session, params, StaffingIndice, $translate,
 ) {
   const vm = this;
   vm.config = {};
   vm.payroll = {};
   vm.employee = {};
   vm.rubrics = [];
+
   const rubricsMap = {};
+
   vm.selectedRubrics = {};
+  vm.employeeGradeRubrics = {};
+  vm.frequencyRubrics = {};
+  vm.onUpdateRubricValue = onUpdateRubricValue;
+
+  vm.rubValueLabel = $translate.instant('FORM.LABELS.VALUE');
+  vm.rubValueFrequency = $translate.instant('FORM.LABELS.FREQUENCY');
+
   vm.enterprise = Session.enterprise;
   vm.lastExchangeRate = {};
 
@@ -77,15 +87,36 @@ function ConfigIndicePaiementModalController(
         vm.employee.rubrics.forEach(r => {
           vm.selectedRubrics[r.rubric_id] = r.rubric_value;
         });
+
         vm.rubrics = result.rubrics;
+
         vm.rubrics.forEach(r => {
           rubricsMap[r.id] = r;
           if (!vm.selectedRubrics[r.id]) {
             vm.selectedRubrics[r.id] = r.value || 0;
           }
         });
+
+        return StaffingIndice.getRubricsGradeEmp({ employee_uuid : params.uuid });
+      })
+      .then(data => {
+        vm.rubricsGrade = data;
+
+        vm.rubrics.forEach(rb => {
+          vm.rubricsGrade.forEach(rub => {
+            if (rb.id === rub.rubric_id) {
+              vm.employeeGradeRubrics[rb.id] = rub.value;
+              vm.frequencyRubrics[rb.id] = 0;
+              if (vm.selectedRubrics[rb.id] > 0) {
+                vm.frequencyRubrics[rb.id] = vm.selectedRubrics[rb.id] / vm.employeeGradeRubrics[rb.id];
+              }
+            }
+          });
+        });
+
       })
       .catch(Notify.handleError);
+
   }
 
   function formatRubrics(object) {
@@ -127,6 +158,10 @@ function ConfigIndicePaiementModalController(
 
   function closeModal() {
     $state.go('multiple_payroll_indice', null, { reload : true });
+  }
+
+  function onUpdateRubricValue(rubricId) {
+    vm.selectedRubrics[rubricId] = vm.frequencyRubrics[rubricId] * vm.employeeGradeRubrics[rubricId];
   }
 
   startup();
