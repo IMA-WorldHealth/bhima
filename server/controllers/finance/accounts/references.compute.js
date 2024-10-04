@@ -1,6 +1,7 @@
 /**
  * Accounts References Computations
  */
+const q = require('q');
 const db = require('../../../lib/db');
 const FilterParser = require('../../../lib/filter');
 
@@ -185,7 +186,56 @@ function getAccountsForReference(abbr, isAmoDep = 0) {
   return db.exec(queryAccounts, [abbr, isAmoDep, abbr, isAmoDep]);
 }
 
+function getAccountsConfigurationReferences(types) {
+  const typesFormated = types;
+
+  const sqlGetReferenceType = `
+    SELECT art.id AS reference_type_id, art.label AS reference_type_label
+    FROM account_reference_type AS art
+    WHERE art.id IN (?)
+    ORDER BY art.id ASC;`;
+
+  const sqlGetReferenceGroup = `
+    SELECT ar.id, ar.abbr, ar.description AS referenceGroup, ar.reference_type_id
+    FROM account_reference AS ar
+    JOIN account_reference_type AS art ON art.id = ar.reference_type_id
+    WHERE art.id IN (?)
+    ORDER BY ar.reference_type_id, ar.description ASC;
+  `;
+
+  const sqlGetReferenceAccount = `
+    SELECT art.id AS reference_type_id, ar.description, ari.account_id, a.label,
+    a.number, acc.number AS acc_number, acc.id AS acc_id
+    FROM account_reference_type AS art
+    JOIN account_reference AS ar ON ar.reference_type_id = art.id
+    JOIN account_reference_item AS ari ON ari.account_reference_id = ar.id
+    JOIN account AS a ON a.id = ari.account_id
+    JOIN account AS acc ON acc.number LIKE CONCAT(a.number, '%')
+    WHERE art.id IN (?) AND ari.is_exception = 0 AND acc.type_id <> 6
+    ORDER BY art.id, ar.id ASC;`;
+
+  const sqlGetException = `
+    SELECT art.id AS reference_type_id, ar.description, ari.account_id, a.label,
+    a.number, acc.number AS acc_number, acc.id AS acc_id
+    FROM account_reference_type AS art
+    JOIN account_reference AS ar ON ar.reference_type_id = art.id
+    JOIN account_reference_item AS ari ON ari.account_reference_id = ar.id
+    JOIN account AS a ON a.id = ari.account_id
+    JOIN account AS acc ON acc.number LIKE CONCAT(a.number, '%')
+    WHERE art.id IN (?) AND ari.is_exception = 1 AND acc.type_id <> 6
+    ORDER BY art.id, ar.id ASC;
+  `;
+
+  return q.all([
+    db.exec(sqlGetReferenceType, [typesFormated]),
+    db.exec(sqlGetReferenceGroup, [typesFormated]),
+    db.exec(sqlGetReferenceAccount, [typesFormated]),
+    db.exec(sqlGetException, [typesFormated]),
+  ]);
+}
+
 exports.getAccountsForReference = getAccountsForReference;
 exports.computeSingleAccountReference = computeSingleAccountReference;
 exports.getValueForReference = getValueForReference;
 exports.computeAllAccountReference = computeAllAccountReference;
+exports.getAccountsConfigurationReferences = getAccountsConfigurationReferences;

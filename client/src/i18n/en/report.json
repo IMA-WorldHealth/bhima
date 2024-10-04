@@ -86,14 +86,21 @@
     },
     "CASHFLOW": {
       "TITLE": "Cash Flow Physical Report",
+      "CASH_BALANCE": "Cash balance",
       "DESCRIPTION": "This report shows changes in the accounts and revenues of the balance sheet on cash",
       "OPERATION": "Operation",
       "INCOMES": "Income",
       "EXPENSES": "Expenses",
+      "GLOBAL_ANALYSIS_ACCOUNT_GROUPING": "Global Account Grouping Analysis",
+      "NOT_REFERENCED": "Not referenced",
       "OTHERS": "Others",
       "TRANSFER": "Transfers",
       "IN": "In",
-      "CONCERNED_ACCOUNT": "This report concerns these accounts"
+      "CONCERNED_ACCOUNT": "This report concerns these accounts",
+      "SYNTHETIC_ANALYSIS_ACCOUNT_GROUPING": "Synthetic Account Grouping Analysis",
+      "TOTAL": "Total",
+      "TOTAL_EXPENSE": "Total expense",
+      "TOTAL_INCOME": "Total income"
     },
     "CASH_INCOME": "Income",
     "CHART_OF_ACCOUNTS": "Chart of Accounts",

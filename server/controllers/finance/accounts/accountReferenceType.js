@@ -16,7 +16,6 @@ function lookupAccountReferenceType(id) {
   return db.one(sql, [id]);
 }
 
-
 // Lists
 function list(req, res, next) {
   const sql = `SELECT id, label, fixed FROM account_reference_type;`;
@@ -45,7 +44,6 @@ function detail(req, res, next) {
     .done();
 }
 
-
 // POST /account_reference_type
 function create(req, res, next) {
   const sql = `INSERT INTO account_reference_type SET ?`;
@@ -58,7 +56,6 @@ function create(req, res, next) {
     .catch(next)
     .done();
 }
-
 
 // PUT /account_reference_type /:id
 function update(req, res, next) {

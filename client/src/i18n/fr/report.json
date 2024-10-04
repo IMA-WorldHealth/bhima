@@ -86,14 +86,21 @@
     },
     "CASHFLOW" : {
       "TITLE" : "Rapports de flux de trésorerie physique",
+      "CASH_BALANCE": "Solde",
       "DESCRIPTION" : "Ce rapport affiche les variations des comptes et des revenus du bilan sur la trésorerie",
       "OPERATION" : "Opération",
       "INCOMES" : "Recettes",
       "EXPENSES" : "Dépenses",
+      "GLOBAL_ANALYSIS_ACCOUNT_GROUPING": "Analyse Globale de regroupement des comptes",
       "TRANSFER" : "Transferts",
       "OTHERS": "Autres",
+      "NOT_REFERENCED": "Non référencé",
       "IN" : "En",
-      "CONCERNED_ACCOUNT" : "Ce rapport concerne les comptes suivants"
+      "CONCERNED_ACCOUNT" : "Ce rapport concerne les comptes suivants",
+      "SYNTHETIC_ANALYSIS_ACCOUNT_GROUPING": "Analyse synthétique de regroupement des comptes",
+      "TOTAL": "Total",
+      "TOTAL_EXPENSE": "Total des dépenses",
+      "TOTAL_INCOME": "Total des récettes"
     },
     "CASH_INCOME" : "Recettes",
     "CHART_OF_ACCOUNTS" : "Plan Comptable",

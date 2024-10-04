@@ -13,4 +13,11 @@ ALTER TABLE `debtor_group` ADD COLUMN `is_non_client_debtor_groups` TINYINT(1) N
  * @description: Budget Report #7683
  */
 INSERT INTO unit values (320, 'Budget Report','TREE.BUDGET_REPORT','',281,'/reports/budget_report');
-INSERT IGNORE INTO `report` (`report_key`, `title_key`) VALUES ('budget_report', 'REPORT.BUDGET_REPORT.TITLE');;
+INSERT IGNORE INTO `report` (`report_key`, `title_key`) VALUES ('budget_report', 'REPORT.BUDGET_REPORT.TITLE');
+
+/*
+ * @date: 2024-09-21
+ * @description: Add Feature: Group Accounts into Categories for a Synthetic Cash Flow Report #7675
+ */
+INSERT INTO `account_reference_type` (`id`, `label`, `fixed`) VALUES (6, 'FORM.LABELS.INCOME_CASH_FLOW', 1);
+INSERT INTO `account_reference_type` (`id`, `label`, `fixed`) VALUES (7, 'FORM.LABELS.EXPENSE_CASH_FLOW', 1);

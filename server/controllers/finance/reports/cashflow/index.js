@@ -13,14 +13,20 @@
  * @requires lib/errors/BadRequest
  */
 const _ = require('lodash');
+const q = require('q');
 
 const db = require('../../../../lib/db');
 const Fiscal = require('../../fiscal');
 const ReportManager = require('../../../../lib/ReportManager');
 const BadRequest = require('../../../../lib/errors/BadRequest');
+const AccountsExtra = require('../../accounts/extra');
+const ReferencesCompute = require('../../accounts/references.compute');
 
 const TEMPLATE = './server/controllers/finance/reports/cashflow/report.handlebars';
 const TEMPLATE_BY_SERVICE = './server/controllers/finance/reports/cashflow/reportByService.handlebars';
+const TEMPLATE_TRANSACTION_TYPES = './server/controllers/finance/reports/cashflow/reportTransactionTypes.handlebars';
+const TEMPLATE_GLOBAL = './server/controllers/finance/reports/cashflow/reportGlobal.handlebars';
+const TEMPLATE_SYNTHETIC = './server/controllers/finance/reports/cashflow/reportSynthetic.handlebars';
 
 // expose to the API
 exports.report = report;
@@ -180,7 +186,12 @@ function report(req, res, next) {
   const options = _.clone(req.query);
   const data = {};
 
-  data.detailledReport = parseInt(req.query.detailed, 10);
+  const checkDetailledOption = ((options.modeReport === 'associated_account')
+    || (options.modeReport === 'global_analysis')
+    || (options.modeReport === 'synthetic_analysis')
+  );
+
+  data.detailledReport = checkDetailledOption ? 1 : 0;
 
   // convert cashboxesIds parameters in array format ['', '', ...]
   // this parameter can be sent as a string or an array we force the conversion into an array
@@ -195,12 +206,22 @@ function report(req, res, next) {
   if (!dateFrom || !dateTo || !cashboxesIds.length) {
     throw new BadRequest(
       'ERRORS.BAD_REQUEST',
-      'There are some missing information among dateFrom, dateTo or cashboxesId'
+      'There are some missing information among dateFrom, dateTo or cashboxesId',
     );
   }
 
+  let TEMPLATE_REPORT = TEMPLATE;
+
+  if (options.modeReport === 'transaction_type') {
+    TEMPLATE_REPORT = TEMPLATE_TRANSACTION_TYPES;
+  } else if (options.modeReport === 'global_analysis') {
+    TEMPLATE_REPORT = TEMPLATE_GLOBAL;
+  } else if (options.modeReport === 'synthetic_analysis') {
+    TEMPLATE_REPORT = TEMPLATE_SYNTHETIC;
+  }
+
   try {
-    serviceReport = new ReportManager(TEMPLATE, req.session, options);
+    serviceReport = new ReportManager(TEMPLATE_REPORT, req.session, options);
   } catch (e) {
     next(e);
     return;
@@ -212,9 +233,7 @@ function report(req, res, next) {
   getCashboxesDetails(cashboxesIds)
     .then(rows => {
       data.cashboxes = rows;
-
       data.cashAccountIds = data.cashboxes.map(cashbox => cashbox.account_id);
-
       data.cashLabels = _.chain(data.cashboxes)
         .map(cashbox => `${cashbox.label}`).uniq().join(' | ')
         .value();
@@ -234,6 +253,25 @@ function report(req, res, next) {
 
       data.colspan = data.periods.length + 1;
 
+      // build periods columns from calculated period
+      return getOpeningBalanceData(data.cashAccountIds, periods);
+    })
+    .then(openingBalanceData => {
+      data.openingBalanceData = openingBalanceData;
+      const INCOME_CASH_FLOW = 6;
+      const EXPENSE_CASH_FLOW = 7;
+      const types = [INCOME_CASH_FLOW, EXPENSE_CASH_FLOW];
+
+      // Obtain the accounts from the configuration of accounting references
+      return ReferencesCompute.getAccountsConfigurationReferences(types);
+    })
+    .then(configurationData => {
+      data.configurationData = configurationData;
+
+      data.accountConfigsfiltered = configurationData[2].filter(item => !configurationData[3].some(
+        exclu => exclu.reference_type_id === item.reference_type_id && exclu.account_id === item.account_id,
+      ));
+
       // build periods string for query
       const periodParams = [];
       const periodString = data.periods.length ? data.periods.map(periodId => {
@@ -243,8 +281,8 @@ function report(req, res, next) {
 
       const query = `
         SELECT
-          source.transaction_text, source.account_label, ${periodString},
-          source.transaction_type, source.transaction_type_id, source.account_id
+          UPPER(source.transaction_text) AS transaction_text, UPPER(source.account_label) AS account_label,
+          ${periodString}, source.transaction_type, source.transaction_type_id, source.account_id
         FROM (
           SELECT
           a.number AS account_number, a.label AS account_label,
@@ -281,7 +319,7 @@ function report(req, res, next) {
 
       const queryDetailed = `
         SELECT
-          source.transaction_text, source.account_label, ${periodString},
+          source.transaction_text, UPPER(source.account_label) AS account_label, ${periodString},
           source.transaction_type, source.transaction_type_id, source.account_id
         FROM (
           SELECT
@@ -311,9 +349,9 @@ function report(req, res, next) {
             )
           ) GROUP BY gl.transaction_type_id, gl.account_id, gl.period_id
         ) AS source
-        GROUP BY transaction_type_id, account_id;
+        GROUP BY transaction_type_id, account_id
+        ORDER BY source.account_label ASC;
       `;
-
 
       const params = [...periodParams,
         [data.cashAccountIds],
@@ -344,39 +382,125 @@ function report(req, res, next) {
       return db.exec(queryRun, paramsRun);
     })
     .then(rows => {
-      // split incomes from expenses
-      const incomes = _.chain(rows).filter({ transaction_type : 'income' }).groupBy('transaction_text').value();
-      const expenses = _.chain(rows).filter({ transaction_type : 'expense' }).groupBy('transaction_text').value();
-      const others = _.chain(rows).filter({ transaction_type : 'other' }).groupBy('transaction_text').value();
+      if ((options.modeReport !== 'global_analysis') && (options.modeReport !== 'synthetic_analysis')) {
+        const incomes = _.chain(rows).filter({ transaction_type : 'income' }).groupBy('transaction_text').value();
+        const expenses = _.chain(rows).filter({ transaction_type : 'expense' }).groupBy('transaction_text').value();
+        const others = _.chain(rows).filter({ transaction_type : 'other' }).groupBy('transaction_text').value();
 
-      const incomeTextKeys = _.keys(incomes);
-      const expenseTextKeys = _.keys(expenses);
-      const otherTextKeys = _.keys(others);
+        const incomeTextKeys = _.keys(incomes);
+        const expenseTextKeys = _.keys(expenses);
+        const otherTextKeys = _.keys(others);
 
-      const incomeTotalByTextKeys = aggregateTotalByTextKeys(data, incomes);
-      const expenseTotalByTextKeys = aggregateTotalByTextKeys(data, expenses);
-      const otherTotalByTextKeys = aggregateTotalByTextKeys(data, others);
+        const incomeTotalByTextKeys = aggregateTotalByTextKeys(data, incomes);
+        const expenseTotalByTextKeys = aggregateTotalByTextKeys(data, expenses);
+        const otherTotalByTextKeys = aggregateTotalByTextKeys(data, others);
 
-      const incomeTotal = aggregateTotal(data, incomeTotalByTextKeys);
-      const expenseTotal = aggregateTotal(data, expenseTotalByTextKeys);
-      const otherTotal = aggregateTotal(data, otherTotalByTextKeys);
-      const totalPeriodColumn = totalPeriods(data, incomeTotal, expenseTotal, otherTotal);
+        const incomeTotal = aggregateTotal(data, incomeTotalByTextKeys);
+        const expenseTotal = aggregateTotal(data, expenseTotalByTextKeys);
+        const otherTotal = aggregateTotal(data, otherTotalByTextKeys);
 
-      _.extend(data, {
-        incomes,
-        expenses,
-        others,
-        incomeTextKeys,
-        expenseTextKeys,
-        incomeTotalByTextKeys,
-        expenseTotalByTextKeys,
-        otherTotalByTextKeys,
-        incomeTotal,
-        expenseTotal,
-        otherTextKeys,
-        otherTotal,
-        totalPeriodColumn,
-      });
+        const totalIncomePeriodColumn = totalIncomesPeriods(data, incomeTotal, otherTotal);
+
+        const dataOpeningBalance = totalOpening(data.cashboxes, data.openingBalanceData, data.periods);
+        const totalOpeningBalanceColumn = dataOpeningBalance.tabFormated;
+        const dataOpeningBalanceByAccount = dataOpeningBalance.tabAccountsFormated;
+
+        const totalIncomeGeneral = totalIncomes(data, incomeTotal, otherTotal, totalOpeningBalanceColumn);
+
+        const totalPeriodColumn = totalPeriods(data, incomeTotal, expenseTotal, otherTotal);
+        const totalBalancesGeneral = totalBalances(data, totalIncomeGeneral, expenseTotal);
+
+        _.extend(data, {
+          incomes,
+          expenses,
+          others,
+          incomeTextKeys,
+          expenseTextKeys,
+          incomeTotalByTextKeys,
+          expenseTotalByTextKeys,
+          otherTotalByTextKeys,
+          incomeTotal,
+          expenseTotal,
+          otherTextKeys,
+          otherTotal,
+          totalIncomePeriodColumn,
+          totalPeriodColumn,
+          totalOpeningBalanceColumn,
+          totalIncomeGeneral,
+          totalBalancesGeneral,
+          dataOpeningBalanceByAccount,
+        });
+
+      } else if ((options.modeReport === 'global_analysis') || (options.modeReport === 'synthetic_analysis')) {
+        rows.forEach(item => {
+          item.found = false;
+          item.description_reference = 'REPORT.CASHFLOW.NOT_REFERENCED';
+
+          data.accountConfigsfiltered.forEach(config => {
+            if (item.account_id === config.acc_id) {
+              item.found = true;
+              item.reference_type_id = config.reference_type_id;
+              item.description_reference = config.description;
+              item.acc_number = config.acc_number;
+            }
+          });
+        });
+
+        const incomesGlobals = _.chain(rows).filter({ transaction_type : 'income' })
+          .groupBy('description_reference').value();
+
+        const expensesGlobals = _.chain(rows).filter({ transaction_type : 'expense' })
+          .groupBy('description_reference').value();
+
+        const othersGlobals = _.chain(rows).filter({ transaction_type : 'other' })
+          .groupBy('description_reference').value();
+
+        const incomeGlobalsTextKeys = _.keys(incomesGlobals);
+        const expenseGlobalsTextKeys = _.keys(expensesGlobals);
+        const otherGlobalsTextKeys = _.keys(othersGlobals);
+
+        const incomeGlobalsTotalByTextKeys = aggregateTotalByTextKeys(data, incomesGlobals);
+        const expenseGlobalsTotalByTextKeys = aggregateTotalByTextKeys(data, expensesGlobals);
+        const otherGlobalsTotalByTextKeys = aggregateTotalByTextKeys(data, othersGlobals);
+
+        const incomeGlobalsTotal = aggregateTotal(data, incomeGlobalsTotalByTextKeys);
+        const expenseGlobalsTotal = aggregateTotal(data, expenseGlobalsTotalByTextKeys);
+        const otherGlobalsTotal = aggregateTotal(data, otherGlobalsTotalByTextKeys);
+
+        // LOMAME
+        const totalIncomePeriodColumn = totalIncomesPeriods(data, incomeGlobalsTotal, otherGlobalsTotal);
+
+        const dataOpeningBalance = totalOpening(data.cashboxes, data.openingBalanceData, data.periods);
+        const totalOpeningBalanceColumn = dataOpeningBalance.tabFormated;
+        const dataOpeningBalanceByAccount = dataOpeningBalance.tabAccountsFormated;
+
+        const totalIncomeGeneral = totalIncomes(data, incomeGlobalsTotal, otherGlobalsTotal, totalOpeningBalanceColumn);
+
+        const totalPeriodColumn = totalPeriods(data, incomeGlobalsTotal, expenseGlobalsTotal, otherGlobalsTotal);
+        const totalBalancesGeneral = totalBalances(data, totalIncomeGeneral, expenseGlobalsTotal);
+
+        _.extend(data, {
+          incomesGlobals,
+          expensesGlobals,
+          othersGlobals,
+          incomeGlobalsTextKeys,
+          expenseGlobalsTextKeys,
+          incomeGlobalsTotalByTextKeys,
+          expenseGlobalsTotalByTextKeys,
+          otherGlobalsTotalByTextKeys,
+          incomeGlobalsTotal,
+          expenseGlobalsTotal,
+          otherGlobalsTextKeys,
+          otherGlobalsTotal,
+          totalIncomePeriodColumn,
+          totalPeriodColumn,
+          totalOpeningBalanceColumn,
+          totalIncomeGeneral,
+          totalBalancesGeneral,
+          dataOpeningBalanceByAccount,
+        });
+
+      }
 
       return serviceReport.render(data);
     })
@@ -428,6 +552,30 @@ function totalPeriods(data, incomeTotal, expenseTotal, transferTotal) {
   return total;
 }
 
+function totalIncomesPeriods(data, incomeTotal, transferTotal) {
+  const total = {};
+  data.periods.forEach(periodId => {
+    total[periodId] = incomeTotal[periodId] + transferTotal[periodId];
+  });
+  return total;
+}
+
+function totalBalances(data, incomeTotal, expenseTotal) {
+  const total = {};
+  data.periods.forEach(periodId => {
+    total[periodId] = incomeTotal[periodId] + expenseTotal[periodId];
+  });
+  return total;
+}
+
+function totalIncomes(data, incomeTotal, otherTotal, opening) {
+  const total = {};
+  data.periods.forEach(periodId => {
+    total[periodId] = incomeTotal[periodId] + otherTotal[periodId] + opening[periodId];
+  });
+  return total;
+}
+
 async function reporting(options, session) {
   const dateFrom = new Date(options.dateFrom);
   const dateTo = new Date(options.dateTo);
@@ -443,7 +591,7 @@ async function reporting(options, session) {
   if (!dateFrom || !dateTo || !cashboxesIds.length) {
     throw new BadRequest(
       'ERRORS.BAD_REQUEST',
-      'There are some missing information among dateFrom, dateTo or cashboxesId'
+      'There are some missing information among dateFrom, dateTo or cashboxesId',
     );
   }
 
@@ -478,7 +626,7 @@ async function reporting(options, session) {
 
   const query = `
         SELECT
-          source.transaction_text, source.account_label, ${periodString},
+          UPPER(source.transaction_text) AS transaction_text, source.account_label, ${periodString},
           source.transaction_type, source.transaction_type_id, source.account_id
         FROM (
           SELECT
@@ -576,4 +724,68 @@ function getCashboxesDetails(cashboxesIds) {
     WHERE c.id IN ? ORDER BY c.id;
   `;
   return db.exec(query, [[cashboxesIds]]);
+}
+
+/**
+ * getOpeningBalanceData
+ *
+ * this function returns details of cashboxe ids given
+ * @param {array} cashboxesIds
+ * @param {array} periods
+ */
+
+function getOpeningBalanceData(cashAccountIds, periods) {
+  const getOpening = [];
+
+  cashAccountIds.forEach(account => {
+    periods.forEach(period => {
+      getOpening.push(AccountsExtra.getOpeningBalanceForDate(account, period.start_date, false));
+    });
+  });
+
+  return q.all(getOpening);
+}
+
+function totalOpening(accountIds, openingBalanceData, periods) {
+  const tabFormated = {};
+  const tabAccountsFormated = [];
+  const tabData = [];
+
+  accountIds.forEach(account => {
+    const accountId = account.account_id;
+
+    const accountsFormated = {
+      account_label : account.account_label,
+    };
+
+    const getData = openingBalanceData.filter(item => {
+      return item.accountId === accountId;
+    });
+
+    getData.forEach((gt, idd) => {
+      periods.forEach((period, index) => {
+        if (idd === index) {
+          accountsFormated[period] = gt.balance;
+        }
+      });
+    });
+
+    tabAccountsFormated.push(accountsFormated);
+    tabData.push({ id : accountId, opening : getData });
+  });
+
+  periods.forEach((period, index) => {
+    let sum = 0;
+    tabData.forEach(tab => {
+      tab.opening.forEach((tb, idx) => {
+        if (index === idx) {
+          sum += parseInt(tb.balance, 10);
+        }
+      });
+    });
+
+    tabFormated[period] = sum;
+  });
+
+  return { tabFormated, tabAccountsFormated };
 }

@@ -31,8 +31,8 @@ test.describe('Account Reference Type', () => {
     label : 'Update Account Reference Type',
   };
 
-  test('begins with 5 Account Reference Type', async () => {
-    expect(await page.count()).toBe(5);
+  test('begins with 7 Account Reference Type', async () => {
+    expect(await page.count()).toBe(7);
   });
 
   test('successfully creates a new Account Reference Type', async () => {
