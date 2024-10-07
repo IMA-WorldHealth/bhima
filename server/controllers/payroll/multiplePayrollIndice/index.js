@@ -72,11 +72,13 @@ async function lookUp(options) {
   const employeeUuid = options.employee_uuid;
 
   const employeeSql = `
-    SELECT BUID(emp.uuid) as uuid,UPPER(pt.display_name) AS display_name, pt.sex, service.name as service_name
+    SELECT BUID(emp.uuid) AS uuid,UPPER(pt.display_name) AS display_name, pt.sex, service.name as service_name,
+    BUID(emp.grade_uuid) AS grade_uuid
     FROM payroll_configuration pc
       JOIN config_employee ce ON ce.id = pc.config_employee_id
       JOIN config_employee_item cei ON cei.config_employee_id = ce.id
       JOIN employee emp ON emp.uuid = cei.employee_uuid
+      JOIN grade gr ON gr.uuid = emp.grade_uuid
       LEFT JOIN service ON emp.service_uuid = service.uuid
       JOIN patient pt ON pt.uuid = emp.patient_uuid
     WHERE pc.id = ?
@@ -85,7 +87,8 @@ async function lookUp(options) {
   `;
 
   const stagePaymentIndiceSql = `
-    SELECT rubric_id, rubric_value, rb.abbr as rubric_abbr,  BUID(sti.employee_uuid) as employee_uuid
+    SELECT rubric_id, rubric_value, rb.abbr as rubric_abbr,  BUID(sti.employee_uuid) as employee_uuid,
+    rb.is_linked_to_grade
     FROM stage_payment_indice sti
     JOIN employee emp ON emp.uuid = sti.employee_uuid
     JOIN rubric_payroll rb ON rb.id = sti.rubric_id

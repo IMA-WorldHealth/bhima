@@ -14,6 +14,7 @@ function RubricModalController($state, Rubrics, Notify, AppCache, Session, param
     is_monetary_value : 1,
     is_indice : 0,
     indice_to_grap : 0,
+    is_linked_to_grade : 0,
   };
 
   vm.indexesMap = Rubrics.indexesMap;
@@ -36,6 +37,10 @@ function RubricModalController($state, Rubrics, Notify, AppCache, Session, param
 
   vm.indiceToGrapSetting = (value) => {
     vm.rubric.indice_to_grap = value;
+  };
+
+  vm.isLinkedToGradeSetting = (value) => {
+    vm.rubric.is_linked_to_grade = value;
   };
 
   vm.selectExpenseAccount = (account) => {
