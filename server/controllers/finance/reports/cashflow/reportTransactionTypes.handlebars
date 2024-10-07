@@ -1,0 +1,151 @@
+{{> head }}
+
+<body>
+  {{#> header }}
+    <h4 class="text-right">
+    <span>{{cashLabels}}</span> <em>({{cashLabelSymbol}})</em>
+    <span class="text-lowercase">{{translate 'REPORT.CASHFLOW.IN'}}</span> {{metadata.enterprise.currencySymbol}}
+  </h4>
+  {{/header}}
+
+  <section>
+    <div class="row">
+      <div class="col-xs-12">
+        <table class="table table-condensed table-bordered table-report table-bordered">
+          <thead>
+            <tr class="text-capitalize text-center">
+              <th></th>
+              {{#each periodDates as |period| }}
+                <th class="text-center">{{date period 'MMM YYYY'}}</th>
+              {{/each}}
+            </tr>
+          </thead>
+
+          <tbody>
+            {{!-- INCOMES --}}
+            <tr style="background-color: #efefef;font-size:1.3rem;">
+              <th class="text-left text-uppercase">{{translate 'REPORT.CASHFLOW.INCOMES'}}</th>
+              {{#each periods as |period| }}
+                <th class="text-right"></th>
+              {{/each}}
+            </tr>
+
+            {{!-- inspect all transaction text for income --}}
+            {{#each incomeTextKeys as |key|}}
+              <tr>
+                <td> {{translate key}}</td>
+                {{#each ../periods as |period| }}
+                  <td class="text-right">{{debcred (look ../../incomeTotalByTextKeys key period) ../../metadata.enterprise.currency_id}}</td>
+                {{/each}}
+              </tr>
+            {{/each}}
+
+            <tr style="background-color: #efefef;font-size:1.3rem;">
+              <th style="font-style: italic;" class="text-left text-uppercase">{{translate 'REPORT.CASHFLOW.TOTAL'}}</th>
+              {{#each periods as |period| }}
+                <th class="text-right">{{debcred (look ../incomeTotal period) ../metadata.enterprise.currency_id}}</th>
+              {{/each}}
+            </tr>
+            <tr>
+              <td colspan="{{colspan}}">&nbsp;</td>
+            </tr>
+            {{#each otherTextKeys as |key|}}
+              <tr>
+                <th>{{translate key}}</th>
+                {{#each ../periods as |period| }}
+                  <th class="text-right">{{debcred (look ../../otherTotalByTextKeys key period) ../../metadata.enterprise.currency_id}}</th>
+                {{/each}}
+              </tr>
+            {{/each}}
+
+            <tr style="background-color: #efefef;font-size:1.3rem;">
+              <th style="font-style: italic;" class="text-left text-uppercase">{{translate 'REPORT.CASHFLOW.OTHERS'}}</th>
+              {{#each periods as |period| }}
+                <th class="text-right">{{debcred (look ../otherTotal period) ../metadata.enterprise.currency_id}}</th>
+              {{/each}}
+            </tr>
+            <tr>
+              <td colspan="{{colspan}}"></td>
+            </tr>
+            <tr style="background-color: #efefef;font-size:1.3rem;">
+              <th style="font-style: italic;" class="text-left text-uppercase"> {{translate 'REPORT.CASHFLOW.TOTAL'}} + {{translate 'REPORT.CASHFLOW.OTHERS'}}</th>
+              {{#each periods as |period| }}
+                <th class="text-right">{{debcred (look ../totalIncomePeriodColumn period) ../metadata.enterprise.currency_id}}</th>
+              {{/each}}
+            </tr>
+            <tr>
+              <td colspan="{{colspan}}"></td>
+            </tr>
+            <tr style="background-color: #efefef;font-size:1.3rem;">
+              <th class="text-left text-uppercase">{{translate 'REPORT.OPENING_BALANCE'}}</th>
+              {{#each periods as |period| }}
+                <th class="text-right">{{debcred (look ../totalOpeningBalanceColumn period) ../metadata.enterprise.currency_id}}</th>
+              {{/each}}
+            </tr>
+            
+            <tr>
+              <td style="height: 2px;" colspan="{{colspan}}"></td>
+            </tr>
+            <tr style="background-color: #efefef;font-size:1.3rem;">
+              <th style="font-style: italic;" class="text-left text-uppercase">{{translate 'REPORT.CASHFLOW.TOTAL_INCOME'}}</th>
+              {{#each periods as |period| }}
+                <th class="text-right">{{debcred (look ../totalIncomeGeneral period) ../metadata.enterprise.currency_id}}</th>
+              {{/each}}
+            </tr>
+            <tr>
+              <td style="height: 2px;" colspan="{{colspan}}">&nbsp;</td>
+            </tr>
+          </tbody>
+
+          <tbody>
+            {{!-- EXPENSES --}}
+            <tr style="background-color: #efefef;font-size:1.3rem;">
+              <th class="text-left text-uppercase">{{translate 'REPORT.CASHFLOW.EXPENSES'}}</th>
+              {{#each periods as |period| }}
+                <th class="text-right"></th>
+              {{/each}}
+            </tr>
+
+            {{!-- inspect all transaction text for expense --}}
+            {{#each expenseTextKeys as |key|}}
+              <tr>
+                <td>{{translate key}}</td>
+                {{#each ../periods as |period| }}
+                  <td class="text-right">{{debcred (multiply (look ../../expenseTotalByTextKeys key period) -1) ../../metadata.enterprise.currency_id}}</td>
+                {{/each}}
+              </tr>
+            {{/each}}
+            <tr style="background-color: #efefef;font-size:1.3rem;">
+              <th style="font-style: italic;" class="text-left text-uppercase">{{translate 'REPORT.CASHFLOW.TOTAL_EXPENSE'}}</th>
+              {{#each periods as |period| }}
+                <th class="text-right">{{debcred (multiply (look ../expenseTotal period) -1) ../metadata.enterprise.currency_id}}</th>
+              {{/each}}
+            </tr>            
+            <tr>
+              <td colspan="{{colspan}}">&nbsp;</td>
+            </tr>
+          </tbody>
+
+          <tbody>
+            {{!-- BALANCE --}}
+            <tr style="background-color: #efefef;font-size:1.3rem;">
+              <th class="text-left text-uppercase">{{translate 'FORM.LABELS.BALANCE'}}</th>
+              {{#each periods as |period| }}
+                <th class="text-right">{{debcred (look ../totalBalancesGeneral period) ../metadata.enterprise.currency_id}}</th>
+              {{/each}}
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section style="border-top:1px solid #333; margin-top: 20px;" class="col-xs-12 col-sm-6">
+    <p>{{translate 'REPORT.CASHFLOW.CONCERNED_ACCOUNT'}}</p>
+    <ul class="text-left">
+      {{#each cashLabelDetails as |label|}}
+        <li>{{label}}</li>
+      {{/each}}
+    </ul>
+  </section>
+</body>

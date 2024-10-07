@@ -21,8 +21,14 @@ function CashFlowConfigController($sce, Notify, SavedReports, AppCache, reportDa
     vm.previewResult = null;
   };
 
+  vm.reportDetails.modeReport = 'cash_accounts';
+
   vm.onSelectCronReport = report => {
     vm.reportDetails = angular.copy(report);
+  };
+
+  vm.onSelectMode = function onSelectMode(modeReport) {
+    vm.reportDetails.modeReport = modeReport;
   };
 
   vm.requestSaveAs = function requestSaveAs() {
