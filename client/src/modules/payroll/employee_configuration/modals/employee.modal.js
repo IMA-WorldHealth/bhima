@@ -2,21 +2,23 @@ angular.module('bhima.controllers')
   .controller('EmployeeModalController', EmployeeModalController);
 
 EmployeeModalController.$inject = [
-  '$state', 'ConfigurationEmployeeService', 'NotifyService', 'appcache', 'params',
+  '$state', 'ConfigurationEmployeeService', 'bhConstants', 'EmployeeService', 'NotifyService', 'appcache', 'params',
 ];
 
-function EmployeeModalController($state, Config, Notify, AppCache, params) {
+function EmployeeModalController($state, Config, Constants, Employees, Notify, AppCache, params) {
   const vm = this;
-  vm.employee = {};
+  vm.configuration = {};
+  vm.checked = [];
+
+  vm.onChangeRoleSelection = onChangeRoleSelection;
 
   const cache = AppCache('EmployeeModal');
 
   if (params.isCreateState || params.id) {
-    vm.stateParams = params;
     cache.stateParams = params;
-  } else {
-    vm.stateParams = cache.stateParams;
   }
+
+  vm.stateParams = cache.stateParams;
   vm.isCreateState = vm.stateParams.isCreateState;
 
   // exposed methods
@@ -25,10 +27,31 @@ function EmployeeModalController($state, Config, Notify, AppCache, params) {
 
   if (!vm.isCreateState) {
     Config.read(vm.stateParams.id)
-      .then((employee) => {
-        vm.employee = employee;
+      .then((configuration) => {
+        vm.configuration = configuration;
       })
       .catch(Notify.handleError);
+  }
+
+  Employees.read()
+    .then((employees) => {
+      vm.employees = employees;
+      return Config.getEmployeeConfiguration(vm.stateParams.id);
+    })
+    .then((employeeConfig) => {
+      vm.checkedUuids = employeeConfig.map(row => row.employee_uuid);
+
+      vm.disabledUuids = vm.employees
+        .filter(row => row.locked)
+        .map(row => row.uuid);
+
+      // clone the original values as the new values.
+      vm.checked = [...vm.checkedUuids];
+    })
+    .catch(Notify.handleError);
+
+  function onChangeRoleSelection(data) {
+    vm.checked = data;
   }
 
   // submit the data to the server from all two forms (update, create)
@@ -36,16 +59,16 @@ function EmployeeModalController($state, Config, Notify, AppCache, params) {
     if (EmployeeForm.$invalid || EmployeeForm.$pristine) { return 0; }
 
     const promise = (vm.isCreateState)
-      ? Config.create(vm.employee)
-      : Config.update(vm.employee.id, vm.employee);
+      ? Config.create(vm.configuration)
+      : Config.update(vm.configuration.id, vm.configuration);
 
     return promise
+      .then(record => Config.setEmployees(record.id, vm.checked))
       .then(() => {
         const translateKey = (vm.isCreateState) ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
         Notify.success(translateKey);
         $state.go('configurationEmployee', null, { reload : true });
-      })
-      .catch(Notify.handleError);
+      });
   }
 
   function closeModal() {
