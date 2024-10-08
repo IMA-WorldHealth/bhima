@@ -33,7 +33,7 @@ function ConfigurationEmployeeController(
     {
       field : 'configuredText',
       displayName : 'FORM.LABELS.CONFIGURED',
-      cellClass: "text-right",
+      cellClass : 'text-right',
       headerCellFilter : 'translate',
     },
     {

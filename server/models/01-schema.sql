@@ -525,7 +525,7 @@ CREATE TABLE `employee` (
   `fonction_id`   TINYINT(3) UNSIGNED DEFAULT NULL,
   `service_uuid`  BINARY(16) DEFAULT NULL,
   `creditor_uuid` BINARY(16) DEFAULT NULL,
-  `locked`        TINYINT(1) NOT NULL DEFAULT 0,
+  `locked`        TINYINT(1) NULL DEFAULT 0,
   `patient_uuid`  BINARY(16) DEFAULT NULL,
   `reference`     SMALLINT(5) UNSIGNED DEFAULT NULL,
   `title_employee_id`   TINYINT(3) UNSIGNED DEFAULT NULL,

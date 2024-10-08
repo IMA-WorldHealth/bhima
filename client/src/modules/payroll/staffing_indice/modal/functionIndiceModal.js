@@ -35,7 +35,6 @@ function FunctionIndiceModalController($state, StaffingIndice, Notify, Instance,
       cellTemplate : 'modules/payroll/staffing_indice/templates/functionIndice.action.cell.html',
     }];
 
-
   vm.gridOptions = {
     appScopeProvider : vm,
     enableColumnMenus : false,

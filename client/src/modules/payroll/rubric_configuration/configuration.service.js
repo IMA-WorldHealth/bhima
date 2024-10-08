@@ -11,7 +11,7 @@ ConfigurationService.$inject = ['PrototypeApiService', '$http', 'util'];
  * Encapsulates common requests to the /rubric_config/ URL.
  */
 function ConfigurationService(Api, $http, util) {
-  var service = new Api('/rubric_config/');
+  const service = new Api('/rubric_config/');
 
   service.getRubrics = getRubrics;
   service.setRubrics = setRubrics;
@@ -20,7 +20,7 @@ function ConfigurationService(Api, $http, util) {
   function getRubrics(id) {
     if (angular.isUndefined(id)) {
       throw new Error(
-        'Trying to get configuration of rubrics without the identity property'
+        'Trying to get configuration of rubrics without the identity property',
       );
     }
 
