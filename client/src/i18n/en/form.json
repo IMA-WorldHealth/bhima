@@ -405,6 +405,7 @@
             "COLUMNS": "Columns",
             "COMMENT": "Comment",
             "COMPLETE": "complete",
+            "CONFIGURED" : "Configured",
             "CONFIRMATION": "Confirmation",
             "CONSTRAINT": "Constraint",
             "CONSUMABLE": "Consummable",

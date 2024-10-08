@@ -14,7 +14,7 @@ ConfigurationEmployeeController.$inject = [
  */
 function ConfigurationEmployeeController(
   Configs, ModalService,
-  Notify, uiGridConstants, $state, Session
+  Notify, uiGridConstants, $state, Session,
 ) {
   const vm = this;
 
@@ -28,18 +28,23 @@ function ConfigurationEmployeeController(
   vm.gridApi = {};
   vm.filterEnabled = false;
 
-  const gridColumn =
-    [
-      { field : 'label', displayName : 'FORM.LABELS.DESIGNATION', headerCellFilter : 'translate' },
-      {
-        field : 'action',
-        width : 80,
-        displayName : '',
-        cellTemplate : '/modules/payroll/employee_configuration/templates/action.tmpl.html',
-        enableSorting : false,
-        enableFiltering : false,
-      },
-    ];
+  const gridColumn = [
+    { field : 'label', displayName : 'FORM.LABELS.DESIGNATION', headerCellFilter : 'translate' },
+    {
+      field : 'configuredText',
+      displayName : 'FORM.LABELS.CONFIGURED',
+      cellClass: "text-right",
+      headerCellFilter : 'translate',
+    },
+    {
+      field : 'action',
+      width : 80,
+      displayName : '',
+      cellTemplate : '/modules/payroll/employee_configuration/templates/action.tmpl.html',
+      enableSorting : false,
+      enableFiltering : false,
+    },
+  ];
 
   // options for the UI grid
   vm.gridOptions = {
@@ -67,7 +72,12 @@ function ConfigurationEmployeeController(
 
     Configs.read()
       .then((data) => {
-        vm.gridOptions.data = data;
+
+        vm.gridOptions.data = data.map(row => {
+          row.configuredText = `${row.numEmployees} / ${row.totalEmployees}`;
+          return row;
+        });
+
       })
       .catch(Notify.handleError)
       .finally(() => {

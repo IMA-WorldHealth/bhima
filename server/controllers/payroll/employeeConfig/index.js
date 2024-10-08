@@ -13,14 +13,32 @@ function lookupEmployeeConfig(id) {
 
 // Lists the Payroll Employee configurations
 function list(req, res, next) {
-  const sql = ` SELECT c.id, c.label FROM config_employee AS c;`;
 
-  db.exec(sql)
-    .then((rows) => {
-      res.status(200).json(rows);
+  const sql = `
+    SELECT c.id, c.label, COUNT(ci.employee_uuid) as numEmployees
+    FROM config_employee AS c LEFT JOIN config_employee_item as ci
+      ON c.id = ci.config_employee_id
+    GROUP BY c.id;
+  `;
+
+  // NOTE(@jniles): this considers the employees available _right now_ as opposed to
+  // when the configuration was created.  We don't store configuration created_at, so
+  // we cannot make this determination.  If we did, we could filter based on the employee's
+  // created_at date and figure out which employees should be listed here.
+  const employeeSQL = `SELECT COUNT(employee.uuid) as totalEmployees FROM employee WHERE locked <> 1;`;
+
+  Promise.all([sql, employeeSQL].map(stmt => db.exec(stmt)))
+    .then(([rows, [{totalEmployees}]]) => {
+
+      // add in the total employees.
+      const records = rows.map(row => {
+        row.totalEmployees = totalEmployees;
+        return row;
+      })
+
+      res.status(200).json(records);
     })
-    .catch(next)
-    .done();
+    .catch(next);
 }
 
 /**
