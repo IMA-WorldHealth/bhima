@@ -5,6 +5,7 @@
 */
 
 const db = require('../../../lib/db');
+const NotFound = require('../../../lib/errors/NotFound');
 
 function lookupEmployeeConfig(id) {
   const sql = `SELECT id, label FROM config_employee WHERE id = ?`;
@@ -28,13 +29,13 @@ function list(req, res, next) {
   const employeeSQL = `SELECT COUNT(employee.uuid) as totalEmployees FROM employee WHERE locked <> 1;`;
 
   Promise.all([sql, employeeSQL].map(stmt => db.exec(stmt)))
-    .then(([rows, [{totalEmployees}]]) => {
+    .then(([rows, [{ totalEmployees }]]) => {
 
       // add in the total employees.
       const records = rows.map(row => {
         row.totalEmployees = totalEmployees;
         return row;
-      })
+      });
 
       res.status(200).json(records);
     })
@@ -60,14 +61,15 @@ function detail(req, res, next) {
 // POST /EMPLOYEE_CONFIG
 function create(req, res, next) {
   const sql = `INSERT INTO config_employee SET ?`;
-  const data = req.body;
+  const { label } = req.body;
 
-  db.exec(sql, [data])
+  db.exec(sql, [{ label }])
     .then((row) => {
       res.status(201).json({ id : row.insertId });
     })
     .catch(next)
     .done();
+
 }
 
 // PUT/EMPLOYEE_CONFIG/:ID
@@ -87,22 +89,34 @@ function update(req, res, next) {
     .done();
 }
 
-// DELETE /EMPLOYEE_CONFIG/:ID
+// DELETE /employee_config/:ID
 function del(req, res, next) {
-  db.delete(
-    'config_employee', 'id', req.params.id, res, next,
-    `Could not find a Employee configuration with id ${req.params.id}`,
-  );
+  const { id } = req.params;
+
+  db.transaction()
+    .addQuery('DELETE FROM config_employee_item WHERE config_employee_id = ?;', [id])
+    .addQuery('DELETE FROM config_employee WHERE id = ?', [id])
+    .execute()
+    .then((rows) => {
+      const hasAffectedRows = rows.reduce((agg, row) => row.affectedRows + agg, 0);
+
+      if (hasAffectedRows === 0) {
+        throw new NotFound(`Could not find an employee configuration with id ${id}`);
+      }
+
+      res.sendStatus(204);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
- * POST /employee_config/:id/ setting
+ * POST /employee_config/:id/setting
  *
  * Creates and updates an Employee Configuration.  This works by completely deleting
- * the week days' configuration and then replacing them with the new Employee set.
+ * the payroll configuration and then replacing them with the new employee .
  */
 function createConfig(req, res, next) {
-
   const data = req.body.configuration.map((uuid) => {
     return [db.bid(uuid), req.params.id];
   });

@@ -8,15 +8,16 @@ const helpers = require('./helpers');
  *
  * This test suite implements full CRUD on the /payroll/employee_configuration  API.
  */
-describe('test/integration/payroll/accountConfiguration The Employee Payroll Configuration  API', () => {
+describe('test/integration/payroll employee_config/ The Employee Payroll Configuration  API', () => {
   // Employee Payroll Configuration we will add during this test suite.
 
   const employeeConfig = {
-    label : 'Employee Configuration 2017',
+    label : 'employee configuration 2017',
+    configuration : [],
   };
 
   const employeeConfigUpdate = {
-    label : 'Employee Configuration 2018',
+    label : 'employee configuration 2018',
   };
 
   const defaultEmployeeConfiguration = 1;
@@ -31,7 +32,7 @@ describe('test/integration/payroll/accountConfiguration The Employee Payroll Con
 
   const NUM_EMPLOYEE_CONFIG = 2;
 
-  it('GET /EMPLOYEE_CONFIG returns a list of Employee Configurations ', () => {
+  it('GET /employee_config returns a list of employee configurations ', () => {
     return agent.get('/employee_config')
       .then((res) => {
         helpers.api.listed(res, NUM_EMPLOYEE_CONFIG);
@@ -39,7 +40,7 @@ describe('test/integration/payroll/accountConfiguration The Employee Payroll Con
       .catch(helpers.handler);
   });
 
-  it('POST /EMPLOYEE_CONFIG should create a new Employee Configuration', () => {
+  it('POST /employee_config should create a new employee configuration', () => {
     return agent.post('/employee_config')
       .send(employeeConfig)
       .then((res) => {
@@ -49,7 +50,7 @@ describe('test/integration/payroll/accountConfiguration The Employee Payroll Con
       .catch(helpers.handler);
   });
 
-  it('GET /EMPLOYEE_CONFIG/:ID should not be found for unknown id', () => {
+  it('GET /employee_config/:ID should not be found for unknown id', () => {
     return agent.get('/employee_config/unknownEmployee')
       .then((res) => {
         helpers.api.errored(res, 404);
@@ -57,25 +58,25 @@ describe('test/integration/payroll/accountConfiguration The Employee Payroll Con
       .catch(helpers.handler);
   });
 
-  it('PUT /EMPLOYEE_CONFIG should update an existing Employee Configuration', () => {
-    return agent.put('/employee_config/'.concat(employeeConfig.id))
+  it('PUT /employee_config should update an existing employee configuration', () => {
+    return agent.put(`/employee_config/${employeeConfig.id}`)
       .send(employeeConfigUpdate)
       .then((res) => {
         expect(res).to.have.status(200);
-        expect(res.body.label).to.equal('Employee Configuration 2018');
+        expect(res.body.label).to.equal('employee configuration 2018');
       })
       .catch(helpers.handler);
   });
 
-  it('GET /EMPLOYEE_CONFIG/:ID returns a single Employee Configuration', () => {
-    return agent.get('/employee_config/'.concat(employeeConfig.id))
+  it('GET /employee_config/:ID returns a single employee configuration', () => {
+    return agent.get(`/employee_config/${employeeConfig.id}`)
       .then((res) => {
         expect(res).to.have.status(200);
       })
       .catch(helpers.handler);
   });
 
-  it('DELETE /EMPLOYEE_CONFIG/:ID will send back a 404 if the Employee Configuration does not exist', () => {
+  it('DELETE /employee_config/:ID will send back a 404 if the employee configuration does not exist', () => {
     return agent.delete('/employee_config/123456789')
       .then((res) => {
         helpers.api.errored(res, 404);
@@ -83,16 +84,16 @@ describe('test/integration/payroll/accountConfiguration The Employee Payroll Con
       .catch(helpers.handler);
   });
 
-  it('DELETE /EMPLOYEE_CONFIG/:ID will send back a 404 if the Employee Configuration id is a string', () => {
+  it('DELETE /employee_config/:ID will send back a 400 if the employee configuration id is a string', () => {
     return agent.delete('/employee_config/str')
       .then((res) => {
-        helpers.api.errored(res, 404);
+        helpers.api.errored(res, 400);
       })
       .catch(helpers.handler);
   });
 
-  it('DELETE /EMPLOYEE_CONFIG/:ID should delete an Employee Configuration ', () => {
-    return agent.delete('/employee_config/'.concat(employeeConfig.id))
+  it('DELETE /employee_config/:ID should delete an employee configuration ', () => {
+    return agent.delete(`/employee_config/${employeeConfig.id}`)
       .then((res) => {
         helpers.api.deleted(res);
       })
@@ -100,7 +101,7 @@ describe('test/integration/payroll/accountConfiguration The Employee Payroll Con
   });
 
   // INTEGRATION TEST FOR SETTING EMPLOYEE IN CONFIGURATION
-  it('POST /EMPLOYEE_CONFIG/:ID/SETTING should Set Employees in Configuration', () => {
+  it('POST /employee_config/:ID/setting should Set Employees in Configuration', () => {
     return agent.post(`/employee_config/${defaultEmployeeConfiguration}/setting`)
       .send(configEmployee)
       .then((res) => {
