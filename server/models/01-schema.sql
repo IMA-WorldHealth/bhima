@@ -525,7 +525,7 @@ CREATE TABLE `employee` (
   `fonction_id`   TINYINT(3) UNSIGNED DEFAULT NULL,
   `service_uuid`  BINARY(16) DEFAULT NULL,
   `creditor_uuid` BINARY(16) DEFAULT NULL,
-  `locked`        TINYINT(1) DEFAULT NULL,
+  `locked`        TINYINT(1) NOT NULL DEFAULT 0,
   `patient_uuid`  BINARY(16) DEFAULT NULL,
   `reference`     SMALLINT(5) UNSIGNED DEFAULT NULL,
   `title_employee_id`   TINYINT(3) UNSIGNED DEFAULT NULL,
@@ -930,8 +930,6 @@ CREATE TABLE `payment` (
   CONSTRAINT `payment__currency`  FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`),
   CONSTRAINT `payment__pay_status`  FOREIGN KEY (`status_id`) REFERENCES `payment_status` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
-
-
 
 DROP TABLE IF EXISTS `payment_status`;
 

@@ -408,6 +408,7 @@
             "COLUMNS": "Colonnes",
             "COMMENT": "Commentaire",
             "COMPLETE": "complet",
+            "CONFIGURED" : "Configuré",
             "CONFIRMATION": "Confirmation",
             "CONSTRAINT": "Contrainte",
             "CONSUMABLE": "Consommable",
