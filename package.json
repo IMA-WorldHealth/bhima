@@ -113,6 +113,7 @@
     "angular-ui-bootstrap": "^2.5.6",
     "angular-ui-grid": "^4.12.7",
     "bootstrap": "^3.4.1",
+    "caniuse-lite": "^1.0.30001667",
     "chart.js": "^3.9.1",
     "chartjs-plugin-datalabels": "^2.2.0",
     "connect-redis": "^7.1.1",
@@ -123,9 +124,9 @@
     "debug": "^4.3.7",
     "dotenv": "^16.4.5",
     "excel4node": "^1.8.2",
-    "express": "^4.21.0",
+    "express": "^4.21.1",
     "express-handlebars": "^8.0.1",
-    "express-session": "^1.18.0",
+    "express-session": "^1.18.1",
     "font-awesome": "^4.7.0",
     "handlebars": "^4.7.8",
     "helmet": "^8.0.0",
@@ -161,7 +162,7 @@
   },
   "devDependencies": {
     "@ima-worldhealth/rewire": "^4.1.0",
-    "@playwright/test": "1.47.2",
+    "@playwright/test": "1.48.0",
     "@types/node": "^22.7.5",
     "angular-mocks": "^1.8.3",
     "chai": "^4.5.0",
@@ -205,7 +206,7 @@
     "release-it": "^17.7.0",
     "sinon": "^18.0.1",
     "standard-version": "^9.5.0",
-    "typescript": "^5.6.2"
+    "typescript": "^5.6.3"
   },
   "homepage": "https://docs.bhi.ma"
 }
