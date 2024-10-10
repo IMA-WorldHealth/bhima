@@ -33,6 +33,7 @@
     "IS_GROSS_SALARY" : "Cette rubrique est le salaire brute",
     "IS_INDICE" : "Cette rubrique est un indice",
     "IS_INDEX_SHORT" : "Indice?",
+    "IS_LINKED_TO_GRADE" : "Cette rubrique est liée au grade",
     "IS_MONETARY_VALUE": "Cette rubrique est une valeur monnetaire",
     "IS_NUMBER_OF_DAYS" : "Cette rubrique est le nombre de jours",
     "IS_OTHER_PROFIT" : "Cette rubric est autres profits",

@@ -75,7 +75,7 @@ function config(req, res, next) {
     rubric_payroll.label, rubric_payroll.id, rubric_payroll.is_tax, rubric_payroll.is_social_care,
     rubric_payroll.is_membership_fee, rubric_payroll.debtor_account_id, rubric_payroll.expense_account_id,
     rubric_payment.value, rubric_payroll.is_associated_employee, rubric_payroll.is_linked_pension_fund,
-    employee.reference
+    rubric_payroll.is_linked_to_grade, employee.reference
     FROM payment
     JOIN rubric_payment ON rubric_payment.payment_uuid = payment.uuid
     JOIN rubric_payroll ON rubric_payroll.id = rubric_payment.rubric_payroll_id

@@ -54,6 +54,13 @@
         on-change-callback="RubricModalCtrl.indiceToGrapSetting(value)">
       </bh-yes-no-radios>
 
+      <bh-yes-no-radios
+        label="PAYROLL_RUBRIC.IS_LINKED_TO_GRADE"
+        value="RubricModalCtrl.rubric.is_linked_to_grade"
+		    name="is_linked_to_grade"
+        on-change-callback="RubricModalCtrl.isLinkedToGradeSetting(value)">
+      </bh-yes-no-radios>
+
       <div class="form-group" ng-show="(RubricModalCtrl.rubric.is_indice && !RubricModalCtrl.rubric.is_monetary_value)">
         <label translate>PAYROLL_RUBRIC.INDICE_TYPE</label>
 

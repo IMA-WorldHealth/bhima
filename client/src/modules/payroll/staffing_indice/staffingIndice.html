@@ -26,6 +26,13 @@
                   <span translate> FORM.LABELS.FUNCTION_BONUS</span>
                 </a>
             </li>
+            <li ng-if="StaffingIndiceCtrl.rubricsGrade.length" class="divider"></li>
+            <li ng-repeat="rubric in StaffingIndiceCtrl.rubricsGrade" role="menuitem">
+              <a href ng-click="StaffingIndiceCtrl.openSetRubricsGradeModal(rubric.id)">
+                <span class="fa fa-book"></span>
+                <span> {{ rubric.label }}</span>
+              </a>
+            </li>
             <li class="divider"></li>
             <li role="menuitem">
               <a target='_blank' ng-href=" /staffing_indices/export/report?{{StaffingIndiceCtrl.downloadExcel()}}"

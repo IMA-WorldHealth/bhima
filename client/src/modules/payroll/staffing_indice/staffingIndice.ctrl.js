@@ -4,11 +4,11 @@ angular.module('bhima.controllers')
 StaffingIndiceController.$inject = [
   '$state', '$uibModal', 'StaffingIndiceService', 'SessionService', 'ModalService',
   'NotifyService', 'bhConstants', 'uiGridConstants',
-  'LanguageService', '$httpParamSerializer', 'GridColumnService',
+  'LanguageService', '$httpParamSerializer', 'GridColumnService', 'RubricService',
 ];
 
 function StaffingIndiceController($state, $uibModal, StaffingIndice,
-  Session, Modal, Notify, bhConstants, uiGridConstants, Languages, $httpParamSerializer, Columns) {
+  Session, Modal, Notify, bhConstants, uiGridConstants, Languages, $httpParamSerializer, Columns, Rubrics) {
   const vm = this;
 
   function init() {
@@ -23,6 +23,15 @@ function StaffingIndiceController($state, $uibModal, StaffingIndice,
     } else {
       StaffingIndice.loadCachedFilters();
     }
+
+    Rubrics.read(null, { is_linked_to_grade : 1 })
+      .then(data => {
+        vm.rubricsGrade = data;
+      })
+      .catch(Notify.handleError)
+      .finally(() => {
+        vm.loading = false;
+      });
 
     vm.latestViewFilters = StaffingIndice.filters.formatView();
     const params = StaffingIndice.filters.formatHTTP(true);
@@ -177,6 +186,14 @@ function StaffingIndiceController($state, $uibModal, StaffingIndice,
     $uibModal.open({
       templateUrl : 'modules/payroll/staffing_indice/modal/funcitonIndiceModal.html',
       controller : 'FunctionIndiceModalController as $ctrl',
+    });
+  };
+
+  vm.openSetRubricsGradeModal = (id) => {
+    $uibModal.open({
+      templateUrl : 'modules/payroll/staffing_indice/modal/gradeRubricsModal.html',
+      controller : 'GradeRubricsModalController as $ctrl',
+      resolve : { data : () => id },
     });
   };
 

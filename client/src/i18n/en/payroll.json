@@ -33,6 +33,7 @@
     "IS_GROSS_SALARY" : "This rubric is the gross salary",
     "IS_INDICE" : "This rubric is an index",
     "IS_INDEX_SHORT" : "Index?",
+    "IS_LINKED_TO_GRADE" : "This rubric is linked to grade",
     "IS_MONETARY_VALUE": "This rubric is a monetary value",
     "IS_NUMBER_OF_DAYS" : "This rubric is the number of days",
     "IS_OTHER_PROFIT" : "This rubric is other profit",
