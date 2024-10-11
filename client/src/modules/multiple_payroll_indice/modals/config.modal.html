@@ -21,16 +21,51 @@
         <div
         ng-show ="(rubConfigured.indice_to_grap && rubConfigured.is_indice)"
         ng-repeat ="rubConfigured in ConfigPaiementModalCtrl.rubrics | orderBy:'label'" class="form-group">
+        <div style="background-color: #EFEFEF;" ng-if="rubConfigured.is_linked_to_grade">
+          <div class="form-group">
+            <label class="control-label"> {{ConfigPaiementModalCtrl.rubValueFrequency}} : {{rubConfigured.label}} </label>
+            <input
+              type="number"
+              min="0"
+              class="form-control"
+              ng-model="ConfigPaiementModalCtrl.frequencyRubrics[rubConfigured.id]"
+              ng-keyup="ConfigPaiementModalCtrl.onUpdateRubricValue(rubConfigured.id)"
+              ng-required="true"
+              ng-key>
+          </div>
 
+          <bh-input-text
+            ng-if="!rubConfigured.is_monetary_value"
+            key="{{'ConfigPaiementForm_' + rubConfigured.label}}"
+            label="{{ConfigPaiementModalCtrl.rubValueLabel}} : {{rubConfigured.label}}"
+            type="number"
+            text-value="ConfigPaiementModalCtrl.employeeGradeRubrics[rubConfigured.id]"
+            required = "true"
+            disabled = "true"
+            min=0
+            on-change="$ctrl.onInputTextChange(key, value)">
+          </bh-input-text>
+          <bh-input-text
+            ng-if="!rubConfigured.is_monetary_value"
+            key="{{'ConfigPaiementForm_' + rubConfigured.label}}"
+            label="{{rubConfigured.label}}"
+            type="number"
+            text-value="ConfigPaiementModalCtrl.selectedRubrics[rubConfigured.id]"
+            required = "true"
+            disabled = "true"
+            min=0
+            on-change="$ctrl.onInputTextChange(key, value)">
+          </bh-input-text>
+        </div>
         <bh-input-text
-          ng-if="!rubConfigured.is_monetary_value"
+          ng-if="!rubConfigured.is_monetary_value && !rubConfigured.is_linked_to_grade"
           key="{{'ConfigPaiementForm_' + rubConfigured.label}}"
           label="{{rubConfigured.label}}"
           type="number"
           text-value="ConfigPaiementModalCtrl.selectedRubrics[rubConfigured.id]"
           required = "true"
           min=0
-          on-change="$ctrl.onInputTextChange(key, value)">
+          on-change="ConfigPaiementModalCtrl.onInputTextChange(key, value)">
         </bh-input-text>
       </div>
       </div>
