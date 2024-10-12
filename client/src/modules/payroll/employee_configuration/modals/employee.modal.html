@@ -12,8 +12,8 @@
 
   <div class="modal-body">
     <div class="form-group" ng-class="{ 'has-error' : EmployeeForm.$submitted && EmployeeForm.label.$invalid }">
-      <input name="label" ng-model="EmployeeModalCtrl.configuration.label" autocomplete="off" class="form-control" required>
       <label class="control-label" translate>FORM.LABELS.DESIGNATION</label>
+      <input name="label" ng-model="EmployeeModalCtrl.configuration.label" autocomplete="off" class="form-control" required>
       <div class="help-block" ng-messages="EmployeeForm.label.$error" ng-show="EmployeeForm.$submitted">
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
       </div>

@@ -10,11 +10,12 @@ class EmployeeConfigPage {
   /**
    * Create a new employee configuration
    *
-   * @param {object} employee - info for the new employee config
+   * @param {object} config- info for the new employee config
    */
-  async create(employee) {
+  async create(config) {
     await TU.buttons.create();
-    await TU.input('EmployeeModalCtrl.employee.label', employee.label);
+
+    await TU.input('EmployeeModalCtrl.configuration.label', config.label);
 
     await TU.modal.submit();
     await components.notification.hasSuccess();
@@ -26,7 +27,7 @@ class EmployeeConfigPage {
   async errorOnCreateEmployeeConfig() {
     await TU.buttons.create();
     await TU.modal.submit();
-    await TU.validation.error('EmployeeModalCtrl.employee.label');
+    await TU.validation.error('EmployeeModalCtrl.configuration.label');
     await TU.modal.cancel();
   }
 
@@ -41,7 +42,7 @@ class EmployeeConfigPage {
     await row.dropdown();
     await row.edit();
 
-    await TU.input('EmployeeModalCtrl.employee.label', updateEmployeeConfig.label);
+    await TU.input('EmployeeModalCtrl.configuration.label', updateEmployeeConfig.label);
 
     await TU.modal.submit();
     await components.notification.hasSuccess();
@@ -55,7 +56,7 @@ class EmployeeConfigPage {
   async setEmployeeConfig(label) {
     const row = new GridRow(label);
     await row.dropdown();
-    await row.method('config');
+    await row.method('edit-record');
     await TU.waitForSelector('div.modal-body');
 
     await components.bhCheckboxTree.toggleAllCheckboxes();
@@ -71,7 +72,7 @@ class EmployeeConfigPage {
   async unsetEmployeeConfig(label) {
     const row = new GridRow(label);
     await row.dropdown();
-    await row.method('config');
+    await row.method('edit');
 
     const isAllChecked = await components.bhCheckboxTree.isChecked();
 
