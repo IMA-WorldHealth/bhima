@@ -2756,14 +2756,6 @@ CREATE TABLE `cost_center_aggregate` (
   CONSTRAINT `cost_center_aggregate__cost_center_id` FOREIGN KEY (`cost_center_id`) REFERENCES `cost_center` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
-DROP TABLE IF EXISTS `odk_app_user`;
-CREATE TABLE `odk_app_user` (
-  `odk_app_user_id` INT UNSIGNED NOT NULL,
-  `display_name` TEXT NOT NULL,
-  `bhima_user_id` SMALLINT(5) UNSIGNED NOT NULL,
-  CONSTRAINT `odk_app_user__user` FOREIGN KEY (`bhima_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
-
 DROP TABLE IF EXISTS `shipment_status`;
 CREATE TABLE `shipment_status` (
   `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
