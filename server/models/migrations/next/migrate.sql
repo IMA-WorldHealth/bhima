@@ -45,3 +45,6 @@ CREATE TABLE `rubric_grade_indice` (
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS odk_app_user;
+
+-- make sure that employee locked values are always defined.
+UPDATE employee SET locked = 0 WHERE ISNULL(locked);

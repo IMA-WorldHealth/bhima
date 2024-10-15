@@ -11,7 +11,7 @@ ConfigurationAccountService.$inject = ['PrototypeApiService', '$uibModal'];
  * Encapsulates common requests to the /rubric_config/ URL.
  */
 function ConfigurationAccountService(Api, Modal) {
-  var service = new Api('/account_config/');
+  const service = new Api('/account_config/');
 
   return service;
 }

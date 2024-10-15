@@ -24,15 +24,6 @@ angular.module('bhima.routes')
         },
         onEnter : ['$uibModal', '$transition$', configurationEmployeeModal],
         onExit : ['$uibModalStack', closeModal],
-      })
-
-      .state('configurationEmployee.config', {
-        url : '/:id/config',
-        params : {
-          id : { value : null },
-        },
-        onEnter : ['$uibModal', '$transition$', configurationEmployee],
-        onExit : ['$uibModalStack', closeModal],
       });
   }]);
 
@@ -40,14 +31,6 @@ function configurationEmployeeModal($modal, $transition) {
   $modal.open({
     templateUrl : 'modules/payroll/employee_configuration/modals/employee.modal.html',
     controller : 'EmployeeModalController as EmployeeModalCtrl',
-    resolve : { params : () => $transition.params('to') },
-  }).result.catch(angular.noop);
-}
-
-function configurationEmployee($modal, $transition) {
-  $modal.open({
-    templateUrl : 'modules/payroll/employee_configuration/modals/config.modal.html',
-    controller : 'EmployeeConfigModalController as EmployeeConfigModalCtrl',
     resolve : { params : () => $transition.params('to') },
   }).result.catch(angular.noop);
 }
