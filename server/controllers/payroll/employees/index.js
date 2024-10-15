@@ -185,7 +185,7 @@ function lookupEmployeeAdvantages(uid) {
  * @method update
  *
  * @description
- * Update details of an employee referenced by an `id` in the database
+ * Update details of an employee referenced by a `uuid` in the database
  */
 function update(req, res, next) {
   const employeeAdvantage = [];
@@ -245,7 +245,8 @@ function update(req, res, next) {
     service_uuid : employee.service_uuid,
     nb_enfant : employee.nb_enfant,
     grade_uuid : employee.grade_uuid,
-    locked : employee.locked,
+    // TODO(@jniles): maybe structure this API better so we don't have to default to this.
+    locked : employee.locked || 0,
     fonction_id : employee.fonction_id,
     bank : employee.bank,
     bank_account : employee.bank_account,

@@ -1,7 +1,7 @@
 <form name="EmployeeForm" bh-submit="EmployeeModalCtrl.submit(EmployeeForm)" novalidate>
   <div class="modal-header">
     <ol class="headercrumb">
-      <li class="static" translate>TREE.HUMANS_RESSOURCES</li>
+      <li class="static" translate>TREE.HUMANS_RESSOURCES</li>      
       <li class="title">
         <span translate>TREE.PAYROLL_EMP_CONFIGURATION</span>
         <label ng-show="EmployeeModalCtrl.isCreateState" class="badge badge-success" translate>FORM.LABELS.CREATE</label>
@@ -13,11 +13,25 @@
   <div class="modal-body">
     <div class="form-group" ng-class="{ 'has-error' : EmployeeForm.$submitted && EmployeeForm.label.$invalid }">
       <label class="control-label" translate>FORM.LABELS.DESIGNATION</label>
-      <input name="label" ng-model="EmployeeModalCtrl.employee.label" autocomplete="off" class="form-control" required>
+      <input name="label" ng-model="EmployeeModalCtrl.configuration.label" autocomplete="off" class="form-control" required>
       <div class="help-block" ng-messages="EmployeeForm.label.$error" ng-show="EmployeeForm.$submitted">
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
       </div>
     </div>
+
+    <p ng-if="EmployeeModalCtrl.employees.length === 0" translate>
+      TABLE.COLUMNS.EMPTY
+    </p>
+
+    <bh-checkbox-tree
+      is-flat-tree="true"
+      data="EmployeeModalCtrl.employees"
+      checked-ids="EmployeeModalCtrl.checkedUuids"
+      disabled-ids="EmployeeModalCtrl.disabledUuids"
+      id-key="uuid"
+      label-key="display_name"
+      on-change="EmployeeModalCtrl.onChangeRoleSelection(data)">
+    </bh-checkbox-tree>
   </div>
 
   <div class="modal-footer">
