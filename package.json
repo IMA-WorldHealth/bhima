@@ -205,7 +205,7 @@
     "mocha-xunit-reporter": "^2.3.0",
     "postcss": "^8.4.47",
     "qs": "^6.13.0",
-    "release-it": "^17.9.0",
+    "release-it": "^17.10.0",
     "sinon": "^18.0.1",
     "standard-version": "^9.5.0",
     "typescript": "^5.6.3"
